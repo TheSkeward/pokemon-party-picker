@@ -1,0 +1,2404 @@
+{
+  "source": {
+    "month": "2018-02",
+    "formatId": "gen4ou",
+    "cutoff": 1500,
+    "dataKind": "usage"
+  },
+  "pokemon": {
+    "tyranitar": {
+      "pokemonId": "tyranitar",
+      "name": "Tyranitar",
+      "rank": 1,
+      "usage": 35.49795,
+      "rawCount": 13031
+    },
+    "heatran": {
+      "pokemonId": "heatran",
+      "name": "Heatran",
+      "rank": 2,
+      "usage": 33.01241,
+      "rawCount": 12107
+    },
+    "starmie": {
+      "pokemonId": "starmie",
+      "name": "Starmie",
+      "rank": 3,
+      "usage": 28.09182,
+      "rawCount": 10818
+    },
+    "jirachi": {
+      "pokemonId": "jirachi",
+      "name": "Jirachi",
+      "rank": 4,
+      "usage": 26.17872,
+      "rawCount": 9557
+    },
+    "scizor": {
+      "pokemonId": "scizor",
+      "name": "Scizor",
+      "rank": 5,
+      "usage": 25.2272,
+      "rawCount": 10007
+    },
+    "dragonite": {
+      "pokemonId": "dragonite",
+      "name": "Dragonite",
+      "rank": 6,
+      "usage": 22.52953,
+      "rawCount": 8709
+    },
+    "infernape": {
+      "pokemonId": "infernape",
+      "name": "Infernape",
+      "rank": 7,
+      "usage": 21.97718,
+      "rawCount": 9172
+    },
+    "breloom": {
+      "pokemonId": "breloom",
+      "name": "Breloom",
+      "rank": 8,
+      "usage": 21.04205,
+      "rawCount": 8173
+    },
+    "flygon": {
+      "pokemonId": "flygon",
+      "name": "Flygon",
+      "rank": 9,
+      "usage": 20.98984,
+      "rawCount": 8172
+    },
+    "gengar": {
+      "pokemonId": "gengar",
+      "name": "Gengar",
+      "rank": 10,
+      "usage": 19.56725,
+      "rawCount": 8419
+    },
+    "gyarados": {
+      "pokemonId": "gyarados",
+      "name": "Gyarados",
+      "rank": 11,
+      "usage": 17.82611,
+      "rawCount": 6948
+    },
+    "kingdra": {
+      "pokemonId": "kingdra",
+      "name": "Kingdra",
+      "rank": 12,
+      "usage": 17.57746,
+      "rawCount": 6789
+    },
+    "zapdos": {
+      "pokemonId": "zapdos",
+      "name": "Zapdos",
+      "rank": 13,
+      "usage": 17.3197,
+      "rawCount": 6624
+    },
+    "metagross": {
+      "pokemonId": "metagross",
+      "name": "Metagross",
+      "rank": 14,
+      "usage": 14.69312,
+      "rawCount": 6070
+    },
+    "rotomwash": {
+      "pokemonId": "rotomwash",
+      "name": "Rotom-Wash",
+      "rank": 15,
+      "usage": 12.70381,
+      "rawCount": 4688
+    },
+    "bronzong": {
+      "pokemonId": "bronzong",
+      "name": "Bronzong",
+      "rank": 16,
+      "usage": 12.32339,
+      "rawCount": 4633
+    },
+    "swampert": {
+      "pokemonId": "swampert",
+      "name": "Swampert",
+      "rank": 17,
+      "usage": 12.15106,
+      "rawCount": 5092
+    },
+    "machamp": {
+      "pokemonId": "machamp",
+      "name": "Machamp",
+      "rank": 18,
+      "usage": 12.12667,
+      "rawCount": 4776
+    },
+    "lucario": {
+      "pokemonId": "lucario",
+      "name": "Lucario",
+      "rank": 19,
+      "usage": 11.34773,
+      "rawCount": 4611
+    },
+    "azelf": {
+      "pokemonId": "azelf",
+      "name": "Azelf",
+      "rank": 20,
+      "usage": 10.97057,
+      "rawCount": 4640
+    },
+    "skarmory": {
+      "pokemonId": "skarmory",
+      "name": "Skarmory",
+      "rank": 21,
+      "usage": 9.81787,
+      "rawCount": 4582
+    },
+    "suicune": {
+      "pokemonId": "suicune",
+      "name": "Suicune",
+      "rank": 22,
+      "usage": 9.22393,
+      "rawCount": 3449
+    },
+    "rotomheat": {
+      "pokemonId": "rotomheat",
+      "name": "Rotom-Heat",
+      "rank": 23,
+      "usage": 9.03931,
+      "rawCount": 3153
+    },
+    "roserade": {
+      "pokemonId": "roserade",
+      "name": "Roserade",
+      "rank": 24,
+      "usage": 8.7385,
+      "rawCount": 3537
+    },
+    "blissey": {
+      "pokemonId": "blissey",
+      "name": "Blissey",
+      "rank": 25,
+      "usage": 7.73645,
+      "rawCount": 4024
+    },
+    "celebi": {
+      "pokemonId": "celebi",
+      "name": "Celebi",
+      "rank": 26,
+      "usage": 7.51636,
+      "rawCount": 3395
+    },
+    "gliscor": {
+      "pokemonId": "gliscor",
+      "name": "Gliscor",
+      "rank": 27,
+      "usage": 7.29104,
+      "rawCount": 3376
+    },
+    "magnezone": {
+      "pokemonId": "magnezone",
+      "name": "Magnezone",
+      "rank": 28,
+      "usage": 6.55942,
+      "rawCount": 3195
+    },
+    "weavile": {
+      "pokemonId": "weavile",
+      "name": "Weavile",
+      "rank": 29,
+      "usage": 6.00905,
+      "rawCount": 3203
+    },
+    "empoleon": {
+      "pokemonId": "empoleon",
+      "name": "Empoleon",
+      "rank": 30,
+      "usage": 5.66958,
+      "rawCount": 2455
+    },
+    "aerodactyl": {
+      "pokemonId": "aerodactyl",
+      "name": "Aerodactyl",
+      "rank": 31,
+      "usage": 5.60491,
+      "rawCount": 2699
+    },
+    "raikou": {
+      "pokemonId": "raikou",
+      "name": "Raikou",
+      "rank": 32,
+      "usage": 5.37693,
+      "rawCount": 1868
+    },
+    "forretress": {
+      "pokemonId": "forretress",
+      "name": "Forretress",
+      "rank": 33,
+      "usage": 5.09946,
+      "rawCount": 2367
+    },
+    "shaymin": {
+      "pokemonId": "shaymin",
+      "name": "Shaymin",
+      "rank": 34,
+      "usage": 4.83169,
+      "rawCount": 1924
+    },
+    "hippowdon": {
+      "pokemonId": "hippowdon",
+      "name": "Hippowdon",
+      "rank": 35,
+      "usage": 4.78199,
+      "rawCount": 2090
+    },
+    "jolteon": {
+      "pokemonId": "jolteon",
+      "name": "Jolteon",
+      "rank": 36,
+      "usage": 4.61185,
+      "rawCount": 2041
+    },
+    "clefable": {
+      "pokemonId": "clefable",
+      "name": "Clefable",
+      "rank": 37,
+      "usage": 4.57436,
+      "rawCount": 1595
+    },
+    "vaporeon": {
+      "pokemonId": "vaporeon",
+      "name": "Vaporeon",
+      "rank": 38,
+      "usage": 4.14748,
+      "rawCount": 2906
+    },
+    "snorlax": {
+      "pokemonId": "snorlax",
+      "name": "Snorlax",
+      "rank": 39,
+      "usage": 3.79042,
+      "rawCount": 1860
+    },
+    "togekiss": {
+      "pokemonId": "togekiss",
+      "name": "Togekiss",
+      "rank": 40,
+      "usage": 3.59302,
+      "rawCount": 3485
+    },
+    "mamoswine": {
+      "pokemonId": "mamoswine",
+      "name": "Mamoswine",
+      "rank": 41,
+      "usage": 3.52859,
+      "rawCount": 1585
+    },
+    "dusknoir": {
+      "pokemonId": "dusknoir",
+      "name": "Dusknoir",
+      "rank": 42,
+      "usage": 3.2963,
+      "rawCount": 1867
+    },
+    "tentacruel": {
+      "pokemonId": "tentacruel",
+      "name": "Tentacruel",
+      "rank": 43,
+      "usage": 3.17924,
+      "rawCount": 1572
+    },
+    "dugtrio": {
+      "pokemonId": "dugtrio",
+      "name": "Dugtrio",
+      "rank": 44,
+      "usage": 2.76303,
+      "rawCount": 1063
+    },
+    "milotic": {
+      "pokemonId": "milotic",
+      "name": "Milotic",
+      "rank": 45,
+      "usage": 2.69274,
+      "rawCount": 1149
+    },
+    "electivire": {
+      "pokemonId": "electivire",
+      "name": "Electivire",
+      "rank": 46,
+      "usage": 2.56278,
+      "rawCount": 1788
+    },
+    "nidoqueen": {
+      "pokemonId": "nidoqueen",
+      "name": "Nidoqueen",
+      "rank": 47,
+      "usage": 2.51417,
+      "rawCount": 858
+    },
+    "cresselia": {
+      "pokemonId": "cresselia",
+      "name": "Cresselia",
+      "rank": 48,
+      "usage": 2.3218,
+      "rawCount": 930
+    },
+    "alakazam": {
+      "pokemonId": "alakazam",
+      "name": "Alakazam",
+      "rank": 49,
+      "usage": 2.29147,
+      "rawCount": 1153
+    },
+    "abomasnow": {
+      "pokemonId": "abomasnow",
+      "name": "Abomasnow",
+      "rank": 50,
+      "usage": 2.12456,
+      "rawCount": 925
+    },
+    "rotommow": {
+      "pokemonId": "rotommow",
+      "name": "Rotom-Mow",
+      "rank": 51,
+      "usage": 2.02679,
+      "rawCount": 681
+    },
+    "venusaur": {
+      "pokemonId": "venusaur",
+      "name": "Venusaur",
+      "rank": 52,
+      "usage": 2.02311,
+      "rawCount": 952
+    },
+    "yanmega": {
+      "pokemonId": "yanmega",
+      "name": "Yanmega",
+      "rank": 53,
+      "usage": 1.88615,
+      "rawCount": 867
+    },
+    "crobat": {
+      "pokemonId": "crobat",
+      "name": "Crobat",
+      "rank": 54,
+      "usage": 1.75029,
+      "rawCount": 824
+    },
+    "steelix": {
+      "pokemonId": "steelix",
+      "name": "Steelix",
+      "rank": 55,
+      "usage": 1.62823,
+      "rawCount": 626
+    },
+    "umbreon": {
+      "pokemonId": "umbreon",
+      "name": "Umbreon",
+      "rank": 56,
+      "usage": 1.51747,
+      "rawCount": 2061
+    },
+    "porygonz": {
+      "pokemonId": "porygonz",
+      "name": "Porygon-Z",
+      "rank": 57,
+      "usage": 1.48243,
+      "rawCount": 752
+    },
+    "uxie": {
+      "pokemonId": "uxie",
+      "name": "Uxie",
+      "rank": 58,
+      "usage": 1.44933,
+      "rawCount": 560
+    },
+    "gallade": {
+      "pokemonId": "gallade",
+      "name": "Gallade",
+      "rank": 59,
+      "usage": 1.38121,
+      "rawCount": 717
+    },
+    "froslass": {
+      "pokemonId": "froslass",
+      "name": "Froslass",
+      "rank": 60,
+      "usage": 1.37455,
+      "rawCount": 689
+    },
+    "donphan": {
+      "pokemonId": "donphan",
+      "name": "Donphan",
+      "rank": 61,
+      "usage": 1.36964,
+      "rawCount": 1919
+    },
+    "smeargle": {
+      "pokemonId": "smeargle",
+      "name": "Smeargle",
+      "rank": 62,
+      "usage": 1.35597,
+      "rawCount": 1058
+    },
+    "hitmontop": {
+      "pokemonId": "hitmontop",
+      "name": "Hitmontop",
+      "rank": 63,
+      "usage": 1.35481,
+      "rawCount": 501
+    },
+    "heracross": {
+      "pokemonId": "heracross",
+      "name": "Heracross",
+      "rank": 64,
+      "usage": 1.28389,
+      "rawCount": 756
+    },
+    "rotomfrost": {
+      "pokemonId": "rotomfrost",
+      "name": "Rotom-Frost",
+      "rank": 65,
+      "usage": 1.18209,
+      "rawCount": 619
+    },
+    "ludicolo": {
+      "pokemonId": "ludicolo",
+      "name": "Ludicolo",
+      "rank": 66,
+      "usage": 1.12827,
+      "rawCount": 643
+    },
+    "claydol": {
+      "pokemonId": "claydol",
+      "name": "Claydol",
+      "rank": 67,
+      "usage": 1.0729,
+      "rawCount": 595
+    },
+    "spiritomb": {
+      "pokemonId": "spiritomb",
+      "name": "Spiritomb",
+      "rank": 68,
+      "usage": 1.02764,
+      "rawCount": 1967
+    },
+    "slowbro": {
+      "pokemonId": "slowbro",
+      "name": "Slowbro",
+      "rank": 69,
+      "usage": 1.01247,
+      "rawCount": 444
+    },
+    "staraptor": {
+      "pokemonId": "staraptor",
+      "name": "Staraptor",
+      "rank": 70,
+      "usage": 0.98765,
+      "rawCount": 661
+    },
+    "kabutops": {
+      "pokemonId": "kabutops",
+      "name": "Kabutops",
+      "rank": 71,
+      "usage": 0.89131,
+      "rawCount": 729
+    },
+    "qwilfish": {
+      "pokemonId": "qwilfish",
+      "name": "Qwilfish",
+      "rank": 72,
+      "usage": 0.84644,
+      "rawCount": 331
+    },
+    "ninjask": {
+      "pokemonId": "ninjask",
+      "name": "Ninjask",
+      "rank": 73,
+      "usage": 0.80749,
+      "rawCount": 1081
+    },
+    "arcanine": {
+      "pokemonId": "arcanine",
+      "name": "Arcanine",
+      "rank": 74,
+      "usage": 0.79731,
+      "rawCount": 1966
+    },
+    "charizard": {
+      "pokemonId": "charizard",
+      "name": "Charizard",
+      "rank": 75,
+      "usage": 0.76376,
+      "rawCount": 611
+    },
+    "cacturne": {
+      "pokemonId": "cacturne",
+      "name": "Cacturne",
+      "rank": 76,
+      "usage": 0.68131,
+      "rawCount": 244
+    },
+    "ambipom": {
+      "pokemonId": "ambipom",
+      "name": "Ambipom",
+      "rank": 77,
+      "usage": 0.65118,
+      "rawCount": 530
+    },
+    "sceptile": {
+      "pokemonId": "sceptile",
+      "name": "Sceptile",
+      "rank": 78,
+      "usage": 0.63924,
+      "rawCount": 512
+    },
+    "honchkrow": {
+      "pokemonId": "honchkrow",
+      "name": "Honchkrow",
+      "rank": 79,
+      "usage": 0.6242,
+      "rawCount": 354
+    },
+    "feraligatr": {
+      "pokemonId": "feraligatr",
+      "name": "Feraligatr",
+      "rank": 80,
+      "usage": 0.62057,
+      "rawCount": 381
+    },
+    "lapras": {
+      "pokemonId": "lapras",
+      "name": "Lapras",
+      "rank": 81,
+      "usage": 0.61573,
+      "rawCount": 407
+    },
+    "torterra": {
+      "pokemonId": "torterra",
+      "name": "Torterra",
+      "rank": 82,
+      "usage": 0.58712,
+      "rawCount": 541
+    },
+    "aggron": {
+      "pokemonId": "aggron",
+      "name": "Aggron",
+      "rank": 83,
+      "usage": 0.57398,
+      "rawCount": 388
+    },
+    "blastoise": {
+      "pokemonId": "blastoise",
+      "name": "Blastoise",
+      "rank": 84,
+      "usage": 0.56611,
+      "rawCount": 502
+    },
+    "rhyperior": {
+      "pokemonId": "rhyperior",
+      "name": "Rhyperior",
+      "rank": 85,
+      "usage": 0.56164,
+      "rawCount": 354
+    },
+    "absol": {
+      "pokemonId": "absol",
+      "name": "Absol",
+      "rank": 86,
+      "usage": 0.48778,
+      "rawCount": 245
+    },
+    "hitmonchan": {
+      "pokemonId": "hitmonchan",
+      "name": "Hitmonchan",
+      "rank": 87,
+      "usage": 0.47256,
+      "rawCount": 220
+    },
+    "glaceon": {
+      "pokemonId": "glaceon",
+      "name": "Glaceon",
+      "rank": 88,
+      "usage": 0.42246,
+      "rawCount": 242
+    },
+    "pikachu": {
+      "pokemonId": "pikachu",
+      "name": "Pikachu",
+      "rank": 89,
+      "usage": 0.39409,
+      "rawCount": 207
+    },
+    "toxicroak": {
+      "pokemonId": "toxicroak",
+      "name": "Toxicroak",
+      "rank": 90,
+      "usage": 0.38759,
+      "rawCount": 174
+    },
+    "kingler": {
+      "pokemonId": "kingler",
+      "name": "Kingler",
+      "rank": 91,
+      "usage": 0.37186,
+      "rawCount": 123
+    },
+    "drapion": {
+      "pokemonId": "drapion",
+      "name": "Drapion",
+      "rank": 92,
+      "usage": 0.36226,
+      "rawCount": 384
+    },
+    "blaziken": {
+      "pokemonId": "blaziken",
+      "name": "Blaziken",
+      "rank": 93,
+      "usage": 0.34478,
+      "rawCount": 483
+    },
+    "typhlosion": {
+      "pokemonId": "typhlosion",
+      "name": "Typhlosion",
+      "rank": 94,
+      "usage": 0.33097,
+      "rawCount": 335
+    },
+    "magmortar": {
+      "pokemonId": "magmortar",
+      "name": "Magmortar",
+      "rank": 95,
+      "usage": 0.3253,
+      "rawCount": 263
+    },
+    "weezing": {
+      "pokemonId": "weezing",
+      "name": "Weezing",
+      "rank": 96,
+      "usage": 0.32507,
+      "rawCount": 180
+    },
+    "gardevoir": {
+      "pokemonId": "gardevoir",
+      "name": "Gardevoir",
+      "rank": 97,
+      "usage": 0.32186,
+      "rawCount": 226
+    },
+    "walrein": {
+      "pokemonId": "walrein",
+      "name": "Walrein",
+      "rank": 98,
+      "usage": 0.31796,
+      "rawCount": 191
+    },
+    "cradily": {
+      "pokemonId": "cradily",
+      "name": "Cradily",
+      "rank": 99,
+      "usage": 0.31585,
+      "rawCount": 346
+    },
+    "hariyama": {
+      "pokemonId": "hariyama",
+      "name": "Hariyama",
+      "rank": 100,
+      "usage": 0.29329,
+      "rawCount": 158
+    },
+    "mismagius": {
+      "pokemonId": "mismagius",
+      "name": "Mismagius",
+      "rank": 101,
+      "usage": 0.27827,
+      "rawCount": 212
+    },
+    "cloyster": {
+      "pokemonId": "cloyster",
+      "name": "Cloyster",
+      "rank": 102,
+      "usage": 0.27685,
+      "rawCount": 289
+    },
+    "mesprit": {
+      "pokemonId": "mesprit",
+      "name": "Mesprit",
+      "rank": 103,
+      "usage": 0.26321,
+      "rawCount": 113
+    },
+    "ampharos": {
+      "pokemonId": "ampharos",
+      "name": "Ampharos",
+      "rank": 104,
+      "usage": 0.26044,
+      "rawCount": 234
+    },
+    "gastrodon": {
+      "pokemonId": "gastrodon",
+      "name": "Gastrodon",
+      "rank": 105,
+      "usage": 0.25783,
+      "rawCount": 193
+    },
+    "moltres": {
+      "pokemonId": "moltres",
+      "name": "Moltres",
+      "rank": 106,
+      "usage": 0.2507,
+      "rawCount": 128
+    },
+    "muk": {
+      "pokemonId": "muk",
+      "name": "Muk",
+      "rank": 107,
+      "usage": 0.25064,
+      "rawCount": 125
+    },
+    "lanturn": {
+      "pokemonId": "lanturn",
+      "name": "Lanturn",
+      "rank": 108,
+      "usage": 0.24476,
+      "rawCount": 177
+    },
+    "houndoom": {
+      "pokemonId": "houndoom",
+      "name": "Houndoom",
+      "rank": 109,
+      "usage": 0.24375,
+      "rawCount": 236
+    },
+    "azumarill": {
+      "pokemonId": "azumarill",
+      "name": "Azumarill",
+      "rank": 110,
+      "usage": 0.23751,
+      "rawCount": 113
+    },
+    "swellow": {
+      "pokemonId": "swellow",
+      "name": "Swellow",
+      "rank": 111,
+      "usage": 0.23139,
+      "rawCount": 132
+    },
+    "torkoal": {
+      "pokemonId": "torkoal",
+      "name": "Torkoal",
+      "rank": 112,
+      "usage": 0.22404,
+      "rawCount": 99
+    },
+    "registeel": {
+      "pokemonId": "registeel",
+      "name": "Registeel",
+      "rank": 113,
+      "usage": 0.22238,
+      "rawCount": 131
+    },
+    "linoone": {
+      "pokemonId": "linoone",
+      "name": "Linoone",
+      "rank": 114,
+      "usage": 0.21632,
+      "rawCount": 99
+    },
+    "hypno": {
+      "pokemonId": "hypno",
+      "name": "Hypno",
+      "rank": 115,
+      "usage": 0.21063,
+      "rawCount": 97
+    },
+    "regice": {
+      "pokemonId": "regice",
+      "name": "Regice",
+      "rank": 116,
+      "usage": 0.19726,
+      "rawCount": 114
+    },
+    "rotomfan": {
+      "pokemonId": "rotomfan",
+      "name": "Rotom-Fan",
+      "rank": 117,
+      "usage": 0.19661,
+      "rawCount": 131
+    },
+    "magneton": {
+      "pokemonId": "magneton",
+      "name": "Magneton",
+      "rank": 118,
+      "usage": 0.19146,
+      "rawCount": 79
+    },
+    "luxray": {
+      "pokemonId": "luxray",
+      "name": "Luxray",
+      "rank": 119,
+      "usage": 0.19,
+      "rawCount": 214
+    },
+    "porygon2": {
+      "pokemonId": "porygon2",
+      "name": "Porygon2",
+      "rank": 120,
+      "usage": 0.18494,
+      "rawCount": 148
+    },
+    "floatzel": {
+      "pokemonId": "floatzel",
+      "name": "Floatzel",
+      "rank": 121,
+      "usage": 0.18368,
+      "rawCount": 202
+    },
+    "exeggutor": {
+      "pokemonId": "exeggutor",
+      "name": "Exeggutor",
+      "rank": 122,
+      "usage": 0.18029,
+      "rawCount": 103
+    },
+    "medicham": {
+      "pokemonId": "medicham",
+      "name": "Medicham",
+      "rank": 123,
+      "usage": 0.17947,
+      "rawCount": 321
+    },
+    "drifblim": {
+      "pokemonId": "drifblim",
+      "name": "Drifblim",
+      "rank": 124,
+      "usage": 0.1761,
+      "rawCount": 342
+    },
+    "espeon": {
+      "pokemonId": "espeon",
+      "name": "Espeon",
+      "rank": 125,
+      "usage": 0.17384,
+      "rawCount": 305
+    },
+    "slowking": {
+      "pokemonId": "slowking",
+      "name": "Slowking",
+      "rank": 126,
+      "usage": 0.1705,
+      "rawCount": 95
+    },
+    "poliwrath": {
+      "pokemonId": "poliwrath",
+      "name": "Poliwrath",
+      "rank": 127,
+      "usage": 0.16355,
+      "rawCount": 401
+    },
+    "electrode": {
+      "pokemonId": "electrode",
+      "name": "Electrode",
+      "rank": 128,
+      "usage": 0.15894,
+      "rawCount": 377
+    },
+    "octillery": {
+      "pokemonId": "octillery",
+      "name": "Octillery",
+      "rank": 129,
+      "usage": 0.15056,
+      "rawCount": 67
+    },
+    "leafeon": {
+      "pokemonId": "leafeon",
+      "name": "Leafeon",
+      "rank": 130,
+      "usage": 0.14538,
+      "rawCount": 105
+    },
+    "altaria": {
+      "pokemonId": "altaria",
+      "name": "Altaria",
+      "rank": 131,
+      "usage": 0.14461,
+      "rawCount": 112
+    },
+    "marowak": {
+      "pokemonId": "marowak",
+      "name": "Marowak",
+      "rank": 132,
+      "usage": 0.1413,
+      "rawCount": 169
+    },
+    "rampardos": {
+      "pokemonId": "rampardos",
+      "name": "Rampardos",
+      "rank": 133,
+      "usage": 0.14032,
+      "rawCount": 108
+    },
+    "regirock": {
+      "pokemonId": "regirock",
+      "name": "Regirock",
+      "rank": 134,
+      "usage": 0.13615,
+      "rawCount": 91
+    },
+    "quagsire": {
+      "pokemonId": "quagsire",
+      "name": "Quagsire",
+      "rank": 135,
+      "usage": 0.13444,
+      "rawCount": 88
+    },
+    "slaking": {
+      "pokemonId": "slaking",
+      "name": "Slaking",
+      "rank": 136,
+      "usage": 0.13351,
+      "rawCount": 117
+    },
+    "tangrowth": {
+      "pokemonId": "tangrowth",
+      "name": "Tangrowth",
+      "rank": 137,
+      "usage": 0.13036,
+      "rawCount": 123
+    },
+    "hitmonlee": {
+      "pokemonId": "hitmonlee",
+      "name": "Hitmonlee",
+      "rank": 138,
+      "usage": 0.12539,
+      "rawCount": 138
+    },
+    "miltank": {
+      "pokemonId": "miltank",
+      "name": "Miltank",
+      "rank": 139,
+      "usage": 0.12069,
+      "rawCount": 325
+    },
+    "camerupt": {
+      "pokemonId": "camerupt",
+      "name": "Camerupt",
+      "rank": 140,
+      "usage": 0.11969,
+      "rawCount": 107
+    },
+    "jynx": {
+      "pokemonId": "jynx",
+      "name": "Jynx",
+      "rank": 141,
+      "usage": 0.10101,
+      "rawCount": 52
+    },
+    "bastiodon": {
+      "pokemonId": "bastiodon",
+      "name": "Bastiodon",
+      "rank": 142,
+      "usage": 0.09866,
+      "rawCount": 93
+    },
+    "probopass": {
+      "pokemonId": "probopass",
+      "name": "Probopass",
+      "rank": 143,
+      "usage": 0.09334,
+      "rawCount": 37
+    },
+    "ursaring": {
+      "pokemonId": "ursaring",
+      "name": "Ursaring",
+      "rank": 144,
+      "usage": 0.0891,
+      "rawCount": 116
+    },
+    "meganium": {
+      "pokemonId": "meganium",
+      "name": "Meganium",
+      "rank": 145,
+      "usage": 0.08877,
+      "rawCount": 114
+    },
+    "shuckle": {
+      "pokemonId": "shuckle",
+      "name": "Shuckle",
+      "rank": 146,
+      "usage": 0.08756,
+      "rawCount": 113
+    },
+    "tauros": {
+      "pokemonId": "tauros",
+      "name": "Tauros",
+      "rank": 147,
+      "usage": 0.08704,
+      "rawCount": 55
+    },
+    "nidoking": {
+      "pokemonId": "nidoking",
+      "name": "Nidoking",
+      "rank": 148,
+      "usage": 0.0865,
+      "rawCount": 80
+    },
+    "shedinja": {
+      "pokemonId": "shedinja",
+      "name": "Shedinja",
+      "rank": 149,
+      "usage": 0.08584,
+      "rawCount": 116
+    },
+    "omastar": {
+      "pokemonId": "omastar",
+      "name": "Omastar",
+      "rank": 150,
+      "usage": 0.0855,
+      "rawCount": 205
+    },
+    "pinsir": {
+      "pokemonId": "pinsir",
+      "name": "Pinsir",
+      "rank": 151,
+      "usage": 0.08008,
+      "rawCount": 65
+    },
+    "seviper": {
+      "pokemonId": "seviper",
+      "name": "Seviper",
+      "rank": 152,
+      "usage": 0.07181,
+      "rawCount": 21
+    },
+    "golem": {
+      "pokemonId": "golem",
+      "name": "Golem",
+      "rank": 153,
+      "usage": 0.07082,
+      "rawCount": 97
+    },
+    "gabite": {
+      "pokemonId": "gabite",
+      "name": "Gabite",
+      "rank": 154,
+      "usage": 0.06524,
+      "rawCount": 32
+    },
+    "ninetales": {
+      "pokemonId": "ninetales",
+      "name": "Ninetales",
+      "rank": 155,
+      "usage": 0.06409,
+      "rawCount": 78
+    },
+    "manectric": {
+      "pokemonId": "manectric",
+      "name": "Manectric",
+      "rank": 156,
+      "usage": 0.05813,
+      "rawCount": 66
+    },
+    "jumpluff": {
+      "pokemonId": "jumpluff",
+      "name": "Jumpluff",
+      "rank": 157,
+      "usage": 0.05756,
+      "rawCount": 87
+    },
+    "kangaskhan": {
+      "pokemonId": "kangaskhan",
+      "name": "Kangaskhan",
+      "rank": 158,
+      "usage": 0.05567,
+      "rawCount": 81
+    },
+    "flareon": {
+      "pokemonId": "flareon",
+      "name": "Flareon",
+      "rank": 159,
+      "usage": 0.0555,
+      "rawCount": 69
+    },
+    "rapidash": {
+      "pokemonId": "rapidash",
+      "name": "Rapidash",
+      "rank": 160,
+      "usage": 0.0551,
+      "rawCount": 47
+    },
+    "scyther": {
+      "pokemonId": "scyther",
+      "name": "Scyther",
+      "rank": 161,
+      "usage": 0.05503,
+      "rawCount": 58
+    },
+    "victreebel": {
+      "pokemonId": "victreebel",
+      "name": "Victreebel",
+      "rank": 162,
+      "usage": 0.05334,
+      "rawCount": 26
+    },
+    "mrmime": {
+      "pokemonId": "mrmime",
+      "name": "Mr. Mime",
+      "rank": 163,
+      "usage": 0.04787,
+      "rawCount": 51
+    },
+    "entei": {
+      "pokemonId": "entei",
+      "name": "Entei",
+      "rank": 164,
+      "usage": 0.04575,
+      "rawCount": 39
+    },
+    "regigigas": {
+      "pokemonId": "regigigas",
+      "name": "Regigigas",
+      "rank": 165,
+      "usage": 0.04481,
+      "rawCount": 74
+    },
+    "lopunny": {
+      "pokemonId": "lopunny",
+      "name": "Lopunny",
+      "rank": 166,
+      "usage": 0.04266,
+      "rawCount": 84
+    },
+    "sharpedo": {
+      "pokemonId": "sharpedo",
+      "name": "Sharpedo",
+      "rank": 167,
+      "usage": 0.04241,
+      "rawCount": 36
+    },
+    "raichu": {
+      "pokemonId": "raichu",
+      "name": "Raichu",
+      "rank": 168,
+      "usage": 0.04219,
+      "rawCount": 72
+    },
+    "bibarel": {
+      "pokemonId": "bibarel",
+      "name": "Bibarel",
+      "rank": 169,
+      "usage": 0.04015,
+      "rawCount": 30
+    },
+    "skuntank": {
+      "pokemonId": "skuntank",
+      "name": "Skuntank",
+      "rank": 170,
+      "usage": 0.03993,
+      "rawCount": 38
+    },
+    "glalie": {
+      "pokemonId": "glalie",
+      "name": "Glalie",
+      "rank": 171,
+      "usage": 0.03981,
+      "rawCount": 25
+    },
+    "armaldo": {
+      "pokemonId": "armaldo",
+      "name": "Armaldo",
+      "rank": 172,
+      "usage": 0.0396,
+      "rawCount": 35
+    },
+    "xatu": {
+      "pokemonId": "xatu",
+      "name": "Xatu",
+      "rank": 173,
+      "usage": 0.03787,
+      "rawCount": 22
+    },
+    "gorebyss": {
+      "pokemonId": "gorebyss",
+      "name": "Gorebyss",
+      "rank": 174,
+      "usage": 0.0377,
+      "rawCount": 50
+    },
+    "buizel": {
+      "pokemonId": "buizel",
+      "name": "Buizel",
+      "rank": 175,
+      "usage": 0.03652,
+      "rawCount": 41
+    },
+    "lickilicky": {
+      "pokemonId": "lickilicky",
+      "name": "Lickilicky",
+      "rank": 176,
+      "usage": 0.03605,
+      "rawCount": 29
+    },
+    "articuno": {
+      "pokemonId": "articuno",
+      "name": "Articuno",
+      "rank": 177,
+      "usage": 0.03485,
+      "rawCount": 59
+    },
+    "electabuzz": {
+      "pokemonId": "electabuzz",
+      "name": "Electabuzz",
+      "rank": 178,
+      "usage": 0.0348,
+      "rawCount": 17
+    },
+    "sandslash": {
+      "pokemonId": "sandslash",
+      "name": "Sandslash",
+      "rank": 179,
+      "usage": 0.03419,
+      "rawCount": 26
+    },
+    "mawile": {
+      "pokemonId": "mawile",
+      "name": "Mawile",
+      "rank": 180,
+      "usage": 0.03401,
+      "rawCount": 84
+    },
+    "chansey": {
+      "pokemonId": "chansey",
+      "name": "Chansey",
+      "rank": 181,
+      "usage": 0.03279,
+      "rawCount": 27
+    },
+    "persian": {
+      "pokemonId": "persian",
+      "name": "Persian",
+      "rank": 182,
+      "usage": 0.03179,
+      "rawCount": 23
+    },
+    "vespiquen": {
+      "pokemonId": "vespiquen",
+      "name": "Vespiquen",
+      "rank": 183,
+      "usage": 0.02586,
+      "rawCount": 63
+    },
+    "rotom": {
+      "pokemonId": "rotom",
+      "name": "Rotom",
+      "rank": 184,
+      "usage": 0.02558,
+      "rawCount": 29
+    },
+    "togetic": {
+      "pokemonId": "togetic",
+      "name": "Togetic",
+      "rank": 185,
+      "usage": 0.02448,
+      "rawCount": 18
+    },
+    "haunter": {
+      "pokemonId": "haunter",
+      "name": "Haunter",
+      "rank": 186,
+      "usage": 0.02434,
+      "rawCount": 27
+    },
+    "venomoth": {
+      "pokemonId": "venomoth",
+      "name": "Venomoth",
+      "rank": 187,
+      "usage": 0.02382,
+      "rawCount": 18
+    },
+    "arbok": {
+      "pokemonId": "arbok",
+      "name": "Arbok",
+      "rank": 188,
+      "usage": 0.02345,
+      "rawCount": 15
+    },
+    "sableye": {
+      "pokemonId": "sableye",
+      "name": "Sableye",
+      "rank": 189,
+      "usage": 0.02338,
+      "rawCount": 19
+    },
+    "shiftry": {
+      "pokemonId": "shiftry",
+      "name": "Shiftry",
+      "rank": 190,
+      "usage": 0.02292,
+      "rawCount": 30
+    },
+    "mantine": {
+      "pokemonId": "mantine",
+      "name": "Mantine",
+      "rank": 191,
+      "usage": 0.02168,
+      "rawCount": 19
+    },
+    "gligar": {
+      "pokemonId": "gligar",
+      "name": "Gligar",
+      "rank": 192,
+      "usage": 0.02107,
+      "rawCount": 12
+    },
+    "pelipper": {
+      "pokemonId": "pelipper",
+      "name": "Pelipper",
+      "rank": 193,
+      "usage": 0.02093,
+      "rawCount": 21
+    },
+    "dusclops": {
+      "pokemonId": "dusclops",
+      "name": "Dusclops",
+      "rank": 194,
+      "usage": 0.0203,
+      "rawCount": 20
+    },
+    "primeape": {
+      "pokemonId": "primeape",
+      "name": "Primeape",
+      "rank": 195,
+      "usage": 0.02012,
+      "rawCount": 45
+    },
+    "swalot": {
+      "pokemonId": "swalot",
+      "name": "Swalot",
+      "rank": 196,
+      "usage": 0.01985,
+      "rawCount": 7
+    },
+    "grumpig": {
+      "pokemonId": "grumpig",
+      "name": "Grumpig",
+      "rank": 197,
+      "usage": 0.01957,
+      "rawCount": 9
+    },
+    "politoed": {
+      "pokemonId": "politoed",
+      "name": "Politoed",
+      "rank": 198,
+      "usage": 0.01902,
+      "rawCount": 95
+    },
+    "dragonair": {
+      "pokemonId": "dragonair",
+      "name": "Dragonair",
+      "rank": 199,
+      "usage": 0.01877,
+      "rawCount": 16
+    },
+    "banette": {
+      "pokemonId": "banette",
+      "name": "Banette",
+      "rank": 200,
+      "usage": 0.0185,
+      "rawCount": 18
+    },
+    "crawdaunt": {
+      "pokemonId": "crawdaunt",
+      "name": "Crawdaunt",
+      "rank": 201,
+      "usage": 0.01838,
+      "rawCount": 21
+    },
+    "chatot": {
+      "pokemonId": "chatot",
+      "name": "Chatot",
+      "rank": 202,
+      "usage": 0.0181,
+      "rawCount": 13
+    },
+    "vileplume": {
+      "pokemonId": "vileplume",
+      "name": "Vileplume",
+      "rank": 203,
+      "usage": 0.01754,
+      "rawCount": 13
+    },
+    "butterfree": {
+      "pokemonId": "butterfree",
+      "name": "Butterfree",
+      "rank": 204,
+      "usage": 0.01712,
+      "rawCount": 13
+    },
+    "rhydon": {
+      "pokemonId": "rhydon",
+      "name": "Rhydon",
+      "rank": 205,
+      "usage": 0.01597,
+      "rawCount": 10
+    },
+    "wailord": {
+      "pokemonId": "wailord",
+      "name": "Wailord",
+      "rank": 206,
+      "usage": 0.01525,
+      "rawCount": 22
+    },
+    "ditto": {
+      "pokemonId": "ditto",
+      "name": "Ditto",
+      "rank": 207,
+      "usage": 0.015,
+      "rawCount": 25
+    },
+    "pidgeot": {
+      "pokemonId": "pidgeot",
+      "name": "Pidgeot",
+      "rank": 208,
+      "usage": 0.01481,
+      "rawCount": 33
+    },
+    "wigglytuff": {
+      "pokemonId": "wigglytuff",
+      "name": "Wigglytuff",
+      "rank": 209,
+      "usage": 0.01461,
+      "rawCount": 14
+    },
+    "tropius": {
+      "pokemonId": "tropius",
+      "name": "Tropius",
+      "rank": 210,
+      "usage": 0.01453,
+      "rawCount": 13
+    },
+    "fearow": {
+      "pokemonId": "fearow",
+      "name": "Fearow",
+      "rank": 211,
+      "usage": 0.01442,
+      "rawCount": 10
+    },
+    "cleffa": {
+      "pokemonId": "cleffa",
+      "name": "Cleffa",
+      "rank": 212,
+      "usage": 0.01435,
+      "rawCount": 4
+    },
+    "cherrim": {
+      "pokemonId": "cherrim",
+      "name": "Cherrim",
+      "rank": 213,
+      "usage": 0.01435,
+      "rawCount": 7
+    },
+    "mightyena": {
+      "pokemonId": "mightyena",
+      "name": "Mightyena",
+      "rank": 214,
+      "usage": 0.0143,
+      "rawCount": 11
+    },
+    "furret": {
+      "pokemonId": "furret",
+      "name": "Furret",
+      "rank": 215,
+      "usage": 0.01406,
+      "rawCount": 5
+    },
+    "girafarig": {
+      "pokemonId": "girafarig",
+      "name": "Girafarig",
+      "rank": 216,
+      "usage": 0.01406,
+      "rawCount": 69
+    },
+    "whiscash": {
+      "pokemonId": "whiscash",
+      "name": "Whiscash",
+      "rank": 217,
+      "usage": 0.013,
+      "rawCount": 14
+    },
+    "rattata": {
+      "pokemonId": "rattata",
+      "name": "Rattata",
+      "rank": 218,
+      "usage": 0.01197,
+      "rawCount": 12
+    },
+    "relicanth": {
+      "pokemonId": "relicanth",
+      "name": "Relicanth",
+      "rank": 219,
+      "usage": 0.01181,
+      "rawCount": 13
+    },
+    "masquerain": {
+      "pokemonId": "masquerain",
+      "name": "Masquerain",
+      "rank": 220,
+      "usage": 0.01151,
+      "rawCount": 4
+    },
+    "golduck": {
+      "pokemonId": "golduck",
+      "name": "Golduck",
+      "rank": 221,
+      "usage": 0.01149,
+      "rawCount": 11
+    },
+    "farfetchd": {
+      "pokemonId": "farfetchd",
+      "name": "Farfetch'd",
+      "rank": 222,
+      "usage": 0.01096,
+      "rawCount": 11
+    },
+    "beautifly": {
+      "pokemonId": "beautifly",
+      "name": "Beautifly",
+      "rank": 223,
+      "usage": 0.01079,
+      "rawCount": 8
+    },
+    "chimecho": {
+      "pokemonId": "chimecho",
+      "name": "Chimecho",
+      "rank": 224,
+      "usage": 0.00991,
+      "rawCount": 5
+    },
+    "bellossom": {
+      "pokemonId": "bellossom",
+      "name": "Bellossom",
+      "rank": 225,
+      "usage": 0.00954,
+      "rawCount": 23
+    },
+    "seaking": {
+      "pokemonId": "seaking",
+      "name": "Seaking",
+      "rank": 226,
+      "usage": 0.00949,
+      "rawCount": 5
+    },
+    "zangoose": {
+      "pokemonId": "zangoose",
+      "name": "Zangoose",
+      "rank": 227,
+      "usage": 0.00882,
+      "rawCount": 7
+    },
+    "granbull": {
+      "pokemonId": "granbull",
+      "name": "Granbull",
+      "rank": 228,
+      "usage": 0.00853,
+      "rawCount": 4
+    },
+    "piloswine": {
+      "pokemonId": "piloswine",
+      "name": "Piloswine",
+      "rank": 229,
+      "usage": 0.00818,
+      "rawCount": 5
+    },
+    "noctowl": {
+      "pokemonId": "noctowl",
+      "name": "Noctowl",
+      "rank": 230,
+      "usage": 0.00807,
+      "rawCount": 8
+    },
+    "dewgong": {
+      "pokemonId": "dewgong",
+      "name": "Dewgong",
+      "rank": 231,
+      "usage": 0.00807,
+      "rawCount": 8
+    },
+    "misdreavus": {
+      "pokemonId": "misdreavus",
+      "name": "Misdreavus",
+      "rank": 232,
+      "usage": 0.00784,
+      "rawCount": 18
+    },
+    "starly": {
+      "pokemonId": "starly",
+      "name": "Starly",
+      "rank": 233,
+      "usage": 0.0076,
+      "rawCount": 5
+    },
+    "gible": {
+      "pokemonId": "gible",
+      "name": "Gible",
+      "rank": 234,
+      "usage": 0.0073,
+      "rawCount": 9
+    },
+    "ariados": {
+      "pokemonId": "ariados",
+      "name": "Ariados",
+      "rank": 235,
+      "usage": 0.00704,
+      "rawCount": 2
+    },
+    "clamperl": {
+      "pokemonId": "clamperl",
+      "name": "Clamperl",
+      "rank": 236,
+      "usage": 0.00691,
+      "rawCount": 3
+    },
+    "magnemite": {
+      "pokemonId": "magnemite",
+      "name": "Magnemite",
+      "rank": 237,
+      "usage": 0.00649,
+      "rawCount": 6
+    },
+    "volbeat": {
+      "pokemonId": "volbeat",
+      "name": "Volbeat",
+      "rank": 238,
+      "usage": 0.00575,
+      "rawCount": 14
+    },
+    "onix": {
+      "pokemonId": "onix",
+      "name": "Onix",
+      "rank": 239,
+      "usage": 0.00557,
+      "rawCount": 4
+    },
+    "sunflora": {
+      "pokemonId": "sunflora",
+      "name": "Sunflora",
+      "rank": 240,
+      "usage": 0.00555,
+      "rawCount": 7
+    },
+    "bulbasaur": {
+      "pokemonId": "bulbasaur",
+      "name": "Bulbasaur",
+      "rank": 241,
+      "usage": 0.00542,
+      "rawCount": 4
+    },
+    "plusle": {
+      "pokemonId": "plusle",
+      "name": "Plusle",
+      "rank": 242,
+      "usage": 0.00541,
+      "rawCount": 6
+    },
+    "lunatone": {
+      "pokemonId": "lunatone",
+      "name": "Lunatone",
+      "rank": 243,
+      "usage": 0.00506,
+      "rawCount": 14
+    },
+    "staravia": {
+      "pokemonId": "staravia",
+      "name": "Staravia",
+      "rank": 244,
+      "usage": 0.00483,
+      "rawCount": 5
+    },
+    "treecko": {
+      "pokemonId": "treecko",
+      "name": "Treecko",
+      "rank": 245,
+      "usage": 0.00479,
+      "rawCount": 5
+    },
+    "solrock": {
+      "pokemonId": "solrock",
+      "name": "Solrock",
+      "rank": 246,
+      "usage": 0.00469,
+      "rawCount": 3
+    },
+    "spinda": {
+      "pokemonId": "spinda",
+      "name": "Spinda",
+      "rank": 247,
+      "usage": 0.00457,
+      "rawCount": 3
+    },
+    "kricketune": {
+      "pokemonId": "kricketune",
+      "name": "Kricketune",
+      "rank": 248,
+      "usage": 0.00456,
+      "rawCount": 4
+    },
+    "grotle": {
+      "pokemonId": "grotle",
+      "name": "Grotle",
+      "rank": 249,
+      "usage": 0.00452,
+      "rawCount": 4
+    },
+    "huntail": {
+      "pokemonId": "huntail",
+      "name": "Huntail",
+      "rank": 250,
+      "usage": 0.00451,
+      "rawCount": 2
+    },
+    "raticate": {
+      "pokemonId": "raticate",
+      "name": "Raticate",
+      "rank": 251,
+      "usage": 0.00414,
+      "rawCount": 3
+    },
+    "zubat": {
+      "pokemonId": "zubat",
+      "name": "Zubat",
+      "rank": 252,
+      "usage": 0.00409,
+      "rawCount": 3
+    },
+    "parasect": {
+      "pokemonId": "parasect",
+      "name": "Parasect",
+      "rank": 253,
+      "usage": 0.00387,
+      "rawCount": 3
+    },
+    "corphish": {
+      "pokemonId": "corphish",
+      "name": "Corphish",
+      "rank": 254,
+      "usage": 0.00363,
+      "rawCount": 3
+    },
+    "bayleef": {
+      "pokemonId": "bayleef",
+      "name": "Bayleef",
+      "rank": 255,
+      "usage": 0.00359,
+      "rawCount": 2
+    },
+    "lumineon": {
+      "pokemonId": "lumineon",
+      "name": "Lumineon",
+      "rank": 256,
+      "usage": 0.00359,
+      "rawCount": 4
+    },
+    "clefairy": {
+      "pokemonId": "clefairy",
+      "name": "Clefairy",
+      "rank": 257,
+      "usage": 0.00356,
+      "rawCount": 1
+    },
+    "magmar": {
+      "pokemonId": "magmar",
+      "name": "Magmar",
+      "rank": 258,
+      "usage": 0.0034,
+      "rawCount": 2
+    },
+    "prinplup": {
+      "pokemonId": "prinplup",
+      "name": "Prinplup",
+      "rank": 259,
+      "usage": 0.00336,
+      "rawCount": 3
+    },
+    "monferno": {
+      "pokemonId": "monferno",
+      "name": "Monferno",
+      "rank": 260,
+      "usage": 0.00336,
+      "rawCount": 3
+    },
+    "nosepass": {
+      "pokemonId": "nosepass",
+      "name": "Nosepass",
+      "rank": 261,
+      "usage": 0.00331,
+      "rawCount": 4
+    },
+    "pineco": {
+      "pokemonId": "pineco",
+      "name": "Pineco",
+      "rank": 262,
+      "usage": 0.00322,
+      "rawCount": 4
+    },
+    "castform": {
+      "pokemonId": "castform",
+      "name": "Castform",
+      "rank": 263,
+      "usage": 0.00321,
+      "rawCount": 8
+    },
+    "mimejr": {
+      "pokemonId": "mimejr",
+      "name": "Mime Jr.",
+      "rank": 264,
+      "usage": 0.00319,
+      "rawCount": 3
+    },
+    "dunsparce": {
+      "pokemonId": "dunsparce",
+      "name": "Dunsparce",
+      "rank": 265,
+      "usage": 0.00319,
+      "rawCount": 4
+    },
+    "aron": {
+      "pokemonId": "aron",
+      "name": "Aron",
+      "rank": 266,
+      "usage": 0.00316,
+      "rawCount": 5
+    },
+    "charmeleon": {
+      "pokemonId": "charmeleon",
+      "name": "Charmeleon",
+      "rank": 267,
+      "usage": 0.00308,
+      "rawCount": 6
+    },
+    "squirtle": {
+      "pokemonId": "squirtle",
+      "name": "Squirtle",
+      "rank": 268,
+      "usage": 0.00303,
+      "rawCount": 4
+    },
+    "beedrill": {
+      "pokemonId": "beedrill",
+      "name": "Beedrill",
+      "rank": 269,
+      "usage": 0.00279,
+      "rawCount": 3
+    },
+    "delcatty": {
+      "pokemonId": "delcatty",
+      "name": "Delcatty",
+      "rank": 270,
+      "usage": 0.00275,
+      "rawCount": 2
+    },
+    "exploud": {
+      "pokemonId": "exploud",
+      "name": "Exploud",
+      "rank": 271,
+      "usage": 0.00264,
+      "rawCount": 6
+    },
+    "kadabra": {
+      "pokemonId": "kadabra",
+      "name": "Kadabra",
+      "rank": 272,
+      "usage": 0.00259,
+      "rawCount": 2
+    },
+    "graveler": {
+      "pokemonId": "graveler",
+      "name": "Graveler",
+      "rank": 273,
+      "usage": 0.00259,
+      "rawCount": 7
+    },
+    "pichu": {
+      "pokemonId": "pichu",
+      "name": "Pichu",
+      "rank": 274,
+      "usage": 0.00256,
+      "rawCount": 1
+    },
+    "carnivine": {
+      "pokemonId": "carnivine",
+      "name": "Carnivine",
+      "rank": 275,
+      "usage": 0.00256,
+      "rawCount": 3
+    },
+    "luxio": {
+      "pokemonId": "luxio",
+      "name": "Luxio",
+      "rank": 276,
+      "usage": 0.0025,
+      "rawCount": 2
+    },
+    "tangela": {
+      "pokemonId": "tangela",
+      "name": "Tangela",
+      "rank": 277,
+      "usage": 0.0025,
+      "rawCount": 2
+    },
+    "poliwag": {
+      "pokemonId": "poliwag",
+      "name": "Poliwag",
+      "rank": 278,
+      "usage": 0.00233,
+      "rawCount": 2
+    },
+    "magcargo": {
+      "pokemonId": "magcargo",
+      "name": "Magcargo",
+      "rank": 279,
+      "usage": 0.00226,
+      "rawCount": 4
+    },
+    "doduo": {
+      "pokemonId": "doduo",
+      "name": "Doduo",
+      "rank": 280,
+      "usage": 0.00225,
+      "rawCount": 2
+    },
+    "taillow": {
+      "pokemonId": "taillow",
+      "name": "Taillow",
+      "rank": 281,
+      "usage": 0.00225,
+      "rawCount": 1
+    },
+    "beldum": {
+      "pokemonId": "beldum",
+      "name": "Beldum",
+      "rank": 282,
+      "usage": 0.00223,
+      "rawCount": 2
+    },
+    "chimchar": {
+      "pokemonId": "chimchar",
+      "name": "Chimchar",
+      "rank": 283,
+      "usage": 0.00223,
+      "rawCount": 2
+    },
+    "kricketot": {
+      "pokemonId": "kricketot",
+      "name": "Kricketot",
+      "rank": 284,
+      "usage": 0.00214,
+      "rawCount": 2
+    },
+    "mankey": {
+      "pokemonId": "mankey",
+      "name": "Mankey",
+      "rank": 285,
+      "usage": 0.00214,
+      "rawCount": 2
+    },
+    "dodrio": {
+      "pokemonId": "dodrio",
+      "name": "Dodrio",
+      "rank": 286,
+      "usage": 0.00213,
+      "rawCount": 4
+    },
+    "sneasel": {
+      "pokemonId": "sneasel",
+      "name": "Sneasel",
+      "rank": 287,
+      "usage": 0.00207,
+      "rawCount": 3
+    },
+    "pachirisu": {
+      "pokemonId": "pachirisu",
+      "name": "Pachirisu",
+      "rank": 288,
+      "usage": 0.0019,
+      "rawCount": 8
+    },
+    "piplup": {
+      "pokemonId": "piplup",
+      "name": "Piplup",
+      "rank": 289,
+      "usage": 0.00183,
+      "rawCount": 3
+    },
+    "dustox": {
+      "pokemonId": "dustox",
+      "name": "Dustox",
+      "rank": 290,
+      "usage": 0.0018,
+      "rawCount": 12
+    },
+    "hippopotas": {
+      "pokemonId": "hippopotas",
+      "name": "Hippopotas",
+      "rank": 291,
+      "usage": 0.0017,
+      "rawCount": 1
+    },
+    "shieldon": {
+      "pokemonId": "shieldon",
+      "name": "Shieldon",
+      "rank": 292,
+      "usage": 0.0017,
+      "rawCount": 1
+    },
+    "delibird": {
+      "pokemonId": "delibird",
+      "name": "Delibird",
+      "rank": 293,
+      "usage": 0.0017,
+      "rawCount": 4
+    },
+    "abra": {
+      "pokemonId": "abra",
+      "name": "Abra",
+      "rank": 294,
+      "usage": 0.00168,
+      "rawCount": 2
+    },
+    "silcoon": {
+      "pokemonId": "silcoon",
+      "name": "Silcoon",
+      "rank": 295,
+      "usage": 0.00149,
+      "rawCount": 1
+    },
+    "snover": {
+      "pokemonId": "snover",
+      "name": "Snover",
+      "rank": 296,
+      "usage": 0.00149,
+      "rawCount": 1
+    },
+    "feebas": {
+      "pokemonId": "feebas",
+      "name": "Feebas",
+      "rank": 297,
+      "usage": 0.00149,
+      "rawCount": 1
+    },
+    "croagunk": {
+      "pokemonId": "croagunk",
+      "name": "Croagunk",
+      "rank": 298,
+      "usage": 0.00137,
+      "rawCount": 3
+    },
+    "sudowoodo": {
+      "pokemonId": "sudowoodo",
+      "name": "Sudowoodo",
+      "rank": 299,
+      "usage": 0.00136,
+      "rawCount": 2
+    },
+    "ralts": {
+      "pokemonId": "ralts",
+      "name": "Ralts",
+      "rank": 300,
+      "usage": 0.00136,
+      "rawCount": 1
+    },
+    "pidgeotto": {
+      "pokemonId": "pidgeotto",
+      "name": "Pidgeotto",
+      "rank": 301,
+      "usage": 0.00133,
+      "rawCount": 4
+    },
+    "eevee": {
+      "pokemonId": "eevee",
+      "name": "Eevee",
+      "rank": 302,
+      "usage": 0.00133,
+      "rawCount": 1
+    },
+    "goldeen": {
+      "pokemonId": "goldeen",
+      "name": "Goldeen",
+      "rank": 303,
+      "usage": 0.00133,
+      "rawCount": 1
+    },
+    "metang": {
+      "pokemonId": "metang",
+      "name": "Metang",
+      "rank": 304,
+      "usage": 0.00133,
+      "rawCount": 1
+    },
+    "staryu": {
+      "pokemonId": "staryu",
+      "name": "Staryu",
+      "rank": 305,
+      "usage": 0.00133,
+      "rawCount": 1
+    },
+    "loudred": {
+      "pokemonId": "loudred",
+      "name": "Loudred",
+      "rank": 306,
+      "usage": 0.00133,
+      "rawCount": 1
+    },
+    "krabby": {
+      "pokemonId": "krabby",
+      "name": "Krabby",
+      "rank": 307,
+      "usage": 0.00133,
+      "rawCount": 1
+    },
+    "natu": {
+      "pokemonId": "natu",
+      "name": "Natu",
+      "rank": 308,
+      "usage": 0.00133,
+      "rawCount": 1
+    },
+    "grovyle": {
+      "pokemonId": "grovyle",
+      "name": "Grovyle",
+      "rank": 309,
+      "usage": 0.00133,
+      "rawCount": 1
+    },
+    "glameow": {
+      "pokemonId": "glameow",
+      "name": "Glameow",
+      "rank": 310,
+      "usage": 0.00118,
+      "rawCount": 1
+    },
+    "ponyta": {
+      "pokemonId": "ponyta",
+      "name": "Ponyta",
+      "rank": 311,
+      "usage": 0.00116,
+      "rawCount": 1
+    },
+    "kecleon": {
+      "pokemonId": "kecleon",
+      "name": "Kecleon",
+      "rank": 312,
+      "usage": 0.00115,
+      "rawCount": 1
+    },
+    "meowth": {
+      "pokemonId": "meowth",
+      "name": "Meowth",
+      "rank": 313,
+      "usage": 0.00105,
+      "rawCount": 1
+    },
+    "growlithe": {
+      "pokemonId": "growlithe",
+      "name": "Growlithe",
+      "rank": 314,
+      "usage": 0.00105,
+      "rawCount": 1
+    },
+    "seadra": {
+      "pokemonId": "seadra",
+      "name": "Seadra",
+      "rank": 315,
+      "usage": 0.001,
+      "rawCount": 1
+    },
+    "machoke": {
+      "pokemonId": "machoke",
+      "name": "Machoke",
+      "rank": 316,
+      "usage": 0.00093,
+      "rawCount": 2
+    },
+    "cyndaquil": {
+      "pokemonId": "cyndaquil",
+      "name": "Cyndaquil",
+      "rank": 317,
+      "usage": 0.00089,
+      "rawCount": 2
+    },
+    "mudkip": {
+      "pokemonId": "mudkip",
+      "name": "Mudkip",
+      "rank": 318,
+      "usage": 0.00089,
+      "rawCount": 1
+    },
+    "bagon": {
+      "pokemonId": "bagon",
+      "name": "Bagon",
+      "rank": 319,
+      "usage": 0.00089,
+      "rawCount": 1
+    },
+    "vigoroth": {
+      "pokemonId": "vigoroth",
+      "name": "Vigoroth",
+      "rank": 320,
+      "usage": 0.00087,
+      "rawCount": 1
+    },
+    "golbat": {
+      "pokemonId": "golbat",
+      "name": "Golbat",
+      "rank": 321,
+      "usage": 0.00087,
+      "rawCount": 1
+    },
+    "purugly": {
+      "pokemonId": "purugly",
+      "name": "Purugly",
+      "rank": 322,
+      "usage": 0.00078,
+      "rawCount": 3
+    },
+    "psyduck": {
+      "pokemonId": "psyduck",
+      "name": "Psyduck",
+      "rank": 323,
+      "usage": 0.00078,
+      "rawCount": 1
+    },
+    "ekans": {
+      "pokemonId": "ekans",
+      "name": "Ekans",
+      "rank": 324,
+      "usage": 0.00074,
+      "rawCount": 2
+    },
+    "sentret": {
+      "pokemonId": "sentret",
+      "name": "Sentret",
+      "rank": 325,
+      "usage": 0.00074,
+      "rawCount": 2
+    },
+    "weedle": {
+      "pokemonId": "weedle",
+      "name": "Weedle",
+      "rank": 326,
+      "usage": 0.00058,
+      "rawCount": 2
+    },
+    "caterpie": {
+      "pokemonId": "caterpie",
+      "name": "Caterpie",
+      "rank": 327,
+      "usage": 0.00058,
+      "rawCount": 2
+    },
+    "buneary": {
+      "pokemonId": "buneary",
+      "name": "Buneary",
+      "rank": 328,
+      "usage": 0.0005,
+      "rawCount": 2
+    },
+    "quilava": {
+      "pokemonId": "quilava",
+      "name": "Quilava",
+      "rank": 329,
+      "usage": 0.0005,
+      "rawCount": 2
+    },
+    "wormadamsandy": {
+      "pokemonId": "wormadamsandy",
+      "name": "Wormadam-Sandy",
+      "rank": 330,
+      "usage": 0.00038,
+      "rawCount": 1
+    },
+    "wartortle": {
+      "pokemonId": "wartortle",
+      "name": "Wartortle",
+      "rank": 331,
+      "usage": 0.00036,
+      "rawCount": 2
+    },
+    "charmander": {
+      "pokemonId": "charmander",
+      "name": "Charmander",
+      "rank": 332,
+      "usage": 0.00036,
+      "rawCount": 2
+    },
+    "rhyhorn": {
+      "pokemonId": "rhyhorn",
+      "name": "Rhyhorn",
+      "rank": 333,
+      "usage": 0.00034,
+      "rawCount": 1
+    },
+    "sandshrew": {
+      "pokemonId": "sandshrew",
+      "name": "Sandshrew",
+      "rank": 334,
+      "usage": 0.00032,
+      "rawCount": 2
+    },
+    "trapinch": {
+      "pokemonId": "trapinch",
+      "name": "Trapinch",
+      "rank": 335,
+      "usage": 0.00008,
+      "rawCount": 2
+    },
+    "unown": {
+      "pokemonId": "unown",
+      "name": "Unown",
+      "rank": 336,
+      "usage": 0.00008,
+      "rawCount": 2
+    },
+    "aipom": {
+      "pokemonId": "aipom",
+      "name": "Aipom",
+      "rank": 337,
+      "usage": 0,
+      "rawCount": 1
+    },
+    "barboach": {
+      "pokemonId": "barboach",
+      "name": "Barboach",
+      "rank": 338,
+      "usage": 0,
+      "rawCount": 1
+    },
+    "bronzor": {
+      "pokemonId": "bronzor",
+      "name": "Bronzor",
+      "rank": 339,
+      "usage": 0,
+      "rawCount": 1
+    },
+    "bidoof": {
+      "pokemonId": "bidoof",
+      "name": "Bidoof",
+      "rank": 340,
+      "usage": 0,
+      "rawCount": 1
+    },
+    "lairon": {
+      "pokemonId": "lairon",
+      "name": "Lairon",
+      "rank": 341,
+      "usage": 0,
+      "rawCount": 1
+    },
+    "chikorita": {
+      "pokemonId": "chikorita",
+      "name": "Chikorita",
+      "rank": 342,
+      "usage": 0,
+      "rawCount": 1
+    }
+  }
+}

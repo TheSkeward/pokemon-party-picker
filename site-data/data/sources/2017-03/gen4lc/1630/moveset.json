@@ -1,0 +1,883 @@
+{
+  "source": {
+    "month": "2017-03",
+    "formatId": "gen4lc",
+    "cutoff": 1630,
+    "dataKind": "moveset"
+  },
+  "pokemon": {
+    "eevee": {
+      "pokemonId": "eevee",
+      "name": "Eevee",
+      "rawCount": 6,
+      "abilities": [
+        {
+          "name": "Adaptability",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Choice Band",
+          "usage": 100
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Adamant:0/236/36/0/0/236",
+          "usage": 100
+        }
+      ],
+      "moves": [
+        {
+          "name": "Baton Pass",
+          "usage": 100
+        },
+        {
+          "name": "Bite",
+          "usage": 100
+        },
+        {
+          "name": "Return",
+          "usage": 100
+        },
+        {
+          "name": "Quick Attack",
+          "usage": 100
+        }
+      ]
+    },
+    "munchlax": {
+      "pokemonId": "munchlax",
+      "name": "Munchlax",
+      "rawCount": 18,
+      "abilities": [
+        {
+          "name": "Thick Fat",
+          "usage": 100
+        },
+        {
+          "name": "Pickup",
+          "usage": 0
+        }
+      ],
+      "items": [
+        {
+          "name": "Oran Berry",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Brave:0/236/36/0/236/0",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "moves": [
+        {
+          "name": "Return",
+          "usage": 100
+        },
+        {
+          "name": "Fire Punch",
+          "usage": 100
+        },
+        {
+          "name": "Earthquake",
+          "usage": 100
+        },
+        {
+          "name": "Pursuit",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ]
+    },
+    "gastly": {
+      "pokemonId": "gastly",
+      "name": "Gastly",
+      "rawCount": 31,
+      "abilities": [
+        {
+          "name": "Levitate",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Choice Scarf",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Timid:36/0/36/200/0/200",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "moves": [
+        {
+          "name": "Sludge Bomb",
+          "usage": 100
+        },
+        {
+          "name": "Hidden Power Ground",
+          "usage": 100
+        },
+        {
+          "name": "Explosion",
+          "usage": 100
+        },
+        {
+          "name": "Shadow Ball",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ]
+    },
+    "diglett": {
+      "pokemonId": "diglett",
+      "name": "Diglett",
+      "rawCount": 10,
+      "abilities": [
+        {
+          "name": "Arena Trap",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Focus Sash",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Jolly:36/236/0/0/0/236",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "moves": [
+        {
+          "name": "Protect",
+          "usage": 100
+        },
+        {
+          "name": "Stealth Rock",
+          "usage": 100
+        },
+        {
+          "name": "Sucker Punch",
+          "usage": 100
+        },
+        {
+          "name": "Earthquake",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ]
+    },
+    "totodile": {
+      "pokemonId": "totodile",
+      "name": "Totodile",
+      "rawCount": 6,
+      "abilities": [
+        {
+          "name": "Torrent",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Life Orb",
+          "usage": 100
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Jolly:36/236/4/0/60/172",
+          "usage": 100
+        }
+      ],
+      "moves": [
+        {
+          "name": "Swords Dance",
+          "usage": 100
+        },
+        {
+          "name": "Crunch",
+          "usage": 100
+        },
+        {
+          "name": "Aqua Jet",
+          "usage": 100
+        },
+        {
+          "name": "Return",
+          "usage": 100
+        }
+      ]
+    },
+    "houndour": {
+      "pokemonId": "houndour",
+      "name": "Houndour",
+      "rawCount": 19,
+      "abilities": [
+        {
+          "name": "Flash Fire",
+          "usage": 100
+        },
+        {
+          "name": "Early Bird",
+          "usage": 0
+        }
+      ],
+      "items": [
+        {
+          "name": "Life Orb",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Lonely:0/196/0/196/36/80",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "moves": [
+        {
+          "name": "Crunch",
+          "usage": 100
+        },
+        {
+          "name": "Sucker Punch",
+          "usage": 100
+        },
+        {
+          "name": "Fire Blast",
+          "usage": 100
+        },
+        {
+          "name": "Substitute",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ]
+    },
+    "bronzor": {
+      "pokemonId": "bronzor",
+      "name": "Bronzor",
+      "rawCount": 42,
+      "abilities": [
+        {
+          "name": "Levitate",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Oran Berry",
+          "usage": 88.089
+        },
+        {
+          "name": "Damp Rock",
+          "usage": 11.911
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Relaxed:220/4/148/4/68/0",
+          "usage": 88.089
+        },
+        {
+          "name": "Bold:220/0/152/4/68/16",
+          "usage": 11.911
+        }
+      ],
+      "moves": [
+        {
+          "name": "Psychic",
+          "usage": 100
+        },
+        {
+          "name": "Stealth Rock",
+          "usage": 100
+        },
+        {
+          "name": "Trick Room",
+          "usage": 88.089
+        },
+        {
+          "name": "Earthquake",
+          "usage": 88.089
+        },
+        {
+          "name": "Rain Dance",
+          "usage": 11.911
+        },
+        {
+          "name": "Other",
+          "usage": 11.911
+        }
+      ]
+    },
+    "slowpoke": {
+      "pokemonId": "slowpoke",
+      "name": "Slowpoke",
+      "rawCount": 9,
+      "abilities": [
+        {
+          "name": "Own Tempo",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Oran Berry",
+          "usage": 100
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Relaxed:196/0/236/0/36/0",
+          "usage": 100
+        }
+      ],
+      "moves": [
+        {
+          "name": "Trick Room",
+          "usage": 100
+        },
+        {
+          "name": "Zen Headbutt",
+          "usage": 100
+        },
+        {
+          "name": "Aqua Tail",
+          "usage": 100
+        },
+        {
+          "name": "Slack Off",
+          "usage": 100
+        }
+      ]
+    },
+    "porygon": {
+      "pokemonId": "porygon",
+      "name": "Porygon",
+      "rawCount": 10,
+      "abilities": [
+        {
+          "name": "Trace",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Oran Berry",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Quiet:236/0/36/236/0/0",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "moves": [
+        {
+          "name": "Trick Room",
+          "usage": 100
+        },
+        {
+          "name": "Thunderbolt",
+          "usage": 100
+        },
+        {
+          "name": "Tri Attack",
+          "usage": 100
+        },
+        {
+          "name": "Recover",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ]
+    },
+    "cranidos": {
+      "pokemonId": "cranidos",
+      "name": "Cranidos",
+      "rawCount": 14,
+      "abilities": [
+        {
+          "name": "Mold Breaker",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Life Orb",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Brave:0/0/116/196/116/0",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "moves": [
+        {
+          "name": "Zen Headbutt",
+          "usage": 100
+        },
+        {
+          "name": "Rock Slide",
+          "usage": 100
+        },
+        {
+          "name": "Swords Dance",
+          "usage": 100
+        },
+        {
+          "name": "Earthquake",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ]
+    },
+    "wailmer": {
+      "pokemonId": "wailmer",
+      "name": "Wailmer",
+      "rawCount": 9,
+      "abilities": [
+        {
+          "name": "Water Veil",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Life Orb",
+          "usage": 100
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Quiet:0/0/156/196/156/0",
+          "usage": 100
+        }
+      ],
+      "moves": [
+        {
+          "name": "Hydro Pump",
+          "usage": 100
+        },
+        {
+          "name": "Water Spout",
+          "usage": 100
+        },
+        {
+          "name": "Self-Destruct",
+          "usage": 100
+        },
+        {
+          "name": "Ice Beam",
+          "usage": 100
+        }
+      ]
+    },
+    "cubone": {
+      "pokemonId": "cubone",
+      "name": "Cubone",
+      "rawCount": 11,
+      "abilities": [
+        {
+          "name": "Rock Head",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Thick Club",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Brave:196/240/0/0/36/0",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "moves": [
+        {
+          "name": "Rock Slide",
+          "usage": 100
+        },
+        {
+          "name": "Double-Edge",
+          "usage": 100
+        },
+        {
+          "name": "Bonemerang",
+          "usage": 100
+        },
+        {
+          "name": "Thunder Punch",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ]
+    },
+    "voltorb": {
+      "pokemonId": "voltorb",
+      "name": "Voltorb",
+      "rawCount": 17,
+      "abilities": [
+        {
+          "name": "Static",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Damp Rock",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Hasty:36/40/0/236/0/196",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "moves": [
+        {
+          "name": "Explosion",
+          "usage": 100
+        },
+        {
+          "name": "Thunder",
+          "usage": 100
+        },
+        {
+          "name": "Rain Dance",
+          "usage": 100
+        },
+        {
+          "name": "Taunt",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ]
+    },
+    "drifloon": {
+      "pokemonId": "drifloon",
+      "name": "Drifloon",
+      "rawCount": 28,
+      "abilities": [
+        {
+          "name": "Unburden",
+          "usage": 100
+        },
+        {
+          "name": "Aftermath",
+          "usage": 0
+        }
+      ],
+      "items": [
+        {
+          "name": "Focus Sash",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Naive:0/196/0/116/0/196",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "moves": [
+        {
+          "name": "Explosion",
+          "usage": 100
+        },
+        {
+          "name": "Thunder",
+          "usage": 100
+        },
+        {
+          "name": "Sucker Punch",
+          "usage": 100
+        },
+        {
+          "name": "Rain Dance",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ]
+    },
+    "buizel": {
+      "pokemonId": "buizel",
+      "name": "Buizel",
+      "rawCount": 24,
+      "abilities": [
+        {
+          "name": "Swift Swim",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Life Orb",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Jolly:0/236/0/0/36/236",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "moves": [
+        {
+          "name": "Return",
+          "usage": 100
+        },
+        {
+          "name": "Aqua Jet",
+          "usage": 100
+        },
+        {
+          "name": "Bulk Up",
+          "usage": 100
+        },
+        {
+          "name": "Waterfall",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ]
+    },
+    "croagunk": {
+      "pokemonId": "croagunk",
+      "name": "Croagunk",
+      "rawCount": 27,
+      "abilities": [
+        {
+          "name": "Dry Skin",
+          "usage": 100
+        },
+        {
+          "name": "Anticipation",
+          "usage": 0
+        }
+      ],
+      "items": [
+        {
+          "name": "Life Orb",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Lonely:0/188/0/188/0/116",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "moves": [
+        {
+          "name": "Dark Pulse",
+          "usage": 100
+        },
+        {
+          "name": "Sucker Punch",
+          "usage": 100
+        },
+        {
+          "name": "Fake Out",
+          "usage": 100
+        },
+        {
+          "name": "Vacuum Wave",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ]
+    },
+    "mantyke": {
+      "pokemonId": "mantyke",
+      "name": "Mantyke",
+      "rawCount": 21,
+      "abilities": [
+        {
+          "name": "Swift Swim",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Life Orb",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Modest:76/0/0/200/0/196",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "moves": [
+        {
+          "name": "Rain Dance",
+          "usage": 100
+        },
+        {
+          "name": "Hidden Power Flying",
+          "usage": 100
+        },
+        {
+          "name": "Ice Beam",
+          "usage": 100
+        },
+        {
+          "name": "Hydro Pump",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ]
+    }
+  }
+}
