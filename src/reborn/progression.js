@@ -9,7 +9,7 @@ import {
   REBORN_TUTOR_OPTIONS,
 } from './progression-options';
 import { TERRAIN_SEED_MIGRATION } from './reborn-seeds';
-import { REBORN_ANALYSIS_TYPES } from './type-chart.js';
+import { analysisTypes } from './type-chart.js';
 import { EVOLUTION_ACCESS_FIELDS } from './evolution-requirements.js';
 import { getRebornCheckpoint } from './badge-timeline.js';
 import { getActiveGame } from '../games/registry.js';
@@ -158,7 +158,7 @@ export function setRebornOpponentTypeBias(progression, type, level) {
   const bias = { ...(progression.opponentTypeBias || {}) };
   const parsed = Number.parseInt(level, 10);
 
-  if (!REBORN_ANALYSIS_TYPES.includes(type)) {
+  if (!analysisTypes().includes(type)) {
     return normalizeRebornProgression(progression);
   }
 
@@ -340,7 +340,7 @@ function normalizeOpponentTypeBias(value) {
 
   const bias = {};
 
-  for (const type of REBORN_ANALYSIS_TYPES) {
+  for (const type of analysisTypes()) {
     const level = Number.parseInt(value[type], 10);
     if (!Number.isFinite(level) || level <= 0) continue;
     bias[type] = Math.min(MAX_OPPONENT_TYPE_BIAS, level);

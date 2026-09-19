@@ -6,14 +6,15 @@
  * import from here; this is the single source of truth for how a team is
  * scored and how a slice of the combination space is enumerated, so the
  * parallel and sequential paths can never diverge.
+ *
+ * The type chart is explicit kernel state (setTypeChart): the main thread
+ * sets it from the active game and sends it to each worker with its range,
+ * so the worker bundle never needs the game registry or the generated data.
  */
 
-import { getTypeMultiplier, REBORN_ANALYSIS_TYPES } from '../reborn/type-chart.js';
 import { MAX_OPPONENT_TYPE_BIAS } from '../reborn/progression';
 import { coreCompletionFit, corePairCredit } from './core-completion.js';
 import { tunable } from './scoring-constants.js';
-
-export { REBORN_ANALYSIS_TYPES, getTypeMultiplier };
 
 // --- Team-fit scoring ------------------------------------------------------
 // Exhaustive search evaluates hundreds of thousands of teams, so before a
@@ -22,8 +23,40 @@ export { REBORN_ANALYSIS_TYPES, getTypeMultiplier };
 // legality profile) and its defensive weak/resist bitmasks. All judgement
 // constants come from scoring-constants.js, snapshotted once per search so
 // overrides don't cost the hot loop.
-const TYPE_COUNT = REBORN_ANALYSIS_TYPES.length;
-const ZERO_COVERAGE = new Float64Array(TYPE_COUNT);
+let TYPES = null;
+let DAMAGE_TAKEN = null;
+let TYPE_COUNT = 0;
+let ZERO_COVERAGE = null;
+let MISS_SCRATCH = null;
+
+/**
+ * @param {{types: !Array<string>, damageTaken: !Object}} chart The active
+ *     game's chart (type-chart.js activeTypeChart): types in grid order and
+ *     per-defender damage-taken codes (1 weak, 2 resist, 3 immune).
+ */
+export function setTypeChart(chart) {
+  if (chart.types === TYPES && chart.damageTaken === DAMAGE_TAKEN) return;
+  TYPES = chart.types;
+  DAMAGE_TAKEN = chart.damageTaken;
+  TYPE_COUNT = TYPES.length;
+  ZERO_COVERAGE = new Float64Array(TYPE_COUNT);
+  MISS_SCRATCH = new Float64Array(TYPE_COUNT);
+}
+
+function ensureChart() {
+  if (!TYPES) throw new Error('search kernel: setTypeChart() before scoring');
+}
+
+function typeMultiplier(attackType, defenseTypes) {
+  let multiplier = 1;
+  for (const defenseType of defenseTypes) {
+    const code = DAMAGE_TAKEN[defenseType]?.[attackType];
+    if (code === 3) return 0;
+    if (code === 1) multiplier *= 2;
+    if (code === 2) multiplier *= 0.5;
+  }
+  return multiplier;
+}
 
 let fitReady = false;
 let coverageWeights = null; // per-defense-type multiplier from opponent bias
@@ -44,11 +77,12 @@ function snapshotFitTunables() {
 }
 
 function computeCoverageWeights(opponentTypeBias) {
+  ensureChart();
   const weights = new Array(TYPE_COUNT).fill(1);
   const boost = tunable('BIAS_COVERAGE_BOOST');
   if (!opponentTypeBias) return weights;
   for (let j = 0; j < TYPE_COUNT; j++) {
-    const raw = opponentTypeBias[REBORN_ANALYSIS_TYPES[j]];
+    const raw = opponentTypeBias[TYPES[j]];
     const level = Math.max(0, Math.min(MAX_OPPONENT_TYPE_BIAS, raw || 0));
     if (level) {
       weights[j] = 1 + (level / MAX_OPPONENT_TYPE_BIAS) * boost;
@@ -58,13 +92,14 @@ function computeCoverageWeights(opponentTypeBias) {
 }
 
 function precomputeFit(choice, opponentTypeBias) {
+  ensureChart();
   const profile = choice.legalityProfile || {};
   let weakMask = 0;
   let resistMask = 0;
   const currentTypes = profile.currentTypes || [];
   for (let j = 0; j < TYPE_COUNT; j++) {
     const multiplier =
-      getTypeMultiplier(REBORN_ANALYSIS_TYPES[j], currentTypes);
+      typeMultiplier(TYPES[j], currentTypes);
     if (multiplier > 1) weakMask |= 1 << j;
     else if (multiplier < 1) resistMask |= 1 << j;
   }
@@ -98,7 +133,10 @@ let FIXED = [];
  * @param {Array<Object>} lines
  * @param {?Object} opponentTypeBias
  */
-export function prepareFitScoring(lines, opponentTypeBias, fixedLines = []) {
+export function prepareFitScoring(
+  lines, opponentTypeBias, fixedLines = [], typeChart = null) {
+  if (typeChart) setTypeChart(typeChart);
+  ensureChart();
   coverageWeights = computeCoverageWeights(opponentTypeBias);
   ACTIVE = snapshotFitTunables();
   FIXED = fixedLines;
@@ -126,7 +164,6 @@ export function resetFitScoring(lines) {
 // by how much that type matters (opponent bias). Saturating by construction
 // (the first real answer is worth a lot, the fourth almost nothing), and a
 // 30-BP chip move contributes ~0. Plus the defensive shared-weakness term.
-const MISS_SCRATCH = new Float64Array(TYPE_COUNT);
 
 function fastTeamFit(team) {
   const weights = coverageWeights || computeCoverageWeights(null);
@@ -254,6 +291,7 @@ function sumTeamScore(team) {
 }
 
 function scoreTeamFit(team, opponentTypeBias = {}) {
+  ensureChart();
   const profiles = team
     .map((choice) => choice.legalityProfile)
     .filter(Boolean);
@@ -318,12 +356,12 @@ function scoreTeamFit(team, opponentTypeBias = {}) {
   }
 
   for (let j = 0; j < TYPE_COUNT; j++) {
-    const attackType = REBORN_ANALYSIS_TYPES[j];
+    const attackType = TYPES[j];
     let weakWeight = 0;
     let coverCount = 0;
     profiles.forEach((profile, index) => {
       const multiplier =
-        getTypeMultiplier(attackType, profile.currentTypes || []);
+        typeMultiplier(attackType, profile.currentTypes || []);
       if (multiplier > 1) weakWeight += fitWeights[index];
       else if (multiplier < 1) coverCount += 1;
     });
@@ -350,9 +388,9 @@ function biasCounterExemption(profile, opponentTypeBias = {}) {
     const level = Math.max(0, Math.min(MAX_OPPONENT_TYPE_BIAS, rawLevel || 0));
     if (!level) continue;
 
-    const resists = getTypeMultiplier(type, profile.currentTypes || []) < 1;
+    const resists = typeMultiplier(type, profile.currentTypes || []) < 1;
     const hitsSuperEffectively = (profile.attackTypes || []).some(
-      (attackType) => getTypeMultiplier(attackType, [type]) > 1,
+      (attackType) => typeMultiplier(attackType, [type]) > 1,
     );
 
     if (resists || hitsSuperEffectively) {
@@ -649,7 +687,8 @@ const SEARCH_PROGRESS_REPORTS_PER_RANGE = 20;
  * prepares and resets its own fit state, so it can run in a worker or on the
  * main thread as a fallback. `lines` must carry a prepared `choiceOptions`
  * array per line (the form options). `fixedLines` are locked lines included
- * in every team; `targetSize` counts only the free slots.
+ * in every team; `targetSize` counts only the free slots; `typeChart` is
+ * the active game's chart when running off the main thread.
  */
 export function searchCombinationRange(
   lines,
@@ -660,10 +699,11 @@ export function searchCombinationRange(
   topCount = 1,
   onProgress = null,
   fixedLines = [],
+  typeChart = null,
 ) {
   for (const line of lines) line._choiceOptions = line.choiceOptions;
   for (const line of fixedLines) line._choiceOptions = line.choiceOptions;
-  prepareFitScoring(lines, opponentTypeBias, fixedLines);
+  prepareFitScoring(lines, opponentTypeBias, fixedLines, typeChart);
 
   const top = createTopTeams(topCount);
   const n = lines.length;

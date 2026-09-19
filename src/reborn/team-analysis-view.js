@@ -8,7 +8,7 @@ import {
   buildRebornTeamAnalysis,
   formatEvLine,
   formatTeamPokepaste,
-  REBORN_ANALYSIS_TYPES,
+  analysisTypes,
 } from './team-analysis';
 import { STAT_KEYS } from '../utils/stats.js';
 
@@ -504,7 +504,7 @@ function renderSetCard(profile) {
       ${renderSetReadiness(profile.setReadiness)}
       ${renderDonorInterimGuides(profile.donorInterimGuides)}
       <div class="team-set-foot">
-        <small>${profile.superEffectiveTargetCount}/${REBORN_ANALYSIS_TYPES.length} types hit super effectively</small>
+        <small>${profile.superEffectiveTargetCount}/${analysisTypes().length} types hit super effectively</small>
       </div>
     </div>
   `;
@@ -760,7 +760,7 @@ function getCoverCount(entry) {
 }
 
 function renderTypeBadge(type) {
-  const safeType = REBORN_ANALYSIS_TYPES.includes(type) ? type : 'Normal';
+  const safeType = analysisTypes().includes(type) ? type : 'Normal';
 
   return `
     <span class="move-badge team-analysis-type-badge" style="background:${getTypeColor(safeType)}">

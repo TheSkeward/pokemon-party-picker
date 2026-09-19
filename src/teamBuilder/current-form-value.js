@@ -42,7 +42,7 @@
 
 import {
   getTypeMultiplier,
-  REBORN_ANALYSIS_TYPES,
+  analysisTypes,
 } from '../reborn/type-chart.js';
 import { SCORING_DEFAULTS, tunable } from './scoring-constants.js';
 import { dex } from '../games/dex.js';
@@ -235,7 +235,7 @@ export function softCeiling(x) {
  * @return {number}
  */
 export function defensiveTypeBalance(defenseTypes = []) {
-  return REBORN_ANALYSIS_TYPES.reduce(
+  return analysisTypes().reduce(
     (total, attackType) =>
       total + (1 - getTypeMultiplier(attackType, defenseTypes)),
     0,

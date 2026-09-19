@@ -8,7 +8,7 @@ import { searchCombinationRange } from '../../src/teamBuilder/search-kernel.js';
 parentPort.on('message', (message) => {
   const {
     id, compactLines, targetSize, bias, start, end, topCount,
-    fixedCompactLines,
+    fixedCompactLines, typeChart,
   } = message || {};
   try {
     const result = searchCombinationRange(
@@ -20,6 +20,7 @@ parentPort.on('message', (message) => {
       topCount,
       null,
       fixedCompactLines || [],
+      typeChart,
     );
     parentPort.postMessage({ id, ok: true, result });
   } catch (error) {

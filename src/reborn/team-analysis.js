@@ -15,7 +15,7 @@ import {
 } from './sketch.js';
 import {
   getTypeMultiplier,
-  REBORN_ANALYSIS_TYPES,
+  analysisTypes,
 } from './type-chart.js';
 import {
   coverageDamageIntoType,
@@ -45,7 +45,7 @@ import {
 } from '../teamBuilder/current-form-value.js';
 import { dex } from '../games/dex.js';
 
-export { REBORN_ANALYSIS_TYPES };
+export { analysisTypes };
 
 /**
  * Full analysis of a fielded team under the current progression: per-member
@@ -812,7 +812,7 @@ export function buildCandidateLegalityProfile({
 
   for (const move of recommendedDamagingMoves) {
     if (isFixedDamageMove(move.id)) continue;
-    for (const defenseType of REBORN_ANALYSIS_TYPES) {
+    for (const defenseType of analysisTypes()) {
       if (getTypeMultiplier(move.type, [defenseType]) > 1) {
         superEffectiveTargetTypes.add(defenseType);
       }
@@ -831,7 +831,7 @@ export function buildCandidateLegalityProfile({
     type: move.type,
     damage: getEstimatedDamage(move, member, stats),
   }));
-  const coverageVector = REBORN_ANALYSIS_TYPES.map((defenseType) => {
+  const coverageVector = analysisTypes().map((defenseType) => {
     let best = 0;
     for (const md of recommendedMoveDamage) {
       const dealt =
@@ -945,7 +945,7 @@ function capitalize(value) {
 }
 
 function analyzeDefensiveProfile(members) {
-  return REBORN_ANALYSIS_TYPES.map((attackType) => {
+  return analysisTypes().map((attackType) => {
     const matchups = members.map((member) => ({
       member,
       multiplier: getTypeMultiplier(attackType, member.types),
@@ -966,7 +966,7 @@ function analyzeOffensiveCoverage(legalMoveEntries) {
   const attackTypes = new Map();
   const memberStab = [];
   const superEffectiveTargets = new Map(
-    REBORN_ANALYSIS_TYPES.map((type) => [type, []]),
+    analysisTypes().map((type) => [type, []]),
   );
 
   for (const { member, profile } of legalMoveEntries) {
@@ -1024,7 +1024,7 @@ function analyzeOffensiveCoverage(legalMoveEntries) {
       }
       attackTypes.set(move.type, entry);
 
-      for (const defenseType of REBORN_ANALYSIS_TYPES) {
+      for (const defenseType of analysisTypes()) {
         const multiplier = getTypeMultiplier(move.type, [defenseType]);
         if (multiplier <= 1) continue;
 
@@ -1054,7 +1054,7 @@ function analyzeOffensiveCoverage(legalMoveEntries) {
   const availableAttackTypes = new Set(
     attackingTypes.map((entry) => entry.type),
   );
-  const missingSuperEffectiveTargets = REBORN_ANALYSIS_TYPES.filter(
+  const missingSuperEffectiveTargets = analysisTypes().filter(
     (defenseType) =>
       ![...availableAttackTypes].some(
         (attackType) => getTypeMultiplier(attackType, [defenseType]) > 1,
@@ -1311,7 +1311,7 @@ function summarizeAttackTypes(member, damagingMoves, attackerStats) {
   }
 
   for (const entry of byType.values()) {
-    entry.superEffectiveTargetCount = REBORN_ANALYSIS_TYPES.filter(
+    entry.superEffectiveTargetCount = analysisTypes().filter(
       (defenseType) => getTypeMultiplier(entry.type, [defenseType]) > 1,
     ).length;
   }
@@ -1861,7 +1861,7 @@ function compareDisplayOrder(a, b, canonicalRankById) {
 }
 
 function countSuperEffectiveTargets(attackType) {
-  return REBORN_ANALYSIS_TYPES.filter(
+  return analysisTypes().filter(
     (defenseType) => getTypeMultiplier(attackType, [defenseType]) > 1,
   ).length;
 }

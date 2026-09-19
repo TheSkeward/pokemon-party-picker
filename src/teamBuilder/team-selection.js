@@ -1,8 +1,7 @@
 import {
-  REBORN_ANALYSIS_TYPES,
-  getTypeMultiplier,
   prepareFitScoring,
   resetFitScoring,
+  setTypeChart,
   getLineChoiceOptions,
   bestAssignmentForLines,
   evaluateTeam,
@@ -13,6 +12,11 @@ import {
   offerTopTeam,
   getRealizedTeamScore,
 } from './search-kernel.js';
+import {
+  activeTypeChart,
+  analysisTypes,
+  getTypeMultiplier,
+} from '../reborn/type-chart.js';
 import { parallelFullSearch, PARALLEL_THRESHOLD } from './parallel-search.js';
 import { tunable } from './scoring-constants.js';
 
@@ -39,6 +43,8 @@ export async function choosePoolTeam(
     onSearchStage = null,
   } = {},
 ) {
+  // The kernel scores with explicit type state; workers receive it per range.
+  setTypeChart(activeTypeChart());
   const resolvedLines = lines.filter((line) => line.best || line.bestNonMega);
   const unresolved = lines.filter((line) => line.unresolved);
   const bestTeam = await selectTeamByFit(resolvedLines, opponentTypeBias, {
@@ -222,7 +228,7 @@ function getTeamFitReasons(choice, team, attackTypeCounts) {
 }
 
 function getDefensiveCoverTypes(profile, team) {
-  return REBORN_ANALYSIS_TYPES.filter((attackType) => {
+  return analysisTypes().filter((attackType) => {
     const multiplier =
       getTypeMultiplier(attackType, profile.currentTypes || []);
     if (!(multiplier === 0 || (multiplier > 0 && multiplier < 1))) {
@@ -811,7 +817,7 @@ function explainShortlistMiss(lines, line) {
   const entry = index >= 0 ? scored[index] : null;
   const matched = [];
   if (entry) {
-    REBORN_ANALYSIS_TYPES.forEach((type, typeIndex) => {
+    analysisTypes().forEach((type, typeIndex) => {
       if ((shortlistCoverageOf(entry)?.[typeIndex] || 0) >= 0.5) {
         matched.push(`hits ${type}`);
       }
@@ -1013,7 +1019,7 @@ function buildShortlist(lines, maxSizeOverride = null) {
 
   // Per defense type, damage INTO it must be real — the 0.5 bar keeps a chip
   // move from qualifying as coverage.
-  REBORN_ANALYSIS_TYPES.forEach((type, typeIndex) => {
+  analysisTypes().forEach((type, typeIndex) => {
     if (picked.size >= maxSize) return;
     add(scored.find((s) => (coverageOf(s)?.[typeIndex] || 0) >= 0.5));
     if (picked.size >= maxSize) return;

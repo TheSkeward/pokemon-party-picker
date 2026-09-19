@@ -6,7 +6,7 @@
  * lost, in the same auditable terms.
  */
 
-import { REBORN_ANALYSIS_TYPES } from '../reborn/type-chart.js';
+import { analysisTypes } from '../reborn/type-chart.js';
 import { dex } from '../games/dex.js';
 
 const ROLE_LABELS = {
@@ -34,7 +34,7 @@ function coverageContribution(choice, team) {
   const vector = choice.legalityProfile?.coverageVector;
   if (!vector) return [];
   const contributions = [];
-  for (const [i, type] of REBORN_ANALYSIS_TYPES.entries()) {
+  for (const [i, type] of analysisTypes().entries()) {
     const value = vector[i] || 0;
     if (value < 0.45) continue;
     const isBest = team.every((other) => {

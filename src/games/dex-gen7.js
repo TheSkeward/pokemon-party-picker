@@ -18,6 +18,10 @@ import { GEN7_ITEM_DAMAGE } from '../generated/gen7ItemDamage.generated.js';
 import { LINE_REPRESENTATIVE_CANDIDATES } from '../generated/gen7LineRepresentativeCandidates.generated.js';
 import { MOVE_META } from '../generated/gen7MoveMeta.generated.js';
 import { GEN7_PROGRESSION_SPECIES } from '../generated/gen7ProgressionSpecies.generated.js';
+import {
+  GEN7_TYPES,
+  GEN7_TYPE_DAMAGE_TAKEN,
+} from '../generated/gen7TypeChart.generated.js';
 import { GEN7_UNBURDEN_SPECIES } from '../generated/gen7UnburdenSpecies.generated.js';
 
 /** @const {!Object} */
@@ -34,4 +38,6 @@ export const GEN7_DEX = Object.freeze({
   moveMeta: MOVE_META,
   progressionSpecies: GEN7_PROGRESSION_SPECIES,
   unburdenSpecies: GEN7_UNBURDEN_SPECIES,
+  types: GEN7_TYPES,
+  typeDamageTaken: GEN7_TYPE_DAMAGE_TAKEN,
 });

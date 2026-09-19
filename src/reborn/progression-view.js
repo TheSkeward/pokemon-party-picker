@@ -25,7 +25,7 @@ import {
 } from './item-availability.js';
 import { MAX_TRACKED_ITEM_COUNT, MAX_OPPONENT_TYPE_BIAS } from './progression';
 import { HIDDEN_INVENTORY_ITEM_IDS } from './reborn-seeds';
-import { REBORN_ANALYSIS_TYPES } from './type-chart.js';
+import { analysisTypes } from './type-chart.js';
 import { getTypeColor } from '../move-meta';
 import { dex } from '../games/dex.js';
 
@@ -202,7 +202,7 @@ function renderCheckpointControl(progression) {
  * @return {string} The opponent-type-bias control group HTML.
  */
 export function renderOpponentTypeBias(bias) {
-  const activeCount = REBORN_ANALYSIS_TYPES.filter(
+  const activeCount = analysisTypes().filter(
     (type) => (bias[type] || 0) > 0,
   ).length;
 
@@ -217,7 +217,7 @@ export function renderOpponentTypeBias(bias) {
         fight to prefer picks that resist it and hit it super-effectively.
       </p>
       <div class="opponent-bias-grid">
-        ${REBORN_ANALYSIS_TYPES.map((type) =>
+        ${analysisTypes().map((type) =>
           renderBiasRow(type, bias[type] || 0),
         ).join('')}
       </div>

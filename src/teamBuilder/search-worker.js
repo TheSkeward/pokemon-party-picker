@@ -10,7 +10,7 @@ import { searchCombinationRange } from './search-kernel.js';
 self.onmessage = (event) => {
   const {
     id, compactLines, targetSize, bias, start, end, topCount,
-    fixedCompactLines,
+    fixedCompactLines, typeChart,
   } = event.data;
   try {
     const result = searchCombinationRange(
@@ -26,6 +26,7 @@ self.onmessage = (event) => {
       // not be declared hung).
       (scanned) => self.postMessage({ id, progress: scanned }),
       fixedCompactLines || [],
+      typeChart,
     );
     self.postMessage({ id, ok: true, result });
   } catch (error) {

@@ -9,6 +9,7 @@
  */
 
 import { searchCombinationRange } from './search-kernel.js';
+import { activeTypeChart } from '../reborn/type-chart.js';
 
 /**
  * Below this many combinations the worker round-trip (spawn already
@@ -140,11 +141,12 @@ async function dispatch(
     idleTimer = null;
   }
   const pool = total >= PARALLEL_THRESHOLD ? getWorkerPool() : null;
+  const typeChart = activeTypeChart();
 
   if (!pool || pool.length < 2) {
     return searchCombinationRange(
       compactLines, targetSize, bias, 0, total, topCount, onProgress,
-      fixedCompactLines);
+      fixedCompactLines, typeChart);
   }
 
   try {
@@ -178,7 +180,8 @@ async function dispatch(
             scannedByWorker[slot] = scanned;
             reportProgress();
           },
-          fixedCompactLines),
+          fixedCompactLines,
+          typeChart),
       );
     }
     const results = await Promise.all(jobs);
@@ -191,7 +194,7 @@ async function dispatch(
     retireWorkerPool();
     return searchCombinationRange(
       compactLines, targetSize, bias, 0, total, topCount, null,
-      fixedCompactLines);
+      fixedCompactLines, typeChart);
   } finally {
     scheduleIdleRelease();
   }
@@ -213,6 +216,7 @@ function runOnWorker(
   topCount,
   onProgress = null,
   fixedCompactLines = [],
+  typeChart = null,
 ) {
   const id = ++messageSeq;
   return new Promise((resolve, reject) => {
@@ -251,7 +255,7 @@ function runOnWorker(
     worker.addEventListener('error', onError);
     worker.postMessage(
       { id, compactLines, targetSize, bias, start, end, topCount,
-        fixedCompactLines });
+        fixedCompactLines, typeChart });
   });
 }
 
