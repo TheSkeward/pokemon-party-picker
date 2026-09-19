@@ -25,7 +25,8 @@ function hashTree(root) {
       const full = path.join(dir, entry.name);
       if (entry.isDirectory()) walk(full);
       else {
-        hash.update(path.relative(root, full));
+        // Posix separators so the hash is the same on every platform.
+        hash.update(path.relative(root, full).split(path.sep).join('/'));
         hash.update(fs.readFileSync(full));
       }
     }
