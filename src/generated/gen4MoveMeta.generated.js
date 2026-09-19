@@ -2566,7 +2566,7 @@ export const MOVE_META = {
     "name": "Hidden Power",
     "type": "Normal",
     "category": "Special",
-    "basePower": 0,
+    "basePower": 70,
     "priority": 0,
     "utility": false,
     "accuracy": 100

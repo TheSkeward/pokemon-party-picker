@@ -17,11 +17,13 @@ const GEN = parseGenArg();
 const OUT_PATH = path.resolve(
   'src', 'generated', `gen${GEN}MoveMeta.generated.js`);
 
-// Happiness-scaled moves report base power 0 in the dex, which would drop them
-// from the damage model entirely. Assume max happiness (the sensible
-// playthrough default): Return is then 102 BP, and Frustration is 0 (so it
-// stays out).
+// Moves whose power the dex reports as 0 because it varies with the user:
+// assume the sensible playthrough maximum so they stay in the damage model.
+// Return is 102 BP at max happiness (Frustration is then 0 and stays out).
+// Hidden Power varied with IVs through Gen 5 (30–70) before Gen 6 fixed it at
+// 60; a bred or well-caught user runs it at 70.
 const ASSUMED_BASE_POWER = { return: 102 };
+if (GEN <= 5) ASSUMED_BASE_POWER.hiddenpower = 70;
 
 // Coded-effect moves whose utility value isn't expressed by any dex field (a
 // Knock Off looks identical to a Tackle in the data), so they have to be listed
