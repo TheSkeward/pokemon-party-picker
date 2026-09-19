@@ -15,6 +15,7 @@
 
 import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync } from 'node:fs';
 import path from 'node:path';
+import { FAMILY_CONFIGS } from './config.mjs';
 import { pathToFileURL } from 'node:url';
 
 const MONTHS_PER_FORMAT = 3; // highest-volume months, weight-averaged
@@ -216,7 +217,7 @@ if (
   process.argv[1] &&
   import.meta.url === pathToFileURL(process.argv[1]).href
 ) {
-  for (const family of ['singles', 'doubles']) {
+  for (const family of Object.keys(FAMILY_CONFIGS)) {
     await buildFamily(family);
   }
 }
