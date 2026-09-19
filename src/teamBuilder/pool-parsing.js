@@ -59,18 +59,19 @@ export function getPoolStats(query, pokemonIndex) {
  *     comma-joined.
  */
 export function normalizePoolText(query, pokemonIndex) {
+  // Annotations must survive normalization: the widget normalizes the pool
+  // text before every optimize, so anything dropped here never reaches the
+  // optimizer.
+  const annotations = parseAbilityAnnotations(query, pokemonIndex);
   const byKey = new Map();
-
   for (const name of extractPoolNames(query, pokemonIndex)) {
     const canonical = findPokemonNameInText(name, pokemonIndex);
     if (!canonical) continue;
-
     const key = normalizeName(canonical);
     if (!key || byKey.has(key)) continue;
-
-    byKey.set(key, canonical);
+    const ability = annotations.get(key);
+    byKey.set(key, ability ? `${canonical} (${ability})` : canonical);
   }
-
   return [...byKey.values()].sort((a, b) => a.localeCompare(b)).join(', ');
 }
 
