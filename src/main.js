@@ -7,19 +7,21 @@ import {
   getLatestMonth,
   getMovesetLookupContext,
   isSyntheticFormat,
+  listFamilies,
   loadAvailability,
   loadFormatData,
   loadFormatsIndex,
   loadMovesetData,
   loadPokemonIndex,
 } from './data';
+import { setActiveGameForFamily } from './games/registry.js';
 import { bindAppEvents } from './app/app-events';
 import { renderBrowserPage } from './app/browser-page';
 import { captureFocusState, restoreFocusState } from './app/focus-state';
 import { renderFatalAppError, renderAppShell } from './app/app-shell-view';
 import { renderResolverPage } from './app/resolver-page';
 import { readStateFromUrl, writeStateToUrl } from './router';
-import { getState, replaceState, setState } from './state';
+import { DEFAULT_STATE, getState, replaceState, setState } from './state';
 import { mountPoolOptimizer } from './pool-widget';
 import { computeResolverRepresentativeResults } from './resolver/representatives';
 import { createPrecomputedSetDetailsLoader } from './setDetails/precomputed-set-details';
@@ -52,9 +54,12 @@ async function init() {
 
   formatsIndex = await loadFormatsIndex();
   availability = await loadAvailability();
-  pokemonIndex = await loadPokemonIndex();
 
+  // The family decides the game, and the game decides which species the
+  // index keeps, so both precede the index load.
   ensureValidFamilyAndFormat();
+  setActiveGameForFamily(getState().family);
+  pokemonIndex = await loadPokemonIndex();
 
   dataset = await loadFormatData(getState().format);
 
@@ -71,8 +76,11 @@ async function init() {
 }
 
 function ensureValidFamilyAndFormat() {
+  if (!availability?.familyConfigs?.[getState().family]) {
+    setState({ family: DEFAULT_STATE.family });
+  }
   const state = getState();
-  const fallbackFormat = getDefaultBrowserFormat(state.family);
+  const fallbackFormat = getDefaultBrowserFormat(availability, state.family);
 
   if (
     !formatBelongsToFamily(formatsIndex, state.format, state.family) ||
@@ -157,7 +165,7 @@ async function computeResolverResults() {
 function renderApp() {
   const state = getState();
 
-  renderAppShell(app, state);
+  renderAppShell(app, state, listFamilies(availability));
 
   const pageRoot = document.querySelector('#page-root');
 
@@ -214,7 +222,12 @@ async function handleFamilyChange(nextFamily) {
   clearPendingResolverDebounce();
   resolverSetDetails.cancel();
 
-  const nextFormat = getDefaultBrowserFormat(nextFamily);
+  // A family may belong to another game: its dex narrows the species index
+  // and its saved pool and progression load when the pool page remounts.
+  setActiveGameForFamily(nextFamily);
+  pokemonIndex = await loadPokemonIndex();
+
+  const nextFormat = getDefaultBrowserFormat(availability, nextFamily);
   dataset = await loadFormatData(nextFormat);
 
   setState({

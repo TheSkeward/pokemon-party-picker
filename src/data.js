@@ -7,19 +7,6 @@ const LEAD_SMOOTHING_K = 200;
 const HIDDEN_MOVESET_ENTRY_KEYS = new Set(['other', 'nothing']);
 const SOURCE_FETCH_CONCURRENCY = 16;
 
-const FAMILY_CONFIGS = {
-  singles: {
-    formatOrder: ['gen7anythinggoes','gen7ubers','gen7ou','gen7uu','gen7ru','gen7nu','gen7pu','gen7zu','gen7nfe','gen7lc'],
-    cutoffPriority: [1760, 1630, 1500, 0],
-    defaultBrowserFormat: 'gen7anythinggoes',
-  },
-  doubles: {
-    formatOrder: ['gen7doublesubers', 'gen7doublesou', 'gen7doublesuu'],
-    cutoffPriority: [1825, 1760, 1695, 1630, 1500, 0],
-    defaultBrowserFormat: 'gen7doublesou',
-  },
-};
-
 const jsonCache = new Map();
 const sourceCache = new Map();
 const browserMovesetCache = new Map();
@@ -35,9 +22,24 @@ export async function loadFormatsIndex() {
 export async function loadAvailability() {
   return loadJson(dataUrl('availability.json')); 
 }
-/** @return {!Promise<!Array<!Object>>} */
+/**
+ * @return {!Promise<!Array<!Object>>} The species index narrowed to the
+ *     active game (see filterToActiveGame).
+ */
 export async function loadPokemonIndex() {
-  return loadJson(dataUrl('pokemon-index.json')); 
+  return filterToActiveGame(await loadJson(dataUrl('pokemon-index.json')));
+}
+
+/**
+ * The species the active game can field: the index is built from the widest
+ * dex, so a game on an older generation keeps only the entries its own dex
+ * knows (the Gen 7 index is a subset of the Gen 7 dex, so Reborn keeps all).
+ * @param {!Array<{id: string, name: string}>} pokemonIndex
+ * @return {!Array<{id: string, name: string}>}
+ */
+export function filterToActiveGame(pokemonIndex) {
+  const known = dex().progressionSpecies;
+  return pokemonIndex.filter((entry) => entry.id in known);
 }
 /**
  * @param {string} formatId
@@ -119,15 +121,24 @@ async function loadJson(url) {
 }
 
 /**
- * @param {string} family
- * @return {!Object} Family config; unknown families fall back to singles.
+ * The usage-data families in pipeline order (scripts/config.mjs), as the
+ * availability index publishes them.
+ * @param {?Object} availability
+ * @return {!Array<{id: string, label: string}>}
  */
-export function getFamilyConfig(family) {
-  return FAMILY_CONFIGS[family] || FAMILY_CONFIGS.singles; 
+export function listFamilies(availability) {
+  return Object.entries(availability?.familyConfigs || {}).map(
+    ([id, config]) => ({ id, label: config.label || id }),
+  );
 }
-/** @return {string} */
-export function getDefaultBrowserFormat(family) {
-  return getFamilyConfig(family).defaultBrowserFormat; 
+/**
+ * @param {?Object} availability
+ * @param {string} family
+ * @return {string} The family's default browser format; '' when the
+ *     availability index has no such family.
+ */
+export function getDefaultBrowserFormat(availability, family) {
+  return availability?.familyConfigs?.[family]?.defaultBrowserFormat || '';
 }
 /** @return {boolean} */
 export function formatBelongsToFamily(formatsIndex, formatId, family) {
@@ -655,9 +666,10 @@ async function mapLimit(items, limit, mapper) {
   return results;
 }
 
+// Best-available order: the family's tiers strongest first, each at its
+// cutoffs highest first; the first candidate with data for the Pokémon wins.
 function* iterateCandidateSources(availability, family, selection, dataKind) {
-  const familyConfig =
-    availability?.familyConfigs?.[family] || getFamilyConfig(family);
+  const familyConfig = availability?.familyConfigs?.[family] || {};
   const formatOrder = familyConfig.formatOrder || [];
   const cutoffPriority = familyConfig.cutoffPriority || [];
   for (const formatId of formatOrder) {

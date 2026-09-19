@@ -1,7 +1,11 @@
+import { getActiveGame } from './games/registry.js';
+
 /** @const {!Object} */
 export const DEFAULT_STATE = {
   view: 'pool',
-  family: 'singles',
+  // The default game's first family; `format` is that family's default
+  // browser format (main.js re-validates both against the usage data).
+  family: getActiveGame().families[0],
   format: 'gen7anythinggoes',
   month: 'all',
   search: '',

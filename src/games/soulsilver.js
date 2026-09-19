@@ -44,6 +44,7 @@ export const SOULSILVER_GAME = Object.freeze({
   shortLabel: 'SoulSilver',
   dexGen: 4,
   dex: GEN4_DEX,
+  families: Object.freeze(['gen4singles']),
   schedule: Object.freeze({
     checkpoints: SOULSILVER_PROGRESSION_CHECKPOINTS,
     itemUnlockBadges: Object.freeze({}),

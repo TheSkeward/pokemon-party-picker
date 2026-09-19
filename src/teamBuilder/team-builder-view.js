@@ -35,6 +35,7 @@ export function renderTeamBuilderPage({
   app,
   baseUrl,
   embedded,
+  families = [],
   familyLabel,
   formatsIndex,
   pokemonIndex,
@@ -50,7 +51,7 @@ export function renderTeamBuilderPage({
   app.innerHTML = `
     ${embedded ? '' : renderStandaloneHeader({ baseUrl })}
 
-    ${renderPoolControls({ embedded, poolStats, state })}
+    ${renderPoolControls({ embedded, families, poolStats, state })}
 
     ${renderGamestateStrip(state.progression)}
 
@@ -184,7 +185,7 @@ export function renderGamestateStrip(progression = {}) {
   `;
 }
 
-function renderPoolControls({ embedded, poolStats, state }) {
+function renderPoolControls({ embedded, families, poolStats, state }) {
   return `
     <section class="panel">
       <div class="panel-header">
@@ -208,8 +209,7 @@ function renderPoolControls({ embedded, poolStats, state }) {
             : `<label>
                 <span>Family</span>
                 <select id="family-input">
-                  <option value="singles" ${state.family === 'singles' ? 'selected' : ''}>Singles</option>
-                  <option value="doubles" ${state.family === 'doubles' ? 'selected' : ''}>Doubles</option>
+                  ${families.map((family) => `<option value="${escapeAttr(family.id)}" ${state.family === family.id ? 'selected' : ''}>${escapeHtml(family.label)}</option>`).join('')}
                 </select>
               </label>`
         }

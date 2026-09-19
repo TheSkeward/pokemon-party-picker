@@ -49,6 +49,10 @@ export const REBORN_GAME = Object.freeze({
   // The generated mainline data the engine reads through dex() (games/dex.js).
   dexGen: 7,
   dex: GEN7_DEX,
+  // The usage-data families (scripts/config.mjs) that serve as this game's
+  // competitive prior, first one default. Selecting a family in the app
+  // activates the game that claims it.
+  families: Object.freeze(['singles', 'doubles']),
   // The progression timeline (games/schedule.js reads it): checkpoints in
   // play order plus the generated first-obtainable badge per held item.
   schedule: Object.freeze({

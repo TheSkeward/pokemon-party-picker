@@ -3,11 +3,11 @@ import { DEFAULT_STATE } from './state';
 const VALID_SORT_FIELDS = new Set(['rank', 'name', 'usage', 'rawCount', 'leadTendency']);
 const VALID_SORT_DIRS = new Set(['asc', 'desc']);
 const VALID_VIEWS = new Set(['resolver', 'pool', 'browser']);
-const VALID_FAMILIES = new Set(['singles', 'doubles']);
 
 /**
  * @return {!Object} App state from the URL query params; missing or invalid
- *     values fall back to DEFAULT_STATE.
+ *     values fall back to DEFAULT_STATE. The family is validated later
+ *     against the usage data's family list, which is not known here.
  */
 export function readStateFromUrl() {
   const params = new URLSearchParams(window.location.search);
@@ -15,7 +15,7 @@ export function readStateFromUrl() {
   return {
     ...DEFAULT_STATE,
     view: VALID_VIEWS.has(params.get('view')) ? params.get('view') : DEFAULT_STATE.view,
-    family: VALID_FAMILIES.has(params.get('family')) ? params.get('family') : DEFAULT_STATE.family,
+    family: params.get('family') || DEFAULT_STATE.family,
     format: params.get('format') || DEFAULT_STATE.format,
     month: params.get('month') || DEFAULT_STATE.month,
     search: params.get('search') || DEFAULT_STATE.search,

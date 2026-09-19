@@ -1,5 +1,10 @@
 import { escapeHtml } from './utils/html.js';
-import { loadAvailability, loadFormatsIndex, loadPokemonIndex } from './data';
+import {
+  listFamilies,
+  loadAvailability,
+  loadFormatsIndex,
+  loadPokemonIndex,
+} from './data';
 import {
   getSortedTeam,
   renderGamestateStrip,
@@ -25,7 +30,7 @@ import {
   recordOptimizerSample,
 } from './teamBuilder/telemetry.js';
 import { loadManifest } from './manifest.js';
-import { getActiveGame } from './games/registry.js';
+import { getActiveGame, setActiveGameForFamily } from './games/registry.js';
 import { renderRebornLegalMovesPanel } from './reborn/legal-moves-view';
 import { renderRebornTeamAnalysisPanel } from './reborn/team-analysis-view';
 import { getCurrentRebornSpeciesForChoice } from './reborn/current-species.js';
@@ -85,7 +90,11 @@ const POST_ANALYSIS_MAX_BUILDS = 200;
 export function mountPoolOptimizer(container, options = {}) {
   const app = container;
   const embedded = Boolean(options.embedded);
-  const initialFamily = options.family || getParam('family') || 'singles';
+  // The family decides the game, and the game decides whose saved pool and
+  // progression load below, so it is settled before anything is read.
+  const initialFamily =
+    options.family || getParam('family') || getActiveGame().families[0];
+  setActiveGameForFamily(initialFamily);
 
   let availability = null;
   let formatsIndex = [];
@@ -151,6 +160,11 @@ export function mountPoolOptimizer(container, options = {}) {
       loadAvailability(),
       loadPokemonIndex(),
     ]);
+    // A family the usage data does not have (a stale link) falls back to
+    // the active game's default; the game itself did not change above.
+    if (!availability?.familyConfigs?.[state.family]) {
+      state.family = getActiveGame().families[0];
+    }
 
     if (initialQuery.trim()) {
       savePool(initialQuery);
@@ -555,7 +569,9 @@ export function mountPoolOptimizer(container, options = {}) {
       app,
       baseUrl: baseUrl(),
       embedded,
-      familyLabel: state.family === 'doubles' ? 'Doubles' : 'Singles',
+      families: listFamilies(availability),
+      familyLabel:
+        availability?.familyConfigs?.[state.family]?.label || state.family,
       formatsIndex,
       pokemonIndex,
       poolStats: getPoolStats(state.query, pokemonIndex),
@@ -614,10 +630,12 @@ export function mountPoolOptimizer(container, options = {}) {
 
     app
       .querySelector('#family-input')
-      ?.addEventListener('change', async (event) => {
+      ?.addEventListener('change', (event) => {
+        // Standalone page only: another family may be another game, with
+        // its own saved pool and progression, so start over from the URL.
         state.family = event.target.value;
-        setDetails.cancel();
-        await computeAndRender();
+        writeUrl();
+        window.location.reload();
       });
 
     app

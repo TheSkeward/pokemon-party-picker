@@ -1,12 +1,22 @@
 import { escapeHtml } from '../utils/html.js';
+import { gameForFamily } from '../games/registry.js';
 
 /**
  * Replaces `app` contents with the shell chrome; pages mount into the empty
- * #page-root section it creates.
+ * #page-root section it creates. One tab per usage-data family, titled with
+ * the game that family serves.
  * @param {!Element} app
  * @param {{family: string, view: string}} state
+ * @param {!Array<{id: string, label: string}>} families
  */
-export function renderAppShell(app, state) {
+export function renderAppShell(app, state, families) {
+  const familyTabs = families
+    .map((family) => {
+      const game = gameForFamily(family.id);
+      const title = game ? ` title="${escapeHtml(game.label)}"` : '';
+      return `<button class="view-tab ${state.family === family.id ? 'active' : ''}" data-app-family="${escapeHtml(family.id)}"${title}>${escapeHtml(family.label)}</button>`;
+    })
+    .join('\n        ');
   app.innerHTML = `
     <div class="app-shell">
       <header>
@@ -14,8 +24,7 @@ export function renderAppShell(app, state) {
       </header>
 
       <nav class="view-tabs">
-        <button class="view-tab ${state.family === 'singles' ? 'active' : ''}" data-app-family="singles">Singles</button>
-        <button class="view-tab ${state.family === 'doubles' ? 'active' : ''}" data-app-family="doubles">Doubles</button>
+        ${familyTabs}
       </nav>
 
       <nav class="view-tabs secondary-tabs">
@@ -42,4 +51,3 @@ export function renderFatalAppError(app, error) {
     </div>
   `;
 }
-
