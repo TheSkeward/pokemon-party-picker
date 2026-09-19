@@ -16,7 +16,7 @@ const {
   checkpointShortLabel,
 } = await import('../src/games/schedule.js');
 const { EVOLUTION_ACCESS_FIELDS } = await import(
-  '../src/reborn/evolution-requirements.js',
+  '../src/reborn/evolution-access.js',
 );
 const {
   DEFAULT_REBORN_PROGRESSION,

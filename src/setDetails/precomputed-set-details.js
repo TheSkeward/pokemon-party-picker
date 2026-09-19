@@ -224,7 +224,7 @@ function appendUnusedLegalMoves(detail, legalMoves, pokemonId) {
     {
       pokemonId,
       name: legalMoves.pokemonName,
-      sourceText: 'Reborn legal moves (no competitive usage data)',
+      sourceText: `${getActiveGame().shortLabel} legal moves (no competitive usage data)`,
       moves: [],
       items: [],
       abilities: [],
@@ -261,5 +261,7 @@ function describeLegalSources(sources = {}) {
   if (sources.tutor) parts.push('Tutor');
   if (sources.egg) parts.push('Egg');
 
-  return parts.length ? `Legal in Reborn · ${parts.join(' · ')}` : 'Legal in Reborn';
+  return parts.length
+    ? `Legal in ${getActiveGame().shortLabel} · ${parts.join(' · ')}`
+    : `Legal in ${getActiveGame().shortLabel}`;
 }

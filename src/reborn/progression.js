@@ -6,7 +6,7 @@ import {
 import { moveSources } from '../games/legality.js';
 import { gameItems } from '../games/items.js';
 import { analysisTypes } from './type-chart.js';
-import { EVOLUTION_ACCESS_FIELDS } from './evolution-requirements.js';
+import { accessFields } from '../games/evolution.js';
 import { getCheckpoint } from '../games/schedule.js';
 import { getActiveGame } from '../games/registry.js';
 import { toId as normalizeSearch } from '../utils/ids.js';
@@ -131,7 +131,7 @@ function normalizeEvolutionAccess(progression) {
   // per-stone keys + evoAccessOtherEvoItems. A saved `false` blocks all of
   // them unless the new key was set explicitly.
   const legacyStonesBlocked = progression.evoAccessStones === false;
-  for (const field of EVOLUTION_ACCESS_FIELDS) {
+  for (const field of accessFields()) {
     const isItemGate =
       field.item !== undefined || field.key === 'evoAccessOtherEvoItems';
     const value =

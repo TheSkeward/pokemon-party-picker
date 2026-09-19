@@ -24,6 +24,7 @@ import {
   REBORN_TUTOR_OPTIONS,
 } from '../reborn/progression-options.js';
 import { REBORN_EVOLUTION_ITEM_AVAILABILITY } from '../reborn/item-availability.js';
+import { EVOLUTION_ACCESS_FIELDS } from '../reborn/evolution-access.js';
 import { REBORN_EXTRA_INVENTORY_ITEMS } from '../reborn/extra-inventory-items.js';
 import {
   GEN7_TERRAIN_SEEDS,
@@ -43,6 +44,8 @@ import {
 export const REBORN_GAME = Object.freeze({
   id: 'reborn',
   label: 'Pokémon Reborn',
+  // For prose ("not learnable in Reborn"); the label is for headings.
+  shortLabel: 'Reborn',
   // The generated mainline data the engine reads through dex() (games/dex.js).
   dexGen: 7,
   dex: GEN7_DEX,
@@ -77,6 +80,24 @@ export const REBORN_GAME = Object.freeze({
       statVectors: REBORN_SEED_STAT_VECTORS,
     }),
     typeGems: TYPE_GEMS,
+  }),
+  // Evolution rules (games/evolution.js). Reborn replaces trades with the
+  // Link Stone, stands in for Alola with the Apophyll area (Cubone excepted:
+  // it picks Marowak's form by time of day), and has every location
+  // evolution, opening over the midgame.
+  evolution: Object.freeze({
+    tradeItem: 'Link Stone',
+    tradeAccessKey: 'evoAccessLinkStone',
+    regionAccess: Object.freeze({
+      Alola: Object.freeze({
+        accessKey: 'evoAccessApophyll',
+        label: 'in Apophyll',
+        except: ['marowakalola'],
+      }),
+    }),
+    unavailableAccessKeys: new Set(),
+    formNotes: Object.freeze({ marowak: 'during the day' }),
+    accessFields: EVOLUTION_ACCESS_FIELDS,
   }),
   rules: Object.freeze({
     legalityBase: REBORN_MOVE_LEGALITY_BASE,

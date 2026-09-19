@@ -48,7 +48,7 @@ export function loadRebornLegalMoveData(pokemonId) {
     if (response.status === 404) return null;
 
     if (!response.ok) {
-      throw new Error(`Failed to load Reborn legal moves for ${id}`);
+      throw new Error(`Failed to load ${game.label} legal moves for ${id}`);
     }
 
     const data = await response.json();

@@ -2,7 +2,7 @@ import { escapeHtml, escapeAttr } from '../utils/html.js';
 import { detailsStateAttrs } from '../utils/details-state.js';
 import { getMoveMeta, describeMoveMeta } from '../move-meta';
 import { legalityRules, moveSources } from '../games/legality.js';
-import { EVOLUTION_ACCESS_FIELDS } from './evolution-requirements.js';
+import { accessFields } from '../games/evolution.js';
 import {
   getCheckpoint,
   getCheckpoints,
@@ -14,6 +14,7 @@ import { MAX_TRACKED_ITEM_COUNT, MAX_OPPONENT_TYPE_BIAS } from './progression';
 import { analysisTypes } from './type-chart.js';
 import { getTypeColor } from '../move-meta';
 import { dex } from '../games/dex.js';
+import { getActiveGame } from '../games/registry.js';
 
 /**
  * `includeBias: false` lets the modern layout render the opponent-bias group
@@ -27,7 +28,7 @@ export function renderRebornProgressionPanel(
     <section class="panel progression-panel">
       <div class="panel-header">
         <div>
-          <h2>Reborn Progression</h2>
+          <h2>${getActiveGame().shortLabel} Progression</h2>
           <p>Saved locally. These unlocks drive legal-move checks, set readiness, and (under V1) how far each score has converged to its usage prior.</p>
         </div>
       </div>
@@ -67,7 +68,7 @@ export function renderRebornProgressionPanel(
             <span>Evolution access <span class="muted">(checked = you can use it)</span></span>
           </summary>
           <div class="progression-checklist evo-access-checklist">
-            ${EVOLUTION_ACCESS_FIELDS.map((field) => {
+            ${accessFields().map((field) => {
               // Stones are timed by the item timeline (the community guide);
               // area/method gates by the walkthrough schedule.
               const badge = field.item
@@ -124,7 +125,7 @@ export function renderRebornProgressionPanel(
       </div>
 
       <details class="progression-rules" ${detailsStateAttrs('rules', false)}>
-        <summary>Reborn legality assumptions</summary>
+        <summary>${getActiveGame().shortLabel} legality assumptions</summary>
         <ul>
           <li>Base: ${escapeHtml(legalityRules().legalityBase.baseGames)} learnsets.</li>
           <li>Transfer moves available by default: ${legalityRules().legalityBase.transferMovesAvailableByDefault ? 'yes' : 'no'}.</li>

@@ -22,6 +22,7 @@ import { fixedMoveDamage } from './damage-model.js';
 import { getMoveMetaById } from '../move-meta.js';
 import { toId } from '../utils/ids.js';
 import { dex } from '../games/dex.js';
+import { getActiveGame } from '../games/registry.js';
 
 /** Moves in a canonical set — a full Showdown moveset. */
 export const CANONICAL_SET_SIZE = 4;
@@ -134,7 +135,7 @@ export function computeSetReadiness({
 
     const raw = rawById.get(id);
     if (!raw) {
-      return { id, label, status: 'blocked', detail: 'not learnable in Reborn' };
+      return { id, label, status: 'blocked', detail: `not learnable in ${getActiveGame().shortLabel}` };
     }
 
     // Earliest way to get it, as a cap-equivalent. Level-1 entries on an

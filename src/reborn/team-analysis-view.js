@@ -11,6 +11,7 @@ import {
   analysisTypes,
 } from './team-analysis';
 import { STAT_KEYS } from '../utils/stats.js';
+import { getActiveGame } from '../games/registry.js';
 
 // The page re-renders several times per optimize (result render, analysis-
 // pending render, confidence render, investment render) with IDENTICAL panel
@@ -174,7 +175,7 @@ function renderAnalysis(analysis) {
       <div class="panel-header team-analysis-header">
         <div>
           <h2>Team Analysis</h2>
-          <p>${analysis.members.length} picks at the current Reborn progression. Damage shown is naive unresisted output at your level cap.</p>
+          <p>${analysis.members.length} picks at the current ${getActiveGame().shortLabel} progression. Damage shown is naive unresisted output at your level cap.</p>
         </div>
         <button type="button" class="view-tab" data-copy-pokepaste>Copy team as poképaste</button>
       </div>
@@ -541,7 +542,7 @@ function renderSetReadiness(readiness) {
         readiness.item.detail ? ` — ${readiness.item.detail}` : ''
       }`
       : null,
-    '✓ ability — always selectable in Reborn',
+    `✓ ability — always selectable in ${getActiveGame().shortLabel}`,
   ]
     .filter(Boolean)
     .join('\n');

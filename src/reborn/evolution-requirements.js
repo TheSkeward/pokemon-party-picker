@@ -11,10 +11,14 @@
  *                         UNKNOWN item availability is surfaced, not silently
  *                         blocked or allowed
  *   special condition:    affection ⇒ friendship-like; trivial party/time
- *                         conditions ⇒ minor friction; known Reborn location
- *                         evolutions (moss/ice rock, magnetic field, Lanakila
- *                         equivalent) ⇒ legal with item-level friction — the
- *                         locations exist in Reborn and open up mid-game
+ *                         conditions ⇒ minor friction; location evolutions
+ *                         (moss/ice rock, magnetic field, Lanakila equivalent)
+ *                         ⇒ legal with item-level friction when the game has
+ *                         the location, blocked when it does not
+ *
+ * Everything game-specific — what replaces trading, which gate stands in for
+ * a region, which locations the game lacks, form notes, the gate list — comes
+ * from the active game's evolution rules (games/evolution.js).
  *
  * If a correct requirement model makes some line good, it competes; if that
  * looks wrong, the fix is C/K/utility — never a special legality rule.
@@ -22,62 +26,22 @@
 
 import { toId } from '../utils/ids.js';
 import { getItemAvailability } from '../games/items.js';
+import { accessFields, evolutionRules } from '../games/evolution.js';
+import { getActiveGame } from '../games/registry.js';
 import { tunable } from '../teamBuilder/scoring-constants.js';
 import { dex } from '../games/dex.js';
 
 const TEDIOUS_MULTIPLIER = 1.5;
 
-/**
- * Player-facing access gates: which SPECIAL evolution methods the player can
- * currently use (Reborn locks them behind story/area unlocks — the magnetic
- * field lives behind Shade's gym via the Yureyal key, stones drip in over
- * badges, the Link Stone is a mid-game purchase). Each maps a requirement to
- * a flat boolean progression field; an ABSENT field means accessible (so old
- * saved progressions and tests behave exactly as before), an explicit `false`
- * blocks the evolution — surfaced in blockedEvolutions, never silent.
- * Each elemental stone gets its own gate; the rest of the item-shaped
- * methods (Metal Coat, Razor Claw, ...) share one gate. Legacy saves with the
- * old blanket `evoAccessStones: false` still block all of these (see the
- * denied check below and the migration in progression.js).
- * @type {Array<{key: string, label: string, item: string}>}
- */
-export const EVOLUTION_STONE_FIELDS = Object.freeze([
-  { key: 'evoAccessFireStone', label: 'Fire Stone', item: 'Fire Stone' },
-  { key: 'evoAccessWaterStone', label: 'Water Stone', item: 'Water Stone' },
-  { key: 'evoAccessThunderStone', label: 'Thunder Stone', item: 'Thunder Stone' },
-  { key: 'evoAccessLeafStone', label: 'Leaf Stone', item: 'Leaf Stone' },
-  { key: 'evoAccessMoonStone', label: 'Moon Stone', item: 'Moon Stone' },
-  { key: 'evoAccessSunStone', label: 'Sun Stone', item: 'Sun Stone' },
-  { key: 'evoAccessShinyStone', label: 'Shiny Stone', item: 'Shiny Stone' },
-  { key: 'evoAccessDuskStone', label: 'Dusk Stone', item: 'Dusk Stone' },
-  { key: 'evoAccessDawnStone', label: 'Dawn Stone', item: 'Dawn Stone' },
-  { key: 'evoAccessIceStone', label: 'Ice Stone', item: 'Ice Stone' },
-]);
 
-/**
- * All access gates, stones included, in the order the progression UI lists
- * them. `item` is set only on the per-stone entries.
- * @type {Array<{key: string, label: string, item: (string|undefined)}>}
- */
-export const EVOLUTION_ACCESS_FIELDS = Object.freeze([
-  { key: 'evoAccessFriendship', label: 'Friendship / affection evolutions' },
-  ...EVOLUTION_STONE_FIELDS,
-  { key: 'evoAccessOtherEvoItems', label: 'Other evolution items (Metal Coat, Razor Claw, …)' },
-  { key: 'evoAccessLinkStone', label: 'Link Stone (trade evolutions)' },
-  { key: 'evoAccessPartyCondition', label: 'Party-condition evolutions (Mantyke needs a Remoraid)' },
-  { key: 'evoAccessMagneticField', label: 'Magnetic field area (Probopass, Magnezone, Vikavolt)' },
-  { key: 'evoAccessMossyRock', label: 'Moss Rock (Leafeon)' },
-  { key: 'evoAccessIcyRock', label: 'Ice Rock (Glaceon)' },
-  { key: 'evoAccessOtherLocations', label: 'Other special locations (Crabominable)' },
-  { key: 'evoAccessApophyll', label: 'Apophyll area (Alolan evolutions: Raichu-A, Exeggutor-A)' },
-]);
-
-// Region-locked evolutions (dex evoRegion "Alola") need Reborn's Alola
-// equivalent, Apophyll — the stone alone isn't enough.
-// Exception: Reborn removed Marowak-Alola's location requirement — Cubone
-// picks the form by time of day (Kanto by day, Alolan by night).
-function needsApophyll(species) {
-  return species?.evoRegion === 'Alola' && species?.id !== 'marowakalola';
+// A region-locked evolution (dex evoRegion) needs the game's stand-in for
+// that region — the stone alone isn't enough — unless the game exempts the
+// species (Reborn lets Cubone pick Marowak's form by time of day).
+function regionAccess(species) {
+  const region = species?.evoRegion;
+  const entry = region ? evolutionRules().regionAccess?.[region] : null;
+  if (!entry || (entry.except || []).includes(species.id)) return null;
+  return entry;
 }
 
 function ownedItemCount(access, itemName) {
@@ -86,26 +50,46 @@ function ownedItemCount(access, itemName) {
   return id ? access.ownedItems[id] || 0 : 0;
 }
 
-const STONE_KEY_BY_ITEM_ID = new Map(
-  EVOLUTION_STONE_FIELDS.map((field) => [toId(field.item), field.key]),
-);
-const ITEM_GATE_KEYS = new Set([
-  ...STONE_KEY_BY_ITEM_ID.values(),
-  'evoAccessOtherEvoItems',
-]);
+// Item-shaped gates per game, keyed by its access-field list.
+const ITEM_GATES = new WeakMap();
+function itemGates() {
+  const fields = accessFields();
+  let gates = ITEM_GATES.get(fields);
+  if (gates) return gates;
+  const stoneKeyByItemId = new Map(
+    fields.filter((field) => field.item).map((field) => [
+      toId(field.item),
+      field.key,
+    ]),
+  );
+  gates = {
+    stoneKeyByItemId,
+    keys: new Set([...stoneKeyByItemId.values(), 'evoAccessOtherEvoItems']),
+  };
+  ITEM_GATES.set(fields, gates);
+  return gates;
+}
 
 function evoItemAccessKey(evoItem) {
-  return STONE_KEY_BY_ITEM_ID.get(toId(evoItem)) || 'evoAccessOtherEvoItems';
+  return (
+    itemGates().stoneKeyByItemId.get(toId(evoItem)) || 'evoAccessOtherEvoItems'
+  );
+}
+
+function accessLabel(key) {
+  return accessFields().find((field) => field.key === key)?.label || key;
 }
 
 function requiredAccessKeys(evoType, condition, species) {
-  const regionKeys = needsApophyll(species) ? ['evoAccessApophyll'] : [];
+  const region = regionAccess(species);
+  const regionKeys = region ? [region.accessKey] : [];
   if (evoType === 'levelFriendship') return ['evoAccessFriendship', ...regionKeys];
   if (evoType === 'trade') {
     // Trade-with-item (Metal Coat Scizor) needs the item too.
+    const tradeKeys = [evolutionRules().tradeAccessKey].filter(Boolean);
     return species.evoItem
-      ? ['evoAccessLinkStone', evoItemAccessKey(species.evoItem), ...regionKeys]
-      : ['evoAccessLinkStone', ...regionKeys];
+      ? [...tradeKeys, evoItemAccessKey(species.evoItem), ...regionKeys]
+      : [...tradeKeys, ...regionKeys];
   }
   if (evoType === 'useItem' || evoType === 'levelHold') {
     return [evoItemAccessKey(species.evoItem), ...regionKeys];
@@ -152,15 +136,30 @@ export function getEvolutionRequirement(species, access = null) {
 
   const evoType = species.evoType || '';
   const condition = species.evoCondition || '';
+  const rules = evolutionRules();
+  const required = requiredAccessKeys(evoType, condition, species);
+
+  // A method the game simply lacks (no Moss Rock anywhere in it) is blocked
+  // regardless of progression: a fact about the game, not the player.
+  const missing = required.find((key) => rules.unavailableAccessKeys.has(key));
+  if (missing) {
+    return {
+      status: 'blocked',
+      levelRequired: null,
+      friction: 0,
+      method: evoType || 'level',
+      reason: `${accessLabel(missing)} does not exist in ${getActiveGame().shortLabel}`,
+    };
+  }
 
   // Access gate first: a method the player can't use yet is BLOCKED — a
   // concrete, user-stated fact that outranks the friction model. Surfaced,
   // never silent. Owning the required item overrides its gate (a Thunder
   // Stone in the bag works even if stones "aren't accessible yet").
   if (access) {
-    const denied = requiredAccessKeys(evoType, condition, species).find(
+    const denied = required.find(
       (key) => {
-        const itemGate = ITEM_GATE_KEYS.has(key);
+        const itemGate = itemGates().keys.has(key);
         // Legacy saves: the old blanket `evoAccessStones: false` blocks every
         // item gate whose per-item key hasn't been set explicitly.
         const blocked =
@@ -171,22 +170,23 @@ export function getEvolutionRequirement(species, access = null) {
         if (itemGate && ownedItemCount(access, species.evoItem)) {
           return false;
         }
-        if (key === 'evoAccessLinkStone' && ownedItemCount(access, 'Link Stone')) {
+        if (
+          key === rules.tradeAccessKey &&
+          rules.tradeItem &&
+          ownedItemCount(access, rules.tradeItem)
+        ) {
           return false;
         }
         return true;
       },
     );
     if (denied) {
-      const label =
-        EVOLUTION_ACCESS_FIELDS.find((field) => field.key === denied)?.label ||
-        denied;
       return {
         status: 'blocked',
         levelRequired: null,
         friction: 0,
         method: evoType || 'level',
-        reason: `${label} not yet accessible (Reborn Progression setting)`,
+        reason: `${accessLabel(denied)} not yet accessible (${getActiveGame().shortLabel} Progression setting)`,
       };
     }
   }
@@ -240,10 +240,23 @@ export function getEvolutionRequirement(species, access = null) {
   if (evoType === 'levelHold' || evoType === 'useItem' || evoType === 'trade') {
     const parts = [];
     let friction = 0;
-    // Reborn replaces trades with the Link Stone — itself a farmable item.
+    // A trade is priced as the game prices it: an item that replaces trading
+    // (Reborn's Link Stone, itself farmable) or a trade as such.
     if (evoType === 'trade') {
-      const link = getItemAvailability('Link Stone');
-      parts.push({ item: 'Link Stone', ...link });
+      parts.push(
+        rules.tradeItem
+          ? {
+            item: rules.tradeItem,
+            trade: true,
+            ...getItemAvailability(rules.tradeItem),
+          }
+          : {
+            item: 'trade',
+            trade: true,
+            status: 'farmable',
+            source: 'trade evolution',
+          },
+      );
     }
     if (species.evoItem) {
       parts.push(
@@ -280,9 +293,7 @@ export function getEvolutionRequirement(species, access = null) {
       // of getting it, and it's already in the bag.
       if (part.owned) continue;
       const base =
-        evoType === 'trade' && part.item === 'Link Stone'
-          ? tunable('TRADE_FRICTION')
-          : tunable('ITEM_FRICTION');
+        part.trade ? tunable('TRADE_FRICTION') : tunable('ITEM_FRICTION');
       friction +=
         part.status === 'farmable-tedious'
           ? Math.round(base * TEDIOUS_MULTIPLIER)
@@ -295,7 +306,7 @@ export function getEvolutionRequirement(species, access = null) {
           : `${part.item} (${part.status}: ${part.source})`,
       )
       .join(' + ');
-    const riders = [condition, needsApophyll(species) ? 'in Apophyll' : '']
+    const riders = [condition, regionAccess(species)?.label || '']
       .filter(Boolean)
       .join(', ');
     return {
@@ -326,15 +337,16 @@ export function getEvolutionRequirement(species, access = null) {
         reason: condition,
       };
     }
-    // Location evolutions (moss/ice rock, magnetic field, Lanakila-equivalent):
-    // Reborn has all of these locations; they open up over the midgame. Legal
-    // with item-level friction; the condition is surfaced in the proof.
+    // Location evolutions (moss/ice rock, magnetic field, Lanakila-equivalent)
+    // the game has (the ones it lacks were blocked above) open up over the
+    // midgame. Legal with item-level friction; the condition is surfaced in
+    // the proof.
     return {
       status: 'legal',
       levelRequired: null,
       friction: tunable('ITEM_FRICTION'),
       method: 'location',
-      reason: `${condition || 'special location'} (Reborn location, midgame)`,
+      reason: `${condition || 'special location'} (${getActiveGame().shortLabel} location, midgame)`,
     };
   }
 
@@ -348,10 +360,9 @@ export function getEvolutionRequirement(species, access = null) {
 }
 
 // Form-split requirements the dex has no structured fields for (gender locks
-// and Burmy's cloak-by-location). Reviewed by hand; display-only.
+// and Burmy's cloak-by-location). Reviewed by hand; display-only. A game's
+// own notes (evolution rules formNotes) override these per species.
 const FORM_EVOLUTION_NOTES = Object.freeze({
-  // Reborn-specific: Cubone picks Marowak's form by time of day.
-  marowak: 'during the day',
   wormadam: 'Female, in grass',
   wormadamsandy: 'Female, in caves',
   wormadamtrash: 'Female, in buildings',
@@ -368,10 +379,12 @@ const FORM_EVOLUTION_NOTES = Object.freeze({
 // for everything else the player must do ("hold Oval Stone, during the day",
 // "Link Stone + Metal Coat", "near a Moss Rock", "Female, in buildings").
 function shortStepRequirement(species) {
-  const note = FORM_EVOLUTION_NOTES[species.id];
+  const rules = evolutionRules();
+  const note =
+    rules.formNotes?.[species.id] ?? FORM_EVOLUTION_NOTES[species.id];
   const condition = species.evoCondition || '';
   const evoType = species.evoType || '';
-  const region = needsApophyll(species) ? 'in Apophyll' : '';
+  const region = regionAccess(species)?.label || '';
   const extras = (base) =>
     [base, note || condition || '', region].filter(Boolean).join(', ');
 
@@ -392,10 +405,10 @@ function shortStepRequirement(species) {
     return { level: null, text: extras(`hold ${species.evoItem || 'an item'}`) };
   }
   if (evoType === 'trade') {
-    // Reborn replaces trades with the Link Stone.
+    const via = rules.tradeItem || 'trade';
     return {
       level: null,
-      text: extras(`Link Stone${species.evoItem ? ` + ${species.evoItem}` : ''}`),
+      text: extras(`${via}${species.evoItem ? ` + ${species.evoItem}` : ''}`),
     };
   }
   // levelExtra and anything else: the recorded condition IS the requirement.

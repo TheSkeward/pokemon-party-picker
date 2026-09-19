@@ -1092,7 +1092,7 @@ export function mountPoolOptimizer(container, options = {}) {
       .querySelector('#clear-progression-button')
       ?.addEventListener('click', () => {
         const confirmed = window.confirm(
-          'Clear saved Reborn progression from this browser?',
+          `Clear saved ${getActiveGame().shortLabel} progression from this browser?`,
         );
         if (!confirmed) return;
 

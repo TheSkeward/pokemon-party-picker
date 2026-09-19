@@ -11,7 +11,7 @@ import {
   renderOpponentTypeBias,
 } from '../reborn/progression-view';
 import { detailsStateAttrs } from '../utils/details-state.js';
-import { EVOLUTION_ACCESS_FIELDS } from '../reborn/evolution-requirements.js';
+import { accessFields } from '../games/evolution.js';
 import { checkpointShortLabel, getCheckpoint } from '../games/schedule.js';
 import { renderRebornTeamAnalysisPanel } from '../reborn/team-analysis-view';
 import { getCurrentRebornSpeciesForChoice } from '../reborn/current-species.js';
@@ -26,6 +26,7 @@ import {
   explainExcludedChoice,
 } from './explanations.js';
 import { getTelemetrySummary, loadTelemetrySamples } from './telemetry.js';
+import { getActiveGame } from '../games/registry.js';
 
 /**
  * Renders the full Team Builder page into `app` and wires up its controls.
@@ -58,7 +59,7 @@ export function renderTeamBuilderPage({
     ${state.result ? renderResult({ familyLabel, formatsIndex, setDetails, state }) : renderEmpty(state)}
 
     <details class="progression-collapse" ${detailsStateAttrs('progression-panel', false)}>
-      <summary>Reborn Progression <span class="muted">(level cap, TMs, evolution access, items — the save-file settings)</span></summary>
+      <summary>${getActiveGame().shortLabel} Progression <span class="muted">(level cap, TMs, evolution access, items — the save-file settings)</span></summary>
       ${renderRebornProgressionPanel(state.progression, { includeBias: false })}
     </details>
 
@@ -150,7 +151,7 @@ export function renderGamestateStrip(progression = {}) {
   chip(`TMXs ${(progression.availableTmxIds || []).length}`, 'tmxs');
   chip(`Tutors ${(progression.availableTutorMoveIds || []).length}`, 'tutors');
 
-  const blocked = EVOLUTION_ACCESS_FIELDS.filter(
+  const blocked = accessFields().filter(
     (field) => progression[field.key] === false,
   );
   chip(
@@ -1084,7 +1085,7 @@ function renderItemRec(item) {
         : 'proxy';
     title = item.seed
       ? "Reborn Field Seed; demand proxied from this Pokémon's terrain-seed usage."
-      : 'Reborn type Gem; competitive demand proxied from the matching Z-Crystal.';
+      : `${getActiveGame().shortLabel} type Gem; competitive demand proxied from the matching Z-Crystal.`;
   } else if (typeof item.usage === 'number') {
     qualifier = formatItemPercent(item.usage);
     title =

@@ -12,6 +12,7 @@ import {
   applySketchContextToProgression,
   buildRebornMoveTransferContexts,
 } from './sketch.js';
+import { getActiveGame } from '../games/registry.js';
 
 const HIDDEN_MOVESET_ENTRY_KEYS = new Set(['other', 'nothing']);
 const SOURCE_TONE = {
@@ -49,7 +50,7 @@ export function renderRebornLegalMovesPanel(container, options) {
   container.dataset.legalMovesKey = renderKey;
   container.innerHTML = `
     <section class="panel details-panel reborn-legal-panel">
-      <h3>Reborn Legal Moves</h3>
+      <h3>${getActiveGame().shortLabel} Legal Moves</h3>
       <p class="muted">Checking current progression...</p>
     </section>
   `;
@@ -79,7 +80,7 @@ export function renderRebornLegalMovesPanel(container, options) {
       if (container.dataset.legalMovesKey !== renderKey) return;
       container.innerHTML = `
         <section class="panel details-panel reborn-legal-panel">
-          <h3>Reborn Legal Moves</h3>
+          <h3>${getActiveGame().shortLabel} Legal Moves</h3>
           <p class="muted">${escapeHtml(error.message || error)}</p>
         </section>
       `;
@@ -99,7 +100,7 @@ function renderLoadedPanel({
   if (!legalMoveData) {
     return `
       <section class="panel details-panel reborn-legal-panel">
-        <h3>Reborn Legal Moves</h3>
+        <h3>${getActiveGame().shortLabel} Legal Moves</h3>
         <p class="muted">No generated legality data found for ${escapeHtml(pokemonName)}.</p>
       </section>
     `;
@@ -136,7 +137,7 @@ function renderLoadedPanel({
     <section class="panel details-panel reborn-legal-panel">
       <div class="panel-header">
         <div>
-          <h3>Reborn Legal Moves</h3>
+          <h3>${getActiveGame().shortLabel} Legal Moves</h3>
           <p>${availableMoves.length} currently legal move options for ${escapeHtml(legalityPokemonName)} from ${escapeHtml(legalMoveData.learnsetPokemonName)} learnset data.</p>
           ${
             currentSpecies?.differsFromRepresentative
