@@ -1,6 +1,7 @@
 import { dataUrl } from '../utils/data-url.js';
 import { fetchJsonCached } from '../utils/fetch-json-cached.js';
 import { getActiveGame } from '../games/registry.js';
+import { moveSources } from '../games/legality.js';
 import { getRebornMoveId } from '../reborn/legal-moves.js';
 import { hydrateLegalMove } from '../move-meta.js';
 
@@ -257,7 +258,7 @@ function describeLegalSources(sources = {}) {
   if (sources.levelUp?.length) parts.push('Level-up');
   if (sources.preEvolutionLevelUp?.length) parts.push('Pre-evo level-up');
   if (sources.tm) parts.push('TM');
-  if (sources.tmx) parts.push('TMX');
+  if (sources.tmx) parts.push(moveSources().tmxLabel);
   if (sources.tutor) parts.push('Tutor');
   if (sources.egg) parts.push('Egg');
 

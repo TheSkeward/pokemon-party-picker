@@ -1,4 +1,4 @@
-import { moveSources } from '../games/legality.js';
+import { mechanics, moveSources } from '../games/legality.js';
 import { normalizeLevelCap } from './progression.js';
 import { dataUrl } from '../utils/data-url.js';
 import { getActiveGame } from '../games/registry.js';
@@ -247,24 +247,28 @@ export function getAvailableRebornMoves(legalMoveData, progression = {}) {
           { formArrivalLevel: arrivalLevelOf(b.from), learnLevel: b.level },
         ),
       );
-    // Below-arrival entries at level 2+ are reachable by Common Candy:
-    // candy the form back below the level, then level up through it
-    // (requires the form itself to be reachable at the cap). Level-1
-    // entries are relearner-only — you never level UP to 1. The fielded
-    // form's own below-arrival entries take the same candy-down route.
-    const candyEntries = [
-      ...allLevelUpLevels
-        .filter(
-          (level) => level >= 2 && level < ownArrival && ownArrival <= levelCap,
-        )
-        .map((level) => ({ level, from: pokemonId })),
-      ...preEvolutionEntries.filter(
-        (entry) =>
-          entry.level >= 2 &&
-          entry.level < arrivalLevelOf(entry.from) &&
-          arrivalLevelOf(entry.from) <= levelCap,
-      ),
-    ].sort((a, b) => a.level - b.level);
+    // Below-arrival entries at level 2+ are reachable where the game can
+    // lower a level (Reborn's Common Candy): candy the form back below the
+    // level, then level up through it (requires the form itself to be
+    // reachable at the cap). Level-1 entries are relearner-only — you never
+    // level UP to 1. The fielded form's own below-arrival entries take the
+    // same candy-down route. A game without level-downs has no such route.
+    const candyEntries = mechanics().levelDown
+      ? [
+        ...allLevelUpLevels
+          .filter(
+            (level) =>
+              level >= 2 && level < ownArrival && ownArrival <= levelCap,
+          )
+          .map((level) => ({ level, from: pokemonId })),
+        ...preEvolutionEntries.filter(
+          (entry) =>
+            entry.level >= 2 &&
+            entry.level < arrivalLevelOf(entry.from) &&
+            arrivalLevelOf(entry.from) <= levelCap,
+        ),
+      ].sort((a, b) => a.level - b.level)
+      : [];
     const hasLevelOnePreEvoOnly = preEvolutionEntries.some(
       (entry) => entry.level === 1 && arrivalLevelOf(entry.from) > 1,
     );
@@ -487,16 +491,22 @@ const HIDDEN_POWER_TYPES = [
 
 // Hidden Power is a lottery until the Type Changer is unlocked — its type is
 // fixed per caught mon and almost never the one you'd want — so before the
-// unlock it is NOT a plannable move and is excluded from legality entirely.
-// With the changer, the player chooses the type: expand it into every real
-// variant (distinct ids, so damage estimates/memoization treat each type as
-// its own move) and let the recommender pick the best; the recommender caps a
-// set at ONE Hidden Power, since a mon can only have one.
+// unlock it is NOT a plannable move and is excluded from legality entirely;
+// a game with no Type Changer at all never offers it. With the changer, the
+// player chooses the type: expand it into every real variant (distinct ids,
+// so damage estimates/memoization treat each type as its own move) and let
+// the recommender pick the best; the recommender caps a set at ONE Hidden
+// Power, since a mon can only have one.
 function expandHiddenPower(moves, progression) {
   const hiddenPower = moves.find((move) => move.id === 'hiddenpower');
   if (!hiddenPower) return moves;
   const rest = moves.filter((move) => move.id !== 'hiddenpower');
-  if (!progression.hiddenPowerTypeChangerUnlocked) return rest;
+  if (
+    !mechanics().hiddenPowerTypeChanger ||
+    !progression.hiddenPowerTypeChangerUnlocked
+  ) {
+    return rest;
+  }
   for (const type of HIDDEN_POWER_TYPES) {
     rest.push({
       ...hiddenPower,

@@ -59,12 +59,23 @@ export const REBORN_GAME = Object.freeze({
     checkpoints: REBORN_PROGRESSION_CHECKPOINTS,
     itemUnlockBadges: REBORN_ITEM_UNLOCK_BADGES,
   }),
-  // Machine and tutor tables with pickup timing (games/legality.js).
+  // Machine and tutor tables with pickup timing (games/legality.js), and
+  // what the game calls its HM-like machines.
   moveSources: Object.freeze({
     tmOptions: REBORN_TM_OPTIONS,
     tmxOptions: REBORN_TMX_OPTIONS,
+    tmxLabel: 'TMX',
     tutorGroups: REBORN_TUTOR_GROUPS,
     tutorOptions: REBORN_TUTOR_OPTIONS,
+  }),
+  // Move-acquisition mechanics a game may lack (games/legality.js serves
+  // them). Common Candy lowers a level, so a level-up entry below a form's
+  // arrival is reachable by candying down and leveling back through it. The
+  // Type Changer NPC picks Hidden Power's type; without one the type follows
+  // IVs and Hidden Power is never a plannable move.
+  mechanics: Object.freeze({
+    levelDown: true,
+    hiddenPowerTypeChanger: true,
   }),
   // Item content (games/items.js): renewable sources by first badge, the
   // game-only inventory items, the held items the game replaces (hidden from

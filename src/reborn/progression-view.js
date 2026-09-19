@@ -1,7 +1,7 @@
 import { escapeHtml, escapeAttr } from '../utils/html.js';
 import { detailsStateAttrs } from '../utils/details-state.js';
 import { getMoveMeta, describeMoveMeta } from '../move-meta';
-import { legalityRules, moveSources } from '../games/legality.js';
+import { legalityRules, mechanics, moveSources } from '../games/legality.js';
 import { accessFields } from '../games/evolution.js';
 import {
   getCheckpoint,
@@ -54,14 +54,14 @@ export function renderRebornProgressionPanel(
           <span>Daycare unlocked</span>
         </label>
 
-        <label class="checkbox-label">
+        ${mechanics().hiddenPowerTypeChanger ? `<label class="checkbox-label">
           <input
             data-progression-field="hiddenPowerTypeChangerUnlocked"
             type="checkbox"
             ${progression.hiddenPowerTypeChangerUnlocked ? 'checked' : ''}
           />
           <span>Hidden Power Type Changer unlocked</span>
-        </label>
+        </label>` : ''}
 
         <details class="progression-option-group wide-control evo-access-group" ${detailsStateAttrs('evo-access', false)}>
           <summary>
@@ -102,7 +102,7 @@ export function renderRebornProgressionPanel(
           field: 'availableTmxIds',
           options: moveSources().tmxOptions,
           selectedIds: progression.availableTmxIds,
-          summary: 'Available TMXs',
+          summary: `Available ${moveSources().tmxLabel}s`,
           detailsId: 'tmxs',
           badges: getCheckpoint(progression.checkpoint)?.badges ?? null,
         })}
@@ -129,8 +129,8 @@ export function renderRebornProgressionPanel(
         <ul>
           <li>Base: ${escapeHtml(legalityRules().legalityBase.baseGames)} learnsets.</li>
           <li>Transfer moves available by default: ${legalityRules().legalityBase.transferMovesAvailableByDefault ? 'yes' : 'no'}.</li>
-          <li>TMX moves: ${legalityRules().tmxMoves.map(escapeHtml).join(', ')}.</li>
-          <li>Promoted TMs: ${legalityRules().promotedTmMoves.map(escapeHtml).join(', ')}.</li>
+          <li>${escapeHtml(moveSources().tmxLabel)} moves: ${legalityRules().tmxMoves.map(escapeHtml).join(', ')}.</li>
+          ${legalityRules().promotedTmMoves.length ? `<li>Promoted TMs: ${legalityRules().promotedTmMoves.map(escapeHtml).join(', ')}.</li>` : ''}
           ${legalityRules().notes.map((note) => `<li>${escapeHtml(note)}</li>`).join('')}
         </ul>
       </details>

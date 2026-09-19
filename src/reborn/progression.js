@@ -3,7 +3,7 @@ import {
   removeLocalStorage,
   writeLocalStorage,
 } from '../storage/safe-local-storage';
-import { moveSources } from '../games/legality.js';
+import { mechanics, moveSources } from '../games/legality.js';
 import { gameItems } from '../games/items.js';
 import { analysisTypes } from './type-chart.js';
 import { accessFields } from '../games/evolution.js';
@@ -98,9 +98,10 @@ export function normalizeRebornProgression(progression = {}) {
     levelCap: normalizeStoredLevelCap(progression.levelCap),
     moveRelearnerUnlocked: Boolean(progression.moveRelearnerUnlocked),
     daycareUnlocked: Boolean(progression.daycareUnlocked),
-    hiddenPowerTypeChangerUnlocked: Boolean(
-      progression.hiddenPowerTypeChangerUnlocked,
-    ),
+    // A game with no Type Changer has nothing to unlock.
+    hiddenPowerTypeChangerUnlocked:
+      mechanics().hiddenPowerTypeChanger &&
+      Boolean(progression.hiddenPowerTypeChangerUnlocked),
     availableTmIds: normalizeOptionIds(
       progression.availableTmIds,
       moveSources().tmOptions,

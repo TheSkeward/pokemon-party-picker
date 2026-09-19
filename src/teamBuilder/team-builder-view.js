@@ -12,6 +12,7 @@ import {
 } from '../reborn/progression-view';
 import { detailsStateAttrs } from '../utils/details-state.js';
 import { accessFields } from '../games/evolution.js';
+import { moveSources } from '../games/legality.js';
 import { checkpointShortLabel, getCheckpoint } from '../games/schedule.js';
 import { renderRebornTeamAnalysisPanel } from '../reborn/team-analysis-view';
 import { getCurrentRebornSpeciesForChoice } from '../reborn/current-species.js';
@@ -149,7 +150,10 @@ export function renderGamestateStrip(progression = {}) {
     '',
   );
   chip(`TMs ${(progression.availableTmIds || []).length}`, 'tms');
-  chip(`TMXs ${(progression.availableTmxIds || []).length}`, 'tmxs');
+  chip(
+    `${moveSources().tmxLabel}s ${(progression.availableTmxIds || []).length}`,
+    'tmxs',
+  );
   chip(`Tutors ${(progression.availableTutorMoveIds || []).length}`, 'tutors');
 
   const blocked = accessFields().filter(
@@ -609,7 +613,7 @@ function renderProvenanceFooter(manifest, result) {
   return `
     <section class="panel">
       <p class="muted" style="font-size: 0.85em">
-        Data: Reborn ${escapeHtml(manifest?.rebornVersion || '?')} ·
+        Data: ${escapeHtml(getActiveGame().shortLabel)} ${escapeHtml(manifest?.gameVersions?.[getActiveGame().id] || '?')} ·
         scoring ${escapeHtml(manifest?.scoringVersion || '?')} ·
         signature ${escapeHtml(manifest?.dataSignature || '?')} ·
         built ${escapeHtml((manifest?.generatedAt || '').slice(0, 10))} ·

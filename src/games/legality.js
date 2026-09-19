@@ -8,10 +8,19 @@ import { getActiveGame } from './registry.js';
 
 /**
  * @return {{tmOptions: !Array<!Object>, tmxOptions: !Array<!Object>,
- *     tutorGroups: !Array<!Object>, tutorOptions: !Array<!Object>}}
+ *     tmxLabel: string, tutorGroups: !Array<!Object>,
+ *     tutorOptions: !Array<!Object>}}
  */
 export function moveSources() {
   return getActiveGame().moveSources;
+}
+
+/**
+ * @return {{levelDown: boolean, hiddenPowerTypeChanger: boolean}} The
+ *     move-acquisition mechanics the game has (see games/reborn.js).
+ */
+export function mechanics() {
+  return getActiveGame().mechanics;
 }
 
 /**

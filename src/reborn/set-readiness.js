@@ -9,15 +9,18 @@
  *   - L* is min(100, earliest cap at which every element is obtainable under
  *     the walkthrough schedule): level-up moves at their level, TM/tutor moves
  *     at their unlock badge's cap, items at their timeline badge's cap.
- *   - Abilities are ALWAYS ready: Reborn distributes hidden abilities evenly
- *     at catch and Ability Capsules switch between all of a mon's abilities
- *     at will, from the start of the game.
+ *   - Abilities are ALWAYS ready: a set's ability is one the mon can have at
+ *     catch (Reborn also hands out hidden abilities at catch and sells
+ *     Ability Capsules), and a caught ability declared in the pool
+ *     overrides the set's.
+ *   - Hidden Power is blocked in a game with no Type Changer: its type
+ *     follows IVs, so it is learnable but never plannable.
  *
  * This annotates the analysis display; it feeds no scoring input.
  */
 
 import { getCheckpoint, getItemUnlockBadge } from '../games/schedule.js';
-import { moveSources } from '../games/legality.js';
+import { mechanics, moveSources } from '../games/legality.js';
 import { fixedMoveDamage } from './damage-model.js';
 import { getMoveMetaById } from '../move-meta.js';
 import { toId } from '../utils/ids.js';
@@ -126,6 +129,15 @@ export function computeSetReadiness({
       getMoveMetaById(id)?.name ||
       id;
     if (isLevelScalingMove(id)) scaling = true;
+
+    if (id === 'hiddenpower' && !mechanics().hiddenPowerTypeChanger) {
+      return {
+        id,
+        label,
+        status: 'blocked',
+        detail: `type follows IVs (no Type Changer in ${getActiveGame().shortLabel})`,
+      };
+    }
 
     if (isMoveAvailable(id)) {
       return isLevelScalingMove(id)

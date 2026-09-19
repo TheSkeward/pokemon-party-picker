@@ -52,8 +52,15 @@ export const SOULSILVER_GAME = Object.freeze({
   moveSources: Object.freeze({
     tmOptions: SOULSILVER_TM_OPTIONS,
     tmxOptions: SOULSILVER_HM_OPTIONS,
+    tmxLabel: 'HM',
     tutorGroups: SOULSILVER_TUTOR_GROUPS,
     tutorOptions: SOULSILVER_TUTOR_OPTIONS,
+  }),
+  // No Common Candy and no Type Changer: a level never goes down, and Hidden
+  // Power's type follows IVs.
+  mechanics: Object.freeze({
+    levelDown: false,
+    hiddenPowerTypeChanger: false,
   }),
   items: Object.freeze({
     shopItemBadges: Object.freeze({}),
@@ -99,6 +106,8 @@ export const SOULSILVER_GAME = Object.freeze({
       'Cut, Fly, Surf, Strength, Whirlpool, Rock Smash, Waterfall, and Rock Climb are HMs.',
       'Defog was an HM in Diamond, Pearl, and Platinum only; no machine teaches it here.',
       'Event-only moves and Pokéwalker pickups are not counted.',
+      "Hidden Power's type follows IVs and cannot be changed, so it is never counted as a plannable move.",
+      "A set's ability is assumed obtainable at catch (there is no Ability Capsule); declare a caught ability in the pool, as in Cyndaquil (Blaze), to pin it.",
     ]),
   }),
   data: Object.freeze({

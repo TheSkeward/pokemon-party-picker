@@ -64,9 +64,22 @@ const combined = crypto
   .digest('hex')
   .slice(0, 16);
 
+// Per game, the version of the source its learnsets and rules came from:
+// Reborn's mons.dat episode, a mainline game's @pkmn/dex release.
+const dexVersion = JSON.parse(
+  fs.readFileSync(
+    path.join(projectRoot, 'node_modules', '@pkmn', 'dex', 'package.json'),
+    'utf8',
+  ),
+).version;
+const gameVersions = {
+  reborn: '19.5',
+  soulsilver: `@pkmn/dex ${dexVersion}`,
+};
+
 const manifest = {
   generatedAt: new Date().toISOString(),
-  rebornVersion: '19.5',
+  gameVersions,
   scoringVersion: SCORING_VERSION,
   dataSignature: combined,
   sources,
