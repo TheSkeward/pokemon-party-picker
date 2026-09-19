@@ -76,8 +76,21 @@ function evoItemAccessKey(evoItem) {
   );
 }
 
+// Names for the gates a game does not expose (a method it lacks has no
+// progression field), so its reasons still read as prose.
+const METHOD_LABELS = Object.freeze({
+  evoAccessMagneticField: 'A magnetic field area',
+  evoAccessMossyRock: 'A Moss Rock',
+  evoAccessIcyRock: 'An Ice Rock',
+  evoAccessOtherLocations: 'The special evolution condition',
+});
+
 function accessLabel(key) {
-  return accessFields().find((field) => field.key === key)?.label || key;
+  return (
+    accessFields().find((field) => field.key === key)?.label ||
+    METHOD_LABELS[key] ||
+    key
+  );
 }
 
 function requiredAccessKeys(evoType, condition, species) {

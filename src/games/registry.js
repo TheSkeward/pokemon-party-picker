@@ -11,9 +11,11 @@
  * serve one game's cached results to another.
  */
 import { REBORN_GAME } from './reborn.js';
+import { SOULSILVER_GAME } from './soulsilver.js';
 
 const GAMES = Object.freeze({
   [REBORN_GAME.id]: REBORN_GAME,
+  [SOULSILVER_GAME.id]: SOULSILVER_GAME,
 });
 
 let activeGameId = REBORN_GAME.id;
