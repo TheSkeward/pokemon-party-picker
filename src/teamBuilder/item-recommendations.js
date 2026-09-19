@@ -1,34 +1,40 @@
 import { dataUrl } from '../utils/data-url.js';
 import { fetchJsonCached } from '../utils/fetch-json-cached.js';
 import { toId } from '../utils/ids.js';
-import { TYPE_GEMS } from '../reborn/type-gems.js';
-import {
-  REBORN_SEEDS,
-  GEN7_TERRAIN_SEEDS,
-  REBORN_SEED_STAT_VECTORS,
-} from '../reborn/reborn-seeds.js';
 import { dex } from '../games/dex.js';
+import { gameItems } from '../games/items.js';
 
-const TERRAIN_SEED_IDS = GEN7_TERRAIN_SEEDS.map((name) => toId(name));
-const REBORN_SEED_BY_ID = new Map(
-  REBORN_SEEDS.map((name) => [
-    toId(name),
-    { name, vector: REBORN_SEED_STAT_VECTORS[name] },
-  ]),
-);
-
-const GEM_BY_Z_CRYSTAL_ID = new Map(
-  TYPE_GEMS.map((gem) => [
-    toId(gem.zCrystalName),
-    { id: toId(gem.gemName), name: gem.gemName },
-  ]),
-);
-
-const GEM_IDS = new Set(TYPE_GEMS.map((gem) => toId(gem.gemName)));
-
-const GEM_TYPE_BY_ID = new Map(
-  TYPE_GEMS.map((gem) => [toId(gem.gemName), gem.type]),
-);
+// Proxy tables per game, keyed by its item content: the mainline items whose
+// usage stands in for the game's own seeds and gems (SCORING.md, "Borrowed
+// priors"). A game without either supplies empty tables.
+const PROXIES = new WeakMap();
+function proxies() {
+  const items = gameItems();
+  let tables = PROXIES.get(items);
+  if (tables) return tables;
+  const seeds =
+    items.fieldSeeds || { names: [], proxyItems: [], statVectors: {} };
+  const gems = items.typeGems || [];
+  tables = {
+    terrainSeedIds: seeds.proxyItems.map((name) => toId(name)),
+    seedById: new Map(
+      seeds.names.map((name) => [
+        toId(name),
+        { name, vector: seeds.statVectors[name] },
+      ]),
+    ),
+    gemByZCrystalId: new Map(
+      gems.map((gem) => [
+        toId(gem.zCrystalName),
+        { id: toId(gem.gemName), name: gem.gemName },
+      ]),
+    ),
+    gemIds: new Set(gems.map((gem) => toId(gem.gemName))),
+    gemTypeById: new Map(gems.map((gem) => [toId(gem.gemName), gem.type])),
+  };
+  PROXIES.set(items, tables);
+  return tables;
+}
 
 // A type Gem only fires on a move of its own type — useless otherwise — so an
 // item is eligible for a member if it isn't a gem, or it is a gem whose type is
@@ -40,7 +46,7 @@ function itemEligibleForMember(itemId, allowedTypes, fieldSetterShare = null) {
   if (itemId === FIELD_EXTENDER_ITEM_ID) {
     return fieldSetterShare == null || fieldSetterShare > 0;
   }
-  const gemType = GEM_TYPE_BY_ID.get(itemId);
+  const gemType = proxies().gemTypeById.get(itemId);
   if (!gemType) return true;
   if (!allowedTypes) return true;
   return allowedTypes.has(gemType);
@@ -297,7 +303,7 @@ async function fetchMemberItems({ family, pokemonId, selection, unburden }) {
   // Z-Crystal (primary or tail) — both are one-use, type-keyed damage boosts.
   // Skipped for any gem already supplied with real Gen 5 usage above.
   for (const entry of [...byId.values()]) {
-    const gem = GEM_BY_Z_CRYSTAL_ID.get(entry.id);
+    const gem = proxies().gemByZCrystalId.get(entry.id);
     if (gem && !byId.has(gem.id)) {
       const gemEntry = {
         id: gem.id,
@@ -317,7 +323,7 @@ async function fetchMemberItems({ family, pokemonId, selection, unburden }) {
   // terrain-seed usage) sets the magnitude — "does this Pokémon run field seeds
   // at all" — and is honestly low for most. The stat-fit share decides *which*
   // seed, steering each toward the archetype it amplifies.
-  const D = TERRAIN_SEED_IDS.reduce(
+  const D = proxies().terrainSeedIds.reduce(
     (sum, id) => sum + (byId.get(id)?.usage || 0),
     0,
   );
@@ -326,7 +332,7 @@ async function fetchMemberItems({ family, pokemonId, selection, unburden }) {
       if (byId.has(seedId)) continue;
       const entry = {
         id: seedId,
-        name: REBORN_SEED_BY_ID.get(seedId).name,
+        name: proxies().seedById.get(seedId).name,
         usage: seedWeight,
         weight: seedWeight,
         proxy: true,
@@ -350,7 +356,7 @@ function seedWeights(pokemonId, D) {
   const mean = stats.reduce((sum, value) => sum + value, 0) / stats.length;
   const above = stats.map((value) => Math.max(0, value - mean));
 
-  const fits = [...REBORN_SEED_BY_ID].map(([seedId, { vector }]) => [
+  const fits = [...proxies().seedById].map(([seedId, { vector }]) => [
     seedId,
     vector.reduce((sum, weight, index) => sum + weight * above[index], 0),
   ]);
@@ -362,7 +368,7 @@ function seedWeights(pokemonId, D) {
 }
 
 function applyUnburden(entry, unburden) {
-  if (!unburden || !GEM_IDS.has(entry.id)) return;
+  if (!unburden || !proxies().gemIds.has(entry.id)) return;
   entry.baseWeight = entry.weight;
   entry.weight *= UNBURDEN_GEM_MULTIPLIER;
   entry.unburden = true;

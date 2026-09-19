@@ -4,7 +4,7 @@ import {
   writeLocalStorage,
 } from '../storage/safe-local-storage';
 import { moveSources } from '../games/legality.js';
-import { TERRAIN_SEED_MIGRATION } from './reborn-seeds';
+import { gameItems } from '../games/items.js';
 import { analysisTypes } from './type-chart.js';
 import { EVOLUTION_ACCESS_FIELDS } from './evolution-requirements.js';
 import { getCheckpoint } from '../games/schedule.js';
@@ -357,9 +357,9 @@ function normalizeOwnedItems(value) {
     const count = Number.parseInt(rawCount, 10);
     if (!Number.isFinite(count) || count <= 0) continue;
 
-    // Replaced terrain seeds migrate to their Reborn equivalent (summing
-    // counts, since several terrains map to the same field seed).
-    const id = TERRAIN_SEED_MIGRATION[trimmed] || trimmed;
+    // Items the game replaces migrate to their replacement (summing counts,
+    // since several ids may map to the same replacement).
+    const id = gameItems().inventoryMigration[trimmed] || trimmed;
     owned[id] = Math.min(MAX_TRACKED_ITEM_COUNT, (owned[id] || 0) + count);
   }
 

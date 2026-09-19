@@ -9,12 +9,8 @@ import {
   getItemUnlockBadge,
   getUnlockBadge,
 } from '../games/schedule.js';
-import {
-  REBORN_EXTRA_INVENTORY_ITEMS,
-  getRenewablyObtainableItems,
-} from './item-availability.js';
+import { gameItems, getRenewablyObtainableItems } from '../games/items.js';
 import { MAX_TRACKED_ITEM_COUNT, MAX_OPPONENT_TYPE_BIAS } from './progression';
-import { HIDDEN_INVENTORY_ITEM_IDS } from './reborn-seeds';
 import { analysisTypes } from './type-chart.js';
 import { getTypeColor } from '../move-meta';
 import { dex } from '../games/dex.js';
@@ -235,7 +231,7 @@ function renderBiasRow(type, level) {
 
 function renderItemInventory(ownedItems, badges) {
   const extrasById = Object.fromEntries(
-    REBORN_EXTRA_INVENTORY_ITEMS.map((item) => [item.id, item]),
+    gameItems().extraInventoryItems.map((item) => [item.id, item]),
   );
   const ownedIds = Object.keys(ownedItems)
     .map((id) => dex().heldItemsById[id] || extrasById[id])
@@ -244,9 +240,9 @@ function renderItemInventory(ownedItems, badges) {
 
   const datalistOptions = [
     ...dex().heldItems.filter(
-      (item) => !HIDDEN_INVENTORY_ITEM_IDS.has(item.id),
+      (item) => !gameItems().hiddenInventoryItemIds.has(item.id),
     ),
-    ...REBORN_EXTRA_INVENTORY_ITEMS,
+    ...gameItems().extraInventoryItems,
   ]
     .sort((a, b) => a.name.localeCompare(b.name))
     .map((item) => `<option value="${escapeAttr(item.name)}"></option>`)

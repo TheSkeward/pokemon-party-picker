@@ -1,33 +1,25 @@
-import {
-  REBORN_MINING_ITEM_BADGES,
-  REBORN_SHOP_ITEM_BADGES,
-} from '../generated/rebornItemTimeline.generated.js';
-import { HIDDEN_INVENTORY_ITEM_IDS } from './reborn-seeds.js';
-import { REBORN_EXTRA_INVENTORY_ITEMS } from './extra-inventory-items.js';
-import { toId } from '../utils/ids.js';
-import { dex } from '../games/dex.js';
-
-export { REBORN_EXTRA_INVENTORY_ITEMS };
-// Curated evolution-item availability for Pokémon Reborn.
-//
-// This is a small, SOURCED table — not scraped data and not guesswork dressed
-// as data. Every entry states why we believe the item is obtainable; anything
-// not listed is "unknown" and the evolution engine surfaces that as unknown
-// (blocked, with the reason shown) rather than silently pretending either way.
-//
-// Sources of belief:
-//  - WILD-HELD: mainline Gen-7 wild held items, which Reborn's mons.dat
-//    preserves — the evolving line itself carries the item in the wild, so a
-//    player who can catch the mon can farm the item (e.g. wild Happiny holds an
-//    Oval Stone 50% of the time).
-//  - MINING/COMMERCE: Reborn's mining rocks and department store stock the
-//    standard evolution stones and the Link Stone (Reborn's replacement for
-//    trade evolutions) across the game; farmable, but tedious.
-//
-// status values: "farmable" (reliably obtainable), "farmable-tedious"
-// (obtainable with real grind), absent = unknown.
-
-const ITEM_AVAILABILITY = {
+/**
+ * @fileoverview Curated evolution-item availability for Pokémon Reborn.
+ *
+ * This is a small, SOURCED table — not scraped data and not guesswork dressed
+ * as data. Every entry states why we believe the item is obtainable; anything
+ * not listed is "unknown" and the evolution engine surfaces that as unknown
+ * (blocked, with the reason shown) rather than silently pretending either way.
+ *
+ * Sources of belief:
+ *  - WILD-HELD: mainline Gen-7 wild held items, which Reborn's mons.dat
+ *    preserves — the evolving line itself carries the item in the wild, so a
+ *    player who can catch the mon can farm the item (e.g. wild Happiny holds an
+ *    Oval Stone 50% of the time).
+ *  - MINING/COMMERCE: Reborn's mining rocks and department store stock the
+ *    standard evolution stones and the Link Stone (Reborn's replacement for
+ *    trade evolutions) across the game; farmable, but tedious.
+ *
+ * status values: "farmable" (reliably obtainable), "farmable-tedious"
+ * (obtainable with real grind), absent = unknown.
+ */
+/** @type {!Object<string, {status: string, source: string}>} */
+export const REBORN_EVOLUTION_ITEM_AVAILABILITY = {
   // Wild-held by the evolving line itself (50% — reliably farmable).
   ovalstone: { status: 'farmable', source: 'wild-held by Happiny (50%)' },
 
@@ -58,84 +50,3 @@ const ITEM_AVAILABILITY = {
   icestone: { status: 'farmable-tedious', source: 'Reborn mining / dept. store' },
   everstone: { status: 'farmable-tedious', source: 'Reborn mining' },
 };
-
-/**
- * Every item id that participates in evolution requirements — owning one of
- * THESE changes optimization results (friction/access), unlike ordinary held
- * items, so progression-staleness checks must watch them.
- * @return {Array<string>}
- */
-export function getEvolutionItemIds() {
-  return Object.keys(ITEM_AVAILABILITY);
-}
-
-/**
- * @param {?string} itemName Item name or id (normalized internally).
- * @return {{status: string, source: string}} status is "farmable",
- *     "farmable-tedious", or "unknown"; source states the basis for belief.
- */
-export function getItemAvailability(itemName) {
-  const id = toId(itemName);
-  if (!id) return { status: 'unknown', source: 'no item recorded' };
-  return (
-    ITEM_AVAILABILITY[id] || {
-      status: 'unknown',
-      source: `no availability data for ${itemName}`,
-    }
-  );
-}
-
-/**
- * The renewable held items the player could stock RIGHT NOW but isn't
- * tracking yet: reachable at their badge count, in the held-item catalog,
- * not a hidden/replaced id, and absent from (or under-stocked in) the owned
- * list. Merges shop stock with mining-rock rewards; when an item has both
- * sources, the earlier renewable source wins and the item appears only
- * once. Drives the inventory panel's one-click sync — the data already
- * knows what the shops and rocks yield, so discovering them shouldn't mean
- * transcribing them. Sorted by name for a stable display list.
- * `badges` and `ownedItems` arrive as plain values (not the progression
- * object) to keep this module import-cycle-free.
- * @param {number} badges
- * @param {Object<string, number>=} ownedItems id -> owned count.
- * @param {number=} minCount Owned count at which an item stops qualifying.
- * @return {Array<{id: string, name: string, badge: number}>}
- */
-export function getRenewablyObtainableItems(
-  badges,
-  ownedItems = {},
-  minCount = 1,
-) {
-  const renewableBadges = { ...REBORN_SHOP_ITEM_BADGES };
-  for (const [id, badge] of Object.entries(REBORN_MINING_ITEM_BADGES)) {
-    renewableBadges[id] = Math.min(renewableBadges[id] ?? Infinity, badge);
-  }
-  return getAvailableInventoryItems(
-    renewableBadges,
-    badges,
-    ownedItems,
-    minCount,
-  );
-}
-
-function getAvailableInventoryItems(
-  itemBadges,
-  badges,
-  ownedItems,
-  minCount,
-) {
-  if (!Number.isFinite(badges)) return [];
-  const extrasById = Object.fromEntries(
-    REBORN_EXTRA_INVENTORY_ITEMS.map((item) => [item.id, item]),
-  );
-  const results = [];
-  for (const [id, badge] of Object.entries(itemBadges)) {
-    if (badge > badges) continue;
-    if (HIDDEN_INVENTORY_ITEM_IDS.has(id)) continue;
-    const item = dex().heldItemsById[id] || extrasById[id];
-    if (!item) continue;
-    if ((ownedItems[id] || 0) >= minCount) continue;
-    results.push({ id, name: item.name, badge });
-  }
-  return results.sort((a, b) => a.name.localeCompare(b.name));
-}

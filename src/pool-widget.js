@@ -46,11 +46,10 @@ import { getCheckpoint } from './games/schedule.js';
 import { toId } from './utils/ids.js';
 import { bindPersistentDetails } from './utils/details-state.js';
 import {
-  REBORN_EXTRA_INVENTORY_ITEMS,
+  gameItems,
   getEvolutionItemIds,
   getRenewablyObtainableItems,
-} from './reborn/item-availability.js';
-import { HIDDEN_INVENTORY_ITEM_IDS } from './reborn/reborn-seeds';
+} from './games/items.js';
 import { buildPoolAvailabilityText } from './teamBuilder/availability-export';
 import {
   assignTeamItems,
@@ -838,7 +837,7 @@ export function mountPoolOptimizer(container, options = {}) {
     const addOwnedItemFromSearch = () => {
       const input = app.querySelector('[data-item-add-input]');
       const itemId = toId(input?.value || '');
-      const knownExtra = REBORN_EXTRA_INVENTORY_ITEMS.some(
+      const knownExtra = gameItems().extraInventoryItems.some(
         (item) => item.id === itemId,
       );
 
@@ -849,9 +848,9 @@ export function mountPoolOptimizer(container, options = {}) {
         return;
       }
 
-      if (HIDDEN_INVENTORY_ITEM_IDS.has(itemId)) {
+      if (gameItems().hiddenInventoryItemIds.has(itemId)) {
         updateProgressionStatusMessage(
-          'That terrain seed is replaced in Reborn — use the matching field seed instead.',
+          'That item is replaced in this game; use its replacement instead.',
         );
         return;
       }

@@ -21,7 +21,7 @@
  */
 
 import { toId } from '../utils/ids.js';
-import { getItemAvailability } from './item-availability.js';
+import { getItemAvailability } from '../games/items.js';
 import { tunable } from '../teamBuilder/scoring-constants.js';
 import { dex } from '../games/dex.js';
 

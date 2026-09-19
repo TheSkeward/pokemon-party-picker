@@ -10,9 +10,7 @@ import {
   MAX_TRACKED_ITEM_COUNT,
 } from '../src/reborn/progression.js';
 import { renderRebornProgressionPanel } from '../src/reborn/progression-view.js';
-import {
-  getRenewablyObtainableItems,
-} from '../src/reborn/item-availability.js';
+import { getRenewablyObtainableItems } from '../src/games/items.js';
 import {
   REBORN_MINING_ITEM_BADGES,
   REBORN_SHOP_ITEM_BADGES,
