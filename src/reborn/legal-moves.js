@@ -1,8 +1,4 @@
-import {
-  REBORN_TM_OPTIONS,
-  REBORN_TMX_OPTIONS,
-  REBORN_TUTOR_OPTIONS,
-} from './progression-options.js';
+import { moveSources } from '../games/legality.js';
 import { normalizeLevelCap } from './progression.js';
 import { dataUrl } from '../utils/data-url.js';
 import { getActiveGame } from '../games/registry.js';
@@ -11,9 +7,21 @@ import { moveId as toId, toId as toPokemonId } from '../utils/ids.js';
 import { dex } from '../games/dex.js';
 
 const legalMoveCache = new Map();
-const tmByMoveId = mapOptionsByMoveId(REBORN_TM_OPTIONS);
-const tmxByMoveId = mapOptionsByMoveId(REBORN_TMX_OPTIONS);
-const tutorByMoveId = mapOptionsByMoveId(REBORN_TUTOR_OPTIONS);
+// Move-source lookups per game, keyed by its option tables.
+const OPTION_MAPS = new WeakMap();
+function optionMaps() {
+  const sources = moveSources();
+  let maps = OPTION_MAPS.get(sources);
+  if (!maps) {
+    maps = {
+      tm: mapOptionsByMoveId(sources.tmOptions),
+      tmx: mapOptionsByMoveId(sources.tmxOptions),
+      tutor: mapOptionsByMoveId(sources.tutorOptions),
+    };
+    OPTION_MAPS.set(sources, maps);
+  }
+  return maps;
+}
 
 /**
  * Loads a mon's legal-move file for the active game, with each move rejoined
@@ -397,7 +405,7 @@ export function getAvailableRebornMoves(legalMoveData, progression = {}) {
       });
     }
 
-    const tmOption = tmByMoveId.get(move.id);
+    const tmOption = optionMaps().tm.get(move.id);
     if (move.sources?.tm && tmOption && selectedTmIds.has(tmOption.id)) {
       sources.push({
         kind: 'tm',
@@ -408,7 +416,7 @@ export function getAvailableRebornMoves(legalMoveData, progression = {}) {
       });
     }
 
-    const tmxOption = tmxByMoveId.get(move.id);
+    const tmxOption = optionMaps().tmx.get(move.id);
     if (move.sources?.tmx && tmxOption && selectedTmxIds.has(tmxOption.id)) {
       sources.push({
         kind: 'tmx',
@@ -419,7 +427,7 @@ export function getAvailableRebornMoves(legalMoveData, progression = {}) {
       });
     }
 
-    const tutorOption = tutorByMoveId.get(move.id);
+    const tutorOption = optionMaps().tutor.get(move.id);
     if (
       move.sources?.tutor &&
       tutorOption &&

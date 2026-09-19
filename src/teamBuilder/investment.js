@@ -14,7 +14,7 @@
  */
 
 import { optimizeTeamFromPool } from './team-optimizer.js';
-import { REBORN_PROGRESSION_CHECKPOINTS } from '../reborn/badge-timeline.js';
+import { getCheckpoints } from '../games/schedule.js';
 
 // score points at the next cap that make a mon worth tracking
 const TRAIN_SOON_GAIN = 250;
@@ -31,7 +31,7 @@ const CLOSE_BENCH_MARGIN = 0.985;
 export function nextLevelCaps(levelCap, count = 2) {
   const cap = Number.parseInt(levelCap, 10) || 0;
   const upcoming = [];
-  for (const checkpoint of REBORN_PROGRESSION_CHECKPOINTS) {
+  for (const checkpoint of getCheckpoints()) {
     if (checkpoint.levelCap > cap && !upcoming.includes(checkpoint.levelCap)) {
       upcoming.push(checkpoint.levelCap);
     }

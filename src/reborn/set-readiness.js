@@ -16,15 +16,8 @@
  * This annotates the analysis display; it feeds no scoring input.
  */
 
-import {
-  getRebornCheckpoint,
-  getItemUnlockBadge,
-} from './badge-timeline.js';
-import {
-  REBORN_TM_OPTIONS,
-  REBORN_TMX_OPTIONS,
-  REBORN_TUTOR_GROUPS,
-} from './progression-options.js';
+import { getCheckpoint, getItemUnlockBadge } from '../games/schedule.js';
+import { moveSources } from '../games/legality.js';
 import { fixedMoveDamage } from './damage-model.js';
 import { getMoveMetaById } from '../move-meta.js';
 import { toId } from '../utils/ids.js';
@@ -40,9 +33,14 @@ function isLevelScalingMove(moveId) {
   return low != null && low !== fixedMoveDamage(moveId, 100);
 }
 
-// moveId -> earliest badge any TM/TMX/tutor teaches it ("After Badge NN").
-const MACHINE_BADGE_BY_MOVE = (() => {
-  const map = new Map();
+// moveId -> earliest badge any TM/TMX/tutor teaches it ("After Badge NN"),
+// built per game from its move-source tables.
+const MACHINE_BADGES = new WeakMap();
+function machineBadgeByMove() {
+  const sources = moveSources();
+  let map = MACHINE_BADGES.get(sources);
+  if (map) return map;
+  map = new Map();
   const note = (moveId, badge) => {
     if (badge == null) return;
     if (!map.has(moveId) || badge < map.get(moveId)) map.set(moveId, badge);
@@ -51,20 +49,21 @@ const MACHINE_BADGE_BY_MOVE = (() => {
     const match = /Badge\s+(\d+)/i.exec(String(text || ''));
     return match ? Number.parseInt(match[1], 10) : null;
   };
-  for (const option of [...REBORN_TM_OPTIONS, ...REBORN_TMX_OPTIONS]) {
+  for (const option of [...sources.tmOptions, ...sources.tmxOptions]) {
     note(toId(option.move), badgeOf(option.available));
   }
-  for (const group of REBORN_TUTOR_GROUPS) {
+  for (const group of sources.tutorGroups) {
     for (const option of group.options || []) {
       note(option.id, badgeOf(option.available || group.available));
     }
   }
+  MACHINE_BADGES.set(sources, map);
   return map;
-})();
+}
 
 // Badge 0's checkpoint id is "start" (cap 20), not "badge-0".
 const capOfBadge = (badge) =>
-  getRebornCheckpoint(badge === 0 ? 'start' : `badge-${badge}`)?.levelCap ??
+  getCheckpoint(badge === 0 ? 'start' : `badge-${badge}`)?.levelCap ??
   null;
 
 const badgePhrase = (badge) =>
@@ -159,7 +158,7 @@ export function computeSetReadiness({
       // moves of its ≤1 learnset, never the relist catalog above them.
       Boolean(raw.sources?.levelOneRelist);
     if (raw.sources?.tm || raw.sources?.tmx || raw.sources?.tutor) {
-      const badge = MACHINE_BADGE_BY_MOVE.get(id);
+      const badge = machineBadgeByMove().get(id);
       if (badge != null) {
         candidates.push({
           cap: capOfBadge(badge) ?? 100,

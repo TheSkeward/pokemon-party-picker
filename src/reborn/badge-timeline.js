@@ -27,7 +27,6 @@
  *   - Post-game raises the cap in ten silent steps of 5, to 150.
  */
 
-import { REBORN_ITEM_UNLOCK_BADGES } from '../generated/rebornItemTimeline.generated.js';
 
 /**
  * The timeline, in play order: 19 badge checkpoints then 10 post-game tiers.
@@ -126,97 +125,3 @@ export const REBORN_PROGRESSION_CHECKPOINTS = [
   { id: 'post-9', badges: 18, postgame: 9, label: 'Post: A Canvas of Cyclical Conflict', levelCap: 145, unlocks: {} },
   { id: 'post-10', badges: 18, postgame: 10, label: 'Post: Pokemon Reborn, Reborn!', levelCap: 150, unlocks: {} },
 ];
-
-const BY_ID = new Map(
-  REBORN_PROGRESSION_CHECKPOINTS.map((checkpoint, index) => [
-    checkpoint.id,
-    { checkpoint, index },
-  ]),
-);
-
-/**
- * @param {?string} id
- * @return {?Object} Null for unknown ids.
- */
-export function getRebornCheckpoint(id) {
-  return BY_ID.get(String(id || ''))?.checkpoint || null;
-}
-
-/**
- * @param {?string} id
- * @return {number} Position in timeline order; -1 for unknown ids.
- */
-export function getRebornCheckpointOrdinal(id) {
-  const entry = BY_ID.get(String(id || ''));
-  return entry ? entry.index : -1;
-}
-
-/**
- * Everything the schedule expects to be obtainable once the given checkpoint
- * is reached (cumulative through that checkpoint).
- * @param {?string} id Checkpoint id; unknown ids yield empty sets.
- * @return {{accessKeys: Set<string>, flags: Set<string>, itemIds: Set<string>}}
- */
-export function getExpectedUnlocks(id) {
-  const ordinal = getRebornCheckpointOrdinal(id);
-  const expected =
-    { accessKeys: new Set(), flags: new Set(), itemIds: new Set() };
-  if (ordinal < 0) return expected;
-
-  for (
-    const checkpoint of REBORN_PROGRESSION_CHECKPOINTS.slice(0, ordinal + 1)) {
-    for (const key of checkpoint.unlocks.access || []) expected.accessKeys.add(
-      key);
-    for (const key of checkpoint.unlocks.flags || []) expected.flags.add(key);
-    for (const item of checkpoint.unlocks.items || []) expected.itemIds.add(
-      item);
-  }
-  return expected;
-}
-
-/**
- * The badge count at which the schedule first expects an unlock (access key or
- * boolean flag); null when it is never scheduled (available from the start).
- * @param {string} key
- * @return {?number}
- */
-export function getUnlockBadge(key) {
-  for (const checkpoint of REBORN_PROGRESSION_CHECKPOINTS) {
-    if (
-      (checkpoint.unlocks.access || []).includes(key) ||
-      (checkpoint.unlocks.flags || []).includes(key)
-    ) {
-      return checkpoint.badges;
-    }
-  }
-  return null;
-}
-
-/**
- * The badge count at which a held item first becomes obtainable; null when
- * nothing tracks it (treat as timing-unknown, not unobtainable). The
- * hand-curated checkpoint entries above (walkthrough-verified) win; the
- * generated table (community item guide: locations, shops, arcade, mining,
- * user-curated wild holders) covers the other ~350 held items.
- * @param {string} itemId Normalized item id.
- * @return {?number}
- */
-export function getItemUnlockBadge(itemId) {
-  for (const checkpoint of REBORN_PROGRESSION_CHECKPOINTS) {
-    if ((checkpoint.unlocks.items || []).includes(itemId)) {
-      return checkpoint.badges;
-    }
-  }
-  return REBORN_ITEM_UNLOCK_BADGES[itemId]?.badge ?? null;
-}
-
-/**
- * @param {?Object} checkpoint
- * @return {string} "Post N" for post-game tiers, "N badges" otherwise; "" for
- *     null.
- */
-export function getRebornCheckpointShortLabel(checkpoint) {
-  if (!checkpoint) return '';
-  if (checkpoint.postgame) return `Post ${checkpoint.postgame}`;
-  return `${checkpoint.badges} badge${checkpoint.badges === 1 ? '' : 's'}`;
-}

@@ -6,13 +6,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
+const { REBORN_PROGRESSION_CHECKPOINTS } = await import(
+  '../src/reborn/badge-timeline.js',
+);
 const {
-  REBORN_PROGRESSION_CHECKPOINTS,
-  getRebornCheckpoint,
+  getCheckpoint,
   getExpectedUnlocks,
   getUnlockBadge,
-  getRebornCheckpointShortLabel,
-} = await import('../src/reborn/badge-timeline.js');
+  checkpointShortLabel,
+} = await import('../src/games/schedule.js');
 const { EVOLUTION_ACCESS_FIELDS } = await import(
   '../src/reborn/evolution-requirements.js',
 );
@@ -55,7 +57,7 @@ test('timeline shape: 19 badge checkpoints + 10 post-game tiers, caps non-decrea
 });
 
 test('walkthrough pins: known cap checkpoints, including the flat badges', () => {
-  const cap = (id) => getRebornCheckpoint(id).levelCap;
+  const cap = (id) => getCheckpoint(id).levelCap;
   assert.equal(cap('badge-1'), 25); // Volt
   assert.equal(cap('badge-2'), 35); // Canopy skips 30
   assert.equal(cap('badge-5'), 50); // Blight, "finally"
@@ -134,7 +136,7 @@ test('panel ↔ timeline consistency: every TM/TMX/tutor availability names a ba
 
 test('item timeline: sheet + mining + wild-held sources merge to earliest badge', async () => {
   const { getItemUnlockBadge } = await import(
-    '../src/reborn/badge-timeline.js',
+    '../src/games/schedule.js',
   );
   const { REBORN_ITEM_UNLOCK_BADGES } = await import(
     '../src/generated/rebornItemTimeline.generated.js',
@@ -182,11 +184,11 @@ test('applyRebornCheckpoint derives the cap; normalization keeps the field hones
   assert.equal(junk.levelCap, '45');
 
   assert.equal(
-    getRebornCheckpointShortLabel(getRebornCheckpoint('badge-9')),
+    checkpointShortLabel(getCheckpoint('badge-9')),
     '9 badges',
   );
   assert.equal(
-    getRebornCheckpointShortLabel(getRebornCheckpoint('post-3')),
+    checkpointShortLabel(getCheckpoint('post-3')),
     'Post 3',
   );
 });

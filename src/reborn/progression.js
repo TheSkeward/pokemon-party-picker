@@ -3,15 +3,11 @@ import {
   removeLocalStorage,
   writeLocalStorage,
 } from '../storage/safe-local-storage';
-import {
-  REBORN_TM_OPTIONS,
-  REBORN_TMX_OPTIONS,
-  REBORN_TUTOR_OPTIONS,
-} from './progression-options';
+import { moveSources } from '../games/legality.js';
 import { TERRAIN_SEED_MIGRATION } from './reborn-seeds';
 import { analysisTypes } from './type-chart.js';
 import { EVOLUTION_ACCESS_FIELDS } from './evolution-requirements.js';
-import { getRebornCheckpoint } from './badge-timeline.js';
+import { getCheckpoint } from '../games/schedule.js';
 import { getActiveGame } from '../games/registry.js';
 import { toId as normalizeSearch } from '../utils/ids.js';
 
@@ -96,7 +92,7 @@ export function normalizeRebornProgression(progression = {}) {
     // The badge/post-game checkpoint the player selected (badge-timeline.js).
     // The level cap it derives is written into levelCap, which stays the
     // single field every consumer reads.
-    checkpoint: getRebornCheckpoint(progression.checkpoint)
+    checkpoint: getCheckpoint(progression.checkpoint)
       ? String(progression.checkpoint)
       : '',
     levelCap: normalizeStoredLevelCap(progression.levelCap),
@@ -107,17 +103,17 @@ export function normalizeRebornProgression(progression = {}) {
     ),
     availableTmIds: normalizeOptionIds(
       progression.availableTmIds,
-      REBORN_TM_OPTIONS,
+      moveSources().tmOptions,
       progression.availableTmsText,
     ),
     availableTmxIds: normalizeOptionIds(
       progression.availableTmxIds,
-      REBORN_TMX_OPTIONS,
+      moveSources().tmxOptions,
       progression.availableTmxsText,
     ),
     availableTutorMoveIds: normalizeOptionIds(
       progression.availableTutorMoveIds,
-      REBORN_TUTOR_OPTIONS,
+      moveSources().tutorOptions,
       progression.availableTutorsText,
     ),
     ownedItems: normalizeOwnedItems(progression.ownedItems),
@@ -221,7 +217,7 @@ export function addRebornOwnedItems(progression, counts = {}) {
  * @return {Object} The normalized progression.
  */
 export function applyRebornCheckpoint(progression, checkpointId) {
-  const checkpoint = getRebornCheckpoint(checkpointId);
+  const checkpoint = getCheckpoint(checkpointId);
   if (!checkpoint) {
     return normalizeRebornProgression({ ...progression, checkpoint: '' });
   }

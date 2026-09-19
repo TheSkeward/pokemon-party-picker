@@ -1,24 +1,14 @@
 import { escapeHtml, escapeAttr } from '../utils/html.js';
 import { detailsStateAttrs } from '../utils/details-state.js';
 import { getMoveMeta, describeMoveMeta } from '../move-meta';
-import {
-  REBORN_MOVE_LEGALITY_BASE,
-  REBORN_PROGRESSION_NOTES,
-  REBORN_PROMOTED_TM_MOVES,
-  REBORN_TMX_MOVES,
-} from './rules';
-import {
-  REBORN_TUTOR_GROUPS,
-  REBORN_TM_OPTIONS,
-  REBORN_TMX_OPTIONS,
-} from './progression-options';
+import { legalityRules, moveSources } from '../games/legality.js';
 import { EVOLUTION_ACCESS_FIELDS } from './evolution-requirements.js';
 import {
-  REBORN_PROGRESSION_CHECKPOINTS,
-  getRebornCheckpoint,
+  getCheckpoint,
+  getCheckpoints,
   getItemUnlockBadge,
   getUnlockBadge,
-} from './badge-timeline.js';
+} from '../games/schedule.js';
 import {
   REBORN_EXTRA_INVENTORY_ITEMS,
   getRenewablyObtainableItems,
@@ -104,34 +94,34 @@ export function renderRebornProgressionPanel(
 
         ${renderOptionGroup({
           field: 'availableTmIds',
-          options: REBORN_TM_OPTIONS,
+          options: moveSources().tmOptions,
           selectedIds: progression.availableTmIds,
           summary: 'Available TMs',
           detailsId: 'tms',
-          badges: getRebornCheckpoint(progression.checkpoint)?.badges ?? null,
+          badges: getCheckpoint(progression.checkpoint)?.badges ?? null,
         })}
 
         ${renderOptionGroup({
           field: 'availableTmxIds',
-          options: REBORN_TMX_OPTIONS,
+          options: moveSources().tmxOptions,
           selectedIds: progression.availableTmxIds,
           summary: 'Available TMXs',
           detailsId: 'tmxs',
-          badges: getRebornCheckpoint(progression.checkpoint)?.badges ?? null,
+          badges: getCheckpoint(progression.checkpoint)?.badges ?? null,
         })}
 
         ${renderOptionGroup({
           field: 'availableTutorMoveIds',
-          groups: REBORN_TUTOR_GROUPS,
+          groups: moveSources().tutorGroups,
           selectedIds: progression.availableTutorMoveIds,
           summary: 'Available tutors',
           detailsId: 'tutors',
-          badges: getRebornCheckpoint(progression.checkpoint)?.badges ?? null,
+          badges: getCheckpoint(progression.checkpoint)?.badges ?? null,
         })}
 
         ${renderItemInventory(
           progression.ownedItems || {},
-          getRebornCheckpoint(progression.checkpoint)?.badges ?? null,
+          getCheckpoint(progression.checkpoint)?.badges ?? null,
         )}
 
         ${includeBias ? renderOpponentTypeBias(progression.opponentTypeBias || {}) : ''}
@@ -140,11 +130,11 @@ export function renderRebornProgressionPanel(
       <details class="progression-rules" ${detailsStateAttrs('rules', false)}>
         <summary>Reborn legality assumptions</summary>
         <ul>
-          <li>Base: ${escapeHtml(REBORN_MOVE_LEGALITY_BASE.baseGames)} learnsets.</li>
-          <li>Transfer moves available by default: ${REBORN_MOVE_LEGALITY_BASE.transferMovesAvailableByDefault ? 'yes' : 'no'}.</li>
-          <li>TMX moves: ${REBORN_TMX_MOVES.map(escapeHtml).join(', ')}.</li>
-          <li>Promoted TMs: ${REBORN_PROMOTED_TM_MOVES.map(escapeHtml).join(', ')}.</li>
-          ${REBORN_PROGRESSION_NOTES.map((note) => `<li>${escapeHtml(note)}</li>`).join('')}
+          <li>Base: ${escapeHtml(legalityRules().legalityBase.baseGames)} learnsets.</li>
+          <li>Transfer moves available by default: ${legalityRules().legalityBase.transferMovesAvailableByDefault ? 'yes' : 'no'}.</li>
+          <li>TMX moves: ${legalityRules().tmxMoves.map(escapeHtml).join(', ')}.</li>
+          <li>Promoted TMs: ${legalityRules().promotedTmMoves.map(escapeHtml).join(', ')}.</li>
+          ${legalityRules().notes.map((note) => `<li>${escapeHtml(note)}</li>`).join('')}
         </ul>
       </details>
 
@@ -159,8 +149,8 @@ export function renderRebornProgressionPanel(
 // The badge picker: the atomic unit of progression the player deals with.
 // The level cap is derived from the walkthrough timeline, never typed.
 function renderCheckpointControl(progression) {
-  const selected = getRebornCheckpoint(progression.checkpoint);
-  const options = REBORN_PROGRESSION_CHECKPOINTS.map(
+  const selected = getCheckpoint(progression.checkpoint);
+  const options = getCheckpoints().map(
     (checkpoint) => `
       <option value="${escapeAttr(checkpoint.id)}" ${selected?.id === checkpoint.id ? 'selected' : ''}>
         ${escapeHtml(`${checkpoint.label} — cap ${checkpoint.levelCap}`)}
@@ -174,10 +164,10 @@ function renderCheckpointControl(progression) {
       : 'Pick your badges to set the level cap.';
 
   const selectedIndex = selected
-    ? REBORN_PROGRESSION_CHECKPOINTS.findIndex((c) => c.id === selected.id)
+    ? getCheckpoints().findIndex((c) => c.id === selected.id)
     : -1;
   const next = selectedIndex >= 0
-    ? REBORN_PROGRESSION_CHECKPOINTS[selectedIndex + 1]
+    ? getCheckpoints()[selectedIndex + 1]
     : null;
   const nextTip = selected
     ? next

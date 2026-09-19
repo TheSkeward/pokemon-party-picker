@@ -42,7 +42,7 @@ import {
   updateRebornProgressionField,
   updateRebornProgressionOption,
 } from './reborn/progression';
-import { getRebornCheckpoint } from './reborn/badge-timeline.js';
+import { getCheckpoint } from './games/schedule.js';
 import { toId } from './utils/ids.js';
 import { bindPersistentDetails } from './utils/details-state.js';
 import {
@@ -887,7 +887,7 @@ export function mountPoolOptimizer(container, options = {}) {
       .querySelector('[data-renewable-sync-button]')
       ?.addEventListener('click', () => {
         const badges =
-          getRebornCheckpoint(state.progression.checkpoint)?.badges ?? null;
+          getCheckpoint(state.progression.checkpoint)?.badges ?? null;
         const renewable = getRenewablyObtainableItems(
           badges,
           state.progression.ownedItems || {},

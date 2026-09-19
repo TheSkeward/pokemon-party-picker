@@ -12,10 +12,7 @@ import {
 } from '../reborn/progression-view';
 import { detailsStateAttrs } from '../utils/details-state.js';
 import { EVOLUTION_ACCESS_FIELDS } from '../reborn/evolution-requirements.js';
-import {
-  getRebornCheckpoint,
-  getRebornCheckpointShortLabel,
-} from '../reborn/badge-timeline.js';
+import { checkpointShortLabel, getCheckpoint } from '../games/schedule.js';
 import { renderRebornTeamAnalysisPanel } from '../reborn/team-analysis-view';
 import { getCurrentRebornSpeciesForChoice } from '../reborn/current-species.js';
 import { describeEvolutionPath } from '../reborn/evolution-requirements.js';
@@ -140,10 +137,10 @@ export function renderGamestateStrip(progression = {}) {
       `<button type="button" class="gamestate-chip" data-open-progression="${escapeAttr(targetId || '')}">${escapeHtml(label)}</button>`,
     );
 
-  const checkpoint = getRebornCheckpoint(progression.checkpoint);
+  const checkpoint = getCheckpoint(progression.checkpoint);
   chip(
     checkpoint
-      ? `${getRebornCheckpointShortLabel(checkpoint)} · cap ${progression.levelCap || checkpoint.levelCap}`
+      ? `${checkpointShortLabel(checkpoint)} · cap ${progression.levelCap || checkpoint.levelCap}`
       : progression.levelCap
         ? `Cap ${progression.levelCap}`
         : 'No badges set',
