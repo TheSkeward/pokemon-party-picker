@@ -9,6 +9,8 @@
 
 import { getActiveGame } from '../games/registry.js';
 
+// Frozen at the project's original name: exported backup files in the wild
+// carry this tag.
 const FORMAT = 'pokemon-usage-viewer-gamestate';
 const VERSION = 1;
 

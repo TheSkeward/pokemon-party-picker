@@ -83,7 +83,7 @@ function localDataMiddleware() {
 }
 
 export default defineConfig({
-  base: process.env.NODE_ENV === 'production' ? '/pokemon-usage-viewer/' : '/',
+  base: process.env.NODE_ENV === 'production' ? '/pokemon-party-picker/' : '/',
   define: {
     __BUILD_ID__: JSON.stringify(BUILD_ID),
   },

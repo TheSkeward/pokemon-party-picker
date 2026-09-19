@@ -23,7 +23,7 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const ARCHIVE_DIR = path.join(scriptDir, 'teamscrape', 'archive');
 
 const USER_AGENT =
-  'pokemon-usage-viewer team harvester (github.com/TheSkeward/pokemon-usage-viewer)';
+  'pokemon-party-picker team harvester (github.com/TheSkeward/pokemon-party-picker)';
 const REQUEST_GAP_MS = 300;
 
 // The canonical API first; the repo mirror serves identical files when the

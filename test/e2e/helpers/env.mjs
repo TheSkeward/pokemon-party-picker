@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
 
 export const BASE_URL =
-  process.env.E2E_BASE_URL || 'http://localhost:4199/pokemon-usage-viewer';
+  process.env.E2E_BASE_URL || 'http://localhost:4199/pokemon-party-picker';
 
 async function resolvePlaywright() {
   try {

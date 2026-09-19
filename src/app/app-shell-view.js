@@ -10,7 +10,7 @@ export function renderAppShell(app, state) {
   app.innerHTML = `
     <div class="app-shell">
       <header>
-        <h1>Pokémon Pool Team Builder</h1>
+        <h1>Pokémon Party Picker</h1>
       </header>
 
       <nav class="view-tabs">
@@ -36,7 +36,7 @@ export function renderAppShell(app, state) {
 export function renderFatalAppError(app, error) {
   app.innerHTML = `
     <div class="app-shell">
-      <h1>Pokémon Pool Team Builder</h1>
+      <h1>Pokémon Party Picker</h1>
       <p>Something broke while loading the app.</p>
       <pre>${escapeHtml(error.message)}</pre>
     </div>

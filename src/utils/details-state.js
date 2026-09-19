@@ -7,6 +7,7 @@ import {
 // rebuild every group from HTML strings; the user's last toggle wins across
 // re-renders and reloads, and a group's default only applies before they
 // ever touch it.
+// Frozen at the project's original name so saved state survives.
 const DETAILS_STATE_KEY = 'pokemon-usage-viewer:details-open:v1';
 
 function readMap() {

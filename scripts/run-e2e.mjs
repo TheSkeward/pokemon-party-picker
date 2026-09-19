@@ -38,7 +38,7 @@ async function waitForServer() {
   const deadline = Date.now() + 30_000;
   while (Date.now() < deadline) {
     try {
-      const response = await fetch(`http://localhost:${PORT}/pokemon-usage-viewer/pool.html`);
+      const response = await fetch(`http://localhost:${PORT}/pokemon-party-picker/pool.html`);
       if (response.ok) return;
     } catch {
       // not up yet
@@ -53,7 +53,7 @@ function runSpec(file) {
     log(`running ${file}`);
     const child = spawn(process.execPath, [path.join('test', 'e2e', file)], {
       stdio: 'inherit',
-      env: { ...process.env, E2E_BASE_URL: `http://localhost:${PORT}/pokemon-usage-viewer` },
+      env: { ...process.env, E2E_BASE_URL: `http://localhost:${PORT}/pokemon-party-picker` },
     });
     child.on('exit', (code) => resolve({ file, code: code ?? 1 }));
   });

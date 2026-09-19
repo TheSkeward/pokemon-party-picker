@@ -1,4 +1,4 @@
-# Pokemon Pool Team Builder
+# Pokemon Party Picker
 
 A static web app for planning Pokemon Reborn playthrough teams from the
 Pokemon you currently have available.
@@ -10,7 +10,7 @@ access, held items, legal moves, coverage, and defensive fit.
 
 Live site:
 
-https://theskeward.github.io/pokemon-usage-viewer/
+https://theskeward.github.io/pokemon-party-picker/
 
 ## Features
 

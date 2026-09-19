@@ -68,6 +68,7 @@ import {
 // Per-game: each game's owned pool is its own saved state (the descriptor
 // pins Reborn's pre-registry literal so existing saves survive).
 const poolStorageKey = () => getActiveGame().storage.pool;
+// Frozen at the project's original name so saved preferences survive.
 const TEAM_SORT_STORAGE_KEY = 'pokemon-usage-viewer:pool-team-sort:v1';
 const TEAM_SORT_DIR_STORAGE_KEY = 'pokemon-usage-viewer:pool-team-sort-dir:v1';
 const POST_ANALYSIS_MAX_POOL_SIZE = 80;

@@ -96,7 +96,7 @@ export function renderTeamBuilderPage({
 function renderStandaloneHeader({ baseUrl }) {
   return `
     <header>
-      <h1>Pokémon Pool Team Builder</h1>
+      <h1>Pokémon Party Picker</h1>
     </header>
 
     <nav class="view-tabs">

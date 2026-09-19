@@ -12,6 +12,8 @@
  * never a source of truth, so a failure just falls back to recomputing.
  */
 
+// Frozen at the project's original name; renaming would orphan every
+// browser's existing cache for no gain.
 const DB_NAME = 'pokemon-usage-viewer';
 const STORE = 'team-results';
 const DB_VERSION = 1;

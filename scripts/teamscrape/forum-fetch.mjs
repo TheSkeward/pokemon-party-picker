@@ -7,9 +7,9 @@
  */
 
 const USER_AGENT =
-  'pokemon-usage-viewer team harvester ' +
-  '(github.com/TheSkeward/pokemon-usage-viewer)';
-const CONTACT = 'https://github.com/TheSkeward/pokemon-usage-viewer';
+  'pokemon-party-picker team harvester ' +
+  '(github.com/TheSkeward/pokemon-party-picker)';
+const CONTACT = 'https://github.com/TheSkeward/pokemon-party-picker';
 const DEFAULT_REQUEST_GAP_MS = 1500;
 const NAVIGATION_TIMEOUT_MS = 45000;
 

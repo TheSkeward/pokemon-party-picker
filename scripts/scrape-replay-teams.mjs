@@ -24,7 +24,7 @@ export const ARCHIVE_DIR = path.join(scriptDir, 'teamscrape', 'archive');
 
 const REPLAY_ROOT = 'https://replay.pokemonshowdown.com';
 const USER_AGENT =
-  'pokemon-usage-viewer team harvester (github.com/TheSkeward/pokemon-usage-viewer)';
+  'pokemon-party-picker team harvester (github.com/TheSkeward/pokemon-party-picker)';
 const REQUEST_GAP_MS = 600;
 // search.json returns up to 51; fewer means the end
 const SEARCH_PAGE_SIZE = 51;
