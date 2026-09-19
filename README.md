@@ -15,6 +15,8 @@ https://theskeward.github.io/pokemon-party-picker/
 ## Features
 
 - Paste an owned Pokemon pool and get a recommended team.
+- Lock a Pokemon into the team by suffixing it with `!` (`Gothitelle!`);
+  the optimizer fills the remaining slots around it.
 - Track Reborn progression locally in your browser.
 - Inspect legal current moves, recommended sets, breeding chains, item picks,
   coverage, defensive profile, confidence, and level-cap investment.

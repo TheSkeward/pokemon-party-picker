@@ -6,7 +6,11 @@ import {
   renderTeamBuilderPage,
 } from './teamBuilder/team-builder-view';
 import { createTeamBuilderSetDetailsLoader } from './teamBuilder/set-details-loader';
-import { getPoolStats, normalizePoolText } from './teamBuilder/pool-parsing';
+import {
+  getPoolStats,
+  normalizePoolText,
+  setPoolEntryLock,
+} from './teamBuilder/pool-parsing';
 import {
   optimizeTeamFromPool,
   persistPostAnalysis,
@@ -641,6 +645,29 @@ export function mountPoolOptimizer(container, options = {}) {
         saveTeamSortDir(state.teamSortDir);
         writeUrl();
         render();
+      });
+    });
+
+    // Lock controls: a team row's lock/unlock button and every bench chip
+    // rewrite the pool text (canonical form, as Optimize does) and re-run the
+    // optimizer. The lock lives in the text, so it survives saves, exports,
+    // and the URL like any other pool entry.
+    const setLock = (name, locked) => {
+      state.query = setPoolEntryLock(state.query, name, locked, pokemonIndex);
+      computeAndRender();
+    };
+    app.querySelectorAll('[data-lock-toggle]').forEach((button) => {
+      button.addEventListener('click', (event) => {
+        event.stopPropagation();
+        setLock(
+          button.dataset.lockToggle,
+          button.dataset.lockState !== 'locked',
+        );
+      });
+    });
+    app.querySelectorAll('[data-lock-input]').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        setLock(chip.dataset.lockInput, true);
       });
     });
 

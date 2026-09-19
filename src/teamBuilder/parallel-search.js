@@ -89,9 +89,11 @@ function getWorkerPool() {
  * @return {Promise<?{top: Array<Object>}>}
  */
 export function parallelFullSearch(
-  compactLines, targetSize, bias, total, topCount = 1, onProgress = null) {
+  compactLines, targetSize, bias, total, topCount = 1, onProgress = null,
+  fixedCompactLines = []) {
   const run = () => dispatch(
-    compactLines, targetSize, bias, total, topCount, onProgress);
+    compactLines, targetSize, bias, total, topCount, onProgress,
+    fixedCompactLines);
   const result = chain.then(run, run);
   // Keep the chain alive regardless of this job's outcome.
   chain = result.then(
@@ -129,7 +131,8 @@ function scheduleIdleRelease() {
 }
 
 async function dispatch(
-  compactLines, targetSize, bias, total, topCount, onProgress = null) {
+  compactLines, targetSize, bias, total, topCount, onProgress = null,
+  fixedCompactLines = []) {
   // A job is starting: don't reap workers out from under it. Dispatches are
   // serialized on `chain`, so clearing here covers the whole job.
   if (idleTimer) {
@@ -140,7 +143,8 @@ async function dispatch(
 
   if (!pool || pool.length < 2) {
     return searchCombinationRange(
-      compactLines, targetSize, bias, 0, total, topCount, onProgress);
+      compactLines, targetSize, bias, 0, total, topCount, onProgress,
+      fixedCompactLines);
   }
 
   try {
@@ -173,7 +177,8 @@ async function dispatch(
           (scanned) => {
             scannedByWorker[slot] = scanned;
             reportProgress();
-          }),
+          },
+          fixedCompactLines),
       );
     }
     const results = await Promise.all(jobs);
@@ -185,7 +190,8 @@ async function dispatch(
     // never to a wrong answer or a frozen UI.
     retireWorkerPool();
     return searchCombinationRange(
-      compactLines, targetSize, bias, 0, total, topCount);
+      compactLines, targetSize, bias, 0, total, topCount, null,
+      fixedCompactLines);
   } finally {
     scheduleIdleRelease();
   }
@@ -206,6 +212,7 @@ function runOnWorker(
   end,
   topCount,
   onProgress = null,
+  fixedCompactLines = [],
 ) {
   const id = ++messageSeq;
   return new Promise((resolve, reject) => {
@@ -243,7 +250,8 @@ function runOnWorker(
     worker.addEventListener('message', onMessage);
     worker.addEventListener('error', onError);
     worker.postMessage(
-      { id, compactLines, targetSize, bias, start, end, topCount });
+      { id, compactLines, targetSize, bias, start, end, topCount,
+        fixedCompactLines });
   });
 }
 

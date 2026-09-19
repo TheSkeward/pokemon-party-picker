@@ -192,7 +192,7 @@ function renderPoolControls({ embedded, poolStats, state }) {
       <div class="panel-header">
         <div>
           <h2>Owned Pokémon Pool</h2>
-          <p>${poolStats.uniqueCount} unique entries${poolStats.duplicateCount ? ` · ${poolStats.duplicateCount} duplicates ignored` : ''}. Autosaved in this browser.</p>
+          <p>${poolStats.uniqueCount} unique entries${poolStats.duplicateCount ? ` · ${poolStats.duplicateCount} duplicates ignored` : ''}. Autosaved in this browser. Suffix <code>!</code> to lock an entry into the team (<code>Gothitelle!</code>); a parenthetical declares a caught ability (<code>Froakie (Torrent)</code>).</p>
         </div>
       </div>
 
@@ -327,6 +327,7 @@ function renderResult({ familyLabel, formatsIndex, setDetails, state }) {
           ${renderScoringPoolNote(result)}
           <p>Scored at level cap ${escapeHtml(String(state.progression?.levelCap || '?'))}: each pick's current-form value plus a readiness-gated competitive ceiling, minus build friction (evolution requirements are shown as information, never priced); the team is chosen with damage-aware coverage and shared-weakness fit, at most one Mega, one build realized per line. Displayed by ${escapeHtml(getSortLabel(state.teamSort, state.teamSortDir))}. Click a row to inspect its set.</p>
           <p class="muted" data-progression-stale-warning ${progressionStale ? '' : 'hidden'}>Progression changed after this team was optimized. Re-optimize before trusting row scores or legal move notes.</p>
+          ${result.ignoredLocks?.length ? `<p class="muted">Locked but not fieldable at this progression, so ignored: ${escapeHtml(result.ignoredLocks.join(', '))}.</p>` : ''}
         </div>
         <button type="button" class="view-tab" data-copy-pokepaste title="Copies once the Team Analysis below has finished loading">Copy team as poképaste</button>
       </div>
@@ -977,7 +978,7 @@ export function renderBenchLine(result) {
           const unscoredNote = entry.scored
             ? ''
             : ' · outside the 126-line scored working set; still available for donors and usage-team matching';
-          return `<span class="${classes}" title="from input ${escapeHtml(representative.inputName)}${escapeHtml(fieldsAs)}${escapeHtml(worstNote)}${escapeHtml(unscoredNote)}">${boxIndex}${escapeHtml(chipName)}${usage}</span>`;
+          return `<span class="${classes}" data-lock-input="${escapeAttr(representative.inputName)}" title="from input ${escapeHtml(representative.inputName)}${escapeHtml(fieldsAs)}${escapeHtml(worstNote)}${escapeHtml(unscoredNote)} · click to lock into the team">${boxIndex}${escapeHtml(chipName)}${usage}</span>`;
         })
         .join('');
 
@@ -1164,6 +1165,7 @@ function renderTeamRow({
       <td>
         <strong>${escapeHtml(currentName)}</strong>
         <button type="button" class="set-card-jump" data-jump-set-card="${escapeAttr(currentSpecies?.id || row.pokemonId)}" title="Jump to this pick's recommended set below">moves ↓</button>
+        <button type="button" class="set-card-jump" data-lock-toggle="${escapeAttr(row.inputName || '')}" data-lock-state="${row.locked ? 'locked' : 'free'}" title="${row.locked ? 'Unlock this pick so the optimizer may reconsider its slot' : 'Lock this pick into the team and re-optimize the other slots'}">${row.locked ? 'unlock' : 'lock'}</button>
         ${
           row.inputName && row.inputName !== currentName
             ? `<div class="representative-note">from ${escapeHtml(row.inputName)}${escapeHtml(evolutionNote)}</div>`

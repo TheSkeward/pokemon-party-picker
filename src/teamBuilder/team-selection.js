@@ -21,6 +21,7 @@ import { tunable } from './scoring-constants.js';
  * budgeted search over line combinations, then form/mega assignment.
  * @return {!Promise<{team: !Array<!Object>, megaUsed: ?Object,
  *     lines: !Array<!Object>, unresolved: !Array<!Object>,
+ *     ignoredLocks: !Array<string>,
  *     linesConsidered: number, searchExact: boolean,
  *     benchSwapScores: ?Object, teamScore: ?number, searchPolish: ?Object,
  *     bestEvaluated: ?Object}>}
@@ -50,7 +51,14 @@ export async function choosePoolTeam(
     onSearchStage,
   });
   const evaluated = bestTeam.evaluated;
-  const team = addTeamFitNotes(evaluated.team);
+  const lockedInputIds = new Set(
+    lines
+      .filter((line) => line.locked)
+      .map((line) => (line.best || line.bestNonMega)?.inputPokemonId)
+      .filter(Boolean),
+  );
+  const team = markLockedMembers(
+    addTeamFitNotes(evaluated.team), lockedInputIds);
   const megaUsed = evaluated.megaUsed
     ? team.find(
       (choice) =>
@@ -64,6 +72,11 @@ export async function choosePoolTeam(
     megaUsed,
     lines,
     unresolved,
+    // Locked entries the search could not honor: unresolved names and lines
+    // with no fieldable build at this progression.
+    ignoredLocks: lines
+      .filter((line) => line.locked && !(line.best || line.bestNonMega))
+      .map((line) => line.inputName),
     linesConsidered: resolvedLines.length,
     searchExact: bestTeam.searchExact !== false,
     // Per non-selected line, the best team score achievable by swapping it onto
@@ -147,6 +160,19 @@ function realizeBestTeam(candidates, opponentTypeBias) {
     }
   }
   return best;
+}
+
+function markLockedMembers(team, lockedInputIds) {
+  if (!lockedInputIds.size) return team;
+  return team.map((choice) =>
+    lockedInputIds.has(choice.inputPokemonId)
+      ? {
+        ...choice,
+        locked: true,
+        note: ['locked in', choice.note].filter(Boolean).join('; '),
+      }
+      : choice,
+  );
 }
 
 function addTeamFitNotes(team) {
@@ -348,8 +374,21 @@ async function selectTeamByFit(
     onSearchStage = null,
   } = {},
 ) {
-  const targetSize = Math.min(6, lines.length);
-  if (targetSize === 0) {
+  const fullSize = Math.min(6, lines.length);
+  // Locked lines are fixed members: the search enumerates only the free
+  // slots (the kernel scores every combination as fixed ∪ combination). More
+  // locks than slots means the team is chosen among the locks alone.
+  const lockedLines = lines.filter((line) => line.locked);
+  const fixed = lockedLines.length < fullSize ? lockedLines : [];
+  if (lockedLines.length) {
+    lines = fixed.length ? lines.filter((line) => !line.locked) : lockedLines;
+    incremental = null;
+  }
+  const fixedInputIds = new Set(
+    fixed.map((line) => (line.best || line.bestNonMega)?.inputPokemonId),
+  );
+  const targetSize = fullSize - fixed.length;
+  if (targetSize === 0 && !fixed.length) {
     return {
       evaluated: { team: [], megaUsed: null },
       searchExact: true,
@@ -399,14 +438,16 @@ async function selectTeamByFit(
       combinations,
       realizationPool,
       onSearchProgress,
+      buildCompactLines(fixed),
     );
-    prepareFitScoring(lines, opponentTypeBias);
+    prepareFitScoring(lines, opponentTypeBias, fixed);
     try {
       onSearchStage?.('realize');
       await yieldForPaint();
       const candidates = (refs?.top || [])
         .map((entry) =>
-          evaluatedFromRefs(entry, lines, targetSize, opponentTypeBias))
+          evaluatedFromRefs(
+            entry, fixed.concat(lines), fullSize, opponentTypeBias))
         .filter(Boolean);
       const evaluated = realizeBestTeam(candidates, opponentTypeBias);
       if (evaluated) {
@@ -415,7 +456,8 @@ async function selectTeamByFit(
           await yieldForPaint();
         }
         const benchSwapScores = benchSwaps
-          ? scanTeamSwaps(lines, evaluated.team, opponentTypeBias).scores
+          ? scanTeamSwaps(
+            lines, evaluated.team, opponentTypeBias, fixedInputIds).scores
           : null;
         return {
           evaluated,
@@ -431,7 +473,7 @@ async function selectTeamByFit(
     // search.
   }
 
-  prepareFitScoring(lines, opponentTypeBias);
+  prepareFitScoring(lines, opponentTypeBias, fixed);
   try {
     let candidates;
     let searchExact;
@@ -477,7 +519,7 @@ async function selectTeamByFit(
       // worth it, so a big pool still uses all cores.
       usedShortlist = true;
       const shortlist = buildShortlist(lines, hint ? HINT_SHORTLIST_MAX : null);
-      const shortSize = Math.min(6, shortlist.length);
+      const shortSize = Math.min(targetSize, shortlist.length);
       const shortCombos = countCombinations(shortlist.length, shortSize);
       candidates = null;
       if (shortCombos >= PARALLEL_THRESHOLD) {
@@ -489,16 +531,19 @@ async function selectTeamByFit(
           shortCombos,
           realizationPool,
           onSearchProgress,
+          buildCompactLines(fixed),
         );
         // parallelFullSearch's SYNCHRONOUS fallback (no worker pool) runs
         // searchCombinationRange on this thread, whose own prepare/reset
         // cycle clears the fit state this branch prepared above — re-prepare
         // so ref mapping and bench swaps stay on the fast prepared path.
-        prepareFitScoring(lines, opponentTypeBias);
+        prepareFitScoring(lines, opponentTypeBias, fixed);
         if (refs?.top?.length) {
           candidates = refs.top
             .map((entry) =>
-              evaluatedFromRefs(entry, shortlist, shortSize, opponentTypeBias),
+              evaluatedFromRefs(
+                entry, fixed.concat(shortlist), shortSize + fixed.length,
+                opponentTypeBias),
             )
             .filter(Boolean);
         }
@@ -534,6 +579,7 @@ async function selectTeamByFit(
         evaluated,
         opponentTypeBias,
         onSearchStage,
+        fixedInputIds,
       );
       evaluated = polished.evaluated;
       searchPolish = polished.record;
@@ -548,6 +594,7 @@ async function selectTeamByFit(
         lines,
         evaluated.team,
         opponentTypeBias,
+        fixedInputIds,
       ).scores;
     }
 
@@ -623,7 +670,7 @@ function evaluatedFromRefs(bestRefs, lines, targetSize, opponentTypeBias) {
 //   best   — the single strongest swap {line, form, slot, score}, which is the
 //            swap-polish audit: if best.score beats the team's own realized
 //            score, the search provably missed a better team.
-function scanTeamSwaps(lines, team, opponentTypeBias) {
+function scanTeamSwaps(lines, team, opponentTypeBias, fixedInputIds = null) {
   const scores = new Map();
   let best = null;
   if (!team.length) return { scores, best };
@@ -638,6 +685,7 @@ function scanTeamSwaps(lines, team, opponentTypeBias) {
     let lineBest = -Infinity;
     for (const form of getLineChoiceOptions(line)) {
       for (let slot = 0; slot < team.length; slot += 1) {
+        if (fixedInputIds?.has(team[slot].inputPokemonId)) continue;
         const swapped = team.slice();
         swapped[slot] = form;
 
@@ -690,12 +738,14 @@ function scanTeamSwaps(lines, team, opponentTypeBias) {
 const POLISH_MAX_SWAPS = 8;
 
 async function polishTeamBySwaps(
-  lines, evaluated, opponentTypeBias, onSearchStage = null) {
+  lines, evaluated, opponentTypeBias, onSearchStage = null,
+  fixedInputIds = null) {
   let current = evaluated;
   const swaps = [];
   onSearchStage?.('polish', { round: 1 });
   await yieldForPaint();
-  let scan = scanTeamSwaps(lines, current.team, opponentTypeBias);
+  let scan =
+    scanTeamSwaps(lines, current.team, opponentTypeBias, fixedInputIds);
 
   while (
     scan.best &&
@@ -726,7 +776,7 @@ async function polishTeamBySwaps(
     };
     onSearchStage?.('polish', { round: swaps.length + 1 });
     await yieldForPaint();
-    scan = scanTeamSwaps(lines, current.team, opponentTypeBias);
+    scan = scanTeamSwaps(lines, current.team, opponentTypeBias, fixedInputIds);
   }
 
   return {

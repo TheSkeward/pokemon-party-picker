@@ -254,6 +254,12 @@ Team selection starts with the sum of member values and adds team-fit terms:
 
 Chip damage contributes little coverage, the first real answer to a type is
 worth more than duplicates, and future value never chooses the current six.
+
+A locked pool entry (`Gothitelle!`) is a user constraint on seating, not a
+score. The search fixes every locked line and enumerates only the remaining
+slots, so individual values, team-fit terms, and the bench ranking are
+unchanged; the team is the best six that contains the locks. A locked line
+that cannot be fielded at the current progression is reported and ignored.
 Large pools may use a coverage-preserving shortlist and swap polish when exact
 enumeration would exceed the interactive search budget.
 

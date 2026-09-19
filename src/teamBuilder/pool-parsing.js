@@ -53,26 +53,94 @@ export function getPoolStats(query, pokemonIndex) {
 }
 
 /**
+ * Lock markers: a pool entry written as "Gothitelle!" (or "!Gothitelle") is
+ * pinned into the team. The marker sits outside any ability annotation, so
+ * "Gothitelle! (Shadow Tag)" carries both.
+ * @param {string} query
+ * @param {Array<Object>} pokemonIndex
+ * @return {Set<string>} Normalized names of locked entries.
+ */
+export function parseLockedNames(query, pokemonIndex) {
+  const locked = new Set();
+  for (const entry of poolEntries(query, pokemonIndex).values()) {
+    if (entry.locked) locked.add(normalizeName(entry.canonical));
+  }
+  return locked;
+}
+
+/**
+ * Rewrites the pool text in canonical form with one entry locked or
+ * unlocked. Same output shape as normalizePoolText.
+ * @param {string} query
+ * @param {string} name Any spelling the pool resolver accepts.
+ * @param {boolean} locked
+ * @param {Array<Object>} pokemonIndex
+ * @return {string}
+ */
+export function setPoolEntryLock(query, name, locked, pokemonIndex) {
+  const entries = poolEntries(query, pokemonIndex);
+  const canonical = findPokemonNameInText(name, pokemonIndex);
+  const entry = canonical && entries.get(normalizeName(canonical));
+  if (entry) entry.locked = locked;
+  return formatPoolEntries(entries);
+}
+
+/**
  * @param {string} query
  * @param {Array<Object>} pokemonIndex
  * @return {string} Deduplicated canonical names, alphabetized and
- *     comma-joined.
+ *     comma-joined, each keeping its lock marker and ability annotation.
+ *     Annotations must survive normalization: the widget normalizes the pool
+ *     text before every optimize, so anything dropped here never reaches
+ *     the optimizer.
  */
 export function normalizePoolText(query, pokemonIndex) {
-  // Annotations must survive normalization: the widget normalizes the pool
-  // text before every optimize, so anything dropped here never reaches the
-  // optimizer.
+  return formatPoolEntries(poolEntries(query, pokemonIndex));
+}
+
+/**
+ * @return {Map<string, {canonical: string, ability: ?string,
+ *     locked: boolean}>} Normalized name -> entry, deduplicated; a name
+ *     locked or annotated on any of its occurrences keeps that fact.
+ */
+function poolEntries(query, pokemonIndex) {
   const annotations = parseAbilityAnnotations(query, pokemonIndex);
-  const byKey = new Map();
-  for (const name of extractPoolNames(query, pokemonIndex)) {
-    const canonical = findPokemonNameInText(name, pokemonIndex);
-    if (!canonical) continue;
-    const key = normalizeName(canonical);
-    if (!key || byKey.has(key)) continue;
-    const ability = annotations.get(key);
-    byKey.set(key, ability ? `${canonical} (${ability})` : canonical);
+  const entries = new Map();
+  for (const rawLine of String(query || '').split(/\n+/)) {
+    const parts = rawLine.includes(',') ? rawLine.split(',') : [rawLine];
+    for (const part of parts) {
+      const name = extractNameFromPoolToken(part, pokemonIndex);
+      if (!name) continue;
+      const canonical = findPokemonNameInText(name, pokemonIndex);
+      if (!canonical) continue;
+      const key = normalizeName(canonical);
+      const entry = entries.get(key) || {
+        canonical,
+        ability: annotations.get(key) || null,
+        locked: false,
+      };
+      if (hasLockMarker(part)) entry.locked = true;
+      entries.set(key, entry);
+    }
   }
-  return [...byKey.values()].sort((a, b) => a.localeCompare(b)).join(', ');
+  return entries;
+}
+
+function hasLockMarker(token) {
+  const bare = String(token || '')
+    .trim()
+    .replace(/\s*[([][^)\]]*[)\]]\s*$/, '');
+  return /^!\s*\S/.test(bare) || /\S\s*!$/.test(bare);
+}
+
+function formatPoolEntries(entries) {
+  return [...entries.values()]
+    .map(
+      ({ canonical, ability, locked }) =>
+        canonical + (locked ? '!' : '') + (ability ? ` (${ability})` : ''),
+    )
+    .sort((a, b) => a.localeCompare(b))
+    .join(', ');
 }
 
 function extractPoolNames(query, pokemonIndex) {

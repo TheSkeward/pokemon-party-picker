@@ -19,7 +19,7 @@ import { buildCandidateLegalityProfile } from '../reborn/team-analysis';
 import { loadTopSet } from '../reborn/top-spread.js';
 import { computeSetReadiness } from '../reborn/set-readiness.js';
 import { buildInputGroups } from './input-groups';
-import { parseAbilityAnnotations } from './pool-parsing';
+import { parseAbilityAnnotations, parseLockedNames } from './pool-parsing';
 import { normalizeName } from './name-utils';
 import {
   tunable,
@@ -340,6 +340,20 @@ export async function optimizeTeamFromPool({
       .map(([name, ability]) => `${name}=${ability}`)
       .join(',')
     : 'none';
+  // Locked entries ("Gothitelle!") pin a line into the team. They change
+  // which team the search may return, never how a line scores, so they key
+  // the search and result caches but not the line cache.
+  const lockedNames = parseLockedNames(query, pokemonIndex);
+  for (const group of allGroups) {
+    group.locked = lockedNames.has(
+      normalizeName(group.input?.name || group.token),
+    );
+  }
+  const lockSig = allGroups
+    .filter((group) => group.locked)
+    .map((group) => group.input?.id ?? group.token)
+    .sort()
+    .join(',');
   // Scoring overrides (confidence sweep / tests) and the DATA signature are
   // part of the score context: a sweep run must never hit — or seed — the
   // production ("base") caches, and a data refresh must retire every cached
@@ -356,13 +370,16 @@ export async function optimizeTeamFromPool({
   const contextSig = `${getActiveGame().id}|${family}|${selection}|${progressionSig}|${breedingSig}|${sketchSig}|${abilitySig}|${scoringOverridesSignature()}|${dataSignature}${
     fastMode ? '|search:fast2' : ''
   }${scoreAllLines ? '|pool:all' : ''}`;
+  const searchKey = lockSig ? `${contextSig}|lock:${lockSig}` : contextSig;
 
   // Layer 3: the result is a pure function of the score context and the set of
   // input mons, so memoize by both. A hit short-circuits line resolution and
   // the search entirely; re-seed the incremental search from it so a later
   // addition still grows rather than re-enumerates.
   const poolKey = `${contextSig}|${allGroups
-    .map((group) => group.input?.id ?? group.token)
+    .map(
+      (group) => (group.input?.id ?? group.token) + (group.locked ? '!' : ''),
+    )
     .sort()
     .join(',')}`;
   const memoized = resultCache.get(poolKey);
@@ -371,7 +388,7 @@ export async function optimizeTeamFromPool({
     // A fast-mode hit must not touch the incremental cache: its results are
     // shortlist-grade (searchExact false), so seeding would NULL the exact
     // Layer-2 state the user's next pool edit needs.
-    if (!fastMode) seedSearchCache(memoized, memoized.lines, contextSig);
+    if (!fastMode) seedSearchCache(memoized, memoized.lines, searchKey);
     // Telemetry facts for the caller (poolWidget records the full pipeline
     // sample — optimizer, item loading, render, post-analysis — so this only
     // DESCRIBES the run; it never records). Overwritten fresh on every hit.
@@ -429,7 +446,9 @@ export async function optimizeTeamFromPool({
         }).then((line) => {
           completed += 1;
           onProgress?.({ phase: 'resolve', completed, total });
-          return line;
+          // Copy: cached lines are shared across runs, and the lock belongs
+          // to this query, not to the line.
+          return line && group.locked ? { ...line, locked: true } : line;
         }),
       ),
     )
@@ -441,7 +460,6 @@ export async function optimizeTeamFromPool({
   // can't beat it, and added mons only need their containing teams enumerated.
   // So a deletion that doesn't touch the team returns the cached result with no
   // search, and an addition (with or without unrelated deletions) grows it.
-  const searchKey = contextSig;
   const incremental =
     !fastMode &&
     searchCache &&
@@ -723,7 +741,12 @@ async function selectScoringGroups({
   );
 
   const uniqueRanked = deduplicateUsageEntries(ranked);
-  const selectedEntries = takeTopUsageEntries(uniqueRanked, limit);
+  // Locked lines must reach the search, so they never compete for the cap.
+  const lockedEntries = uniqueRanked.filter((entry) => entry.group.locked);
+  const selectedEntries = takeTopUsageEntries(
+    uniqueRanked.filter((entry) => !entry.group.locked),
+    Math.max(0, limit - lockedEntries.length),
+  ).concat(lockedEntries);
   const selectedGroups = new Set(selectedEntries.map((entry) => entry.group));
   const candidateBundlesByGroup = new Map(
     selectedEntries.map((entry) => [entry.group, entry.candidateBundles]),

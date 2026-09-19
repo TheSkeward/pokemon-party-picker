@@ -89,14 +89,20 @@ function precomputeFit(choice, opponentTypeBias) {
   };
 }
 
+// Locked lines (user-pinned team members). Set by prepareFitScoring for the
+// duration of a search: every combination the search evaluates is scored as
+// FIXED ∪ combination, so the enumeration only ever covers the free slots.
+let FIXED = [];
+
 /**
  * @param {Array<Object>} lines
  * @param {?Object} opponentTypeBias
  */
-export function prepareFitScoring(lines, opponentTypeBias) {
+export function prepareFitScoring(lines, opponentTypeBias, fixedLines = []) {
   coverageWeights = computeCoverageWeights(opponentTypeBias);
   ACTIVE = snapshotFitTunables();
-  for (const line of lines) {
+  FIXED = fixedLines;
+  for (const line of fixedLines.concat(lines)) {
     for (const choice of getLineChoiceOptions(line)) {
       precomputeFit(choice, opponentTypeBias);
     }
@@ -111,6 +117,8 @@ export function resetFitScoring(lines) {
   fitReady = false;
   coverageWeights = null;
   for (const line of lines) line._choiceOptions = undefined;
+  for (const line of FIXED) line._choiceOptions = undefined;
+  FIXED = [];
 }
 
 // Damage-aware team coverage: for each defense type, the chance SOMEONE lands a
@@ -431,14 +439,16 @@ export function getLineChoiceOptions(line) {
  */
 export function bestAssignmentForLines(
   comboLines, targetSize, opponentTypeBias) {
-  const optionsPerLine = comboLines.map(getLineChoiceOptions);
+  const allLines = FIXED.length ? FIXED.concat(comboLines) : comboLines;
+  const fullSize = targetSize + FIXED.length;
+  const optionsPerLine = allLines.map(getLineChoiceOptions);
   const team = [];
   let best = null;
 
   const assign = (index, megaUsed) => {
-    if (index === comboLines.length) {
+    if (index === allLines.length) {
       const evaluated =
-        evaluateTeam([...team], megaUsed, targetSize, opponentTypeBias);
+        evaluateTeam([...team], megaUsed, fullSize, opponentTypeBias);
       if (!best || betterEvaluated(evaluated, best)) best = evaluated;
       return;
     }
@@ -638,7 +648,8 @@ const SEARCH_PROGRESS_REPORTS_PER_RANGE = 20;
  * refs (so it survives a worker postMessage). Pure and self-contained: it
  * prepares and resets its own fit state, so it can run in a worker or on the
  * main thread as a fallback. `lines` must carry a prepared `choiceOptions`
- * array per line (the form options).
+ * array per line (the form options). `fixedLines` are locked lines included
+ * in every team; `targetSize` counts only the free slots.
  */
 export function searchCombinationRange(
   lines,
@@ -648,9 +659,11 @@ export function searchCombinationRange(
   end,
   topCount = 1,
   onProgress = null,
+  fixedLines = [],
 ) {
   for (const line of lines) line._choiceOptions = line.choiceOptions;
-  prepareFitScoring(lines, opponentTypeBias);
+  for (const line of fixedLines) line._choiceOptions = line.choiceOptions;
+  prepareFitScoring(lines, opponentTypeBias, fixedLines);
 
   const top = createTopTeams(topCount);
   const n = lines.length;

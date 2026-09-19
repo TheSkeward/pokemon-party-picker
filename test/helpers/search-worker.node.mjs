@@ -6,8 +6,10 @@ import './harness.mjs';
 import { searchCombinationRange } from '../../src/teamBuilder/search-kernel.js';
 
 parentPort.on('message', (message) => {
-  const { id, compactLines, targetSize, bias, start, end, topCount } =
-    message || {};
+  const {
+    id, compactLines, targetSize, bias, start, end, topCount,
+    fixedCompactLines,
+  } = message || {};
   try {
     const result = searchCombinationRange(
       compactLines,
@@ -16,6 +18,8 @@ parentPort.on('message', (message) => {
       start,
       end,
       topCount,
+      null,
+      fixedCompactLines || [],
     );
     parentPort.postMessage({ id, ok: true, result });
   } catch (error) {

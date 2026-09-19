@@ -619,6 +619,15 @@ button:hover {
   color: var(--state-blocked);
 }
 
+/* Bench chips lock their line into the team on click. */
+.bench-chip[data-lock-input] {
+  cursor: pointer;
+}
+
+.bench-chip[data-lock-input]:hover {
+  text-decoration: underline;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

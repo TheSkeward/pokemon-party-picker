@@ -8,8 +8,10 @@
 import { searchCombinationRange } from './search-kernel.js';
 
 self.onmessage = (event) => {
-  const { id, compactLines, targetSize, bias, start, end, topCount } =
-    event.data;
+  const {
+    id, compactLines, targetSize, bias, start, end, topCount,
+    fixedCompactLines,
+  } = event.data;
   try {
     const result = searchCombinationRange(
       compactLines,
@@ -23,6 +25,7 @@ self.onmessage = (event) => {
       // hang-detection timeout — a long range that is visibly working must
       // not be declared hung).
       (scanned) => self.postMessage({ id, progress: scanned }),
+      fixedCompactLines || [],
     );
     self.postMessage({ id, ok: true, result });
   } catch (error) {
