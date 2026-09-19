@@ -27,10 +27,7 @@ import { MAX_TRACKED_ITEM_COUNT, MAX_OPPONENT_TYPE_BIAS } from './progression';
 import { HIDDEN_INVENTORY_ITEM_IDS } from './reborn-seeds';
 import { REBORN_ANALYSIS_TYPES } from './type-chart.js';
 import { getTypeColor } from '../move-meta';
-import {
-  GEN7_HELD_ITEMS,
-  GEN7_HELD_ITEMS_BY_ID,
-} from '../generated/gen7HeldItems.generated.js';
+import { dex } from '../games/dex.js';
 
 /**
  * `includeBias: false` lets the modern layout render the opponent-bias group
@@ -251,12 +248,12 @@ function renderItemInventory(ownedItems, badges) {
     REBORN_EXTRA_INVENTORY_ITEMS.map((item) => [item.id, item]),
   );
   const ownedIds = Object.keys(ownedItems)
-    .map((id) => GEN7_HELD_ITEMS_BY_ID[id] || extrasById[id])
+    .map((id) => dex().heldItemsById[id] || extrasById[id])
     .filter(Boolean)
     .sort((a, b) => a.name.localeCompare(b.name));
 
   const datalistOptions = [
-    ...GEN7_HELD_ITEMS.filter(
+    ...dex().heldItems.filter(
       (item) => !HIDDEN_INVENTORY_ITEM_IDS.has(item.id),
     ),
     ...REBORN_EXTRA_INVENTORY_ITEMS,

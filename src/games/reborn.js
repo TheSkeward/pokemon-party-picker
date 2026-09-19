@@ -10,13 +10,14 @@
  * existing player's saved pool and progression. New games namespace both by
  * game id.
  */
+import { GEN7_DEX } from './dex-gen7.js';
+
 export const REBORN_GAME = Object.freeze({
   id: 'reborn',
   label: 'Pokémon Reborn',
-  // Dex generation the generated species/move modules are built from. The
-  // engine still imports gen7 generated modules directly; this field is only
-  // the declaration.
+  // The generated mainline data the engine reads through dex() (games/dex.js).
   dexGen: 7,
+  dex: GEN7_DEX,
   data: Object.freeze({
     legalMovesDir: 'reborn-legal-moves',
     itemAvailability: 'reborn-item-availability.extracted.json',

@@ -43,7 +43,7 @@ import {
   FIELD_SETTING_MOVE_IDS,
   stageReferenceDamage,
 } from '../teamBuilder/current-form-value.js';
-import { GEN7_PROGRESSION_SPECIES } from '../generated/gen7ProgressionSpecies.generated.js';
+import { dex } from '../games/dex.js';
 
 export { REBORN_ANALYSIS_TYPES };
 
@@ -288,7 +288,7 @@ async function buildMemberLegalMoveEntry({
   itemAware = false,
 }) {
   const currentSpecies = getCurrentRebornSpeciesForChoice(row, progression);
-  const representativeRecord = GEN7_PROGRESSION_SPECIES[row.pokemonId];
+  const representativeRecord = dex().progressionSpecies[row.pokemonId];
   const megaBaseId = representativeRecord?.isMega
     ? representativeRecord.baseSpeciesId || null
     : null;

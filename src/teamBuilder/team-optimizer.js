@@ -7,7 +7,6 @@ import {
   buildRebornMoveTransferContexts,
   sketchContextSignature,
 } from '../reborn/sketch.js';
-import { GEN7_PROGRESSION_SPECIES } from '../generated/gen7ProgressionSpecies.generated.js';
 import {
   getCurrentRebornSpeciesForChoice,
 } from '../reborn/current-species.js';
@@ -54,6 +53,7 @@ import {
   getReachableLineCandidates,
   getReachableAssetKey,
 } from './line-reachability.js';
+import { dex } from '../games/dex.js';
 
 // --- Incremental caches ----------------------------------------------------
 // In a playthrough you mostly grow the pool one mon at a time at a fixed game
@@ -1320,7 +1320,7 @@ async function resolveCandidateBuilds({
     name: candidate.name,
   };
   const currentSpecies = getCurrentRebornSpeciesForChoice(choice, progression);
-  const candidateRecord = GEN7_PROGRESSION_SPECIES[candidate.id];
+  const candidateRecord = dex().progressionSpecies[candidate.id];
   const megaBaseId = candidateRecord?.isMega
     ? candidateRecord.baseSpeciesId || null
     : null;

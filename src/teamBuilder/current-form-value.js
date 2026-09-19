@@ -41,15 +41,11 @@
  */
 
 import {
-  GEN7_BASE_STATS,
-  GEN7_BASE_STAT_TOTALS,
-} from '../generated/gen7BaseStats.generated.js';
-import { GEN7_PROGRESSION_SPECIES } from '../generated/gen7ProgressionSpecies.generated.js';
-import {
   getTypeMultiplier,
   REBORN_ANALYSIS_TYPES,
 } from '../reborn/type-chart.js';
 import { SCORING_DEFAULTS, tunable } from './scoring-constants.js';
+import { dex } from '../games/dex.js';
 
 /**
  * Not sweepable — it defines the scale the other judgements are expressed in.
@@ -58,10 +54,10 @@ import { SCORING_DEFAULTS, tunable } from './scoring-constants.js';
 export const CURRENT_VALUE_SCALE = SCORING_DEFAULTS.CURRENT_VALUE_SCALE;
 
 function statsOf(id) {
-  return GEN7_BASE_STATS[id] || null; // [Atk, Def, SpA, SpD, Spe]
+  return dex().baseStats[id] || null; // [Atk, Def, SpA, SpD, Spe]
 }
 function hpOf(id) {
-  const total = GEN7_BASE_STAT_TOTALS[id];
+  const total = dex().baseStatTotals[id];
   const s = statsOf(id);
   if (total == null || !s) return null;
   return total - (s[0] + s[1] + s[2] + s[3] + s[4]);
@@ -99,16 +95,28 @@ function mainAttackOf(id) {
 // Reference distributions for stage-independent stat percentiles.
 function buildSorted(fn) {
   const arr = [];
-  for (const id of Object.keys(GEN7_BASE_STATS)) {
+  for (const id of Object.keys(dex().baseStats)) {
     const v = fn(id);
     if (v != null) arr.push(v);
   }
   arr.sort((a, b) => a - b);
   return arr;
 }
-const SPEED_REF = buildSorted(speedOf);
-const PHYS_BULK_REF = buildSorted(physBulkOf);
-const SPEC_BULK_REF = buildSorted(specBulkOf);
+// Memoized per dex bundle so switching games rebuilds the distributions.
+const STAT_REFS = new WeakMap();
+function statRefs() {
+  const bundle = dex();
+  let refs = STAT_REFS.get(bundle);
+  if (!refs) {
+    refs = {
+      speed: buildSorted(speedOf),
+      physBulk: buildSorted(physBulkOf),
+      specBulk: buildSorted(specBulkOf),
+    };
+    STAT_REFS.set(bundle, refs);
+  }
+  return refs;
+}
 
 // R_cap: the forms plausibly reachable by the current level cap, so an early
 // workhorse is ranked against what it actually competes with, not the full dex
@@ -117,7 +125,7 @@ const SPEC_BULK_REF = buildSorted(specBulkOf);
 // item steps assumed grindable. Percentiles blend global and R_cap by
 // REACHABLE_BLEND so the reference shifts with progression without lurching.
 function reachableByCap(id, cap) {
-  const s = GEN7_PROGRESSION_SPECIES[id];
+  const s = dex().progressionSpecies[id];
   if (!s || !s.prevoId) return true; // base form / unknown: always available
   if (s.evoLevel != null && s.evoLevel > cap) return false;
   return reachableByCap(s.prevoId, cap);
@@ -127,7 +135,7 @@ function capRefs(levelCap) {
   const cap = Math.max(1, Math.min(100, levelCap || 100));
   let refs = capRefCache.get(cap);
   if (!refs) {
-    const ids = Object.keys(GEN7_BASE_STATS).filter((id) =>
+    const ids = Object.keys(dex().baseStats).filter((id) =>
       reachableByCap(id, cap),
     );
     const sortedFrom = (fn) => {
@@ -520,20 +528,21 @@ export function currentFormFeatures(profile, levelCap) {
   const damageQ = buildPeak * (1 - w * (1 - breadth));
 
   const cr = capRefs(levelCap);
-  const speedQ = stagePercentile(speedOf(currentId), SPEED_REF, cr.speed);
+  const speedQ = stagePercentile(
+    speedOf(currentId), statRefs().speed, cr.speed);
   const speedBoostTempo = hasSpeedBoostTempo(profile);
   const tempoSpeedQ = speedBoostTempo
-    ? stagePercentile(speedOf(currentId) * 1.5, SPEED_REF, cr.speed)
+    ? stagePercentile(speedOf(currentId) * 1.5, statRefs().speed, cr.speed)
     : 0;
   const tempoReliabilityQ = hasReliableTempoRamp(profile) ? 1 : 0;
   const physicalBulkQ = stagePercentile(
     physBulkOf(currentId),
-    PHYS_BULK_REF,
+    statRefs().physBulk,
     cr.phys,
   );
   const specialBulkQ = stagePercentile(
     specBulkOf(currentId),
-    SPEC_BULK_REF,
+    statRefs().specBulk,
     cr.spec,
   );
   const bulkQ = geomean([physicalBulkQ, specialBulkQ]);

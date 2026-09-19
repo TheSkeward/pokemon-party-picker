@@ -7,7 +7,7 @@
  */
 
 import { REBORN_ANALYSIS_TYPES } from '../reborn/type-chart.js';
-import { GEN7_PROGRESSION_SPECIES } from '../generated/gen7ProgressionSpecies.generated.js';
+import { dex } from '../games/dex.js';
 
 const ROLE_LABELS = {
   fast_attacker: 'fast attacker',
@@ -21,7 +21,7 @@ const ROLE_LABELS = {
 };
 
 function speciesName(id) {
-  return GEN7_PROGRESSION_SPECIES[id]?.name || id;
+  return dex().progressionSpecies[id]?.name || id;
 }
 
 function formatPercent(fraction) {

@@ -6,7 +6,6 @@
  * every held item must be covered by tracked inventory. Display-only —
  * nothing here feeds scoring.
  */
-import { GEN7_PROGRESSION_SPECIES } from '../generated/gen7ProgressionSpecies.generated.js';
 import { getCurrentRebornSpeciesForChoice } from '../reborn/current-species.js';
 import {
   applyBreedingContextToProgression,
@@ -19,6 +18,7 @@ import {
 } from '../reborn/legal-moves.js';
 import { applySketchContextToProgression } from '../reborn/sketch.js';
 import { toId } from '../utils/ids.js';
+import { dex } from '../games/dex.js';
 
 /**
  * The forms one pool line can field: for each of its choices, the input
@@ -87,13 +87,13 @@ export function getLineFieldableIds(line, progression = {}) {
 function evolutionPathIds(inputId, currentId) {
   const path = [];
   const seen = new Set();
-  let cursor = GEN7_PROGRESSION_SPECIES[currentId];
+  let cursor = dex().progressionSpecies[currentId];
 
   while (cursor && !seen.has(cursor.id)) {
     seen.add(cursor.id);
     path.push(cursor.id);
     if (cursor.id === inputId) return path;
-    cursor = GEN7_PROGRESSION_SPECIES[cursor.prevoId];
+    cursor = dex().progressionSpecies[cursor.prevoId];
   }
   return [inputId, currentId];
 }

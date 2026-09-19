@@ -1,5 +1,4 @@
 import { buildInputGroups } from '../teamBuilder/input-groups.js';
-import { GEN7_PROGRESSION_SPECIES } from '../generated/gen7ProgressionSpecies.generated.js';
 import { toId } from '../utils/ids.js';
 import {
   acquisitionOf,
@@ -14,6 +13,7 @@ import {
   getRebornMoveSourcePriority,
   loadRebornLegalMoveData,
 } from './legal-moves.js';
+import { dex } from '../games/dex.js';
 
 const SMEARGLE_ID = 'smeargle';
 
@@ -315,7 +315,7 @@ function sourceCost(source, species, progression) {
       source.kind === 'level-up' && Number.isFinite(source.level)
         ? source.level
         : source.onEvolution
-          ? GEN7_PROGRESSION_SPECIES[species.id]?.evoLevel ?? null
+          ? dex().progressionSpecies[species.id]?.evoLevel ?? null
           : null,
     hassle: acquisition.hassle || 0,
     kind: getRebornMoveSourcePriority(source),
@@ -338,9 +338,9 @@ function collectAlternativeRoutes(rankedRoutes) {
 function familyRootId(pokemonId) {
   let id = pokemonId;
   const seen = new Set();
-  while (GEN7_PROGRESSION_SPECIES[id]?.prevoId && !seen.has(id)) {
+  while (dex().progressionSpecies[id]?.prevoId && !seen.has(id)) {
     seen.add(id);
-    id = GEN7_PROGRESSION_SPECIES[id].prevoId;
+    id = dex().progressionSpecies[id].prevoId;
   }
   return id;
 }

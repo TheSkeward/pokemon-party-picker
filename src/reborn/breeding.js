@@ -1,4 +1,3 @@
-import { GEN7_PROGRESSION_SPECIES } from '../generated/gen7ProgressionSpecies.generated.js';
 import { buildInputGroups } from '../teamBuilder/input-groups';
 import { getCurrentRebornSpecies } from './current-species.js';
 import {
@@ -6,6 +5,7 @@ import {
   loadRebornLegalMoveData,
 } from './legal-moves';
 import { toId } from '../utils/ids.js';
+import { dex } from '../games/dex.js';
 
 const BLOCKED_EGG_GROUPS = new Set(['Undiscovered', 'Ditto']);
 
@@ -253,7 +253,7 @@ export function acquisitionOf(move, speciesId, { inputId, ownedItems } = {}) {
         sourceTitle,
       };
     } else if (source.onEvolution) {
-      const evoLevel = GEN7_PROGRESSION_SPECIES[speciesId]?.evoLevel ?? null;
+      const evoLevel = dex().progressionSpecies[speciesId]?.evoLevel ?? null;
       candidate = {
         level: evoLevel ?? 0,
         how: evoLevel ? `evo@${evoLevel}` : 'on evolution',
@@ -359,7 +359,7 @@ function unspentEvolutionItems(learnerId, inputId, ownedItems = {}) {
   const seen = new Set();
   while (id && !seen.has(id) && id !== inputId) {
     seen.add(id);
-    const record = GEN7_PROGRESSION_SPECIES[id];
+    const record = dex().progressionSpecies[id];
     if (!record) break;
     const hopItems = [];
     if (record.evoType === 'useItem' && record.evoItem) {
@@ -509,7 +509,7 @@ function getOwnedCurrentSpecies({ pokemonIndex, progression, query }) {
       seen.add(id);
       species.push({
         id,
-        name: GEN7_PROGRESSION_SPECIES[id]?.name || candidate.name || id,
+        name: dex().progressionSpecies[id]?.name || candidate.name || id,
         // The form the player ACTUALLY listed — evolution items on hops
         // between it and a move's learner are unspent, so scarce-resource
         // pricing charges them (a presumed Victreebel still owes its Leaf
@@ -629,7 +629,7 @@ export function familyForms(pokemonId) {
   const forms = [];
   const walked = new Set();
   const visit = (id) => {
-    const record = GEN7_PROGRESSION_SPECIES[id];
+    const record = dex().progressionSpecies[id];
     if (!record || walked.has(id)) return;
     walked.add(id);
     forms.push(record);
@@ -642,9 +642,9 @@ export function familyForms(pokemonId) {
 function familyRootOf(pokemonId) {
   let rootId = pokemonId;
   const seen = new Set();
-  while (GEN7_PROGRESSION_SPECIES[rootId]?.prevoId && !seen.has(rootId)) {
+  while (dex().progressionSpecies[rootId]?.prevoId && !seen.has(rootId)) {
     seen.add(rootId);
-    rootId = GEN7_PROGRESSION_SPECIES[rootId].prevoId;
+    rootId = dex().progressionSpecies[rootId].prevoId;
   }
   return rootId;
 }
@@ -659,7 +659,7 @@ function familyRootOf(pokemonId) {
 // father is needed there.
 function hasMaleCapableKnower(learnerId) {
   const visit = (id) => {
-    const record = GEN7_PROGRESSION_SPECIES[id];
+    const record = dex().progressionSpecies[id];
     if (!record) return false;
     const gender = record.gender ?? '';
     if (gender === '' || gender === 'M') return true;

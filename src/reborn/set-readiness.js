@@ -28,7 +28,7 @@ import {
 import { fixedMoveDamage } from './damage-model.js';
 import { getMoveMetaById } from '../move-meta.js';
 import { toId } from '../utils/ids.js';
-import { GEN7_PROGRESSION_SPECIES } from '../generated/gen7ProgressionSpecies.generated.js';
+import { dex } from '../games/dex.js';
 
 /** Moves in a canonical set — a full Showdown moveset. */
 export const CANONICAL_SET_SIZE = 4;
@@ -115,7 +115,7 @@ export function computeSetReadiness({
     (legalMoveData?.moves || []).map((move) => [move.id, move]),
   );
   const speciesIsEvolved = Boolean(
-    GEN7_PROGRESSION_SPECIES[legalMoveData?.pokemonId]?.prevoId,
+    dex().progressionSpecies[legalMoveData?.pokemonId]?.prevoId,
   );
   const capNeeds = []; // cap-equivalents of everything not ready yet
   let scaling = false;

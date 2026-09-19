@@ -2,10 +2,10 @@ import {
   REBORN_MINING_ITEM_BADGES,
   REBORN_SHOP_ITEM_BADGES,
 } from '../generated/rebornItemTimeline.generated.js';
-import { GEN7_HELD_ITEMS_BY_ID } from '../generated/gen7HeldItems.generated.js';
 import { HIDDEN_INVENTORY_ITEM_IDS } from './reborn-seeds.js';
 import { REBORN_EXTRA_INVENTORY_ITEMS } from './extra-inventory-items.js';
 import { toId } from '../utils/ids.js';
+import { dex } from '../games/dex.js';
 
 export { REBORN_EXTRA_INVENTORY_ITEMS };
 // Curated evolution-item availability for Pokémon Reborn.
@@ -132,7 +132,7 @@ function getAvailableInventoryItems(
   for (const [id, badge] of Object.entries(itemBadges)) {
     if (badge > badges) continue;
     if (HIDDEN_INVENTORY_ITEM_IDS.has(id)) continue;
-    const item = GEN7_HELD_ITEMS_BY_ID[id] || extrasById[id];
+    const item = dex().heldItemsById[id] || extrasById[id];
     if (!item) continue;
     if ((ownedItems[id] || 0) >= minCount) continue;
     results.push({ id, name: item.name, badge });

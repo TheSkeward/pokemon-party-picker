@@ -1,6 +1,6 @@
-import { LINE_REPRESENTATIVE_CANDIDATES } from './generated/gen7LineRepresentativeCandidates.generated.js';
 import { dataUrl } from './utils/data-url.js';
 import { toId as normalizeSearch } from './utils/ids.js';
+import { dex } from './games/dex.js';
 
 const LEAD_SMOOTHING_K = 200;
 
@@ -239,7 +239,7 @@ export function getAvailabilitySelectionLabel(availability, selection) {
  */
 export function getLineRepresentativeCandidates(pokemonId, pokemonIndex) {
   const nameById = new Map(pokemonIndex.map((entry) => [entry.id, entry.name]));
-  const rawCandidates = LINE_REPRESENTATIVE_CANDIDATES[pokemonId] || [
+  const rawCandidates = dex().lineRepresentativeCandidates[pokemonId] || [
     {
       id: pokemonId,
       name: nameById.get(pokemonId) || pokemonId,

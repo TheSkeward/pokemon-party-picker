@@ -20,10 +20,10 @@
  * looks wrong, the fix is C/K/utility — never a special legality rule.
  */
 
-import { GEN7_PROGRESSION_SPECIES } from '../generated/gen7ProgressionSpecies.generated.js';
 import { toId } from '../utils/ids.js';
 import { getItemAvailability } from './item-availability.js';
 import { tunable } from '../teamBuilder/scoring-constants.js';
+import { dex } from '../games/dex.js';
 
 const TEDIOUS_MULTIPLIER = 1.5;
 
@@ -420,7 +420,7 @@ export function describeEvolutionPath(fromId, toId) {
   const seen = new Set();
   while (id && id !== fromId && !seen.has(id)) {
     seen.add(id);
-    const species = GEN7_PROGRESSION_SPECIES[id];
+    const species = dex().progressionSpecies[id];
     if (!species?.prevoId) return '';
     chain.unshift(species);
     id = species.prevoId;
@@ -476,7 +476,7 @@ export function evolutionChainProof(fieldedId, access = null, inputId = null) {
   const seen = new Set();
   while (id && id !== inputId && !seen.has(id)) {
     seen.add(id);
-    const species = GEN7_PROGRESSION_SPECIES[id];
+    const species = dex().progressionSpecies[id];
     if (!species || !species.prevoId) break;
     const requirement = getEvolutionRequirement(species, access);
     steps.unshift({

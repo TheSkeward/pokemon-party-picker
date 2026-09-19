@@ -1,5 +1,5 @@
-import { MOVE_META } from './generated/gen7MoveMeta.generated.js';
 import { toId } from './utils/ids.js';
+import { dex } from './games/dex.js';
 
 const TYPE_COLORS = {
   Normal: '#A8A77A',
@@ -45,7 +45,7 @@ export function getMoveMeta(name) {
   // Hidden Power's elemental type lives in the move name, not in the base dex
   // entry. Accept every representation used across the app and scraped teams:
   // "Hidden Power Ice", "Hidden Power [Ice]", and "hiddenpowerice".
-  const meta = resolveHiddenPower(rawName) || MOVE_META[id] || null;
+  const meta = resolveHiddenPower(rawName) || dex().moveMeta[id] || null;
   cache.set(id, meta);
   return meta;
 }

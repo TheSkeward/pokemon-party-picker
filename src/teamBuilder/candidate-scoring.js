@@ -1,12 +1,12 @@
 import { getTypeMultiplier } from '../reborn/type-chart.js';
 import { evolutionChainProof } from '../reborn/evolution-requirements.js';
-import { GEN7_PROGRESSION_SPECIES } from '../generated/gen7ProgressionSpecies.generated.js';
 import {
   currentFormValue,
   formReadinessRatio,
   CURRENT_VALUE_SCALE,
 } from './current-form-value.js';
 import { tunable } from './scoring-constants.js';
+import { dex } from '../games/dex.js';
 
 /**
  * Snapshotted at module load — not a confidence-sweep axis, so late
@@ -221,7 +221,7 @@ export function scoreCandidate({
  */
 export function fieldableRepresentativeId(representativeId) {
   if (!representativeId) return representativeId;
-  const record = GEN7_PROGRESSION_SPECIES[representativeId];
+  const record = dex().progressionSpecies[representativeId];
   return record?.isMega
     ? record.baseSpeciesId || representativeId
     : representativeId;

@@ -1,5 +1,5 @@
-import { GEN7_ITEM_DAMAGE } from '../generated/gen7ItemDamage.generated.js';
 import { toId } from '../utils/ids.js';
+import { dex } from '../games/dex.js';
 
 /**
  * The damage multiplier a held item grants a given move: 1 when the item has no
@@ -13,7 +13,7 @@ import { toId } from '../utils/ids.js';
 export function getItemDamageMultiplier(
   itemId, { type, category, pokemonId } = {}) {
   if (!itemId) return 1;
-  const rule = GEN7_ITEM_DAMAGE[toId(itemId)];
+  const rule = dex().itemDamage[toId(itemId)];
   if (!rule) return 1;
   if (rule.users && !rule.users.includes(toId(pokemonId))) return 1;
   if (rule.category && rule.category !== category) return 1;

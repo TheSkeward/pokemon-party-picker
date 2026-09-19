@@ -3,12 +3,12 @@ import {
   REBORN_TMX_OPTIONS,
   REBORN_TUTOR_OPTIONS,
 } from './progression-options.js';
-import { GEN7_PROGRESSION_SPECIES } from '../generated/gen7ProgressionSpecies.generated.js';
 import { normalizeLevelCap } from './progression.js';
 import { dataUrl } from '../utils/data-url.js';
 import { getActiveGame } from '../games/registry.js';
 import { hydrateLegalMove } from '../move-meta.js';
 import { moveId as toId, toId as toPokemonId } from '../utils/ids.js';
+import { dex } from '../games/dex.js';
 
 const legalMoveCache = new Map();
 const tmByMoveId = mapOptionsByMoveId(REBORN_TM_OPTIONS);
@@ -66,7 +66,7 @@ export function loadRebornLegalMoveData(pokemonId) {
  * @return {number}
  */
 export function arrivalLevelOf(formId) {
-  const form = GEN7_PROGRESSION_SPECIES[formId];
+  const form = dex().progressionSpecies[formId];
   if (!form?.prevoId) return 1;
   return (form.evoType || '') === '' && Number.isFinite(form.evoLevel)
     ? form.evoLevel
@@ -146,7 +146,7 @@ export function getAvailableRebornMoves(legalMoveData, progression = {}) {
   const moveRelearnerUnlocked = Boolean(progression.moveRelearnerUnlocked);
   const daycareUnlocked = Boolean(progression.daycareUnlocked);
   const pokemonId = legalMoveData?.pokemonId;
-  const speciesRecord = GEN7_PROGRESSION_SPECIES[pokemonId];
+  const speciesRecord = dex().progressionSpecies[pokemonId];
   const evolvedSpecies = Boolean(speciesRecord?.prevoId);
   // Each ancestor's NATURAL departure level (evolve-as-soon-as-possible path):
   // the level at which it evolves toward this form. A pre-evo level-up move
@@ -173,7 +173,7 @@ export function getAvailableRebornMoves(legalMoveData, progression = {}) {
         current.prevoId,
         evolutionDepartureLevel(current),
       );
-      current = GEN7_PROGRESSION_SPECIES[current.prevoId];
+      current = dex().progressionSpecies[current.prevoId];
     }
   }
   const directDeparture = evolutionDepartureLevel(speciesRecord);
@@ -184,7 +184,7 @@ export function getAvailableRebornMoves(legalMoveData, progression = {}) {
   // An entry below a form's arrival can't be leveled through on the default
   // path — it's a candy-down route at level 2+, relearner-only at level 1.
   const ancestorName = (fromId) =>
-    GEN7_PROGRESSION_SPECIES[fromId]?.name || 'its pre-evolution';
+    dex().progressionSpecies[fromId]?.name || 'its pre-evolution';
   const moves = [];
 
   for (const move of legalMoveData?.moves || []) {

@@ -4,7 +4,7 @@ import {
   loadRebornLegalMoveData,
 } from '../reborn/legal-moves';
 import { MAX_TRACKED_ITEM_COUNT } from '../reborn/progression';
-import { GEN7_HELD_ITEMS_BY_ID } from '../generated/gen7HeldItems.generated.js';
+import { dex } from '../games/dex.js';
 
 /**
  * Builds the plain-text "here are my available Pokémon and items" list from
@@ -79,7 +79,7 @@ async function describeLine(line, progression) {
 function describeOwnedItems(ownedItems = {}) {
   const owned = Object.entries(ownedItems)
     .map(([id, count]) => ({
-      name: GEN7_HELD_ITEMS_BY_ID[id]?.name || id,
+      name: dex().heldItemsById[id]?.name || id,
       count,
     }))
     .filter((entry) => entry.count > 0)

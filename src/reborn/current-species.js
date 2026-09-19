@@ -1,10 +1,10 @@
-import { GEN7_PROGRESSION_SPECIES } from '../generated/gen7ProgressionSpecies.generated.js';
 import { toId } from '../utils/ids.js';
 import {
   getEvolutionRequirement,
   evolutionChainProof,
 } from './evolution-requirements.js';
 import { normalizeLevelCap } from './progression.js';
+import { dex } from '../games/dex.js';
 
 /**
  * The form a picked mon actually holds under the given progression state: the
@@ -47,7 +47,7 @@ export function getCurrentRebornSpeciesForChoice(choice, progression = {}) {
     differsFromRepresentative: current.id !== representativeId,
     representativeIsFuture,
     representativeId,
-    representativeName: choice?.name || GEN7_PROGRESSION_SPECIES[representativeId]?.name || '',
+    representativeName: choice?.name || dex().progressionSpecies[representativeId]?.name || '',
     // K for having reached this form, with the per-step proof, plus any
     // evolutions that were NOT taken because their requirements are unknown —
     // surfaced so the recommendation can say "Raichu unavailable: Thunder Stone
@@ -97,7 +97,7 @@ export function getCurrentRebornSpecies(pokemonId, progression = {}) {
     name: current.name,
     differsFromRepresentative: current.id !== inputId,
     representativeId: inputId,
-    representativeName: GEN7_PROGRESSION_SPECIES[inputId]?.name || inputId,
+    representativeName: dex().progressionSpecies[inputId]?.name || inputId,
   };
 }
 
@@ -122,7 +122,7 @@ export function getReachableRebornSpecies(pokemonId, progression = {}) {
 
 function getBestLevelReachableSpecies(
   { inputId, levelCap, representativeId, access = null }) {
-  const input = GEN7_PROGRESSION_SPECIES[inputId];
+  const input = dex().progressionSpecies[inputId];
   if (!input) return null;
 
   const { reachable, blocked } =
@@ -147,7 +147,7 @@ function getBestLevelReachableSpecies(
 // (legal-with-friction), plus the evolutions that were NOT taken because their
 // requirements are unknown — kept for surfacing, never silently dropped.
 function collectReachableSpecies(inputId, levelCap, access = null) {
-  const input = GEN7_PROGRESSION_SPECIES[inputId];
+  const input = dex().progressionSpecies[inputId];
   if (!input) return { reachable: [], blocked: [] };
 
   const reachable = [];
@@ -162,7 +162,7 @@ function collectReachableSpecies(inputId, levelCap, access = null) {
     reachable.push(current);
 
     for (const evoId of current.evos || []) {
-      const evo = GEN7_PROGRESSION_SPECIES[evoId];
+      const evo = dex().progressionSpecies[evoId];
       if (!evo || evo.isMega) continue;
       const requirement = getEvolutionRequirement(evo, access);
       if (requirement.status !== 'legal') {
@@ -185,7 +185,7 @@ function collectReachableSpecies(inputId, levelCap, access = null) {
 
 function getAncestorIds(speciesId) {
   const ids = [];
-  let current = GEN7_PROGRESSION_SPECIES[toId(speciesId)];
+  let current = dex().progressionSpecies[toId(speciesId)];
   const seen = new Set();
 
   while (current && !seen.has(current.id)) {
@@ -193,9 +193,9 @@ function getAncestorIds(speciesId) {
     ids.push(current.id);
 
     if (current.isMega && current.baseSpeciesId) {
-      current = GEN7_PROGRESSION_SPECIES[current.baseSpeciesId];
+      current = dex().progressionSpecies[current.baseSpeciesId];
     } else {
-      current = GEN7_PROGRESSION_SPECIES[current.prevoId];
+      current = dex().progressionSpecies[current.prevoId];
     }
   }
 
@@ -204,13 +204,13 @@ function getAncestorIds(speciesId) {
 
 function getDepth(speciesId) {
   let depth = 0;
-  let current = GEN7_PROGRESSION_SPECIES[toId(speciesId)];
+  let current = dex().progressionSpecies[toId(speciesId)];
   const seen = new Set();
 
   while (current?.prevoId && !seen.has(current.id)) {
     seen.add(current.id);
     depth += 1;
-    current = GEN7_PROGRESSION_SPECIES[current.prevoId];
+    current = dex().progressionSpecies[current.prevoId];
   }
 
   return depth;

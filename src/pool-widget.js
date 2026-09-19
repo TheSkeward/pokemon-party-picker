@@ -45,7 +45,6 @@ import {
 import { getRebornCheckpoint } from './reborn/badge-timeline.js';
 import { toId } from './utils/ids.js';
 import { bindPersistentDetails } from './utils/details-state.js';
-import { GEN7_HELD_ITEMS_BY_ID } from './generated/gen7HeldItems.generated.js';
 import {
   REBORN_EXTRA_INVENTORY_ITEMS,
   getEvolutionItemIds,
@@ -68,6 +67,7 @@ import {
   removeLocalStorage,
   writeLocalStorage,
 } from './storage/safe-local-storage';
+import { dex } from './games/dex.js';
 
 // Per-game: each game's owned pool is its own saved state (the descriptor
 // pins Reborn's pre-registry literal so existing saves survive).
@@ -842,7 +842,7 @@ export function mountPoolOptimizer(container, options = {}) {
         (item) => item.id === itemId,
       );
 
-      if (!itemId || (!GEN7_HELD_ITEMS_BY_ID[itemId] && !knownExtra)) {
+      if (!itemId || (!dex().heldItemsById[itemId] && !knownExtra)) {
         updateProgressionStatusMessage(
           'Item not recognized; pick one from the suggestions.',
         );

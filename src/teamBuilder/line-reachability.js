@@ -1,5 +1,4 @@
 import { getLineRepresentativeCandidates } from '../data';
-import { GEN7_PROGRESSION_SPECIES } from '../generated/gen7ProgressionSpecies.generated.js';
 import {
   canHatchLine,
 } from '../reborn/breeding.js';
@@ -7,6 +6,7 @@ import {
   isStrictPreEvolutionOf,
 } from '../reborn/current-species.js';
 import { buildInputGroups } from './input-groups';
+import { dex } from '../games/dex.js';
 
 /**
  * Which family forms can this input actually become? Descendants and their
@@ -22,14 +22,14 @@ export function getReachableLineCandidates(
   if (group?.unresolved || !input) return [];
 
   const inputBaseId =
-    GEN7_PROGRESSION_SPECIES[input.id]?.baseSpeciesId || input.id;
+    dex().progressionSpecies[input.id]?.baseSpeciesId || input.id;
   const daycareReach =
     Boolean(progression?.daycareUnlocked) && canHatchLine(input.id);
   return getLineRepresentativeCandidates(input.id, pokemonIndex).filter(
     (candidate) => {
       if (daycareReach) return true;
       const candidateBaseId = candidate.isMega
-        ? GEN7_PROGRESSION_SPECIES[candidate.id]?.baseSpeciesId || candidate.id
+        ? dex().progressionSpecies[candidate.id]?.baseSpeciesId || candidate.id
         : candidate.id;
       return (
         candidateBaseId === input.id ||
@@ -58,7 +58,7 @@ export function getReachableAssetKey(candidates = [], fallbackId = '') {
   const ids = new Set(rows.map((candidate) => candidate.id));
   const terminalIds = rows
     .filter((candidate) => {
-      const evolutions = GEN7_PROGRESSION_SPECIES[candidate.id]?.evos || [];
+      const evolutions = dex().progressionSpecies[candidate.id]?.evos || [];
       return !evolutions.some((id) => ids.has(id));
     })
     .map((candidate) => candidate.id);
@@ -75,12 +75,12 @@ export function getReachableAssetKey(candidates = [], fallbackId = '') {
  */
 export function getEvolutionDepth(pokemonId) {
   let depth = 0;
-  let cursor = GEN7_PROGRESSION_SPECIES[pokemonId];
+  let cursor = dex().progressionSpecies[pokemonId];
   const seen = new Set();
   while (cursor?.prevoId && !seen.has(cursor.id)) {
     seen.add(cursor.id);
     depth += 1;
-    cursor = GEN7_PROGRESSION_SPECIES[cursor.prevoId];
+    cursor = dex().progressionSpecies[cursor.prevoId];
   }
   return depth;
 }

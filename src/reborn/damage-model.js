@@ -1,11 +1,7 @@
-import {
-  GEN7_BASE_STATS,
-  GEN7_BASE_HP,
-  GEN7_WEIGHTS_KG,
-} from '../generated/gen7BaseStats.generated.js';
 import { getTypeMultiplier } from './type-chart.js';
 import { toId } from '../utils/ids.js';
 import { natureStatMultiplier } from '../natures.js';
+import { dex } from '../games/dex.js';
 
 // A naive, defender-agnostic damage model. We can't know the real opponent's
 // stats, so every move is scored as "unresisted output" against a fixed neutral
@@ -18,7 +14,7 @@ import { natureStatMultiplier } from '../natures.js';
 // (and a fixed-damage move like Seismic Toss keeps its value on a weak
 // attacker, where it is genuinely the best option).
 
-// GEN7_BASE_STATS rows are [Atk, Def, SpA, SpD, Spe].
+// dex().baseStats rows are [Atk, Def, SpA, SpD, Spe].
 const STAT_INDEX = { atk: 0, def: 1, spa: 2, spd: 3, spe: 4 };
 // Spread EV strings are HP/Atk/Def/SpA/SpD/Spe.
 const EV_INDEX = { hp: 0, atk: 1, def: 2, spa: 3, spd: 4, spe: 5 };
@@ -218,15 +214,25 @@ function medianOf(values) {
   const sorted = [...values].sort((a, b) => a - b);
   return sorted.length ? sorted[Math.floor(sorted.length / 2)] : 0;
 }
-const REFERENCE_SPEED_BASE = medianOf(
-  Object.values(GEN7_BASE_STATS).map((row) => row[4]),
-);
-const REFERENCE_ATTACK_BASE = medianOf(
-  Object.values(GEN7_BASE_STATS).map((row) => row[0]),
-);
-const REFERENCE_WEIGHT_KG = medianOf(
-  Object.values(GEN7_WEIGHTS_KG).filter((kg) => kg > 0),
-);
+// Medians over the active game's dex, memoized per bundle so switching games
+// recomputes them.
+const REFERENCE_BASES = new WeakMap();
+function referenceBases() {
+  const bundle = dex();
+  let refs = REFERENCE_BASES.get(bundle);
+  if (!refs) {
+    const stats = Object.values(bundle.baseStats);
+    refs = {
+      speed: medianOf(stats.map((row) => row[4])),
+      attack: medianOf(stats.map((row) => row[0])),
+      weightKg: medianOf(
+        Object.values(bundle.weightsKg).filter((kg) => kg > 0),
+      ),
+    };
+    REFERENCE_BASES.set(bundle, refs);
+  }
+  return refs;
+}
 
 const VARIABLE_POWER_MOVE_IDS = new Set([
   'electroball',
@@ -281,9 +287,9 @@ export function variableMovePower(
   if (!VARIABLE_POWER_MOVE_IDS.has(moveId)) return null;
   const lvl = normalizeLevel(level);
   const id = attackerId ? toId(attackerId) : null;
-  const baseSpe = (id && GEN7_BASE_STATS[id]?.[4]) || REFERENCE_SPEED_BASE;
-  const weight = (id && GEN7_WEIGHTS_KG[id]) || REFERENCE_WEIGHT_KG;
-  const referenceSpe = statValue(REFERENCE_SPEED_BASE, 0, lvl, 1);
+  const baseSpe = (id && dex().baseStats[id]?.[4]) || referenceBases().speed;
+  const weight = (id && dex().weightsKg[id]) || referenceBases().weightKg;
+  const referenceSpe = statValue(referenceBases().speed, 0, lvl, 1);
   const userSpe = Math.max(1, attackerSpe ?? statValue(baseSpe, 0, lvl, 1));
 
   switch (moveId) {
@@ -300,10 +306,10 @@ export function variableMovePower(
     }
     case 'grassknot':
     case 'lowkick':
-      return weightBucketPower(REFERENCE_WEIGHT_KG);
+      return weightBucketPower(referenceBases().weightKg);
     case 'heavyslam':
     case 'heatcrash': {
-      const ratio = weight / Math.max(0.1, REFERENCE_WEIGHT_KG);
+      const ratio = weight / Math.max(0.1, referenceBases().weightKg);
       if (ratio >= 5) return 120;
       if (ratio >= 4) return 100;
       if (ratio >= 3) return 80;
@@ -422,7 +428,7 @@ function statValue(base, ev, level, natureMultiplier) {
  *     the species has no base-stat row.
  */
 export function getAttackingStats({ pokemonId, levelCap, spread }) {
-  const stats = GEN7_BASE_STATS[toId(pokemonId)];
+  const stats = dex().baseStats[toId(pokemonId)];
   if (!stats) return null;
 
   const level = normalizeLevel(levelCap);
@@ -479,8 +485,8 @@ export function getAttackingStats({ pokemonId, levelCap, spread }) {
  */
 export function computeFinalStats({ pokemonId, level, nature, evs }) {
   const id = toId(pokemonId);
-  const stats = GEN7_BASE_STATS[id];
-  const baseHp = GEN7_BASE_HP[id];
+  const stats = dex().baseStats[id];
+  const baseHp = dex().baseHp[id];
   if (!stats || baseHp == null) return null;
 
   const at = normalizeLevel(level);
@@ -556,7 +562,7 @@ export function estimateMoveDamage({
   // priced as the reference defender's median Atk, uninvested at level.
   const attack =
     moveId === 'foulplay'
-      ? statValue(REFERENCE_ATTACK_BASE, 0, lvl, 1)
+      ? statValue(referenceBases().attack, 0, lvl, 1)
       : category === 'Physical'
         ? attackerStats.atk
         : attackerStats.spa;

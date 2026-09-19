@@ -3,15 +3,11 @@ import { fetchJsonCached } from '../utils/fetch-json-cached.js';
 import { toId } from '../utils/ids.js';
 import { TYPE_GEMS } from '../reborn/type-gems.js';
 import {
-  GEN7_HELD_ITEMS,
-  GEN7_HELD_ITEMS_BY_ID,
-} from '../generated/gen7HeldItems.generated.js';
-import {
   REBORN_SEEDS,
   GEN7_TERRAIN_SEEDS,
   REBORN_SEED_STAT_VECTORS,
 } from '../reborn/reborn-seeds.js';
-import { GEN7_BASE_STATS } from '../generated/gen7BaseStats.generated.js';
+import { dex } from '../games/dex.js';
 
 const TERRAIN_SEED_IDS = GEN7_TERRAIN_SEEDS.map((name) => toId(name));
 const REBORN_SEED_BY_ID = new Map(
@@ -90,10 +86,10 @@ export function withFieldExtenderCandidate(items, fieldSetterShare) {
 // it again would double-count.
 const UNBURDEN_GEM_MULTIPLIER = 1.75;
 
-// Generically-good-item ordering for the ultimate fallback: GEN7_HELD_ITEMS is
+// Generically-good-item ordering for the ultimate fallback: dex().heldItems is
 // sorted by how broadly each item is used, so a lower index = better default.
 const ITEM_QUALITY_RANK = new Map(
-  GEN7_HELD_ITEMS.map((item, index) => [item.id, index]),
+  dex().heldItems.map((item, index) => [item.id, index]),
 );
 
 // Smogon itemizes the most-used items and folds the rest into "Other"; the set
@@ -204,7 +200,7 @@ export function assignTeamItems(
     assignments[teamMemberKey(choice)] = {
       id: itemId,
       name:
-        GEN7_HELD_ITEMS_BY_ID[itemId]?.name ||
+        dex().heldItemsById[itemId]?.name ||
         (itemId === FIELD_EXTENDER_ITEM_ID ? 'Amplifield Rock' : itemId),
       usage: null,
       fallback: true,
@@ -348,7 +344,7 @@ async function fetchMemberItems({ family, pokemonId, selection, unburden }) {
 // strength stat-fit: each seed scores the Pokémon's *above-average* base stats
 // weighted by what that seed boosts, normalized to shares that sum to 1.
 function seedWeights(pokemonId, D) {
-  const stats = GEN7_BASE_STATS[toId(pokemonId)];
+  const stats = dex().baseStats[toId(pokemonId)];
   if (!stats) return [];
 
   const mean = stats.reduce((sum, value) => sum + value, 0) / stats.length;
