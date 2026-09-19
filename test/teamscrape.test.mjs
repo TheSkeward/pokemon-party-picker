@@ -72,6 +72,13 @@ test('header variants: nickname, gender, itemless', () => {
   );
   assert.equal(parseShowdownSet('Mimikyu (F)\n- Play Rough').speciesId, 'mimikyu');
   assert.equal(parseShowdownSet('Mimikyu (F)\n- Play Rough').item, null);
+  // Forum commentary directly above a set's lines is not a species.
+  assert.equal(
+    parseShowdownSet(
+      'Does its job perfectly! Fake out to get rid of sash users\nAbility: Berserk\n- Fake Out',
+    ),
+    null,
+  );
 });
 
 test('replay teams: poke lines union switch reveals, forms collapse', () => {

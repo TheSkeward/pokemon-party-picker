@@ -14,6 +14,7 @@
  * than aborting the team.
  */
 
+import { Dex } from '@pkmn/dex';
 import { toId } from '../../src/utils/ids.js';
 
 /**
@@ -137,9 +138,13 @@ export function parseShowdownSet(block) {
     if (nature) set.nature = nature[1];
   }
 
-  // No moves means the block wasn't a set at all — any prose first line
-  // parses as a "species", so the move list is the real shape test.
-  if (!set.speciesId || !set.moves.length) return null;
+  // Any prose first line parses as a "species", so the real shape test is
+  // a move list under a header the dex recognizes. Forum posts put a set's
+  // commentary directly above its Ability/move lines often enough that
+  // moves alone let whole paragraphs through as species.
+  if (!set.moves.length || !Dex.species.get(set.speciesId).exists) {
+    return null;
+  }
   return set;
 }
 
