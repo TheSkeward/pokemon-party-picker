@@ -46,6 +46,22 @@ export const FAMILY_CONFIGS = {
     cutoffPriority: [1760, 1630, 1500, 0],
     defaultBrowserFormat: 'gen4ou',
   },
+  // Gen 5 OU is likewise monthly; UU, RU, NU, PU, and LC are scattered.
+  gen5singles: {
+    label: 'Gen 5 Singles',
+    gen: 5,
+    formatOrder: [
+      'gen5ubers',
+      'gen5ou',
+      'gen5uu',
+      'gen5ru',
+      'gen5nu',
+      'gen5pu',
+      'gen5lc',
+    ],
+    cutoffPriority: [1760, 1630, 1500, 0],
+    defaultBrowserFormat: 'gen5ou',
+  },
 };
 
 /** @type {!Array<{id: string, label: string, family: string}>} */
@@ -68,6 +84,13 @@ export const REAL_FORMATS = [
   { id: 'gen4uu', label: 'Gen 4 UU', family: 'gen4singles' },
   { id: 'gen4nu', label: 'Gen 4 NU', family: 'gen4singles' },
   { id: 'gen4lc', label: 'Gen 4 LC', family: 'gen4singles' },
+  { id: 'gen5ubers', label: 'Gen 5 Ubers', family: 'gen5singles' },
+  { id: 'gen5ou', label: 'Gen 5 OU', family: 'gen5singles' },
+  { id: 'gen5uu', label: 'Gen 5 UU', family: 'gen5singles' },
+  { id: 'gen5ru', label: 'Gen 5 RU', family: 'gen5singles' },
+  { id: 'gen5nu', label: 'Gen 5 NU', family: 'gen5singles' },
+  { id: 'gen5pu', label: 'Gen 5 PU', family: 'gen5singles' },
+  { id: 'gen5lc', label: 'Gen 5 LC', family: 'gen5singles' },
 ];
 
 /** Singles format ids, strongest tier first. @type {!Array<string>} */

@@ -1,11 +1,11 @@
 # Pokemon Party Picker
 
 A static web app for planning playthrough teams from the Pokemon you
-currently have available, for Pokemon Reborn and Pokemon HeartGold and
-SoulSilver (HGSS).
+currently have available, for Pokemon Reborn, Pokemon HeartGold and
+SoulSilver (HGSS), and Pokemon Black 2 and White 2 (B2W2).
 
 The app uses Smogon usage data of the game's generation (Gen 7 for Reborn,
-Gen 4 for HGSS) as a prior for which forms, sets, and teammates are
+Gen 4 for HGSS, Gen 5 for B2W2) as a prior for which forms, sets, and teammates are
 worth considering, then checks those ideas against the game's progression:
 level caps, TMs and HMs, tutors, move relearner, daycare, evolution access,
 held items, legal moves, coverage, and defensive fit.
@@ -27,14 +27,15 @@ https://theskeward.github.io/pokemon-party-picker/
 
 ## Games
 
-The usage-data families in the top tabs (Singles, Doubles, Gen 4 Singles)
-come from the data pipeline, and each activates the game whose prior it is:
-Reborn for the Gen 7 families, HGSS for Gen 4. A game is a descriptor
+The usage-data families in the top tabs (Singles, Doubles, Gen 4 Singles,
+Gen 5 Singles) come from the data pipeline, and each activates the game
+whose prior it is: Reborn for the Gen 7 families, HGSS for Gen 4, B2W2 for
+Gen 5. A game is a descriptor
 in `src/games/` naming its dex generation, usage families, progression
 schedule, machines and tutors, item content, evolution rules, and the
 mechanics it has (Reborn's Common Candy level-downs and Hidden Power Type
-Changer, for instance); its curated data lives in `src/reborn/` or
-`src/hgss/`. Legal moves come from the game's own data: Reborn's from
+Changer, for instance); its curated data lives in `src/reborn/`,
+`src/hgss/`, or `src/b2w2/`. Legal moves come from the game's own data: Reborn's from
 its mons.dat, a mainline game's from `@pkmn/dex` with the game's level-up
 lists taken from Bulbapedia where its generation's games differ.
 
@@ -45,7 +46,8 @@ it, carries a calibration corpus (see `SCORING.md`).
 The tool wears the active game's palette: its descriptor supplies the
 shell, text, state, and accent colors and whether they are a dark or light
 scheme, all drawn from the game's own UI (Reborn's dark menus and relic
-gems; HGSS's cream-and-white screens). Only the fills for actions, focus,
+gems; HGSS's cream-and-white screens; B2W2's black screens and Bag
+blues). Only the fills for actions, focus,
 progress, and highlights hold across games. Every text color clears WCAG AA
 on the game's surfaces, pinned by test.
 
@@ -98,8 +100,8 @@ src/app/                       App shell and page wiring
 src/views/                     Shared render views
 src/teamBuilder/               Pool parsing, scoring, search, analysis, UI
 src/playthrough/               Progression state, move legality, evolution, breeding
-src/games/                     Game registry and descriptors (Reborn, HGSS)
-src/reborn/, src/hgss/         Each game's curated data
+src/games/                     Game registry and descriptors (Reborn, HGSS, B2W2)
+src/reborn/, src/hgss/, src/b2w2/  Each game's curated data
 src/resolver/                  Input-name and representative resolution
 src/setDetails/                Precomputed set-detail loading
 src/generated/                 Checked-in generated modules

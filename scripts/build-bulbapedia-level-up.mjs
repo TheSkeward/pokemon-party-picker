@@ -62,14 +62,16 @@ function parseArgs() {
   };
 }
 
-function pageTitle(species) {
+// The learnset page of the generation being built; every species that exists
+// in it has one, whatever generation the species is from.
+function pageTitle(species, gen) {
   // The dex spells Farfetch'd with a typographic apostrophe; Bulbapedia's
   // title uses the plain one.
   const name = species.name
     .replace('Nidoran-F', 'Nidoran♀')
     .replace('Nidoran-M', 'Nidoran♂')
     .replace('’', "'");
-  return `${name} (Pokémon)/Generation ${ROMAN[species.gen <= 4 ? 4 : species.gen]} learnset`;
+  return `${name} (Pokémon)/Generation ${ROMAN[gen]} learnset`;
 }
 
 // Cached by species id: titles differ only by ♀/♂ for the Nidoran pair.
@@ -79,8 +81,17 @@ async function fetchWikitext(title, gen, id) {
     const url =
       'https://bulbapedia.bulbagarden.net/w/api.php?action=parse&prop=wikitext&format=json&redirects=1&page=' +
       encodeURIComponent(title.replace(/ /g, '_'));
-    const response = await fetch(url, { headers: { 'User-Agent': USER_AGENT } });
-    if (!response.ok) throw new Error(`${response.status} for ${title}`);
+    // The wiki answers a long run with the odd 503; wait it out rather than
+    // lose the run.
+    let response;
+    for (let attempt = 1; ; attempt++) {
+      response = await fetch(url, { headers: { 'User-Agent': USER_AGENT } });
+      if (response.ok) break;
+      if (response.status < 500 || attempt >= 5) {
+        throw new Error(`${response.status} for ${title}`);
+      }
+      await new Promise((resolve) => setTimeout(resolve, 2000 * attempt));
+    }
     fs.mkdirSync(path.dirname(file), { recursive: true });
     fs.writeFileSync(file, await response.text());
     await new Promise((resolve) => setTimeout(resolve, 250));
@@ -139,8 +150,26 @@ function parseRows(rows, { index, count }, dex, unknown) {
   const learnset = {};
   for (const row of rows) {
     const params = row.replace(/^\{\{|\}\}$/g, '').split('|').slice(1);
-    const levelText = params[index];
-    const moveName = params[count];
+    let levelIndex = index;
+    let moveIndex = count;
+    if (count === 1) {
+      // A single-column header can still sit over rows that carry one level
+      // per game of the generation ({{learnlist/levelV|BW|B2W2|Move|...}},
+      // "N/A" where a game lacks the move), the newest game last.
+      let levels = 0;
+      while (
+        levels < params.length &&
+        /^(\d+|N\/A|—|-)$/.test(params[levels].replace(/<[^>]+>/g, '').trim())
+      ) {
+        levels++;
+      }
+      if (levels > 1) {
+        levelIndex = levels - 1;
+        moveIndex = levels;
+      }
+    }
+    const levelText = params[levelIndex];
+    const moveName = params[moveIndex];
     const level = Number.parseInt(String(levelText).replace(/<[^>]+>/g, ''), 10);
     if (!Number.isFinite(level) || !moveName) continue;
     let moveId = toId(moveName);
@@ -168,7 +197,7 @@ async function main() {
   const unknown = new Set();
   const missing = [];
   for (const base of species) {
-    const wikitext = await fetchWikitext(pageTitle(base), gen, base.id);
+    const wikitext = await fetchWikitext(pageTitle(base, gen), gen, base.id);
     const blocks = wikitext ? levelUpBlocks(wikitext) : [];
     if (!blocks.length) {
       missing.push(base.id);

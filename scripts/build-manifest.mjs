@@ -75,6 +75,7 @@ const dexVersion = JSON.parse(
 const gameVersions = {
   reborn: '19.5',
   hgss: `@pkmn/dex ${dexVersion}`,
+  b2w2: `@pkmn/dex ${dexVersion}`,
 };
 
 const manifest = {
