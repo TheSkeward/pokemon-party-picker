@@ -1,12 +1,13 @@
 # Pokemon Party Picker
 
-A static web app for planning Pokemon Reborn playthrough teams from the
-Pokemon you currently have available.
+A static web app for planning playthrough teams from the Pokemon you
+currently have available, for Pokemon Reborn and Pokemon SoulSilver.
 
-The app uses Gen 7 Smogon usage data as a prior for which forms, sets, and
-teammates are worth considering, then checks those ideas against Reborn
-progression: level caps, TMs/TMXs, tutors, move relearner, daycare, evolution
-access, held items, legal moves, coverage, and defensive fit.
+The app uses Smogon usage data of the game's generation (Gen 7 for Reborn,
+Gen 4 for SoulSilver) as a prior for which forms, sets, and teammates are
+worth considering, then checks those ideas against the game's progression:
+level caps, TMs and HMs, tutors, move relearner, daycare, evolution access,
+held items, legal moves, coverage, and defensive fit.
 
 Live site:
 
@@ -17,11 +18,28 @@ https://theskeward.github.io/pokemon-party-picker/
 - Paste an owned Pokemon pool and get a recommended team.
 - Lock a Pokemon into the team by suffixing it with `!` (`Gothitelle!`);
   the optimizer fills the remaining slots around it.
-- Track Reborn progression locally in your browser.
+- Track each game's progression locally in your browser.
 - Inspect legal current moves, recommended sets, breeding chains, item picks,
   coverage, defensive profile, confidence, and level-cap investment.
-- Look up observed Gen 7 set details for a Pokemon or evolutionary line.
+- Look up observed set details for a Pokemon or evolutionary line.
 - Browse the underlying usage data.
+
+## Games
+
+The usage-data families in the top tabs (Singles, Doubles, Gen 4 Singles)
+come from the data pipeline, and each activates the game whose prior it is:
+Reborn for the Gen 7 families, SoulSilver for Gen 4. A game is a descriptor
+in `src/games/` naming its dex generation, usage families, progression
+schedule, machines and tutors, item content, evolution rules, and the
+mechanics it has (Reborn's Common Candy level-downs and Hidden Power Type
+Changer, for instance); its curated data lives in `src/reborn/` or
+`src/soulsilver/`. Legal moves come from the game's own data: Reborn's from
+its mons.dat, a mainline game's from `@pkmn/dex` with the game's level-up
+lists taken from Bulbapedia where its generation's games differ.
+
+The usage prior is per generation, not per game: competitive play describes
+a mainline game well enough that only Reborn, whose mechanics stray far from
+it, carries a calibration corpus (see `SCORING.md`).
 
 ## Running Locally
 
@@ -108,3 +126,7 @@ the repository.
   would be too expensive.
 - The level-cap investment view advances the level cap only; it does not model
   future TM, tutor, item, or location unlocks.
+- SoulSilver's level caps are the obedience thresholds, which bind only traded
+  Pokemon; Hidden Power is never counted as plannable there (its type follows
+  IVs); weather rocks, pinch berries, and event items are not tracked because
+  the game offers them only by trade, Pokewalker, or event.

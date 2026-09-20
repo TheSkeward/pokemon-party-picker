@@ -12,8 +12,11 @@ Scoring has two different kinds of evidence:
    cache exactness, serialization, and similar facts. Fast focused tests should
    guard these behaviors.
 2. **Product judgment** — which Pokemon are excellent or poor choices for a
-   Reborn playthrough. The badge-bucket anchor corpus is the calibration
-   contract for those verdicts.
+   playthrough. Reborn's badge-bucket anchor corpus is the calibration
+   contract for those verdicts. A mainline game carries no corpus of its
+   own: its mechanics stay close to the competitive play the usage prior
+   describes, so the prior is trusted there; Reborn needs the corpus
+   because its mechanics stray far from it.
 
 A scoring shape or constant changes only when it is justified by the anchor
 corpus, a concrete mechanical correction, or an explicit user decision. Do not
