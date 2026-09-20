@@ -527,6 +527,98 @@ test('forum roots carry their generation; link forums are not subforums', async 
   );
 });
 
+test('replay harvest spends its budget on tours, then elite, then the rest', async () => {
+  const { harvestFormat, isPriorityEntry } = await import(
+    '../scripts/scrape-replay-teams.mjs',
+  );
+  assert.ok(isPriorityEntry({ id: 'smogtours-gen7ou-1', rating: null }));
+  assert.ok(isPriorityEntry({ id: 'gen7ou-1', rating: 1630 }));
+  assert.ok(!isPriorityEntry({ id: 'gen7ou-1', rating: 1629 }));
+  assert.ok(!isPriorityEntry({ id: 'rom-gen7ou-1', rating: null }));
+
+  // The rating-sorted list: a full page of elite games, then a page that
+  // dips below the floor. The newest-first list: two pages, the second
+  // short, holding two smogtours games and one strong ladder game among
+  // the mixture.
+  const elite = Array.from({ length: 51 }, (_, i) => ({
+    id: `gen7ou-e${i}`, rating: 2100 - i, uploadtime: 9000 - i,
+  }));
+  const dip = [
+    { id: 'gen7ou-d0', rating: 1650, uploadtime: 8000 },
+    { id: 'gen7ou-d1', rating: 1500, uploadtime: 7999 },
+  ];
+  const newest = Array.from({ length: 51 }, (_, i) => ({
+    id: i === 3 ? 'smogtours-gen7ou-t0' : `gen7ou-n${i}`,
+    rating: i === 1 ? 1700 : null,
+    uploadtime: 5000 - i,
+  }));
+  const older = [
+    { id: 'smogtours-gen7ou-t1', rating: null, uploadtime: 4000 },
+    { id: 'gen7ou-o1', rating: 1200, uploadtime: 3999 },
+  ];
+  const pages = {
+    'sort=rating&page=1': elite,
+    'sort=rating&page=2': dip,
+    '': newest,
+    'before=4950': older,
+    'before=3999': [],
+  };
+  const requests = [];
+  const fetchJson = async (url) => {
+    requests.push(url);
+    const search = url.match(/search\.json\?format=gen7ou&?(.*)$/);
+    if (search) {
+      assert.ok(search[1] in pages, `unexpected search ${search[1]}`);
+      return pages[search[1]];
+    }
+    const id = url.match(/\/([a-z0-9-]+)\.json$/)[1];
+    return {
+      id, uploadtime: 1, rating: null,
+      log: '|poke|p1|Mawile, F|\n|poke|p2|Yanmega, M|',
+    };
+  };
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'replay-priority-'));
+  const file = path.join(dir, 'replays-gen7ou.jsonl');
+  const cursor = {};
+  const now = new Date('2026-09-20T00:00:00Z');
+
+  // A tight budget: the fresh region's smogtours games first, then its
+  // strong game, then the top of the elite list; the backfill cursor is
+  // planted where the fresh read ended.
+  const first = await harvestFormat('gen7ou',
+    { maxNew: 5, fetchJson, file, cursor, now });
+  assert.deepEqual(first.passes, { tours: 3, elite: 2, fresh: 0, rest: 0 });
+  assert.equal(cursor.restBefore, 3999);
+  assert.equal(cursor.scanDone, true);
+  assert.deepEqual(
+    fs.readFileSync(file, 'utf8').trim().split('\n')
+      .map((line) => JSON.parse(line).id),
+    ['smogtours-gen7ou-t0', 'smogtours-gen7ou-t1', 'gen7ou-n1',
+      'gen7ou-e0', 'gen7ou-e1'],
+  );
+
+  // A wide budget finishes the elite pass and rests it, takes the rest of
+  // the fresh region, and finds the backfill already at the end.
+  const second = await harvestFormat('gen7ou',
+    { maxNew: 1000, fetchJson, file, cursor, now });
+  assert.deepEqual(second.passes, { tours: 0, elite: 50, fresh: 50, rest: 0 });
+  assert.equal(cursor.eliteRestedAt, now.toISOString());
+  assert.equal(cursor.restDone, true);
+  assert.equal(
+    fs.readFileSync(file, 'utf8').trim().split('\n').length, 105);
+
+  // The rested elite pass makes no rating-sorted request for a month, and
+  // a fully seen top page ends the fresh read at once.
+  requests.length = 0;
+  const third = await harvestFormat('gen7ou', { maxNew: 10, fetchJson, file,
+    cursor, now: new Date('2026-10-05T00:00:00Z') });
+  assert.equal(third.appended, 0);
+  assert.deepEqual(requests, [
+    'https://replay.pokemonshowdown.com/search.json?format=gen7ou',
+  ]);
+  fs.rmSync(dir, { recursive: true, force: true });
+});
+
 test('forum fetch: HTTP mode identifies itself and requests readable text',
   async () => {
     const calls = [];
