@@ -4,10 +4,14 @@
  * builder writes (build-reborn-legal-moves.mjs) so the engine reads every
  * game alike:
  *
- *   node scripts/build-mainline-legal-moves.mjs <gameId>
+ *   node scripts/build-mainline-legal-moves.mjs <gameId> [levelUpTable.json]
  *
  * Only the generation's own learnset entries count (no transfer moves).
- * Level-up entries keep their levels; a machine entry becomes a TM or an HM
+ * Level-up entries keep their levels, unless a level-up table built by
+ * build-bulbapedia-level-up.mjs is given: the dex carries one level-up list
+ * per generation, and a game whose levels differ from its siblings'
+ * (HeartGold and SoulSilver moved several from Diamond and Pearl's) takes
+ * its own list from the table instead; a machine entry becomes a TM or an HM
  * source according to the game's machine tables, so a machine another game
  * of the generation has and this one lacks (Defog in SoulSilver) teaches
  * nothing; a tutor entry counts only for the game's own tutors; egg entries
@@ -21,6 +25,7 @@
  */
 
 import fs from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { Dex } from '@pkmn/dex';
 import { getGame, listGames } from '../src/games/registry.js';
@@ -44,6 +49,10 @@ async function main() {
   const game = parseGameArg();
   const gen = game.dexGen;
   const dex = Dex.forGen(gen);
+  const levelUpTable = process.argv[3]
+    ? JSON.parse(readFileSync(path.resolve(process.argv[3]), 'utf8'))
+    : null;
+  const missingFromTable = [];
   const outputDir = path.join(
     process.cwd(), 'site-data', 'data', game.data.legalMovesDir, 'all');
 
@@ -82,8 +91,34 @@ async function main() {
       }
       result = { id: base.id, name: base.name, entries: inherited };
     }
+    if (levelUpTable) {
+      result.entries = withTableLevels(result.entries, species);
+    }
     learnsetCache.set(species.id, result);
     return result;
+  }
+  // The game's own level-up list replaces the generation's; a form without
+  // a list of its own takes its base species'.
+  function withTableLevels(entries, species) {
+    const levels =
+      levelUpTable[species.id] ||
+      levelUpTable[dex.species.get(toId(species.baseSpecies)).id];
+    if (!levels) {
+      missingFromTable.push(species.id);
+      return entries;
+    }
+    const next = {};
+    for (const [moveId, codes] of Object.entries(entries)) {
+      const kept = codes.filter((code) => code[0] !== 'L');
+      if (kept.length) next[moveId] = kept;
+    }
+    for (const [moveId, moveLevels] of Object.entries(levels)) {
+      next[moveId] = [
+        ...(next[moveId] || []),
+        ...moveLevels.map((level) => `L${level}`),
+      ];
+    }
+    return next;
   }
   function genEntries(learnset) {
     const entries = {};
@@ -177,8 +212,11 @@ async function main() {
     written += 1;
   }
   console.log(
-    `[${game.data.legalMovesDir}] wrote ${written} Pokémon files (Gen ${gen} learnsets)`,
+    `[${game.data.legalMovesDir}] wrote ${written} Pokémon files (Gen ${gen} learnsets${levelUpTable ? ', level-up table' : ''})`,
   );
+  if (missingFromTable.length) {
+    console.log(`  not in the level-up table: ${missingFromTable.join(', ')}`);
+  }
 }
 
 // Pre-evolution ids (closest first), walked from the base species so forms

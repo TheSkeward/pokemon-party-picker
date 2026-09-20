@@ -184,6 +184,14 @@ test('legal-move files carry Gen 4 sources in the Reborn file shape', () => {
   assert.ok(rotomwash.moves.find((move) => move.id === 'hydropump').sources.evolutionMove);
   assert.ok(rotomwash.moves.find((move) => move.id === 'thunderbolt').sources.tm);
 
+  // Level-up levels are HeartGold/SoulSilver's own, not Diamond and Pearl's:
+  // a starter Cyndaquil learns Smokescreen at 6 here (the dex says 4).
+  const cyndaquil = legalMoves('cyndaquil');
+  assert.deepEqual(
+    cyndaquil.moves.find((move) => move.id === 'smokescreen').sources.levelUp,
+    [6],
+  );
+
   // Egg moves are recorded on the base form and inherited up the line.
   const dragonite = legalMoves('dragonite');
   assert.ok(dragonite.moves.find((move) => move.id === 'extremespeed').sources.egg);
