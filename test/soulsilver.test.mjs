@@ -101,7 +101,7 @@ test('evolutions price real trades and block the methods the game lacks', () => 
     assert.equal(gengar.status, 'legal');
     assert.equal(gengar.method, 'trade');
     assert.equal(gengar.friction, tunable('TRADE_FRICTION'));
-    assert.match(gengar.reason, /trade evolution/);
+    assert.equal(gengar.reason, 'trade');
     assert.equal(describeEvolutionPath('haunter', 'gengar'), ' (trade)');
 
     const blocked = getEvolutionRequirement(species.gengar, {
@@ -114,7 +114,7 @@ test('evolutions price real trades and block the methods the game lacks', () => 
     const scizor = getEvolutionRequirement(species.scizor);
     assert.equal(scizor.status, 'legal');
     assert.equal(scizor.method, 'trade');
-    assert.match(scizor.reason, /trade evolution.*Metal Coat \(farmable: Athlete Shop/);
+    assert.match(scizor.reason, /^trade \+ Metal Coat \(Athlete Shop/);
     assert.equal(
       scizor.friction,
       tunable('TRADE_FRICTION') + tunable('ITEM_FRICTION'),

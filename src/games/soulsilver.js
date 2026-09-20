@@ -102,7 +102,9 @@ export const SOULSILVER_GAME = Object.freeze({
       baseGames: 'HGSS',
       transferMovesAvailableByDefault: false,
     }),
-    tmxMoves: SOULSILVER_HM_OPTIONS.map((option) => option.move),
+    tmxMoves: [...SOULSILVER_HM_OPTIONS]
+      .sort((a, b) => a.code.localeCompare(b.code))
+      .map((option) => option.move),
     promotedTmMoves: Object.freeze([]),
     notes: Object.freeze([
       'Move legality follows the Generation IV learnsets, counting only the machines and tutors HeartGold and SoulSilver have.',

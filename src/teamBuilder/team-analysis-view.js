@@ -254,6 +254,8 @@ export function renderRealTeamPanel({
   dataAvailable = false,
 } = {}) {
   const team = fieldableTeam || closestMatch?.team;
+  // A family with no scraped teams has nothing to say here.
+  if (!team && !dataAvailable) return '';
   if (!team) {
     return `
       <div class="team-real-team team-real-team-empty">

@@ -64,8 +64,8 @@ test('Happiny -> Chansey: legal via wild-held Oval Stone, with item K + proof', 
     assert.equal(req.status, 'legal');
     assert.equal(req.method, 'item');
     assert.ok(req.friction > 0);
-    assert.match(req.reason, /Oval Stone/);
-    assert.match(req.reason, /farmable/);
+    // The reason names the item and its source; a grind would say "tedious".
+    assert.match(req.reason, /Oval Stone \(wild-held/);
   });
 });
 

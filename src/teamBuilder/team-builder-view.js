@@ -28,6 +28,7 @@ import {
 } from './explanations.js';
 import { getTelemetrySummary, loadTelemetrySamples } from './telemetry.js';
 import { getActiveGame } from '../games/registry.js';
+import { dex } from '../games/dex.js';
 
 /**
  * Renders the full Team Builder page into `app` and wires up its controls.
@@ -195,7 +196,7 @@ function renderPoolControls({ embedded, families, poolStats, state }) {
       <div class="panel-header">
         <div>
           <h2>Owned Pokémon Pool</h2>
-          <p>${poolStats.uniqueCount} unique entries${poolStats.duplicateCount ? ` · ${poolStats.duplicateCount} duplicates ignored` : ''}. Autosaved in this browser. Suffix <code>!</code> to lock an entry into the team (<code>Gothitelle!</code>); a parenthetical declares a caught ability (<code>Froakie (Torrent)</code>).</p>
+          <p>${poolStats.uniqueCount} unique entries${poolStats.duplicateCount ? ` · ${poolStats.duplicateCount} duplicates ignored` : ''}. Autosaved in this browser. Suffix <code>!</code> to lock an entry into the team (<code>Gengar!</code>); a parenthetical declares a caught ability (<code>Eevee (Adaptability)</code>).</p>
         </div>
       </div>
 
@@ -308,9 +309,14 @@ function renderResult({ familyLabel, formatsIndex, setDetails, state }) {
     `;
   }
 
+  // Megas exist from Gen 6 on; a game without them gets no Mega copy.
+  const hasMegas = dex().gen >= 6;
   const megaText = result.megaUsed
-    ? `Mega used: ${escapeHtml(result.megaUsed.name)}`
-    : 'No Mega selected';
+    ? ` Mega used: ${escapeHtml(result.megaUsed.name)}.`
+    : hasMegas
+      ? ' No Mega selected.'
+      : '';
+  const megaRule = hasMegas ? ' at most one Mega,' : '';
 
   const sortedTeam = getSortedTeam(
     result.team,
@@ -325,9 +331,9 @@ function renderResult({ familyLabel, formatsIndex, setDetails, state }) {
       <div class="panel-header">
         <div>
           <h2>Recommended ${escapeHtml(familyLabel)} Team</h2>
-          <p>${result.team.length} picks from ${result.linesConsidered} resolved input lines. ${megaText}.</p>
+          <p>${result.team.length} picks from ${result.linesConsidered} resolved input lines.${megaText}</p>
           ${renderScoringPoolNote(result)}
-          <p>Scored at level cap ${escapeHtml(String(state.progression?.levelCap || '?'))}: each pick's current-form value plus a readiness-gated competitive ceiling, minus build friction (evolution requirements are shown as information, never priced); the team is chosen with damage-aware coverage and shared-weakness fit, at most one Mega, one build realized per line. Displayed by ${escapeHtml(getSortLabel(state.teamSort, state.teamSortDir))}. Click a row to inspect its set.</p>
+          <p>Scored at level cap ${escapeHtml(String(state.progression?.levelCap || '?'))}: each pick's current-form value plus a readiness-gated competitive ceiling, minus build friction (evolution requirements are shown as information, never priced); the team is chosen with damage-aware coverage and shared-weakness fit,${megaRule} one build realized per line. Displayed by ${escapeHtml(getSortLabel(state.teamSort, state.teamSortDir))}. Click a row to inspect its set.</p>
           <p class="muted" data-progression-stale-warning ${progressionStale ? '' : 'hidden'}>Progression changed after this team was optimized. Re-optimize before trusting row scores or legal move notes.</p>
           ${result.ignoredLocks?.length ? `<p class="muted">Locked but not fieldable at this progression, so ignored: ${escapeHtml(result.ignoredLocks.join(', '))}.</p>` : ''}
         </div>

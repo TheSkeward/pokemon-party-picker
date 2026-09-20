@@ -13,6 +13,7 @@ import {
   buildMoveTransferContexts,
 } from './sketch.js';
 import { getActiveGame } from '../games/registry.js';
+import { mechanics } from '../games/legality.js';
 
 const HIDDEN_MOVESET_ENTRY_KEYS = new Set(['other', 'nothing']);
 const SOURCE_TONE = {
@@ -176,15 +177,22 @@ function renderObservedMoves(observedMoves, availableMoveMap) {
       <div class="legal-observed-grid">
         ${observedMoves
           .map((entry) => {
-            const availableMove =
-              availableMoveMap.get(getLegalMoveId(entry.name));
+            const moveId = getLegalMoveId(entry.name);
+            const availableMove = availableMoveMap.get(moveId);
+            // Without a Type Changer, Hidden Power is never coming: say so
+            // instead of "now".
+            const unavailableText =
+              moveId.startsWith('hiddenpower') &&
+              !mechanics().hiddenPowerTypeChanger
+                ? 'Type follows IVs'
+                : 'Unavailable now';
             return `
               <div class="legal-observed-row ${availableMove ? 'available' : 'unavailable'}">
                 <strong>${escapeHtml(entry.name)}</strong>
                 ${
                   availableMove
                     ? renderSourcePills(availableMove.availableSources)
-                    : '<span class="legal-source-pill unavailable">Unavailable now</span>'
+                    : `<span class="legal-source-pill unavailable">${unavailableText}</span>`
                 }
               </div>
             `;

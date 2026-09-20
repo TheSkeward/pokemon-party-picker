@@ -83,7 +83,7 @@ const MACHINE_AVAILABILITY = {
   tm67: { available: 'After Badge 11', location: 'Celadon City' },
   tm68: { available: 'After Badge 11', location: 'Celadon Game Corner' },
   tm69: { available: 'After Badge 10', location: 'Route 10' },
-  tm70: { available: 'From the start (Badge 00)', location: 'Sprout Tower' },
+  tm70: { available: 'From the start', location: 'Sprout Tower' },
   tm71: { available: 'After Badge 08', location: 'Battle Frontier (80 BP)' },
   tm72: { available: 'After Badge 07', location: 'Ice Path' },
   tm73: { available: 'After Badge 08', location: 'Battle Frontier (32 BP)' },
@@ -301,6 +301,8 @@ function compareMachineAvailability(a, b) {
 }
 
 function badgeOrder(available) {
-  const match = String(available || '').match(/Badge\s+(\d+)/i);
+  const text = String(available || '');
+  if (/^From the start/i.test(text)) return 0;
+  const match = text.match(/Badge\s+(\d+)/i);
   return match ? Number.parseInt(match[1], 10) : 999;
 }

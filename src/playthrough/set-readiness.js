@@ -50,6 +50,7 @@ function machineBadgeByMove() {
     if (!map.has(moveId) || badge < map.get(moveId)) map.set(moveId, badge);
   };
   const badgeOf = (text) => {
+    if (/^From the start/i.test(String(text || ''))) return 0;
     const match = /Badge\s+(\d+)/i.exec(String(text || ''));
     return match ? Number.parseInt(match[1], 10) : null;
   };

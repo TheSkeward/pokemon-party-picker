@@ -312,12 +312,15 @@ export function getEvolutionRequirement(species, access = null) {
           ? Math.round(base * TEDIOUS_MULTIPLIER)
           : base;
     }
+    // "trade + Metal Coat (Athlete Shop, Friday)": a bare trade needs no
+    // source, an owned item none either, and only a grind is called out.
     const how = parts
-      .map((part) =>
-        part.owned
-          ? `${part.item} (owned)`
-          : `${part.item} (${part.status}: ${part.source})`,
-      )
+      .map((part) => {
+        if (part.owned) return `${part.item} (owned)`;
+        if (part.trade && part.item === 'trade') return 'trade';
+        const grind = part.status === 'farmable-tedious' ? 'tedious: ' : '';
+        return `${part.item} (${grind}${part.source})`;
+      })
       .join(' + ');
     const riders = [condition, regionAccess(species)?.label || '']
       .filter(Boolean)

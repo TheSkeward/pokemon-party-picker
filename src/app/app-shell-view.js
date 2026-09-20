@@ -10,11 +10,16 @@ import { gameForFamily } from '../games/registry.js';
  * @param {!Array<{id: string, label: string}>} families
  */
 export function renderAppShell(app, state, families) {
+  // A tab names its game first: the family alone does not say which game's
+  // rules the pages below apply.
   const familyTabs = families
     .map((family) => {
       const game = gameForFamily(family.id);
+      const label = game
+        ? `${game.shortLabel} · ${family.label}`
+        : family.label;
       const title = game ? ` title="${escapeHtml(game.label)}"` : '';
-      return `<button class="view-tab ${state.family === family.id ? 'active' : ''}" data-app-family="${escapeHtml(family.id)}"${title}>${escapeHtml(family.label)}</button>`;
+      return `<button class="view-tab ${state.family === family.id ? 'active' : ''}" data-app-family="${escapeHtml(family.id)}"${title}>${escapeHtml(label)}</button>`;
     })
     .join('\n        ');
   app.innerHTML = `
