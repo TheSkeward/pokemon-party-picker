@@ -12,7 +12,7 @@ import {
 import { gameItems, getRenewablyObtainableItems } from '../games/items.js';
 import { MAX_TRACKED_ITEM_COUNT, MAX_OPPONENT_TYPE_BIAS } from './progression';
 import { analysisTypes } from './type-chart.js';
-import { getTypeColor } from '../move-meta';
+import { badgeStyle, getTypeColor } from '../move-meta';
 import { dex } from '../games/dex.js';
 import { getActiveGame } from '../games/registry.js';
 
@@ -215,7 +215,7 @@ export function renderOpponentTypeBias(bias) {
 function renderBiasRow(type, level) {
   return `
     <label class="opponent-bias-row">
-      <span class="move-badge opponent-bias-type" style="background:${getTypeColor(type)}">${escapeHtml(type)}</span>
+      <span class="move-badge opponent-bias-type" style="${badgeStyle(getTypeColor(type))}">${escapeHtml(type)}</span>
       <input
         type="range"
         min="0"

@@ -42,9 +42,11 @@
   --fill-progress: #7ae7b3; /* the optimizer's progress */
   --fill-neutral: #b3b3b3; /* inert tracks, informational callouts */
 
-  /* The type palette (move-meta.js) is the community standard, drawn for
-     light text, so filled type badges keep this ink in every game. */
-  --type-badge-ink: #f8f8f8;
+  /* Inks for badges filled with the community type and category palettes
+     (move-meta.js picks whichever contrasts more); palette-independent
+     because the fills are. */
+  --badge-ink-light: #f8f8f8;
+  --badge-ink-dark: #131315;
 
   /* Type scale plus one display size. */
   --type-s: 13px;
@@ -458,10 +460,13 @@ button:hover {
   justify-content: flex-start;
   flex-wrap: wrap;
 }
+/* Badges are filled with a type or category color, set inline with its
+   ink by move-meta.js badgeStyle. */
 .move-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  color: var(--badge-ink-light);
   border: 1px solid var(--hairline);
   border-radius: var(--radius);
   padding: 1px 7px;
@@ -1750,11 +1755,6 @@ button:hover {
   width: 5.25rem;
   text-align: center;
 }
-.team-analysis-type-badge,
-.opponent-bias-type {
-  color: var(--type-badge-ink);
-}
-
 .team-analysis-chip-list {
   display: flex;
   flex-wrap: wrap;

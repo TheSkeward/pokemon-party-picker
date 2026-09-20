@@ -30,6 +30,11 @@ const CATEGORY_COLORS = {
 
 const VALID_TYPES = new Set(Object.keys(TYPE_COLORS));
 
+/** @return {!Array<string>} Every type name the palette covers. */
+export function listTypeNames() {
+  return [...VALID_TYPES];
+}
+
 const cache = new Map();
 
 /**
@@ -140,4 +145,24 @@ export function getTypeColor(type) {
 /** @return {string} CSS color for the category; neutral gray when unknown. */
 export function getCategoryColor(category) {
   return CATEGORY_COLORS[category] || '#AAB5C3';
+}
+
+/**
+ * Inline style for a badge filled with a type or category color: the fill
+ * and whichever badge ink (styles/main.css) contrasts more with it. The
+ * palettes are drawn for light text but half of them are too pale for it.
+ * @param {string} color A `#rrggbb` fill.
+ * @return {string}
+ */
+export function badgeStyle(color) {
+  const channel = (index) => {
+    const value = parseInt(color.slice(index, index + 2), 16) / 255;
+    return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+  };
+  const luminance =
+    0.2126 * channel(1) + 0.7152 * channel(3) + 0.0722 * channel(5);
+  // The relative luminance at which the light and dark inks contrast
+  // equally with the fill.
+  const ink = luminance > 0.18 ? 'dark' : 'light';
+  return `background:${color};color:var(--badge-ink-${ink});`;
 }

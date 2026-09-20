@@ -1,5 +1,10 @@
 import { escapeAttr, escapeHtml } from '../utils/html.js';
-import { getMoveMeta, getTypeColor, describeMoveMeta } from '../move-meta';
+import {
+  badgeStyle,
+  getMoveMeta,
+  getTypeColor,
+  describeMoveMeta,
+} from '../move-meta';
 import { toId } from '../utils/ids.js';
 import { describeNature } from '../natures.js';
 import { computeFinalStats } from './damage-model.js';
@@ -766,7 +771,7 @@ function renderTypeBadge(type) {
   const safeType = analysisTypes().includes(type) ? type : 'Normal';
 
   return `
-    <span class="move-badge team-analysis-type-badge" style="background:${getTypeColor(safeType)}">
+    <span class="move-badge team-analysis-type-badge" style="${badgeStyle(getTypeColor(safeType))}">
       ${escapeHtml(type)}
     </span>
   `;

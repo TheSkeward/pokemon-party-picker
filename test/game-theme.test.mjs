@@ -9,6 +9,12 @@ import path from 'node:path';
 
 import { listGames } from '../src/games/registry.js';
 import { applyGameTheme, themeProperties } from '../src/app/theme.js';
+import {
+  badgeStyle,
+  getCategoryColor,
+  getTypeColor,
+  listTypeNames,
+} from '../src/move-meta.js';
 
 const css = fs.readFileSync(path.resolve('src', 'styles', 'main.css'), 'utf8');
 const rootBlock = css.slice(css.indexOf(':root {'), css.indexOf('\n}\n'));
@@ -59,6 +65,21 @@ test('every game palette is complete, hex, and readable at AA', () => {
       luminance(shell.surface) > luminance(shell.base),
       `${game.id} surface lift`,
     );
+  }
+});
+
+test('every type and category badge reads at AA with the ink it picks', () => {
+  const inks = {
+    light: token('--badge-ink-light'),
+    dark: token('--badge-ink-dark'),
+  };
+  const fills = [
+    ...listTypeNames().map(getTypeColor),
+    ...['Physical', 'Special', 'Status', 'Unknown'].map(getCategoryColor),
+  ];
+  for (const fill of fills) {
+    const ink = badgeStyle(fill).match(/--badge-ink-(light|dark)/)[1];
+    assertAA(inks[ink], fill.toLowerCase(), `badge ${fill} with ${ink} ink`);
   }
 });
 

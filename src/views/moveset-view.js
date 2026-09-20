@@ -4,6 +4,7 @@ import {
   getTypeColor,
   getCategoryColor,
   describeMoveMeta,
+  badgeStyle,
 } from '../move-meta';
 import { describeNature } from '../natures.js';
 import { computeFinalStats, parseSpread } from '../teamBuilder/damage-model.js';
@@ -342,10 +343,6 @@ function resolveMoveMeta(entry) {
 
 function renderPlainEntryName(name, sectionTitle) {
   return escapeHtml(formatEntryName(name, sectionTitle));
-}
-
-function badgeStyle(color) {
-  return `border-color:${color};color:${color};`;
 }
 
 function formatEntryName(name, sectionTitle) {
