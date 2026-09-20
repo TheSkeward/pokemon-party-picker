@@ -1,22 +1,22 @@
 import { getActiveGame } from '../games/registry.js';
 import {
   applyBreedingContextToProgression,
-} from '../reborn/breeding.js';
+} from '../playthrough/breeding.js';
 import {
   applySketchContextToProgression,
-  buildRebornMoveTransferContexts,
+  buildMoveTransferContexts,
   sketchContextSignature,
-} from '../reborn/sketch.js';
+} from '../playthrough/sketch.js';
 import {
-  getCurrentRebornSpeciesForChoice,
-} from '../reborn/current-species.js';
+  getCurrentSpeciesForChoice,
+} from '../playthrough/current-species.js';
 import {
-  getAvailableRebornMoves,
-  loadRebornLegalMoveData,
-} from '../reborn/legal-moves';
-import { buildCandidateLegalityProfile } from '../reborn/team-analysis';
-import { loadTopSet } from '../reborn/top-spread.js';
-import { computeSetReadiness } from '../reborn/set-readiness.js';
+  getAvailableMoves,
+  loadLegalMoveData,
+} from '../playthrough/legal-moves';
+import { buildCandidateLegalityProfile } from './team-analysis';
+import { loadTopSet } from './top-spread.js';
+import { computeSetReadiness } from '../playthrough/set-readiness.js';
 import { buildInputGroups } from './input-groups';
 import { parseAbilityAnnotations, parseLockedNames } from './pool-parsing';
 import { normalizeName } from './name-utils';
@@ -313,7 +313,7 @@ export async function optimizeTeamFromPool({
   await ensureHydrated();
 
   const { breedingContext, sketchContext } =
-    await buildRebornMoveTransferContexts({
+    await buildMoveTransferContexts({
       pokemonIndex,
       progression,
       query,
@@ -1319,7 +1319,7 @@ async function resolveCandidateBuilds({
     pokemonId: candidate.id,
     name: candidate.name,
   };
-  const currentSpecies = getCurrentRebornSpeciesForChoice(choice, progression);
+  const currentSpecies = getCurrentSpeciesForChoice(choice, progression);
   const candidateRecord = dex().progressionSpecies[candidate.id];
   const megaBaseId = candidateRecord?.isMega
     ? candidateRecord.baseSpeciesId || null
@@ -1336,7 +1336,7 @@ async function resolveCandidateBuilds({
   const battleSpeciesId = megaReady
     ? candidate.id
     : currentSpecies?.id || candidate.id;
-  const legalMoveData = await loadRebornLegalMoveData(
+  const legalMoveData = await loadLegalMoveData(
     battleSpeciesId,
   );
   const memberPokemonId = currentSpecies?.id || legalMoveData?.pokemonId;
@@ -1359,7 +1359,7 @@ async function resolveCandidateBuilds({
       : '',
     types: legalMoveData?.types || [],
   };
-  const moves = getAvailableRebornMoves(legalMoveData, memberProgression);
+  const moves = getAvailableMoves(legalMoveData, memberProgression);
   const naturalMoves = moves.filter((move) => !move.delayedEvolution);
   const delayedMoves = moves.filter((move) => move.delayedEvolution);
 

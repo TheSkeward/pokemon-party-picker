@@ -2,7 +2,7 @@ import { dataUrl } from '../utils/data-url.js';
 import { fetchJsonCached } from '../utils/fetch-json-cached.js';
 import { getActiveGame } from '../games/registry.js';
 import { moveSources } from '../games/legality.js';
-import { getRebornMoveId } from '../reborn/legal-moves.js';
+import { getLegalMoveId } from '../playthrough/legal-moves.js';
 import { hydrateLegalMove } from '../move-meta.js';
 
 /**
@@ -233,7 +233,7 @@ function appendUnusedLegalMoves(detail, legalMoves, pokemonId) {
     };
 
   const usedMoveIds = new Set(
-    (base.moves || []).map((move) => getRebornMoveId(move.name)),
+    (base.moves || []).map((move) => getLegalMoveId(move.name)),
   );
 
   const unusedMoves = legal

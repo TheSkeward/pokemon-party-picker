@@ -9,7 +9,7 @@
  */
 
 import { searchCombinationRange } from './search-kernel.js';
-import { activeTypeChart } from '../reborn/type-chart.js';
+import { activeTypeChart } from '../playthrough/type-chart.js';
 
 /**
  * Below this many combinations the worker round-trip (spawn already

@@ -16,7 +16,7 @@ import { dex } from '../games/dex.js';
  * @param {Object=} progression
  * @return {?Object} Null when the input species is unknown.
  */
-export function getCurrentRebornSpeciesForChoice(choice, progression = {}) {
+export function getCurrentSpeciesForChoice(choice, progression = {}) {
   const inputId = toId(choice?.inputPokemonId || choice?.pokemonId);
   const representativeId = toId(choice?.pokemonId);
 
@@ -73,13 +73,13 @@ export function isStrictPreEvolutionOf(candidateId, inputId) {
 }
 
 /**
- * getCurrentRebornSpeciesForChoice for a bare species id: no representative
+ * getCurrentSpeciesForChoice for a bare species id: no representative
  * line to prefer, no evolution proof in the result.
  * @param {?string} pokemonId
  * @param {Object=} progression
  * @return {?Object} Null when the species is unknown.
  */
-export function getCurrentRebornSpecies(pokemonId, progression = {}) {
+export function getCurrentSpecies(pokemonId, progression = {}) {
   const inputId = toId(pokemonId);
   if (!inputId) return null;
 
@@ -103,14 +103,14 @@ export function getCurrentRebornSpecies(pokemonId, progression = {}) {
 
 /**
  * Every non-Mega form reachable from an exact owned species under the current
- * evolution access and level cap. Unlike getCurrentRebornSpecies, this keeps
+ * evolution access and level cap. Unlike getCurrentSpecies, this keeps
  * all legal branches and intermediate forms; move-transfer helpers use it to
  * model any partner the player could choose to field.
  * @param {?string} pokemonId
  * @param {Object=} progression
  * @return {!Array<!Object>}
  */
-export function getReachableRebornSpecies(pokemonId, progression = {}) {
+export function getReachableSpecies(pokemonId, progression = {}) {
   const inputId = toId(pokemonId);
   if (!inputId) return [];
   return collectReachableSpecies(

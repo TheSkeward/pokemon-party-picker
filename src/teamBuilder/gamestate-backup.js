@@ -41,7 +41,7 @@ export function buildGamestateExport({ query, progression }) {
  * exports carry a scoringModel field (the retired V0/V1 toggle) — ignored,
  * not an error, so every v1-format backup still restores. The progression
  * object is passed through as-is — the caller routes it through the normal
- * save/load path so normalizeRebornProgression sanitizes it the same way it
+ * save/load path so normalizeProgression sanitizes it the same way it
  * sanitizes every other stored progression.
  * @param {string} text
  * @return {{pool: string, progression: Object, game: string}}

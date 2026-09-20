@@ -1,10 +1,10 @@
 import { getLineRepresentativeCandidates } from '../data';
 import {
   canHatchLine,
-} from '../reborn/breeding.js';
+} from '../playthrough/breeding.js';
 import {
   isStrictPreEvolutionOf,
-} from '../reborn/current-species.js';
+} from '../playthrough/current-species.js';
 import { buildInputGroups } from './input-groups';
 import { dex } from '../games/dex.js';
 

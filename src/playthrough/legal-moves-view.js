@@ -1,16 +1,16 @@
 import { escapeHtml, escapeAttr } from '../utils/html.js';
 import {
   getAvailableMoveMap,
-  getAvailableRebornMoves,
-  getRebornMoveId,
-  loadRebornLegalMoveData,
+  getAvailableMoves,
+  getLegalMoveId,
+  loadLegalMoveData,
 } from './legal-moves';
 import {
   applyBreedingContextToProgression,
 } from './breeding.js';
 import {
   applySketchContextToProgression,
-  buildRebornMoveTransferContexts,
+  buildMoveTransferContexts,
 } from './sketch.js';
 import { getActiveGame } from '../games/registry.js';
 
@@ -37,7 +37,7 @@ const SOURCE_TONE = {
  *     pokemonName: string, progression: Object, pokemonIndex: ?Object,
  *     poolQuery: ?string}} options
  */
-export function renderRebornLegalMovesPanel(container, options) {
+export function renderLegalMovesPanel(container, options) {
   const { currentSpecies, movesetEntry, pokemonId, pokemonName, progression } =
     options;
   const legalityPokemonId = currentSpecies?.id || pokemonId;
@@ -56,8 +56,8 @@ export function renderRebornLegalMovesPanel(container, options) {
   `;
 
   Promise.all([
-    loadRebornLegalMoveData(legalityPokemonId),
-    buildRebornMoveTransferContexts({
+    loadLegalMoveData(legalityPokemonId),
+    buildMoveTransferContexts({
       pokemonIndex: options.pokemonIndex,
       progression,
       query: options.poolQuery,
@@ -115,7 +115,7 @@ function renderLoadedPanel({
     legalMoveData.pokemonId,
     sketchContext,
   );
-  const availableMoves = getAvailableRebornMoves(
+  const availableMoves = getAvailableMoves(
     legalMoveData,
     progressionWithMoveTransfers,
   );
@@ -129,7 +129,7 @@ function renderLoadedPanel({
   const observedMoves = cleanObservedMoves(movesetEntry?.moves || []);
   const observedAvailableCount = observedMoves.reduce(
     (count, move) =>
-      count + (availableMoveMap.has(getRebornMoveId(move.name)) ? 1 : 0),
+      count + (availableMoveMap.has(getLegalMoveId(move.name)) ? 1 : 0),
     0,
   );
 
@@ -177,7 +177,7 @@ function renderObservedMoves(observedMoves, availableMoveMap) {
         ${observedMoves
           .map((entry) => {
             const availableMove =
-              availableMoveMap.get(getRebornMoveId(entry.name));
+              availableMoveMap.get(getLegalMoveId(entry.name));
             return `
               <div class="legal-observed-row ${availableMove ? 'available' : 'unavailable'}">
                 <strong>${escapeHtml(entry.name)}</strong>
@@ -240,7 +240,7 @@ function renderSourcePills(sources) {
 
 function cleanObservedMoves(entries = []) {
   return entries.filter(
-    (entry) => !HIDDEN_MOVESET_ENTRY_KEYS.has(getRebornMoveId(entry.name)),
+    (entry) => !HIDDEN_MOVESET_ENTRY_KEYS.has(getLegalMoveId(entry.name)),
   );
 }
 

@@ -4,26 +4,26 @@ import assert from 'node:assert/strict';
 const { loadShared, progressionAt } = await import('./helpers/harness.mjs');
 const {
   applyBreedingContextToProgression,
-} = await import('../src/reborn/breeding.js');
+} = await import('../src/playthrough/breeding.js');
 const {
-  getAvailableRebornMoves,
-  loadRebornLegalMoveData,
-} = await import('../src/reborn/legal-moves.js');
+  getAvailableMoves,
+  loadLegalMoveData,
+} = await import('../src/playthrough/legal-moves.js');
 const {
   applySketchContextToProgression,
-  buildRebornSketchContext,
-  buildRebornMoveTransferContexts,
-} = await import('../src/reborn/sketch.js');
+  buildSketchContext,
+  buildMoveTransferContexts,
+} = await import('../src/playthrough/sketch.js');
 const {
   buildCandidateLegalityProfile,
-  buildRebornTeamAnalysis,
+  buildTeamAnalysis,
 } = await import(
-  '../src/reborn/team-analysis.js',
+  '../src/teamBuilder/team-analysis.js',
 );
 
 async function smeargleMoves({ pokemonIndex, progression, query }) {
   const { breedingContext, sketchContext } =
-    await buildRebornMoveTransferContexts({
+    await buildMoveTransferContexts({
       pokemonIndex,
       progression,
       query,
@@ -37,8 +37,8 @@ async function smeargleMoves({ pokemonIndex, progression, query }) {
     'smeargle',
     sketchContext,
   );
-  const data = await loadRebornLegalMoveData('smeargle');
-  return getAvailableRebornMoves(data, memberProgression);
+  const data = await loadLegalMoveData('smeargle');
+  return getAvailableMoves(data, memberProgression);
 }
 
 test('Sketch requires another pool mon that can currently use the move', async () => {
@@ -97,7 +97,7 @@ test('partner-backed Sketch can feed a later breeding route', async () => {
     daycareUnlocked: true,
   };
   const { breedingContext, sketchContext } =
-    await buildRebornMoveTransferContexts({
+    await buildMoveTransferContexts({
       pokemonIndex,
       progression,
       query: 'Smeargle\nAlomomola\nEevee',
@@ -130,7 +130,7 @@ test('a compatible donor beats the extra, costlier Smeargle transfer',
       ...progressionAt({ badge: 5, levelCap: 50 }),
       daycareUnlocked: true,
     };
-    const { breedingContext } = await buildRebornMoveTransferContexts({
+    const { breedingContext } = await buildMoveTransferContexts({
       pokemonIndex,
       progression,
       query: 'Eevee\nSmeargle\nNatu\nMunna',
@@ -167,7 +167,7 @@ test('a Sketch breeding relay guides the root learner, not Smeargle',
       ...progressionAt({ badge: 5, levelCap: 50 }),
       daycareUnlocked: true,
     };
-    const analysis = await buildRebornTeamAnalysis(
+    const analysis = await buildTeamAnalysis(
       [{
         pokemonId: 'sylveon',
         inputPokemonId: 'eevee',
@@ -206,7 +206,7 @@ test('Sketch prices evolution levels and lists distinct alternative routes',
     const progression = progressionAt({ badge: 5, levelCap: 50 });
     const query = 'Smeargle\nAipom\nVenipede';
     const { breedingContext, sketchContext } =
-      await buildRebornMoveTransferContexts({
+      await buildMoveTransferContexts({
         pokemonIndex,
         progression,
         query,
@@ -222,7 +222,7 @@ test('Sketch prices evolution levels and lists distinct alternative routes',
     assert.equal(batonPass.partnerInputId, 'aipom');
     assert.match(batonPass.sourceTitle, /Other pool routes: Scolipede — On evolution/);
 
-    const preferred = await buildRebornSketchContext({
+    const preferred = await buildSketchContext({
       pokemonIndex,
       progression,
       query,
@@ -244,7 +244,7 @@ test('team analysis prefers a selected partner already carrying the move',
   async () => {
     const { pokemonIndex } = await loadShared();
     const progression = progressionAt({ badge: 5, levelCap: 50 });
-    const analysis = await buildRebornTeamAnalysis(
+    const analysis = await buildTeamAnalysis(
       [
         {
           pokemonId: 'smeargle',
@@ -290,7 +290,7 @@ test('team analysis prefers a selected partner already carrying the move',
 test('off-team leveled Sketch partners receive interim donor guides',
   async () => {
     const { pokemonIndex } = await loadShared();
-    const analysis = await buildRebornTeamAnalysis(
+    const analysis = await buildTeamAnalysis(
       [{
         pokemonId: 'smeargle',
         inputPokemonId: 'smeargle',

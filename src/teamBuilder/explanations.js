@@ -6,7 +6,7 @@
  * lost, in the same auditable terms.
  */
 
-import { analysisTypes } from '../reborn/type-chart.js';
+import { analysisTypes } from '../playthrough/type-chart.js';
 import { dex } from '../games/dex.js';
 
 const ROLE_LABELS = {

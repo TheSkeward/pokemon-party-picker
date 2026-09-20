@@ -1,24 +1,24 @@
 // Inventory bulk-merge + shop-sync semantics (progression panel UX):
-// addRebornOwnedItems raises counts without ever lowering one, and
+// addOwnedItems raises counts without ever lowering one, and
 // renewable-item helpers list exactly the badge-reachable stock and mining
 // rewards the player isn't tracking yet.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  addRebornOwnedItems,
-  DEFAULT_REBORN_PROGRESSION,
+  addOwnedItems,
+  DEFAULT_PROGRESSION,
   MAX_TRACKED_ITEM_COUNT,
-} from '../src/reborn/progression.js';
-import { renderRebornProgressionPanel } from '../src/reborn/progression-view.js';
+} from '../src/playthrough/progression.js';
+import { renderProgressionPanel } from '../src/playthrough/progression-view.js';
 import { getRenewablyObtainableItems } from '../src/games/items.js';
 import {
   REBORN_MINING_ITEM_BADGES,
   REBORN_SHOP_ITEM_BADGES,
 } from '../src/generated/rebornItemTimeline.generated.js';
 
-test('addRebornOwnedItems raises, clamps, and never lowers', () => {
+test('addOwnedItems raises, clamps, and never lowers', () => {
   const base = { ownedItems: { leftovers: 2, choiceband: 6 } };
-  const next = addRebornOwnedItems(base, {
+  const next = addOwnedItems(base, {
     leftovers: 6,
     choiceband: 1, // must NOT lower an existing 6
     eviolite: 99, // clamps to the tracking cap
@@ -116,7 +116,7 @@ test('renewable 6+ sync retains partially stocked mining items and gems', () => 
   assert.ok(!fullIds.has('pixieplate'));
   assert.ok(!fullIds.has('firegem'));
 
-  const raised = addRebornOwnedItems(
+  const raised = addOwnedItems(
     { ownedItems: { pixieplate: 1, firegem: 1 } },
     Object.fromEntries(
       partial.map((item) => [item.id, MAX_TRACKED_ITEM_COUNT]),
@@ -130,8 +130,8 @@ test('badge-6 inventory panel offers partial mining items and gems at 6+', () =>
   globalThis.localStorage = { getItem: () => null };
   let html;
   try {
-    html = renderRebornProgressionPanel({
-      ...DEFAULT_REBORN_PROGRESSION,
+    html = renderProgressionPanel({
+      ...DEFAULT_PROGRESSION,
       checkpoint: 'badge-6',
       levelCap: '55',
       ownedItems: { pixieplate: 1, firegem: 1 },

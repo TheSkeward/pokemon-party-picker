@@ -7,7 +7,7 @@ import {
   hasReliableTempoRamp,
   hasSpeedBoostTempo,
 } from '../src/teamBuilder/current-form-value.js';
-import { buildRebornTeamAnalysis } from '../src/reborn/team-analysis.js';
+import { buildTeamAnalysis } from '../src/teamBuilder/team-analysis.js';
 import { progressionAt, runPool } from './helpers/harness.mjs';
 
 const attack = (name, estimatedDamage) => ({
@@ -117,7 +117,7 @@ test('real Mega Sharpedo uses its battle form and preserves caught-ability sensi
   assert.equal(mega.currentRole, 'tempo_attacker');
   assert.ok(mega.abilitySensitivity > 0);
 
-  const analysis = await buildRebornTeamAnalysis(result.team, progression, {
+  const analysis = await buildTeamAnalysis(result.team, progression, {
     family: 'singles',
     selection: 'all',
     lines: result.lines,

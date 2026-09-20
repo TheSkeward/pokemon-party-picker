@@ -18,7 +18,7 @@ const { buildFieldablePoolLines } = await import(
   '../src/teamBuilder/line-reachability.js',
 );
 const { renderRealTeamPanel } = await import(
-  '../src/reborn/team-analysis-view.js',
+  '../src/teamBuilder/team-analysis-view.js',
 );
 
 function makeLine(inputPokemonId, pokemonId = inputPokemonId) {

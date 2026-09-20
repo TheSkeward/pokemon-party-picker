@@ -1,5 +1,5 @@
-import { getTypeMultiplier } from '../reborn/type-chart.js';
-import { evolutionChainProof } from '../reborn/evolution-requirements.js';
+import { getTypeMultiplier } from '../playthrough/type-chart.js';
+import { evolutionChainProof } from '../playthrough/evolution-requirements.js';
 import {
   currentFormValue,
   formReadinessRatio,

@@ -30,7 +30,7 @@ function optionMaps() {
  * @return {!Promise<?Object>} The legal-move data ({pokemonId, name, moves,
  *     ...}), or null for an unknown id or a mon without a file.
  */
-export function loadRebornLegalMoveData(pokemonId) {
+export function loadLegalMoveData(pokemonId) {
   const game = getActiveGame();
   const id = toPokemonId(pokemonId);
   if (!id) return Promise.resolve(null);
@@ -127,11 +127,11 @@ export function compareEvolutionRouteOptions(a, b) {
  * delayedEvolution flag when every route delays an evolution. Hidden Power is
  * excluded until the Type Changer is unlocked, then expanded into one variant
  * per real type.
- * @param {?Object} legalMoveData Output of loadRebornLegalMoveData.
+ * @param {?Object} legalMoveData Output of loadLegalMoveData.
  * @param {!Object=} progression
  * @return {!Array<!Object>} Sorted by best source kind, then type, then name.
  */
-export function getAvailableRebornMoves(legalMoveData, progression = {}) {
+export function getAvailableMoves(legalMoveData, progression = {}) {
   const levelCap = normalizeLevelCap(progression.levelCap);
   const selectedTmIds = new Set(progression.availableTmIds || []);
   const selectedTmxIds = new Set(progression.availableTmxIds || []);
@@ -523,11 +523,11 @@ function isEvolvedLevelOneMove(level, evolvedSpecies) {
 }
 
 /**
- * @return {!Map<string, !Object>} getAvailableRebornMoves keyed by move id.
+ * @return {!Map<string, !Object>} getAvailableMoves keyed by move id.
  */
 export function getAvailableMoveMap(legalMoveData, progression) {
   return new Map(
-    getAvailableRebornMoves(legalMoveData, progression).map((move) => [
+    getAvailableMoves(legalMoveData, progression).map((move) => [
       move.id,
       move,
     ]),
@@ -538,7 +538,7 @@ export function getAvailableMoveMap(legalMoveData, progression) {
  * @param {string} moveName
  * @return {string} Canonical move id.
  */
-export function getRebornMoveId(moveName) {
+export function getLegalMoveId(moveName) {
   return toId(moveName);
 }
 
@@ -556,7 +556,7 @@ function compareSourcePriority(a, b) {
 
 function getBestSourcePriority(move) {
   return Math.min(
-    ...move.availableSources.map(getRebornMoveSourcePriority),
+    ...move.availableSources.map(getMoveSourcePriority),
   );
 }
 
@@ -565,7 +565,7 @@ function getBestSourcePriority(move) {
  * Natural level-up remains free; reusable machines come next, then the
  * one-time tutor unlock, then the Heart Scale-consuming relearner.
  */
-export function getRebornMoveSourcePriority(source) {
+export function getMoveSourcePriority(source) {
   const priorities = {
     'level-up': 0,
     tm: 1,
@@ -580,14 +580,14 @@ export function getRebornMoveSourcePriority(source) {
 
 /**
  * The move's cheapest currently legal source under the
- * getRebornMoveSourcePriority ordering.
+ * getMoveSourcePriority ordering.
  * @param {?Object} move A move row carrying availableSources.
  * @return {?Object} The preferred source, or null when none is available.
  */
-export function getPreferredRebornMoveSource(move) {
+export function getPreferredMoveSource(move) {
   return [...(move?.availableSources || [])].sort(
     (a, b) =>
-      getRebornMoveSourcePriority(a) - getRebornMoveSourcePriority(b),
+      getMoveSourcePriority(a) - getMoveSourcePriority(b),
   )[0] || null;
 }
 

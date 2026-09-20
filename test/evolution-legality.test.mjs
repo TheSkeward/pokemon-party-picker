@@ -11,7 +11,7 @@ import assert from 'node:assert/strict';
 import {
   getEvolutionRequirement,
   evolutionChainProof,
-} from '../src/reborn/evolution-requirements.js';
+} from '../src/playthrough/evolution-requirements.js';
 import { setScoringOverrides } from '../src/teamBuilder/scoring-constants.js';
 import { GEN7_PROGRESSION_SPECIES } from '../src/generated/gen7ProgressionSpecies.generated.js';
 

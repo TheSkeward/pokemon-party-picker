@@ -6,7 +6,7 @@ import {
   describeMoveMeta,
 } from '../move-meta';
 import { describeNature } from '../natures.js';
-import { computeFinalStats, parseSpread } from '../reborn/damage-model.js';
+import { computeFinalStats, parseSpread } from '../teamBuilder/damage-model.js';
 import { toId } from '../utils/ids.js';
 import { STAT_LABELS } from '../utils/stats.js';
 

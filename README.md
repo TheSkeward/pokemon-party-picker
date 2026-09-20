@@ -70,8 +70,10 @@ index.html / src/main.js      Main app
 pool.html  / src/pool-app.js   Team Builder-only page
 src/app/                       App shell and page wiring
 src/views/                     Shared render views
-src/teamBuilder/               Pool parsing, scoring, search, confidence, UI
-src/reborn/                    Reborn progression, legality, analysis, damage
+src/teamBuilder/               Pool parsing, scoring, search, analysis, UI
+src/playthrough/               Progression state, move legality, evolution, breeding
+src/games/                     Game registry and descriptors (Reborn, SoulSilver)
+src/reborn/, src/soulsilver/   Each game's curated data
 src/resolver/                  Input-name and representative resolution
 src/setDetails/                Precomputed set-detail loading
 src/generated/                 Checked-in generated modules

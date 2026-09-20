@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { Dex } from '@pkmn/dex';
 
 const { analysisTypes, getTypeMultiplier } = await import(
-  '../src/reborn/type-chart.js',
+  '../src/playthrough/type-chart.js',
 );
 
 const CANONICAL_ORDER = [

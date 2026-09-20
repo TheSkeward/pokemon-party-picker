@@ -8,7 +8,7 @@ import assert from 'node:assert/strict';
 globalThis.__ENV__ ??= { BASE_URL: '/' };
 const { renderMovesetPanel } = await import('../src/views/moveset-view.js');
 const { describeNature, NATURE_EFFECTS } = await import('../src/natures.js');
-const { computeFinalStats } = await import('../src/reborn/damage-model.js');
+const { computeFinalStats } = await import('../src/teamBuilder/damage-model.js');
 
 function renderToHtml(options) {
   const container = {

@@ -19,10 +19,10 @@ const { EVOLUTION_ACCESS_FIELDS } = await import(
   '../src/reborn/evolution-access.js',
 );
 const {
-  DEFAULT_REBORN_PROGRESSION,
-  applyRebornCheckpoint,
-  normalizeRebornProgression,
-} = await import('../src/reborn/progression.js');
+  DEFAULT_PROGRESSION,
+  applyCheckpoint,
+  normalizeProgression,
+} = await import('../src/playthrough/progression.js');
 const {
   REBORN_TM_OPTIONS,
   REBORN_TMX_OPTIONS,
@@ -166,20 +166,20 @@ test('item timeline: sheet + mining + wild-held sources merge to earliest badge'
   }
 });
 
-test('applyRebornCheckpoint derives the cap; normalization keeps the field honest', () => {
-  const nine = applyRebornCheckpoint(DEFAULT_REBORN_PROGRESSION, 'badge-9');
+test('applyCheckpoint derives the cap; normalization keeps the field honest', () => {
+  const nine = applyCheckpoint(DEFAULT_PROGRESSION, 'badge-9');
   assert.equal(nine.checkpoint, 'badge-9');
   assert.equal(nine.levelCap, '70'); // levelCap stays a STRING for consumers
 
-  const post = applyRebornCheckpoint(nine, 'post-3');
+  const post = applyCheckpoint(nine, 'post-3');
   assert.equal(post.levelCap, '115'); // post-game caps clear the old 100 clamp
 
-  const cleared = applyRebornCheckpoint(post, '');
+  const cleared = applyCheckpoint(post, '');
   assert.equal(cleared.checkpoint, '');
   assert.equal(cleared.levelCap, '115', 'clearing the picker keeps the cap');
 
   // Unknown ids are dropped, legacy saves stay untouched otherwise.
-  const junk = normalizeRebornProgression({ checkpoint: 'badge-99', levelCap: '45' });
+  const junk = normalizeProgression({ checkpoint: 'badge-99', levelCap: '45' });
   assert.equal(junk.checkpoint, '');
   assert.equal(junk.levelCap, '45');
 

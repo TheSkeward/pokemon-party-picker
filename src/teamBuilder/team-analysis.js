@@ -1,22 +1,22 @@
 import {
-  getAvailableRebornMoves,
-  getPreferredRebornMoveSource,
-  getRebornMoveSourcePriority,
-  loadRebornLegalMoveData,
-} from './legal-moves';
-import { getCurrentRebornSpeciesForChoice } from './current-species.js';
+  getAvailableMoves,
+  getPreferredMoveSource,
+  getMoveSourcePriority,
+  loadLegalMoveData,
+} from '../playthrough/legal-moves';
+import { getCurrentSpeciesForChoice } from '../playthrough/current-species.js';
 import {
   applyBreedingContextToProgression,
-} from './breeding.js';
+} from '../playthrough/breeding.js';
 import {
   applySketchContextToProgression,
-  buildRebornMoveTransferContexts,
-  rerankRebornSketchContext,
-} from './sketch.js';
+  buildMoveTransferContexts,
+  rerankSketchContext,
+} from '../playthrough/sketch.js';
 import {
   getTypeMultiplier,
   analysisTypes,
-} from './type-chart.js';
+} from '../playthrough/type-chart.js';
 import {
   coverageDamageIntoType,
   estimateMoveDamage,
@@ -29,20 +29,20 @@ import {
   parseSpread,
 } from './damage-model.js';
 import { loadTopSet } from './top-spread.js';
-import { computeSetReadiness } from './set-readiness.js';
-import { teamMemberKey } from '../teamBuilder/item-recommendations.js';
-import { selectObservedSet } from '../teamBuilder/observed-sets.js';
-import { loadTeamIndex } from '../teamBuilder/team-index.js';
-import { findFieldableOrClosestRealTeam } from '../teamBuilder/real-teams.js';
-import { buildFieldablePoolLines } from '../teamBuilder/line-reachability.js';
+import { computeSetReadiness } from '../playthrough/set-readiness.js';
+import { teamMemberKey } from './item-recommendations.js';
+import { selectObservedSet } from './observed-sets.js';
+import { loadTeamIndex } from './team-index.js';
+import { findFieldableOrClosestRealTeam } from './real-teams.js';
+import { buildFieldablePoolLines } from './line-reachability.js';
 import { toId } from '../utils/ids.js';
 import { STAT_LABELS } from '../utils/stats.js';
-import { MAX_OPPONENT_TYPE_BIAS } from './progression.js';
+import { MAX_OPPONENT_TYPE_BIAS } from '../playthrough/progression.js';
 import { getItemDamageMultiplier } from './item-damage.js';
 import {
   FIELD_SETTING_MOVE_IDS,
   stageReferenceDamage,
-} from '../teamBuilder/current-form-value.js';
+} from './current-form-value.js';
 import { dex } from '../games/dex.js';
 
 export { analysisTypes };
@@ -57,13 +57,13 @@ export { analysisTypes };
  *     profiles: !Array<!Object>, fieldableRealTeam: ?Object,
  *     closestRealTeam: ?Object, realTeamDataAvailable: boolean}>}
  */
-export async function buildRebornTeamAnalysis(
+export async function buildTeamAnalysis(
   team = [],
   progression = {},
   breedingOptions = {},
 ) {
   const { breedingContext, sketchContext: baseSketchContext } =
-    await buildRebornMoveTransferContexts({
+    await buildMoveTransferContexts({
       ...breedingOptions,
       progression,
       retainRoutes: true,
@@ -196,7 +196,7 @@ async function preferSelectedTeamSketchRoutes({
     }
   }
 
-  const sketchContext = rerankRebornSketchContext(baseSketchContext, {
+  const sketchContext = rerankSketchContext(baseSketchContext, {
     preferredPartnerIds,
     preferredMoveIdsByPartnerId,
   });
@@ -287,7 +287,7 @@ async function buildMemberLegalMoveEntry({
   assignedItem = null,
   itemAware = false,
 }) {
-  const currentSpecies = getCurrentRebornSpeciesForChoice(row, progression);
+  const currentSpecies = getCurrentSpeciesForChoice(row, progression);
   const representativeRecord = dex().progressionSpecies[row.pokemonId];
   const megaBaseId = representativeRecord?.isMega
     ? representativeRecord.baseSpeciesId || null
@@ -298,7 +298,7 @@ async function buildMemberLegalMoveEntry({
   const battleSpeciesId = megaReady
     ? row.pokemonId
     : currentSpecies?.id || row.pokemonId;
-  const legalMoveData = await loadRebornLegalMoveData(
+  const legalMoveData = await loadLegalMoveData(
     battleSpeciesId,
   );
   const memberPokemonId = currentSpecies?.id || legalMoveData?.pokemonId;
@@ -321,7 +321,7 @@ async function buildMemberLegalMoveEntry({
       : '',
     types: legalMoveData?.types || [],
   };
-  const moves = getAvailableRebornMoves(legalMoveData, memberProgression);
+  const moves = getAvailableMoves(legalMoveData, memberProgression);
 
   // Pull the most-used competitive set (top spread / ability / item / move
   // usage) from the line's usage REPRESENTATIVE — the same source the
@@ -428,7 +428,7 @@ async function buildMemberLegalMoveEntry({
 export function collectEggDonorRequests(profile) {
   const byDonor = new Map();
   for (const move of profile?.recommendedMoves || []) {
-    const best = getPreferredRebornMoveSource(move);
+    const best = getPreferredMoveSource(move);
     if (!best || best.kind !== 'egg') continue;
     const interim = best.interimDonor || {};
     const donorName = interim.donorName || best.donorName;
@@ -478,7 +478,7 @@ export function collectSketchDonorRequests(
   );
   const byDonor = new Map();
   for (const move of profile?.recommendedMoves || []) {
-    const best = getPreferredRebornMoveSource(move);
+    const best = getPreferredMoveSource(move);
     if (best?.kind !== 'sketch') continue;
     const donorName =
       best.partnerSource?.learnerName || best.partnerName || best.partnerId;
@@ -682,7 +682,7 @@ export async function getTeamItemContext(
   breedingOptions = {},
 ) {
   const { breedingContext, sketchContext } =
-    await buildRebornMoveTransferContexts({
+    await buildMoveTransferContexts({
       ...breedingOptions,
       progression,
     });
@@ -1867,19 +1867,19 @@ function countSuperEffectiveTargets(attackType) {
 }
 
 function getBestSourcePriority(move) {
-  const source = getPreferredRebornMoveSource(move);
-  return source ? getRebornMoveSourcePriority(source) : 9;
+  const source = getPreferredMoveSource(move);
+  return source ? getMoveSourcePriority(source) : 9;
 }
 
 function formatBestSource(move) {
-  const source = getPreferredRebornMoveSource(move);
+  const source = getPreferredMoveSource(move);
 
   if (!source) return 'Legal';
   return source.detail ? `${source.label}: ${source.detail}` : source.label;
 }
 
 function formatBestSourceTitle(move) {
-  const source = getPreferredRebornMoveSource(move);
+  const source = getPreferredMoveSource(move);
 
   if (!source) return '';
   return source.sourceTitle || source.detail || source.label || '';

@@ -43,7 +43,7 @@
 import {
   getTypeMultiplier,
   analysisTypes,
-} from '../reborn/type-chart.js';
+} from '../playthrough/type-chart.js';
 import { SCORING_DEFAULTS, tunable } from './scoring-constants.js';
 import { dex } from '../games/dex.js';
 
@@ -702,8 +702,8 @@ export function currentFormValue(profile, levelCap) {
   };
 }
 
-// (Investment friction K lives in src/reborn/evolution-requirements.js — the
-// legality engine is the single source of K truth.)
+// (Investment friction K lives in src/playthrough/evolution-requirements.js;
+// the legality engine is the single source of K truth.)
 
 /**
  * Fraction of the represented final form's key attributes the fielded form

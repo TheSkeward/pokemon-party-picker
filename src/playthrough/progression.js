@@ -26,7 +26,7 @@ export const MAX_TRACKED_ITEM_COUNT = 6;
 export const MAX_OPPONENT_TYPE_BIAS = 6;
 
 /** A fresh playthrough: nothing unlocked, no cap set, empty inventory. */
-export const DEFAULT_REBORN_PROGRESSION = {
+export const DEFAULT_PROGRESSION = {
   checkpoint: '',
   levelCap: '',
   moveRelearnerUnlocked: false,
@@ -44,17 +44,17 @@ export const DEFAULT_REBORN_PROGRESSION = {
  * missing or unparseable state yields the default progression.
  * @return {Object}
  */
-export function loadSavedRebornProgression() {
+export function loadSavedProgression() {
   const raw = readLocalStorage(progressionStorageKey(), '');
 
-  if (!raw) return { ...DEFAULT_REBORN_PROGRESSION };
+  if (!raw) return { ...DEFAULT_PROGRESSION };
 
   try {
     const parsed = JSON.parse(raw);
-    return normalizeRebornProgression(parsed);
+    return normalizeProgression(parsed);
   } catch (error) {
     console.warn('Failed to parse saved Reborn progression', error);
-    return { ...DEFAULT_REBORN_PROGRESSION };
+    return { ...DEFAULT_PROGRESSION };
   }
 }
 
@@ -62,10 +62,10 @@ export function loadSavedRebornProgression() {
  * Persists the progression (normalized first) under the active game's key.
  * @return {boolean} Whether the write succeeded.
  */
-export function saveRebornProgression(progression) {
+export function saveProgression(progression) {
   return writeLocalStorage(
     progressionStorageKey(),
-    JSON.stringify(normalizeRebornProgression(progression)),
+    JSON.stringify(normalizeProgression(progression)),
   );
 }
 
@@ -73,13 +73,13 @@ export function saveRebornProgression(progression) {
  * Deletes the active game's saved progression.
  * @return {boolean} Whether the removal succeeded.
  */
-export function clearSavedRebornProgression() {
+export function clearSavedProgression() {
   return removeLocalStorage(progressionStorageKey());
 }
 
 /**
  * Canonicalizes any progression-shaped input (saved state, legacy saves,
- * mid-edit objects) into the schema of DEFAULT_REBORN_PROGRESSION: unknown
+ * mid-edit objects) into the schema of DEFAULT_PROGRESSION: unknown
  * checkpoints/options drop out, counts and biases clamp to their caps, and
  * legacy fields (free-text option lists, the blanket stone gate) migrate.
  * Every mutator below funnels its result through this, so persisted state
@@ -87,7 +87,7 @@ export function clearSavedRebornProgression() {
  * @param {Object=} progression
  * @return {Object}
  */
-export function normalizeRebornProgression(progression = {}) {
+export function normalizeProgression(progression = {}) {
   return {
     // The badge/post-game checkpoint the player selected (badge-timeline.js).
     // The level cap it derives is written into levelCap, which stays the
@@ -151,12 +151,12 @@ function normalizeEvolutionAccess(progression) {
  * of 0 (or unparseable) clears the entry. Unknown types are a no-op.
  * @return {Object} The normalized progression.
  */
-export function setRebornOpponentTypeBias(progression, type, level) {
+export function setOpponentTypeBias(progression, type, level) {
   const bias = { ...(progression.opponentTypeBias || {}) };
   const parsed = Number.parseInt(level, 10);
 
   if (!analysisTypes().includes(type)) {
-    return normalizeRebornProgression(progression);
+    return normalizeProgression(progression);
   }
 
   if (!Number.isFinite(parsed) || parsed <= 0) {
@@ -165,7 +165,7 @@ export function setRebornOpponentTypeBias(progression, type, level) {
     bias[type] = Math.min(MAX_OPPONENT_TYPE_BIAS, parsed);
   }
 
-  return normalizeRebornProgression({ ...progression, opponentTypeBias: bias });
+  return normalizeProgression({ ...progression, opponentTypeBias: bias });
 }
 
 /**
@@ -173,9 +173,9 @@ export function setRebornOpponentTypeBias(progression, type, level) {
  * 0 (or unparseable) clears the entry.
  * @return {Object} The normalized progression.
  */
-export function setRebornOwnedItemCount(progression, itemId, count) {
+export function setOwnedItemCount(progression, itemId, count) {
   const id = String(itemId || '').trim();
-  if (!id) return normalizeRebornProgression(progression);
+  if (!id) return normalizeProgression(progression);
 
   const owned = { ...(progression.ownedItems || {}) };
   const parsed = Number.parseInt(count, 10);
@@ -186,7 +186,7 @@ export function setRebornOwnedItemCount(progression, itemId, count) {
     owned[id] = Math.min(MAX_TRACKED_ITEM_COUNT, parsed);
   }
 
-  return normalizeRebornProgression({ ...progression, ownedItems: owned });
+  return normalizeProgression({ ...progression, ownedItems: owned });
 }
 
 /**
@@ -197,7 +197,7 @@ export function setRebornOwnedItemCount(progression, itemId, count) {
  * @param {Object<string, number>=} counts Item id -> target count.
  * @return {Object} The normalized progression.
  */
-export function addRebornOwnedItems(progression, counts = {}) {
+export function addOwnedItems(progression, counts = {}) {
   const owned = { ...(progression.ownedItems || {}) };
   for (const [itemId, count] of Object.entries(counts)) {
     const id = String(itemId || '').trim();
@@ -208,7 +208,7 @@ export function addRebornOwnedItems(progression, counts = {}) {
       Math.max(owned[id] || 0, parsed),
     );
   }
-  return normalizeRebornProgression({ ...progression, ownedItems: owned });
+  return normalizeProgression({ ...progression, ownedItems: owned });
 }
 
 /**
@@ -217,12 +217,12 @@ export function addRebornOwnedItems(progression, counts = {}) {
  * checkpoint id clears the selection (the cap keeps its last value).
  * @return {Object} The normalized progression.
  */
-export function applyRebornCheckpoint(progression, checkpointId) {
+export function applyCheckpoint(progression, checkpointId) {
   const checkpoint = getCheckpoint(checkpointId);
   if (!checkpoint) {
-    return normalizeRebornProgression({ ...progression, checkpoint: '' });
+    return normalizeProgression({ ...progression, checkpoint: '' });
   }
-  return normalizeRebornProgression({
+  return normalizeProgression({
     ...progression,
     checkpoint: checkpoint.id,
     levelCap: String(checkpoint.levelCap),
@@ -233,8 +233,8 @@ export function applyRebornCheckpoint(progression, checkpointId) {
  * Sets one progression field and renormalizes.
  * @return {Object} The normalized progression.
  */
-export function updateRebornProgressionField(progression, field, value) {
-  return normalizeRebornProgression({
+export function updateProgressionField(progression, field, value) {
+  return normalizeProgression({
     ...progression,
     [field]: value,
   });
@@ -245,7 +245,7 @@ export function updateRebornProgressionField(progression, field, value) {
  * (availableTmIds / availableTmxIds / availableTutorMoveIds).
  * @return {Object} The normalized progression.
  */
-export function updateRebornProgressionOption(
+export function updateProgressionOption(
   progression,
   field,
   optionId,
@@ -258,7 +258,7 @@ export function updateRebornProgressionOption(
   if (checked) current.add(optionId);
   else current.delete(optionId);
 
-  return normalizeRebornProgression({
+  return normalizeProgression({
     ...progression,
     [field]: [...current],
   });
@@ -271,8 +271,8 @@ export function updateRebornProgressionOption(
  * @param {?Array<string>} optionIds Non-arrays clear the field.
  * @return {Object} The normalized progression.
  */
-export function setRebornProgressionOptions(progression, field, optionIds) {
-  return normalizeRebornProgression({
+export function setProgressionOptions(progression, field, optionIds) {
+  return normalizeProgression({
     ...progression,
     [field]: Array.isArray(optionIds) ? optionIds : [],
   });

@@ -5,18 +5,18 @@ const RUNNING_BUILD_ID =
   typeof __BUILD_ID__ !== 'undefined' ? String(__BUILD_ID__) : 'dev';
 import { gamesToLikelySee } from './trace-usage.js';
 import { renderMovesetPanel } from '../views/moveset-view';
-import { renderRebornLegalMovesPanel } from '../reborn/legal-moves-view';
+import { renderLegalMovesPanel } from '../playthrough/legal-moves-view';
 import {
-  renderRebornProgressionPanel,
+  renderProgressionPanel,
   renderOpponentTypeBias,
-} from '../reborn/progression-view';
+} from '../playthrough/progression-view';
 import { detailsStateAttrs } from '../utils/details-state.js';
 import { accessFields } from '../games/evolution.js';
 import { moveSources } from '../games/legality.js';
 import { checkpointShortLabel, getCheckpoint } from '../games/schedule.js';
-import { renderRebornTeamAnalysisPanel } from '../reborn/team-analysis-view';
-import { getCurrentRebornSpeciesForChoice } from '../reborn/current-species.js';
-import { describeEvolutionPath } from '../reborn/evolution-requirements.js';
+import { renderTeamAnalysisPanel } from './team-analysis-view';
+import { getCurrentSpeciesForChoice } from '../playthrough/current-species.js';
+import { describeEvolutionPath } from '../playthrough/evolution-requirements.js';
 import { teamMemberKey } from './item-recommendations';
 import {
   getLineCeilingRanking,
@@ -62,14 +62,14 @@ export function renderTeamBuilderPage({
 
     <details class="progression-collapse" ${detailsStateAttrs('progression-panel', false)}>
       <summary>${getActiveGame().shortLabel} Progression <span class="muted">(level cap, TMs, evolution access, items — the save-file settings)</span></summary>
-      ${renderRebornProgressionPanel(state.progression, { includeBias: false })}
+      ${renderProgressionPanel(state.progression, { includeBias: false })}
     </details>
 
     ${state.result?.team?.length ? renderProvenanceFooter(state.manifest, state.result) : ''}
   `;
 
   renderSelectedSetDetails({ app, pokemonIndex, setDetails, state });
-  const analysisPanelReady = renderRebornTeamAnalysisPanel(
+  const analysisPanelReady = renderTeamAnalysisPanel(
     app.querySelector('#reborn-team-analysis-root'),
     {
       family: state.family,
@@ -1138,7 +1138,7 @@ function renderTeamRow({
   setDetails,
 }) {
   const selected = setDetails.isSelected(row.pokemonId);
-  const currentSpecies = getCurrentRebornSpeciesForChoice(row, progression);
+  const currentSpecies = getCurrentSpeciesForChoice(row, progression);
   const currentName = currentSpecies?.name || row.name;
   // "from Burmy@20 (Female, in buildings)" — what it takes for the input mon
   // to become the current form. Empty when the input isn't its pre-evolution.
@@ -1232,7 +1232,7 @@ function renderSelectedSetDetails({ app, pokemonIndex, setDetails, state }) {
   }
 
   const detail = setDetails.getDetail();
-  const currentSpecies = getCurrentRebornSpeciesForChoice(
+  const currentSpecies = getCurrentSpeciesForChoice(
     selected,
     state.progression,
   );
@@ -1256,7 +1256,7 @@ function renderSelectedSetDetails({ app, pokemonIndex, setDetails, state }) {
   const legalMovesRoot = document.createElement('div');
   legalMovesRoot.dataset.rebornLegalMovesRoot = 'true';
   detailsRoot.appendChild(legalMovesRoot);
-  renderRebornLegalMovesPanel(legalMovesRoot, {
+  renderLegalMovesPanel(legalMovesRoot, {
     currentSpecies,
     movesetEntry: detail,
     pokemonIndex,
@@ -1294,7 +1294,7 @@ export function getSortedTeam(team, sortBy, sortDir = 'desc', progression = {}) 
   const rows = [...team];
   const direction = sortDir === 'asc' ? 1 : -1;
   const currentName = (row) =>
-    getCurrentRebornSpeciesForChoice(row, progression)?.name || row.name;
+    getCurrentSpeciesForChoice(row, progression)?.name || row.name;
 
   rows.sort((a, b) => {
     let primary = 0;

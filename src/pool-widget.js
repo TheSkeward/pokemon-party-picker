@@ -31,22 +31,22 @@ import {
 } from './teamBuilder/telemetry.js';
 import { loadManifest } from './manifest.js';
 import { activateGameForFamily, getActiveGame } from './games/registry.js';
-import { renderRebornLegalMovesPanel } from './reborn/legal-moves-view';
-import { renderRebornTeamAnalysisPanel } from './reborn/team-analysis-view';
-import { getCurrentRebornSpeciesForChoice } from './reborn/current-species.js';
+import { renderLegalMovesPanel } from './playthrough/legal-moves-view';
+import { renderTeamAnalysisPanel } from './teamBuilder/team-analysis-view';
+import { getCurrentSpeciesForChoice } from './playthrough/current-species.js';
 import {
-  addRebornOwnedItems,
-  applyRebornCheckpoint,
-  clearSavedRebornProgression,
-  loadSavedRebornProgression,
+  addOwnedItems,
+  applyCheckpoint,
+  clearSavedProgression,
+  loadSavedProgression,
   MAX_TRACKED_ITEM_COUNT,
-  saveRebornProgression,
-  setRebornOpponentTypeBias,
-  setRebornOwnedItemCount,
-  setRebornProgressionOptions,
-  updateRebornProgressionField,
-  updateRebornProgressionOption,
-} from './reborn/progression';
+  saveProgression,
+  setOpponentTypeBias,
+  setOwnedItemCount,
+  setProgressionOptions,
+  updateProgressionField,
+  updateProgressionOption,
+} from './playthrough/progression';
 import { getCheckpoint } from './games/schedule.js';
 import { toId } from './utils/ids.js';
 import { bindPersistentDetails } from './utils/details-state.js';
@@ -60,7 +60,7 @@ import {
   assignTeamItems,
   loadTeamItemUsage,
 } from './teamBuilder/item-recommendations';
-import { getTeamItemContext } from './reborn/team-analysis';
+import { getTeamItemContext } from './teamBuilder/team-analysis';
 import {
   buildGamestateExport,
   gamestateFileName,
@@ -106,7 +106,7 @@ export function mountPoolOptimizer(container, options = {}) {
     selection: getParam('selection') || 'all',
     // Filled by init() once the family's game is active.
     query: '',
-    progression: loadSavedRebornProgression(),
+    progression: loadSavedProgression(),
     // Default sort is the score the seats were actually chosen by — Lead % is
     // a ladder stat, informative but not the seating order.
     teamSort: getParam('teamSort') || loadSavedTeamSort() || 'score',
@@ -153,7 +153,7 @@ export function mountPoolOptimizer(container, options = {}) {
   async function init() {
     await gameReady;
     state.query = getParam('poolQuery') || loadSavedPool();
-    state.progression = loadSavedRebornProgression();
+    state.progression = loadSavedProgression();
     // Manifest FIRST: loading it sets the data-version tag, so every fetch
     // below carries ?v=<dataSignature> and can't be served from a previous
     // deploy's CDN cache. Also the debug footer's provenance.
@@ -701,7 +701,7 @@ export function mountPoolOptimizer(container, options = {}) {
       const eventName = control.type === 'checkbox' ? 'change' : 'input';
 
       control.addEventListener(eventName, () => {
-        state.progression = updateRebornProgressionField(
+        state.progression = updateProgressionField(
           state.progression,
           control.dataset.progressionField,
           control.type === 'checkbox' ? control.checked : control.value,
@@ -714,7 +714,7 @@ export function mountPoolOptimizer(container, options = {}) {
           control.value = state.progression.levelCap;
         }
 
-        const saved = saveRebornProgression(state.progression);
+        const saved = saveProgression(state.progression);
         const stale = markResultProgressionStale();
 
         updateProgressionStatusMessage(
@@ -734,12 +734,12 @@ export function mountPoolOptimizer(container, options = {}) {
     app.querySelector('[data-progression-checkpoint]')?.addEventListener(
       'change',
       (event) => {
-        state.progression = applyRebornCheckpoint(
+        state.progression = applyCheckpoint(
           state.progression,
           event.target.value,
         );
 
-        const saved = saveRebornProgression(state.progression);
+        const saved = saveProgression(state.progression);
         const stale = markResultProgressionStale();
 
         updateProgressionStatusMessage(
@@ -758,14 +758,14 @@ export function mountPoolOptimizer(container, options = {}) {
     app.querySelectorAll('[data-progression-option-list]').forEach((control) => {
       control.addEventListener('change', () => {
         const field = control.dataset.progressionOptionList;
-        state.progression = updateRebornProgressionOption(
+        state.progression = updateProgressionOption(
           state.progression,
           field,
           control.value,
           control.checked,
         );
 
-        const saved = saveRebornProgression(state.progression);
+        const saved = saveProgression(state.progression);
         const stale = markResultProgressionStale();
 
         updateProgressionStatusMessage(
@@ -804,11 +804,11 @@ export function mountPoolOptimizer(container, options = {}) {
         // all", which replaces it): "I found this tutor" must not unteach
         // every other location.
         state.progression =
-          setRebornProgressionOptions(state.progression, field, [
+          setProgressionOptions(state.progression, field, [
             ...new Set([...(state.progression[field] || []), ...ids]),
           ]);
 
-        const saved = saveRebornProgression(state.progression);
+        const saved = saveProgression(state.progression);
         const stale = markResultProgressionStale();
         updateProgressionStatusMessage(
           saved
@@ -831,13 +831,13 @@ export function mountPoolOptimizer(container, options = {}) {
               .filter(Boolean)
             : [];
 
-        state.progression = setRebornProgressionOptions(
+        state.progression = setProgressionOptions(
           state.progression,
           field,
           optionIds,
         );
 
-        const saved = saveRebornProgression(state.progression);
+        const saved = saveProgression(state.progression);
         const stale = markResultProgressionStale();
 
         updateProgressionStatusMessage(
@@ -914,7 +914,7 @@ export function mountPoolOptimizer(container, options = {}) {
           MAX_TRACKED_ITEM_COUNT,
         );
         if (!renewable.length) return;
-        state.progression = addRebornOwnedItems(
+        state.progression = addOwnedItems(
           state.progression,
           Object.fromEntries(
             renewable.map((item) => [item.id, MAX_TRACKED_ITEM_COUNT]),
@@ -1083,8 +1083,8 @@ export function mountPoolOptimizer(container, options = {}) {
         // Round-trip the imported progression through the normal save/load
         // path so it gets the same normalization (terrain-seed migration,
         // count clamps, unknown-field drops) as any other stored state.
-        saveRebornProgression(imported.progression);
-        state.progression = loadSavedRebornProgression();
+        saveProgression(imported.progression);
+        state.progression = loadSavedProgression();
         state.result = null;
         recomputeItemRecommendations();
         render();
@@ -1117,8 +1117,8 @@ export function mountPoolOptimizer(container, options = {}) {
         );
         if (!confirmed) return;
 
-        clearSavedRebornProgression();
-        state.progression = loadSavedRebornProgression();
+        clearSavedProgression();
+        state.progression = loadSavedProgression();
         render();
       });
   }
@@ -1144,7 +1144,7 @@ export function mountPoolOptimizer(container, options = {}) {
 
   function applyOwnedItemChange(
     itemId, count, { refocusAdd, flashItemId } = {}) {
-    state.progression = setRebornOwnedItemCount(
+    state.progression = setOwnedItemCount(
       state.progression,
       itemId,
       count,
@@ -1157,7 +1157,7 @@ export function mountPoolOptimizer(container, options = {}) {
   // shop haul is a burst of edits, and ten edits should cost one recompute,
   // not up to ten interleaved with the typing.
   function finishOwnedItemsEdit(message, { refocusAdd, flashItemId } = {}) {
-    const saved = saveRebornProgression(state.progression);
+    const saved = saveProgression(state.progression);
     state.statusMessage = saved
       ? 'Saved locally'
       : 'Held items could not be saved locally; browser storage is full.';
@@ -1191,13 +1191,13 @@ export function mountPoolOptimizer(container, options = {}) {
   }
 
   function applyOpponentBiasChange(type, level) {
-    state.progression = setRebornOpponentTypeBias(
+    state.progression = setOpponentTypeBias(
       state.progression,
       type,
       level,
     );
 
-    const saved = saveRebornProgression(state.progression);
+    const saved = saveProgression(state.progression);
     const stale = markResultProgressionStale();
 
     updateProgressionStatusMessage(
@@ -1429,7 +1429,7 @@ export function mountPoolOptimizer(container, options = {}) {
 
     if (!legalMovesRoot || !selected) return;
 
-    renderRebornLegalMovesPanel(legalMovesRoot, {
+    renderLegalMovesPanel(legalMovesRoot, {
       currentSpecies: getCurrentSpeciesForSelected(selected),
       movesetEntry: setDetails.getDetail(),
       pokemonIndex,
@@ -1441,7 +1441,7 @@ export function mountPoolOptimizer(container, options = {}) {
   }
 
   function refreshTeamAnalysisPanel() {
-    renderRebornTeamAnalysisPanel(app.querySelector('#reborn-team-analysis-root'), {
+    renderTeamAnalysisPanel(app.querySelector('#reborn-team-analysis-root'), {
       family: state.family,
       itemAssignments: state.itemRecommendations,
       pokemonIndex,
@@ -1476,7 +1476,7 @@ export function mountPoolOptimizer(container, options = {}) {
       if (!row || !noteNode) return;
 
       const currentSpecies =
-        getCurrentRebornSpeciesForChoice(row, state.progression);
+        getCurrentSpeciesForChoice(row, state.progression);
       const showCurrent = Boolean(currentSpecies?.differsFromRepresentative);
 
       noteNode.hidden = !showCurrent;
@@ -1512,7 +1512,7 @@ export function mountPoolOptimizer(container, options = {}) {
 
   function getCurrentSpeciesForSelected(selected) {
     return selected
-      ? getCurrentRebornSpeciesForChoice(selected, state.progression)
+      ? getCurrentSpeciesForChoice(selected, state.progression)
       : null;
   }
 

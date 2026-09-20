@@ -7,15 +7,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 await import('./helpers/harness.mjs'); // fetch → filesystem shim
-const { getAvailableRebornMoves, loadRebornLegalMoveData } = await import(
-  '../src/reborn/legal-moves.js',
+const { getAvailableMoves, loadLegalMoveData } = await import(
+  '../src/playthrough/legal-moves.js',
 );
 
-const mawile = await loadRebornLegalMoveData('mawile');
+const mawile = await loadLegalMoveData('mawile');
 
 function availableIds(progression) {
   return new Map(
-    getAvailableRebornMoves(mawile, progression).map((move) => [
+    getAvailableMoves(mawile, progression).map((move) => [
       move.id,
       move.availableSources,
     ]),

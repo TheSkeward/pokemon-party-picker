@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 const { getEffectiveHitMultiplier } = await import(
-  '../src/reborn/team-analysis.js',
+  '../src/teamBuilder/team-analysis.js',
 );
 
 test('Rollout and Ice Ball account for chain-ending misses', () => {

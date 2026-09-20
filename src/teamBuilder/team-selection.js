@@ -16,7 +16,7 @@ import {
   activeTypeChart,
   analysisTypes,
   getTypeMultiplier,
-} from '../reborn/type-chart.js';
+} from '../playthrough/type-chart.js';
 import { parallelFullSearch, PARALLEL_THRESHOLD } from './parallel-search.js';
 import { tunable } from './scoring-constants.js';
 

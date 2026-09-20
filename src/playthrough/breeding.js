@@ -1,8 +1,8 @@
 import { buildInputGroups } from '../teamBuilder/input-groups';
-import { getCurrentRebornSpecies } from './current-species.js';
+import { getCurrentSpecies } from './current-species.js';
 import {
-  getAvailableRebornMoves,
-  loadRebornLegalMoveData,
+  getAvailableMoves,
+  loadLegalMoveData,
 } from './legal-moves';
 import { toId } from '../utils/ids.js';
 import { dex } from '../games/dex.js';
@@ -16,7 +16,7 @@ const BLOCKED_EGG_GROUPS = new Set(['Undiscovered', 'Ditto']);
  * @return {!Promise<{byPokemonId: !Object<string, {moveIds: !Array<string>,
  *     sources: !Object<string, !Object>}>, ownedSpecies: !Array<!Object>}>}
  */
-export async function buildRebornBreedingContext({
+export async function buildBreedingContext({
   pokemonIndex = [],
   progression = {},
   query = '',
@@ -31,7 +31,7 @@ export async function buildRebornBreedingContext({
   const entries = (
     await Promise.all(
       ownedSpecies.map(async (species) => {
-        const legalMoveData = await loadRebornLegalMoveData(species.id);
+        const legalMoveData = await loadLegalMoveData(species.id);
         if (!legalMoveData) return null;
 
         // Acquisition cost of each move the species can get WITHOUT breeding:
@@ -42,7 +42,7 @@ export async function buildRebornBreedingContext({
         // ranking below.
         const costs = new Map();
         const sketch = sketchContext?.byPokemonId?.[species.id];
-        for (const move of getAvailableRebornMoves(legalMoveData, {
+        for (const move of getAvailableMoves(legalMoveData, {
           ...progression,
           availableEggMoveIdsForPokemon: [],
           availableSketchMoveIdsForPokemon: sketch?.moveIds || [],
@@ -502,7 +502,7 @@ function getOwnedCurrentSpecies({ pokemonIndex, progression, query }) {
   for (const group of buildInputGroups(query, pokemonIndex)) {
     if (group.unresolved || !group.input?.id) continue;
 
-    const current = getCurrentRebornSpecies(group.input.id, progression);
+    const current = getCurrentSpecies(group.input.id, progression);
     for (const candidate of [current, group.input]) {
       const id = candidate?.id;
       if (!id || seen.has(id)) continue;

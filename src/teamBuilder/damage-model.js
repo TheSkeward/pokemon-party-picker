@@ -1,4 +1,4 @@
-import { getTypeMultiplier } from './type-chart.js';
+import { getTypeMultiplier } from '../playthrough/type-chart.js';
 import { toId } from '../utils/ids.js';
 import { natureStatMultiplier } from '../natures.js';
 import { dex } from '../games/dex.js';

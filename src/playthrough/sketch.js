@@ -3,15 +3,15 @@ import { toId } from '../utils/ids.js';
 import {
   acquisitionOf,
   applyBreedingContextToProgression,
-  buildRebornBreedingContext,
+  buildBreedingContext,
   canHatchLine,
   familyForms,
 } from './breeding.js';
-import { getReachableRebornSpecies } from './current-species.js';
+import { getReachableSpecies } from './current-species.js';
 import {
-  getAvailableRebornMoves,
-  getRebornMoveSourcePriority,
-  loadRebornLegalMoveData,
+  getAvailableMoves,
+  getMoveSourcePriority,
+  loadLegalMoveData,
 } from './legal-moves.js';
 import { dex } from '../games/dex.js';
 
@@ -23,9 +23,9 @@ const SMEARGLE_ID = 'smeargle';
  * partners. A final breeding pass lets a partner-backed Smeargle serve as an
  * egg donor without ever allowing Sketch to bootstrap itself.
  */
-export async function buildRebornMoveTransferContexts(options = {}) {
-  let breedingContext = await buildRebornBreedingContext(options);
-  const sketchContext = await buildRebornSketchContext({
+export async function buildMoveTransferContexts(options = {}) {
+  let breedingContext = await buildBreedingContext(options);
+  const sketchContext = await buildSketchContext({
     ...options,
     breedingContext,
   });
@@ -33,7 +33,7 @@ export async function buildRebornMoveTransferContexts(options = {}) {
     options.progression?.daycareUnlocked &&
     sketchContext.byPokemonId?.[SMEARGLE_ID]?.moveIds?.length
   ) {
-    breedingContext = await buildRebornBreedingContext({
+    breedingContext = await buildBreedingContext({
       ...options,
       sketchContext,
     });
@@ -49,7 +49,7 @@ export async function buildRebornMoveTransferContexts(options = {}) {
  * egg-group gate.
  * @return {!Promise<{byPokemonId: !Object, ownedSpecies: !Array<!Object>}>}
  */
-export async function buildRebornSketchContext({
+export async function buildSketchContext({
   pokemonIndex = [],
   progression = {},
   query = '',
@@ -72,14 +72,14 @@ export async function buildRebornSketchContext({
       ownedSpecies
         .filter((species) => species.id !== SMEARGLE_ID)
         .map(async (species) => {
-          const legalMoveData = await loadRebornLegalMoveData(species.id);
+          const legalMoveData = await loadLegalMoveData(species.id);
           if (!legalMoveData) return [];
           const partnerProgression = applyBreedingContextToProgression(
             progression,
             species.id,
             breedingContext,
           );
-          return getAvailableRebornMoves(legalMoveData, partnerProgression)
+          return getAvailableMoves(legalMoveData, partnerProgression)
             .map((move) => partnerRoute(move, species, progression))
             .filter(Boolean);
         }),
@@ -108,7 +108,7 @@ export async function buildRebornSketchContext({
  * second time. Team analysis requests retained routes; optimizer contexts stay
  * compact and omit them.
  */
-export function rerankRebornSketchContext(sketchContext, {
+export function rerankSketchContext(sketchContext, {
   preferredPartnerIds = new Set(),
   preferredMoveIdsByPartnerId = new Map(),
   retainRoutes = false,
@@ -224,9 +224,9 @@ function getOwnedFieldableSpecies({ pokemonIndex, progression, query }) {
     let forms;
     if (progression.daycareUnlocked && canHatchLine(inputId)) {
       const rootId = familyForms(inputId)[0]?.id || inputId;
-      forms = getReachableRebornSpecies(rootId, progression);
+      forms = getReachableSpecies(rootId, progression);
     } else {
-      forms = getReachableRebornSpecies(inputId, progression);
+      forms = getReachableSpecies(inputId, progression);
     }
     if (!forms.length) forms = [group.input];
     for (const form of forms) {
@@ -318,7 +318,7 @@ function sourceCost(source, species, progression) {
           ? dex().progressionSpecies[species.id]?.evoLevel ?? null
           : null,
     hassle: acquisition.hassle || 0,
-    kind: getRebornMoveSourcePriority(source),
+    kind: getMoveSourcePriority(source),
   };
 }
 

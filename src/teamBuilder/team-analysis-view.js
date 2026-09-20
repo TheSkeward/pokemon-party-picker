@@ -3,9 +3,9 @@ import { getMoveMeta, getTypeColor, describeMoveMeta } from '../move-meta';
 import { toId } from '../utils/ids.js';
 import { describeNature } from '../natures.js';
 import { computeFinalStats } from './damage-model.js';
-import { describeEvolutionPath } from './evolution-requirements.js';
+import { describeEvolutionPath } from '../playthrough/evolution-requirements.js';
 import {
-  buildRebornTeamAnalysis,
+  buildTeamAnalysis,
   formatEvLine,
   formatTeamPokepaste,
   analysisTypes,
@@ -26,7 +26,7 @@ let analysisMemo = { key: null, promise: null };
  * memoizing the underlying analysis by input signature.
  * @param {?Element} root
  */
-export function renderRebornTeamAnalysisPanel(root, {
+export function renderTeamAnalysisPanel(root, {
   family,
   itemAssignments,
   lines = [],
@@ -56,7 +56,7 @@ export function renderRebornTeamAnalysisPanel(root, {
     const memo = {
       key: memoKey,
       settled: false,
-      promise: buildRebornTeamAnalysis(team, progression, {
+      promise: buildTeamAnalysis(team, progression, {
         family,
         itemAssignments,
         lines,

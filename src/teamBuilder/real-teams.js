@@ -6,17 +6,17 @@
  * every held item must be covered by tracked inventory. Display-only —
  * nothing here feeds scoring.
  */
-import { getCurrentRebornSpeciesForChoice } from '../reborn/current-species.js';
+import { getCurrentSpeciesForChoice } from '../playthrough/current-species.js';
 import {
   applyBreedingContextToProgression,
   canHatchLine,
   familyForms,
-} from '../reborn/breeding.js';
+} from '../playthrough/breeding.js';
 import {
-  getAvailableRebornMoves,
-  loadRebornLegalMoveData,
-} from '../reborn/legal-moves.js';
-import { applySketchContextToProgression } from '../reborn/sketch.js';
+  getAvailableMoves,
+  loadLegalMoveData,
+} from '../playthrough/legal-moves.js';
+import { applySketchContextToProgression } from '../playthrough/sketch.js';
 import { toId } from '../utils/ids.js';
 import { dex } from '../games/dex.js';
 
@@ -47,7 +47,7 @@ export function getLineFieldableIds(line, progression = {}) {
     const inputId = toId(choice.inputPokemonId || choice.pokemonId);
     if (!inputId) continue;
     const currentId = toId(
-      getCurrentRebornSpeciesForChoice(choice, progression)?.id || inputId,
+      getCurrentSpeciesForChoice(choice, progression)?.id || inputId,
     );
     for (const id of evolutionPathIds(inputId, currentId)) ids.add(id);
 
@@ -60,7 +60,7 @@ export function getLineFieldableIds(line, progression = {}) {
     }
     hatchExpanded.add(inputId);
     // A hatchling starts at the family root, so "reachable family form" is
-    // exactly what getCurrentRebornSpeciesForChoice answers with the root as
+    // exactly what getCurrentSpeciesForChoice answers with the root as
     // input and each form as the representative: it walks the same evolution-
     // access rules and returns the deepest reachable form on that branch —
     // the root→current path is then fieldable by delaying, branch by branch.
@@ -68,7 +68,7 @@ export function getLineFieldableIds(line, progression = {}) {
     const rootId = forms[0]?.id;
     for (const form of forms) {
       if (!rootId || form.isMega) continue;
-      const current = getCurrentRebornSpeciesForChoice(
+      const current = getCurrentSpeciesForChoice(
         { inputPokemonId: rootId, pokemonId: form.id },
         progression,
       );
@@ -362,11 +362,11 @@ async function unavailableMemberMoves(member, context) {
     );
     context.availableMoveIdsCache.set(
       speciesId,
-      loadRebornLegalMoveData(speciesId)
+      loadLegalMoveData(speciesId)
         .then(
           (data) =>
             new Set(
-              getAvailableRebornMoves(data, memberProgression).map(
+              getAvailableMoves(data, memberProgression).map(
                 (move) => move.id,
               ),
             ),

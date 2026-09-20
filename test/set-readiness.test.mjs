@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-const { computeSetReadiness } = await import('../src/reborn/set-readiness.js');
+const { computeSetReadiness } = await import('../src/playthrough/set-readiness.js');
 const { moveSources } = await import('../src/games/legality.js');
 const { toId } = await import('../src/utils/ids.js');
 

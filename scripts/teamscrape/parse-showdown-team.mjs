@@ -8,7 +8,7 @@
  *   Adamant Nature       (optional)
  *   IVs: 0 Spe           (optional)
  *   - Move
- * Inverse of formatShowdownSet (src/reborn/team-analysis.js). Tolerant by
+ * Inverse of formatShowdownSet (src/teamBuilder/team-analysis.js). Tolerant by
  * design: scraped pastes carry smogon-dialect quirks (curly quotes, stray
  * whitespace, missing sections), and a malformed block yields null rather
  * than aborting the team.

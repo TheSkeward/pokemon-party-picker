@@ -12,9 +12,9 @@ import {
 
 await loadGame('soulsilver');
 
-const { getAvailableRebornMoves } = await import('../src/reborn/legal-moves.js');
-const { normalizeRebornProgression } = await import('../src/reborn/progression.js');
-const { computeSetReadiness } = await import('../src/reborn/set-readiness.js');
+const { getAvailableMoves } = await import('../src/playthrough/legal-moves.js');
+const { normalizeProgression } = await import('../src/playthrough/progression.js');
+const { computeSetReadiness } = await import('../src/playthrough/set-readiness.js');
 const { mechanics, moveSources } = await import('../src/games/legality.js');
 
 function withGame(id, fn) {
@@ -41,11 +41,11 @@ const JOLTEON = {
   moves: [{ id: 'hiddenpower', sources: source({ tm: true }) }],
 };
 const closeCombat = (progression) =>
-  getAvailableRebornMoves(STARAPTOR, progression).find(
+  getAvailableMoves(STARAPTOR, progression).find(
     (move) => move.id === 'closecombat',
   );
 const hiddenPowers = (progression) =>
-  getAvailableRebornMoves(JOLTEON, progression).filter((move) =>
+  getAvailableMoves(JOLTEON, progression).filter((move) =>
     move.id.startsWith('hiddenpower'),
   );
 
@@ -75,7 +75,7 @@ test('Hidden Power is plannable only through a Type Changer', () => {
   };
   const tm10 = () => moveSources().tmOptions.find((o) => o.id === 'tm10').move;
   const changerFlag = () =>
-    normalizeRebornProgression(progression).hiddenPowerTypeChangerUnlocked;
+    normalizeProgression(progression).hiddenPowerTypeChangerUnlocked;
   assert.equal(tm10(), 'Hidden Power');
   assert.equal(hiddenPowers(progression).length, 16);
   assert.equal(changerFlag(), true);

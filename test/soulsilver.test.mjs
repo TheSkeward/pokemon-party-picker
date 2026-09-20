@@ -19,9 +19,9 @@ await loadGame('soulsilver');
 const { dex } = await import('../src/games/dex.js');
 const { getCheckpoints } = await import('../src/games/schedule.js');
 const { moveSources } = await import('../src/games/legality.js');
-const { computeSetReadiness } = await import('../src/reborn/set-readiness.js');
+const { computeSetReadiness } = await import('../src/playthrough/set-readiness.js');
 const { describeEvolutionPath, getEvolutionRequirement } = await import(
-  '../src/reborn/evolution-requirements.js',
+  '../src/playthrough/evolution-requirements.js',
 );
 const { tunable } = await import('../src/teamBuilder/scoring-constants.js');
 

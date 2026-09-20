@@ -12,7 +12,7 @@
  * so the worker bundle never needs the game registry or the generated data.
  */
 
-import { MAX_OPPONENT_TYPE_BIAS } from '../reborn/progression';
+import { MAX_OPPONENT_TYPE_BIAS } from '../playthrough/progression';
 import { coreCompletionFit, corePairCredit } from './core-completion.js';
 import { tunable } from './scoring-constants.js';
 

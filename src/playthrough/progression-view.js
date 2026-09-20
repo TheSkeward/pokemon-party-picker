@@ -22,7 +22,7 @@ import { getActiveGame } from '../games/registry.js';
  * save-file settings here); classic keeps it in this panel.
  * @return {string} Panel HTML.
  */
-export function renderRebornProgressionPanel(
+export function renderProgressionPanel(
   progression, { includeBias = true } = {}) {
   return `
     <section class="panel progression-panel">

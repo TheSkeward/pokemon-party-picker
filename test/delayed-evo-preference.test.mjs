@@ -7,15 +7,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 await import('./helpers/harness.mjs'); // fetch → filesystem shim
-const { getAvailableRebornMoves, loadRebornLegalMoveData } = await import(
-  '../src/reborn/legal-moves.js',
+const { getAvailableMoves, loadLegalMoveData } = await import(
+  '../src/playthrough/legal-moves.js',
 );
-const { normalizeLevelCap } = await import('../src/reborn/progression.js');
+const { normalizeLevelCap } = await import('../src/playthrough/progression.js');
 
-const staraptor = await loadRebornLegalMoveData('staraptor');
+const staraptor = await loadLegalMoveData('staraptor');
 
 function braveBirdSource(levelCap) {
-  return getAvailableRebornMoves(staraptor, { levelCap }).find(
+  return getAvailableMoves(staraptor, { levelCap }).find(
     (move) => move.id === 'bravebird',
   )?.availableSources?.[0];
 }
@@ -48,8 +48,8 @@ test('post-game level caps above 100 are not truncated', () => {
 });
 
 test("cap 150: Judgment (level 100, the data's highest learn level) is available", async () => {
-  const arceus = await loadRebornLegalMoveData('arceus');
-  const judgment = getAvailableRebornMoves(arceus, { levelCap: '150' }).find(
+  const arceus = await loadLegalMoveData('arceus');
+  const judgment = getAvailableMoves(arceus, { levelCap: '150' }).find(
     (move) => move.id === 'judgment',
   );
   assert.equal(judgment?.availableSources?.[0]?.label, 'Level 100');

@@ -21,7 +21,7 @@
 
 import { getCheckpoint, getItemUnlockBadge } from '../games/schedule.js';
 import { mechanics, moveSources } from '../games/legality.js';
-import { fixedMoveDamage } from './damage-model.js';
+import { fixedMoveDamage } from '../teamBuilder/damage-model.js';
 import { getMoveMetaById } from '../move-meta.js';
 import { toId } from '../utils/ids.js';
 import { dex } from '../games/dex.js';

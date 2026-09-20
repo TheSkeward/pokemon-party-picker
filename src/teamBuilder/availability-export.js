@@ -1,9 +1,9 @@
-import { getCurrentRebornSpeciesForChoice } from '../reborn/current-species.js';
+import { getCurrentSpeciesForChoice } from '../playthrough/current-species.js';
 import {
-  getAvailableRebornMoves,
-  loadRebornLegalMoveData,
-} from '../reborn/legal-moves';
-import { MAX_TRACKED_ITEM_COUNT } from '../reborn/progression';
+  getAvailableMoves,
+  loadLegalMoveData,
+} from '../playthrough/legal-moves';
+import { MAX_TRACKED_ITEM_COUNT } from '../playthrough/progression';
 import { dex } from '../games/dex.js';
 
 /**
@@ -56,16 +56,16 @@ async function describeLine(line, progression) {
   const choice = line.best || line.bestNonMega;
   if (!choice) return null;
 
-  const species = getCurrentRebornSpeciesForChoice(choice, progression);
+  const species = getCurrentSpeciesForChoice(choice, progression);
   const speciesId = species?.id || choice.pokemonId;
   const speciesName = species?.name || choice.name;
 
   let moves = [];
 
   try {
-    const legalMoveData = await loadRebornLegalMoveData(speciesId);
+    const legalMoveData = await loadLegalMoveData(speciesId);
     if (legalMoveData) {
-      moves = getAvailableRebornMoves(legalMoveData, progression)
+      moves = getAvailableMoves(legalMoveData, progression)
         .map((move) => move.name)
         .sort((a, b) => a.localeCompare(b));
     }

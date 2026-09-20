@@ -8,15 +8,15 @@ import assert from 'node:assert/strict';
 
 globalThis.__ENV__ ??= { BASE_URL: '/' };
 const {
-  buildRebornTeamAnalysis,
+  buildTeamAnalysis,
   collectEggDonorRequests,
   collectSketchDonorRequests,
-} = await import('../src/reborn/team-analysis.js');
+} = await import('../src/teamBuilder/team-analysis.js');
 const { progressionAt, loadShared } = await import('./helpers/harness.mjs');
 const {
-  buildRebornBreedingContext,
+  buildBreedingContext,
   compareBreedingCosts,
-} = await import('../src/reborn/breeding.js');
+} = await import('../src/playthrough/breeding.js');
 
 test('breeding cost keeps hops primary, then minimizes acquisition level', () => {
   const highLevelDirect = {
@@ -145,7 +145,7 @@ test("analysis attaches donor guides with the donor's own interim moves", async 
     ...progressionAt({ badge: 18, levelCap: 100 }),
     daycareUnlocked: true,
   };
-  const analysis = await buildRebornTeamAnalysis(
+  const analysis = await buildTeamAnalysis(
     [{ pokemonId: 'delibird', name: 'Delibird', inputName: 'Delibird' }],
     progression,
     {
@@ -224,7 +224,7 @@ test("analysis attaches donor guides with the donor's own interim moves", async 
 test('donor routes prefer Starly@37 over Staravia@43', async () => {
   const { pokemonIndex } = await loadShared();
   const braveBirdSourceAt = async (levelCap) => {
-    const context = await buildRebornBreedingContext({
+    const context = await buildBreedingContext({
       pokemonIndex,
       progression: {
         ...progressionAt({ badge: 5, levelCap }),
@@ -248,7 +248,7 @@ test('donor routes prefer Starly@37 over Staravia@43', async () => {
 
 test('equal-hop donor families prefer the earlier learn level', async () => {
   const { pokemonIndex } = await loadShared();
-  const context = await buildRebornBreedingContext({
+  const context = await buildBreedingContext({
     pokemonIndex,
     progression: {
       ...progressionAt({ badge: 5, levelCap: 45 }),
