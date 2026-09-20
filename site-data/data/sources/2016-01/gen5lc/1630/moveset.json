@@ -1,0 +1,952 @@
+{
+  "source": {
+    "month": "2016-01",
+    "formatId": "gen5lc",
+    "cutoff": 1630,
+    "dataKind": "moveset"
+  },
+  "pokemon": {
+    "abra": {
+      "pokemonId": "abra",
+      "name": "Abra",
+      "rawCount": 45,
+      "abilities": [
+        {
+          "name": "Magic Guard",
+          "usage": 100
+        },
+        {
+          "name": "Synchronize",
+          "usage": 0
+        }
+      ],
+      "items": [
+        {
+          "name": "Focus Sash",
+          "usage": 74.825
+        },
+        {
+          "name": "Life Orb",
+          "usage": 25.175
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Timid:0/0/0/236/76/196",
+          "usage": 71.041
+        },
+        {
+          "name": "Timid:0/0/0/236/0/200",
+          "usage": 25.175
+        },
+        {
+          "name": "Other",
+          "usage": 3.784
+        }
+      ],
+      "moves": [
+        {
+          "name": "Shadow Ball",
+          "usage": 100
+        },
+        {
+          "name": "Psychic",
+          "usage": 100
+        },
+        {
+          "name": "Energy Ball",
+          "usage": 74.825
+        },
+        {
+          "name": "Signal Beam",
+          "usage": 71.041
+        },
+        {
+          "name": "Hidden Power Fighting",
+          "usage": 25.175
+        },
+        {
+          "name": "Substitute",
+          "usage": 25.175
+        },
+        {
+          "name": "Other",
+          "usage": 3.784
+        }
+      ]
+    },
+    "clamperl": {
+      "pokemonId": "clamperl",
+      "name": "Clamperl",
+      "rawCount": 31,
+      "abilities": [
+        {
+          "name": "Shell Armor",
+          "usage": 54.896
+        },
+        {
+          "name": "Rattled",
+          "usage": 45.104
+        }
+      ],
+      "items": [
+        {
+          "name": "White Herb",
+          "usage": 54.896
+        },
+        {
+          "name": "DeepSeaTooth",
+          "usage": 26.165
+        },
+        {
+          "name": "Focus Sash",
+          "usage": 18.94
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Modest:76/0/0/248/0/180",
+          "usage": 54.896
+        },
+        {
+          "name": "Timid:76/0/0/248/0/184",
+          "usage": 26.165
+        },
+        {
+          "name": "Modest:76/0/0/248/0/184",
+          "usage": 18.94
+        }
+      ],
+      "moves": [
+        {
+          "name": "Ice Beam",
+          "usage": 100
+        },
+        {
+          "name": "Shell Smash",
+          "usage": 100
+        },
+        {
+          "name": "Scald",
+          "usage": 73.835
+        },
+        {
+          "name": "Hidden Power Ground",
+          "usage": 54.896
+        },
+        {
+          "name": "Surf",
+          "usage": 26.165
+        },
+        {
+          "name": "Hidden Power Grass",
+          "usage": 26.165
+        },
+        {
+          "name": "Other",
+          "usage": 18.94
+        }
+      ]
+    },
+    "aipom": {
+      "pokemonId": "aipom",
+      "name": "Aipom",
+      "rawCount": 29,
+      "abilities": [
+        {
+          "name": "Pickup",
+          "usage": 74.349
+        },
+        {
+          "name": "Skill Link",
+          "usage": 25.651
+        },
+        {
+          "name": "Run Away",
+          "usage": 0
+        }
+      ],
+      "items": [
+        {
+          "name": "Silk Scarf",
+          "usage": 100
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Jolly:0/196/0/0/76/236",
+          "usage": 74.349
+        },
+        {
+          "name": "Jolly:76/196/0/0/0/236",
+          "usage": 25.651
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "moves": [
+        {
+          "name": "Nothing",
+          "usage": 148.698
+        },
+        {
+          "name": "Fake Out",
+          "usage": 100
+        },
+        {
+          "name": "Last Resort",
+          "usage": 100
+        },
+        {
+          "name": "Gunk Shot",
+          "usage": 25.651
+        },
+        {
+          "name": "Double Slap",
+          "usage": 25.651
+        }
+      ]
+    },
+    "archen": {
+      "pokemonId": "archen",
+      "name": "Archen",
+      "rawCount": 27,
+      "abilities": [
+        {
+          "name": "Defeatist",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Choice Band",
+          "usage": 74.349
+        },
+        {
+          "name": "Sitrus Berry",
+          "usage": 25.651
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Jolly:76/180/0/0/0/196",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "moves": [
+        {
+          "name": "Crunch",
+          "usage": 100
+        },
+        {
+          "name": "Earthquake",
+          "usage": 100
+        },
+        {
+          "name": "U-turn",
+          "usage": 74.349
+        },
+        {
+          "name": "Stone Edge",
+          "usage": 74.349
+        },
+        {
+          "name": "Aqua Tail",
+          "usage": 25.651
+        },
+        {
+          "name": "Acrobatics",
+          "usage": 25.651
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ]
+    },
+    "magnemite": {
+      "pokemonId": "magnemite",
+      "name": "Magnemite",
+      "rawCount": 27,
+      "abilities": [
+        {
+          "name": "Sturdy",
+          "usage": 100
+        },
+        {
+          "name": "Magnet Pull",
+          "usage": 0
+        }
+      ],
+      "items": [
+        {
+          "name": "Choice Specs",
+          "usage": 93.315
+        },
+        {
+          "name": "Oran Berry",
+          "usage": 6.685
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Modest:0/0/0/236/236/0",
+          "usage": 93.315
+        },
+        {
+          "name": "Bold:0/0/196/76/236/0",
+          "usage": 6.685
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "moves": [
+        {
+          "name": "Flash Cannon",
+          "usage": 100
+        },
+        {
+          "name": "Hidden Power Ice",
+          "usage": 93.315
+        },
+        {
+          "name": "Signal Beam",
+          "usage": 93.315
+        },
+        {
+          "name": "Volt Switch",
+          "usage": 93.315
+        },
+        {
+          "name": "Thunderbolt",
+          "usage": 6.685
+        },
+        {
+          "name": "Other",
+          "usage": 13.37
+        }
+      ]
+    },
+    "axew": {
+      "pokemonId": "axew",
+      "name": "Axew",
+      "rawCount": 18,
+      "abilities": [
+        {
+          "name": "Mold Breaker",
+          "usage": 100
+        },
+        {
+          "name": "Rivalry",
+          "usage": 0
+        }
+      ],
+      "items": [
+        {
+          "name": "Eviolite",
+          "usage": 100
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Adamant:0/220/0/0/36/220",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "moves": [
+        {
+          "name": "Dragon Dance",
+          "usage": 100
+        },
+        {
+          "name": "Poison Jab",
+          "usage": 100
+        },
+        {
+          "name": "Dragon Claw",
+          "usage": 100
+        },
+        {
+          "name": "Superpower",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ]
+    },
+    "mienfoo": {
+      "pokemonId": "mienfoo",
+      "name": "Mienfoo",
+      "rawCount": 17,
+      "abilities": [
+        {
+          "name": "Regenerator",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Eviolite",
+          "usage": 50.875
+        },
+        {
+          "name": "Life Orb",
+          "usage": 49.125
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Impish:156/76/116/0/36/76",
+          "usage": 50.875
+        },
+        {
+          "name": "Jolly:0/236/36/0/0/236",
+          "usage": 49.125
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "moves": [
+        {
+          "name": "U-turn",
+          "usage": 100
+        },
+        {
+          "name": "Fake Out",
+          "usage": 100
+        },
+        {
+          "name": "Knock Off",
+          "usage": 50.875
+        },
+        {
+          "name": "Drain Punch",
+          "usage": 50.875
+        },
+        {
+          "name": "Stone Edge",
+          "usage": 49.125
+        },
+        {
+          "name": "High Jump Kick",
+          "usage": 49.125
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ]
+    },
+    "ferroseed": {
+      "pokemonId": "ferroseed",
+      "name": "Ferroseed",
+      "rawCount": 10,
+      "abilities": [
+        {
+          "name": "Iron Barbs",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Eviolite",
+          "usage": 100
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Sassy:84/36/188/0/152/0",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "moves": [
+        {
+          "name": "Leech Seed",
+          "usage": 100
+        },
+        {
+          "name": "Protect",
+          "usage": 100
+        },
+        {
+          "name": "Bullet Seed",
+          "usage": 100
+        },
+        {
+          "name": "Stealth Rock",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ]
+    },
+    "porygon": {
+      "pokemonId": "porygon",
+      "name": "Porygon",
+      "rawCount": 7,
+      "abilities": [
+        {
+          "name": "Trace",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Eviolite",
+          "usage": 100
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Bold:236/0/196/0/76/0",
+          "usage": 100
+        }
+      ],
+      "moves": [
+        {
+          "name": "Shadow Ball",
+          "usage": 100
+        },
+        {
+          "name": "Thunder Wave",
+          "usage": 100
+        },
+        {
+          "name": "Recover",
+          "usage": 100
+        },
+        {
+          "name": "Tri Attack",
+          "usage": 100
+        }
+      ]
+    },
+    "koffing": {
+      "pokemonId": "koffing",
+      "name": "Koffing",
+      "rawCount": 7,
+      "abilities": [
+        {
+          "name": "Levitate",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Eviolite",
+          "usage": 100
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Bold:196/0/156/0/156/0",
+          "usage": 100
+        }
+      ],
+      "moves": [
+        {
+          "name": "Clear Smog",
+          "usage": 100
+        },
+        {
+          "name": "Pain Split",
+          "usage": 100
+        },
+        {
+          "name": "Sludge Bomb",
+          "usage": 100
+        },
+        {
+          "name": "Will-O-Wisp",
+          "usage": 100
+        }
+      ]
+    },
+    "timburr": {
+      "pokemonId": "timburr",
+      "name": "Timburr",
+      "rawCount": 7,
+      "abilities": [
+        {
+          "name": "Guts",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Eviolite",
+          "usage": 100
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Careful:76/196/0/0/236/0",
+          "usage": 100
+        }
+      ],
+      "moves": [
+        {
+          "name": "Drain Punch",
+          "usage": 100
+        },
+        {
+          "name": "Payback",
+          "usage": 100
+        },
+        {
+          "name": "Mach Punch",
+          "usage": 100
+        },
+        {
+          "name": "Bulk Up",
+          "usage": 100
+        }
+      ]
+    },
+    "staryu": {
+      "pokemonId": "staryu",
+      "name": "Staryu",
+      "rawCount": 8,
+      "abilities": [
+        {
+          "name": "Natural Cure",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Eviolite",
+          "usage": 100
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Timid:36/0/0/200/0/240",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "moves": [
+        {
+          "name": "Psychic",
+          "usage": 100
+        },
+        {
+          "name": "Rapid Spin",
+          "usage": 100
+        },
+        {
+          "name": "Hydro Pump",
+          "usage": 100
+        },
+        {
+          "name": "Recover",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ]
+    },
+    "cranidos": {
+      "pokemonId": "cranidos",
+      "name": "Cranidos",
+      "rawCount": 8,
+      "abilities": [
+        {
+          "name": "Sheer Force",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Choice Scarf",
+          "usage": 100
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Jolly:0/236/0/0/36/212",
+          "usage": 100
+        }
+      ],
+      "moves": [
+        {
+          "name": "Facade",
+          "usage": 100
+        },
+        {
+          "name": "Earthquake",
+          "usage": 100
+        },
+        {
+          "name": "Zen Headbutt",
+          "usage": 100
+        },
+        {
+          "name": "Head Smash",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ]
+    },
+    "litwick": {
+      "pokemonId": "litwick",
+      "name": "Litwick",
+      "rawCount": 8,
+      "abilities": [
+        {
+          "name": "Flame Body",
+          "usage": 100
+        },
+        {
+          "name": "Flash Fire",
+          "usage": 0
+        }
+      ],
+      "items": [
+        {
+          "name": "Focus Sash",
+          "usage": 100
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Modest:0/0/0/236/236/36",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ],
+      "moves": [
+        {
+          "name": "Energy Ball",
+          "usage": 100
+        },
+        {
+          "name": "Confuse Ray",
+          "usage": 100
+        },
+        {
+          "name": "Flamethrower",
+          "usage": 100
+        },
+        {
+          "name": "Dark Pulse",
+          "usage": 100
+        }
+      ]
+    },
+    "bidoof": {
+      "pokemonId": "bidoof",
+      "name": "Bidoof",
+      "rawCount": 9,
+      "abilities": [
+        {
+          "name": "Simple",
+          "usage": 100
+        },
+        {
+          "name": "Unaware",
+          "usage": 0
+        }
+      ],
+      "items": [
+        {
+          "name": "Life Orb",
+          "usage": 100
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Mild:44/0/0/236/196/28",
+          "usage": 100
+        }
+      ],
+      "moves": [
+        {
+          "name": "Shadow Ball",
+          "usage": 100
+        },
+        {
+          "name": "Charge Beam",
+          "usage": 100
+        },
+        {
+          "name": "Blizzard",
+          "usage": 100
+        },
+        {
+          "name": "Quick Attack",
+          "usage": 100
+        }
+      ]
+    },
+    "woobat": {
+      "pokemonId": "woobat",
+      "name": "Woobat",
+      "rawCount": 9,
+      "abilities": [
+        {
+          "name": "Unaware",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Leftovers",
+          "usage": 100
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Modest:0/0/12/236/252/0",
+          "usage": 100
+        }
+      ],
+      "moves": [
+        {
+          "name": "Psychic",
+          "usage": 100
+        },
+        {
+          "name": "Sleep Talk",
+          "usage": 100
+        },
+        {
+          "name": "Rest",
+          "usage": 100
+        },
+        {
+          "name": "Air Slash",
+          "usage": 100
+        }
+      ]
+    },
+    "stunky": {
+      "pokemonId": "stunky",
+      "name": "Stunky",
+      "rawCount": 9,
+      "abilities": [
+        {
+          "name": "Stench",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Life Orb",
+          "usage": 100
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Jolly:12/252/0/0/0/244",
+          "usage": 100
+        }
+      ],
+      "moves": [
+        {
+          "name": "Shadow Claw",
+          "usage": 100
+        },
+        {
+          "name": "Crunch",
+          "usage": 100
+        },
+        {
+          "name": "Dig",
+          "usage": 100
+        },
+        {
+          "name": "Explosion",
+          "usage": 100
+        }
+      ]
+    },
+    "sandile": {
+      "pokemonId": "sandile",
+      "name": "Sandile",
+      "rawCount": 9,
+      "abilities": [
+        {
+          "name": "Moxie",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Choice Scarf",
+          "usage": 100
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Jolly:0/180/0/0/76/236",
+          "usage": 100
+        }
+      ],
+      "moves": [
+        {
+          "name": "Crunch",
+          "usage": 100
+        },
+        {
+          "name": "Earthquake",
+          "usage": 100
+        },
+        {
+          "name": "Aqua Tail",
+          "usage": 100
+        },
+        {
+          "name": "Stone Edge",
+          "usage": 100
+        }
+      ]
+    }
+  }
+}

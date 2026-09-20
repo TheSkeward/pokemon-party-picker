@@ -1,0 +1,92 @@
+{
+  "source": {
+    "month": "2015-12",
+    "formatId": "gen5nu",
+    "cutoff": 1500,
+    "dataKind": "moveset"
+  },
+  "pokemon": {
+    "zangoose": {
+      "pokemonId": "zangoose",
+      "name": "Zangoose",
+      "rawCount": 1,
+      "abilities": [
+        {
+          "name": "Immunity",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Toxic Orb",
+          "usage": 100
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Jolly:0/252/0/0/4/252",
+          "usage": 100
+        }
+      ],
+      "moves": [
+        {
+          "name": "Facade",
+          "usage": 100
+        },
+        {
+          "name": "Protect",
+          "usage": 100
+        },
+        {
+          "name": "Night Slash",
+          "usage": 100
+        },
+        {
+          "name": "Close Combat",
+          "usage": 100
+        }
+      ]
+    },
+    "karrablast": {
+      "pokemonId": "karrablast",
+      "name": "Karrablast",
+      "rawCount": 1,
+      "abilities": [
+        {
+          "name": "No Guard",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Aguav Berry",
+          "usage": 100
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Mild:5/20/8/148/32/24",
+          "usage": 100
+        }
+      ],
+      "moves": [
+        {
+          "name": "Facade",
+          "usage": 100
+        },
+        {
+          "name": "Sleep Talk",
+          "usage": 100
+        },
+        {
+          "name": "Hidden Power Ground",
+          "usage": 100
+        },
+        {
+          "name": "Giga Drain",
+          "usage": 100
+        }
+      ]
+    }
+  }
+}
