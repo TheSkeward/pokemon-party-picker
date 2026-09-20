@@ -1,4 +1,4 @@
-// Generated from @pkmn/dex Gen 4 species progression data.
+// Generated from @pkmn/dex Gen 4 species progression data. Move-evolution levels follow level-up.generated.json.
 export const GEN4_PROGRESSION_SPECIES = {
   "milotic": {
     "id": "milotic",

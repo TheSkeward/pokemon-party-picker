@@ -2,10 +2,13 @@
  * @fileoverview Runs every dex-module generator for one generation, in
  * dependency order, so a game's generated data is rebuilt with one command:
  *
- *   node scripts/build-dex-modules.mjs <gen>
+ *   node scripts/build-dex-modules.mjs <gen> [--level-up=<table.json>]
  *
  * Held items come last because they are read off the set index, which the
- * usage-data build produces; the rest read only {@code @pkmn/dex}.
+ * usage-data build produces; the rest read only {@code @pkmn/dex}. Extra
+ * arguments pass through to every generator; the progression-species one
+ * takes a game's level-up table (build-bulbapedia-level-up.mjs) for its
+ * move-evolution levels.
  */
 
 import { execFileSync } from 'node:child_process';
@@ -23,8 +26,11 @@ const GENERATORS = [
 ];
 
 const gen = parseGenArg();
+const extraArgs = process.argv.slice(3);
 for (const script of GENERATORS) {
-  execFileSync(process.execPath, [`scripts/${script}`, String(gen)], {
-    stdio: 'inherit',
-  });
+  execFileSync(
+    process.execPath,
+    [`scripts/${script}`, String(gen), ...extraArgs],
+    { stdio: 'inherit' },
+  );
 }

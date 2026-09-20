@@ -35,7 +35,17 @@ const speciesById = {};
 // which the pre-evo actually learns that move, so reachability can be gated
 // by the level cap instead of guessed. Gen 7 reads Reborn's own learnsets
 // (the authoritative source for the game this generation serves); another
-// generation reads the dex's learnsets for that generation.
+// generation reads the dex's learnsets for that generation, unless a game's
+// level-up table (build-bulbapedia-level-up.mjs) is given with
+// --level-up=<table.json>, in which case that game's levels win and the dex
+// fills in only what the table lacks.
+const levelUpTablePath = process.argv
+  .slice(3)
+  .find((arg) => arg.startsWith('--level-up='))
+  ?.slice('--level-up='.length);
+const levelUpTable = levelUpTablePath
+  ? JSON.parse(await fs.readFile(path.resolve(levelUpTablePath), 'utf8'))
+  : null;
 const rebornLearnsets =
   GEN === 7
     ? JSON.parse(
@@ -56,6 +66,8 @@ async function levelMoveLearnLevel(prevoId, moveName) {
       .map(([level]) => level);
     return levels.length ? Math.min(...levels) : null;
   }
+  const tableLevels = levelUpTable?.[prevoId]?.[moveId];
+  if (tableLevels?.length) return Math.min(...tableLevels);
   const learnset = (await dex.learnsets.get(prevoId))?.learnset?.[moveId] || [];
   const levels = learnset
     .filter((source) => source.startsWith(`${GEN}L`))
@@ -102,7 +114,10 @@ for (const pokemon of pokemonIndex) {
   };
 }
 
-const body = `// Generated from @pkmn/dex Gen ${GEN} species progression data.
+const provenance = levelUpTablePath
+  ? ` Move-evolution levels follow ${path.basename(levelUpTablePath)}.`
+  : '';
+const body = `// Generated from @pkmn/dex Gen ${GEN} species progression data.${provenance}
 export const GEN${GEN}_PROGRESSION_SPECIES = ${JSON.stringify(speciesById, null, 2)};
 `;
 

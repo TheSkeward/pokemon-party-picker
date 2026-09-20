@@ -157,6 +157,26 @@ test('set readiness prices SoulSilver machines against its own caps', () => {
   });
 });
 
+test('move-evolution levels follow the HGSS level-up table', () => {
+  const table = JSON.parse(
+    fs.readFileSync(
+      path.resolve('scripts', 'soulsilver', 'level-up.generated.json'),
+      'utf8',
+    ),
+  );
+  const toId = (value) => String(value).toLowerCase().replace(/[^a-z0-9]/g, '');
+  const moveEvolutions = withSoulSilver(() =>
+    Object.values(dex().progressionSpecies).filter(
+      (species) => species.evoType === 'levelMove',
+    ),
+  );
+  assert.equal(moveEvolutions.length, 7);
+  for (const species of moveEvolutions) {
+    const levels = table[species.prevoId][toId(species.evoMove)];
+    assert.equal(species.evoMoveLevel, Math.min(...levels), species.id);
+  }
+});
+
 test('legal-move files carry Gen 4 sources in the Reborn file shape', () => {
   const garchomp = legalMoves('garchomp');
   const byId = new Map(garchomp.moves.map((move) => [move.id, move]));
