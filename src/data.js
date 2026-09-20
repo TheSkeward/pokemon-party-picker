@@ -403,11 +403,17 @@ export async function resolveBestAvailableLightBundle(
 
 /**
  * @return {!Array<!Object>} Moveset source candidates in resolution priority
- *     order: the requested family's formats first, then the other family's.
+ *     order: the requested family's formats first, then those of the other
+ *     families of its generation (a Gen 7 singles set may fall back to Gen 7
+ *     doubles data, never to another generation's).
  */
 export function getMovesetResolverCandidates(availability, family, selection) {
-  const families = family === 'doubles' ? ['doubles', 'singles'] : ['singles', 'doubles'];
-  return families.flatMap((familyId) => [...iterateCandidateSources(availability, familyId, selection, 'moveset')]);
+  const configs = availability?.familyConfigs || {};
+  const gen = configs[family]?.gen;
+  const siblings = Object.keys(configs).filter(
+    (id) => id !== family && configs[id].gen === gen);
+  return [family, ...siblings].flatMap((familyId) =>
+    [...iterateCandidateSources(availability, familyId, selection, 'moveset')]);
 }
 
 /**

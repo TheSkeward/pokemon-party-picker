@@ -10,7 +10,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { Dex } from '@pkmn/dex';
-import { parseGenArg } from './dex-gen.mjs';
+import { inUniverse, parseGenArg } from './dex-gen.mjs';
 
 const GEN = parseGenArg();
 const OUT_PATH = path.resolve(
@@ -25,8 +25,7 @@ function main() {
       (species) =>
         species.exists &&
         species.gen >= 1 &&
-        species.gen <= GEN &&
-        !species.isNonstandard &&
+        inUniverse(GEN, species) &&
         Object.values(species.abilities || {}).includes('Unburden'),
     )
     .map((species) => species.id)

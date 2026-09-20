@@ -11,7 +11,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { Dex } from '@pkmn/dex';
-import { parseGenArg } from './dex-gen.mjs';
+import { inUniverse, parseGenArg } from './dex-gen.mjs';
 
 const GEN = parseGenArg();
 const OUT_PATH = path.resolve(
@@ -149,11 +149,11 @@ function main() {
     // under the single "hiddenpower" id).
     const move = dex.moves.get(listed.id);
     if (!move?.exists) continue;
-    // Moves the generation does not have (the dex lists later ones as
-    // nonstandard) stay out of its table — except for Gen 7, which keeps
-    // every move the dex object serves: Reborn, the game it serves, teaches
-    // later-generation moves, and its legal-move files reference them.
-    if (GEN !== 7 && (move.gen > GEN || move.isNonstandard)) continue;
+    // Moves outside the generation's universe (dex-gen.mjs) stay out of its
+    // table: Gen 7 keeps every move the dex object serves, since Reborn
+    // teaches later-generation moves and its legal-move files reference
+    // them; a National Dex generation keeps the Past moves it legalizes.
+    if (!inUniverse(GEN, move)) continue;
     const entry = {
       name: move.name,
       type: move.type,

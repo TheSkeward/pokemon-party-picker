@@ -85,6 +85,38 @@ export const FAMILY_CONFIGS = {
     cutoffPriority: [1760, 1630, 1500, 0],
     defaultBrowserFormat: 'gen5doublesou',
   },
+  // National Dex is the prior for a Gen 9 game that fields every species
+  // with Megas and Z-Moves (Rejuvenation): its three tiers first, then the
+  // Scarlet and Violet tiers below UU as the thinner fallback for species
+  // National Dex play never reaches (a different ruleset, without Megas,
+  // but the same species).
+  gen9natdexsingles: {
+    label: 'Gen 9 NatDex Singles',
+    gen: 9,
+    formatOrder: [
+      'gen9nationaldexubers',
+      'gen9nationaldex',
+      'gen9nationaldexuu',
+      'gen9ru',
+      'gen9nu',
+      'gen9pu',
+      'gen9lc',
+    ],
+    cutoffPriority: [1760, 1630, 1500, 0],
+    defaultBrowserFormat: 'gen9nationaldex',
+  },
+  gen9natdexdoubles: {
+    label: 'Gen 9 NatDex Doubles',
+    gen: 9,
+    formatOrder: [
+      'gen9nationaldexdoubles',
+      'gen9doublesubers',
+      'gen9doublesou',
+      'gen9doublesuu',
+    ],
+    cutoffPriority: [1760, 1630, 1500, 0],
+    defaultBrowserFormat: 'gen9nationaldexdoubles',
+  },
 };
 
 /** @type {!Array<{id: string, label: string, family: string}>} */
@@ -122,6 +154,17 @@ export const REAL_FORMATS = [
   { id: 'gen5gbudoubles', label: 'Gen 5 GBU Doubles', family: 'gen5doubles' },
   { id: 'gen5vgc2013', label: 'Gen 5 VGC 2013', family: 'gen5doubles' },
   { id: 'gen5vgc2011', label: 'Gen 5 VGC 2011', family: 'gen5doubles' },
+  { id: 'gen9nationaldexubers', label: 'Gen 9 NatDex Ubers', family: 'gen9natdexsingles' },
+  { id: 'gen9nationaldex', label: 'Gen 9 NatDex OU', family: 'gen9natdexsingles' },
+  { id: 'gen9nationaldexuu', label: 'Gen 9 NatDex UU', family: 'gen9natdexsingles' },
+  { id: 'gen9ru', label: 'Gen 9 RU', family: 'gen9natdexsingles' },
+  { id: 'gen9nu', label: 'Gen 9 NU', family: 'gen9natdexsingles' },
+  { id: 'gen9pu', label: 'Gen 9 PU', family: 'gen9natdexsingles' },
+  { id: 'gen9lc', label: 'Gen 9 LC', family: 'gen9natdexsingles' },
+  { id: 'gen9nationaldexdoubles', label: 'Gen 9 NatDex Doubles', family: 'gen9natdexdoubles' },
+  { id: 'gen9doublesubers', label: 'Gen 9 Doubles Ubers', family: 'gen9natdexdoubles' },
+  { id: 'gen9doublesou', label: 'Gen 9 DOU', family: 'gen9natdexdoubles' },
+  { id: 'gen9doublesuu', label: 'Gen 9 DUU', family: 'gen9natdexdoubles' },
 ];
 
 /** Singles format ids, strongest tier first. @type {!Array<string>} */

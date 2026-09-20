@@ -76,10 +76,11 @@ function main() {
     )
     .map(({ id, name }) => ({ id, name }));
 
-  // Reborn-holdable items that don't appear in USUM Smogon data, appended
-  // so they're always selectable. Gen 7's universe serves Reborn; other
-  // generations carry only what their own usage data shows.
-  if (GEN === 7) {
+  // The type gems and field seeds of the Essentials games, which no Smogon
+  // data carries, appended so they're always selectable. Gen 7 serves
+  // Reborn and Gen 9 Rejuvenation; other generations carry only what their
+  // own usage data shows.
+  if (GEN === 7 || GEN === 9) {
     for (
       const name of [...TYPE_GEMS.map((gem) => gem.gemName), ...REBORN_SEEDS]) {
       const id = toId(name);

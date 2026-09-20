@@ -28,20 +28,26 @@ https://theskeward.github.io/pokemon-party-picker/
 ## Games
 
 The usage-data families in the top tabs (singles and doubles for Gen 4,
-Gen 5, and Gen 7) come from the data pipeline, and each activates the game
-whose prior it is: HGSS for Gen 4, B2W2 for Gen 5, Reborn for Gen 7. The
-tabs run in generation order, each game's families together. A game is a descriptor
-in `src/games/` naming its dex generation, usage families, progression
+Gen 5, Gen 7, and Gen 9 National Dex) come from the data pipeline, and each
+activates the game whose prior it is: HGSS for Gen 4, B2W2 for Gen 5,
+Reborn for Gen 7, Rejuvenation for Gen 9. The tabs run in generation
+order, each game's families together. A game is a descriptor in
+`src/games/` naming its dex generation, usage families, progression
 schedule, machines and tutors, item content, evolution rules, and the
 mechanics it has (Reborn's Common Candy level-downs and Hidden Power Type
 Changer, for instance); its curated data lives in `src/reborn/`,
-`src/hgss/`, or `src/b2w2/`. Legal moves come from the game's own data: Reborn's from
-its mons.dat, a mainline game's from `@pkmn/dex` with the game's level-up
-lists taken from Bulbapedia where its generation's games differ.
+`src/rejuv/`, `src/hgss/`, or `src/b2w2/`. Legal moves come from the
+game's own data: Reborn's and Rejuvenation's from their mons.dat (the
+Rejuvenation extracts and their map onto the Gen 9 dex are committed under
+`scripts/rejuv/`), a mainline game's from `@pkmn/dex` with the game's
+level-up lists taken from Bulbapedia where its generation's games differ.
 
 The usage prior is per generation, not per game: competitive play describes
 a mainline game well enough that only Reborn, whose mechanics stray far from
-it, carries a calibration corpus (see `SCORING.md`).
+it, carries a calibration corpus (see `SCORING.md`). Rejuvenation's prior
+is National Dex play, which fields every species with Megas and Z-Moves as
+the game does; what has no Gen 9 identity (its Aevian and Rift forms, its
+own species and moves, the Crests) stays outside the planner.
 
 The tool wears the active game's palette: its descriptor supplies the
 shell, text, state, and accent colors and whether they are a dark or light

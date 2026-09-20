@@ -21,7 +21,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { Dex } from '@pkmn/dex';
-import { parseGenArg } from './dex-gen.mjs';
+import { inUniverse, parseGenArg } from './dex-gen.mjs';
 
 function main() {
   const gen = parseGenArg();
@@ -30,9 +30,7 @@ function main() {
   const universe =
     gen === 7
       ? listed
-      : listed.filter(
-        (species) => species.gen <= gen && !species.isNonstandard,
-      );
+      : listed.filter((species) => inUniverse(gen, species));
   const byId = new Map(universe.map((species) => [species.id, species]));
   const idOf = (name) => dex.species.get(name).id;
   const isMegaLike = (species) =>

@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { Dex } from '@pkmn/dex';
-import { parseGenArg } from './dex-gen.mjs';
+import { inUniverse, parseGenArg } from './dex-gen.mjs';
 
 const projectRoot = process.cwd();
 const pokemonIndexPath = path.join(projectRoot, 'site-data', 'data', 'pokemon-index.json');
@@ -14,38 +14,9 @@ const outputPath = path.join(
 );
 const dex = Dex.forGen(GEN);
 
-// The species universe. Gen 7 follows the usage index, as it always has (the
-// Reborn engine's contract); another generation takes every standard species
-// of that generation and earlier from the dex.
-const pokemonIndex =
-  GEN === 7
-    ? JSON.parse(await fs.readFile(pokemonIndexPath, 'utf8'))
-    : dex.species
-      .all()
-      .filter(
-        (species) =>
-          species.exists && species.gen <= GEN && !species.isNonstandard,
-      )
-      .map((species) => ({ id: species.id, name: species.name }));
-const pokemonIds = new Set(pokemonIndex.map((pokemon) => pokemon.id));
-const speciesById = {};
-
-// Level-up learnsets, used to resolve levelMove evolutions (evolve by knowing
-// a move — e.g. Tangela needs Ancient Power for Tangrowth) to the level at
-// which the pre-evo actually learns that move, so reachability can be gated
-// by the level cap instead of guessed. Gen 7 reads Reborn's own learnsets
-// (the authoritative source for the game this generation serves); another
-// generation reads the dex's learnsets for that generation, unless a game's
-// level-up table (build-bulbapedia-level-up.mjs) is given with
-// --level-up=<table.json>, in which case that game's levels win and the dex
-// fills in only what the table lacks.
-const levelUpTablePath = process.argv
-  .slice(3)
-  .find((arg) => arg.startsWith('--level-up='))
-  ?.slice('--level-up='.length);
-const levelUpTable = levelUpTablePath
-  ? JSON.parse(await fs.readFile(path.resolve(levelUpTablePath), 'utf8'))
-  : null;
+// Gen 7 reads Reborn's own learnsets (the authoritative source for the game
+// this generation serves), both for the species universe and for the
+// move-evolution levels below.
 const rebornLearnsets =
   GEN === 7
     ? JSON.parse(
@@ -56,6 +27,42 @@ const rebornLearnsets =
       ),
     ).learnsets
     : null;
+
+// The species universe. Gen 7 follows the usage index, as it always has (the
+// Reborn engine's contract), narrowed to the species Reborn's data knows:
+// the index spans every tracked generation, and a Gen 9 format's species
+// are no part of a Gen 7 game. Another generation takes every standard
+// species of that generation and earlier from the dex.
+const pokemonIndex =
+  GEN === 7
+    ? JSON.parse(await fs.readFile(pokemonIndexPath, 'utf8')).filter(
+      (pokemon) => pokemon.id in rebornLearnsets,
+    )
+    : dex.species
+      .all()
+      .filter(
+        (species) =>
+          species.exists && inUniverse(GEN, species),
+      )
+      .map((species) => ({ id: species.id, name: species.name }));
+const pokemonIds = new Set(pokemonIndex.map((pokemon) => pokemon.id));
+const speciesById = {};
+
+// Level-up learnsets, used to resolve levelMove evolutions (evolve by knowing
+// a move — e.g. Tangela needs Ancient Power for Tangrowth) to the level at
+// which the pre-evo actually learns that move, so reachability can be gated
+// by the level cap instead of guessed. Gen 7 reads Reborn's learnsets
+// (above); another generation reads the dex's learnsets for that
+// generation, unless a game's level-up table (build-bulbapedia-level-up.mjs)
+// is given with --level-up=<table.json>, in which case that game's levels
+// win and the dex fills in only what the table lacks.
+const levelUpTablePath = process.argv
+  .slice(3)
+  .find((arg) => arg.startsWith('--level-up='))
+  ?.slice('--level-up='.length);
+const levelUpTable = levelUpTablePath
+  ? JSON.parse(await fs.readFile(path.resolve(levelUpTablePath), 'utf8'))
+  : null;
 
 async function levelMoveLearnLevel(prevoId, moveName) {
   const moveId = toId(moveName);
