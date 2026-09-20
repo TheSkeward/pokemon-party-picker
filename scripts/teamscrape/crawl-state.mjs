@@ -90,6 +90,19 @@ export function forListing(state, listing) {
 }
 
 /**
+ * Marks a listing seen empty (XenForo's "no threads" page) at `now`, so the
+ * walker can leave it alone for a while; any rows seen later clear it.
+ * @param {!Object} state
+ * @param {string} listing
+ * @param {!Date=} now
+ */
+export function recordEmptyListing(state, listing, now = new Date()) {
+  const progress = forListing(state, listing);
+  progress.emptyAt = now.toISOString();
+  progress.page = 1;
+}
+
+/**
  * The first encounter scans page 1. Interrupted threads resume at nextPage;
  * completed threads recheck their final page, where later replies land.
  * @param {?Object} thread

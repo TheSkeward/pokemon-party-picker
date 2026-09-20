@@ -6,10 +6,32 @@
  */
 import {
   forListing,
+  recordEmptyListing,
   recordListingPage,
   saveCrawlState,
 } from './crawl-state.mjs';
-import { listingPageUrl } from './forum-html.mjs';
+import { describeEmptyListing, listingPageUrl } from './forum-html.mjs';
+
+/**
+ * How long a listing seen empty stays unfetched. The empty forums are closed
+ * archives, so a monthly look is plenty; a container forum (subforums, no
+ * threads of its own) is never skipped, since its page is how the walker
+ * discovers the subforums.
+ * @const {number}
+ */
+export const EMPTY_LISTING_RECHECK_MS = 30 * 24 * 60 * 60 * 1000;
+
+/**
+ * @param {{emptyAt: (string|undefined)}} progress A listing's crawl state.
+ * @param {!Date=} now
+ * @return {boolean} Whether the listing was seen empty recently enough to
+ *     leave unfetched this run.
+ */
+export function skipsEmptyListing(progress, now = new Date()) {
+  if (!progress.emptyAt) return false;
+  const age = now.getTime() - Date.parse(progress.emptyAt);
+  return age < EMPTY_LISTING_RECHECK_MS;
+}
 
 /**
  * Reads a `--<flag>=<count>` per-run budget from argv.
@@ -52,8 +74,20 @@ export function parseBudget(argv, flag, fallback) {
 export async function walkListingPages({ listing, fetchText, processPage,
   crawl, crawlFile, listingPagesPerRun, outOfBudget }) {
   const progress = forListing(crawl, listing);
+  if (skipsEmptyListing(progress)) {
+    console.log(`listing ${listing}: empty since ${progress.emptyAt}, skipped`);
+    return;
+  }
   const headHtml = await fetchText(listingPageUrl(listing, 1));
   const head = await processPage(headHtml, 1);
+  const empty = describeEmptyListing(headHtml);
+  if (empty && !empty.subforums) {
+    recordEmptyListing(crawl, listing);
+    saveCrawlState(crawlFile, crawl);
+    console.log(`listing ${listing}: no threads (empty forum), next look in a month`);
+    return;
+  }
+  delete progress.emptyAt;
   if (!head.handled) return;
   let pages = 0;
   while (pages < listingPagesPerRun && !outOfBudget()) {

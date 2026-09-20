@@ -176,6 +176,21 @@ export function extractFirstPostText(html) {
  * regex" from "genuinely empty page" without shipping the HTML.
  * @return {string}
  */
+/**
+ * XenForo's empty-forum page: no thread rows, by design rather than by a
+ * markup change. Guests see it on closed submission forums and on pure
+ * container forums, whose child forums are listed above the notice.
+ * @param {string} html A listing page.
+ * @return {?{subforums: number}} Null when the page is not the empty state.
+ */
+export function describeEmptyListing(html) {
+  const text = String(html);
+  if (!/There are no threads in this forum\./.test(text)) return null;
+  return {
+    subforums: (text.match(/class="node-title"/g) || []).length,
+  };
+}
+
 export function listingDebugInfo(html) {
   const text = String(html);
   const count = (regex) => (text.match(regex) || []).length;

@@ -435,6 +435,66 @@ test('tournament: dump sections and labels attribute pastes and inline teams', a
   );
 });
 
+test('an empty forum is recorded and left unfetched for a month', async () => {
+  const { describeEmptyListing } = await import(
+    '../scripts/teamscrape/forum-html.mjs',
+  );
+  const { skipsEmptyListing, walkListingPages } = await import(
+    '../scripts/teamscrape/listing-walk.mjs',
+  );
+  const { recordEmptyListing } = await import(
+    '../scripts/teamscrape/crawl-state.mjs',
+  );
+  const empty =
+    '<div class="block-body"><div class="blockMessage">' +
+    'There are no threads in this forum.</div></div>';
+  const container =
+    '<h3 class="node-title"><a href="/forums/forums/child.9/">Child</a></h3>' +
+    empty;
+  assert.deepEqual(describeEmptyListing(empty), { subforums: 0 });
+  assert.deepEqual(describeEmptyListing(container), { subforums: 1 });
+  assert.equal(describeEmptyListing('<div class="structItem-title">x</div>'),
+    null);
+
+  const now = new Date('2026-09-20T00:00:00Z');
+  const seen = { page: 1, sweep: 0 };
+  recordEmptyListing({ listings: { l: seen }, threads: {} }, 'l', now);
+  assert.equal(seen.emptyAt, now.toISOString());
+  assert.ok(skipsEmptyListing(seen, new Date('2026-10-10T00:00:00Z')));
+  assert.ok(!skipsEmptyListing(seen, new Date('2026-10-25T00:00:00Z')));
+  assert.ok(!skipsEmptyListing({ page: 1, sweep: 0 }));
+
+  // First run: the page is fetched and processed once (the container case
+  // still discovers subforums), then recorded empty; the next run skips.
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'empty-listing-'));
+  const crawlFile = path.join(dir, 'crawl.json');
+  const crawl = { version: 1, listings: {}, threads: {} };
+  const fetched = [];
+  const processed = [];
+  const walk = () => walkListingPages({
+    listing: 'https://example.test/forums/empty.1/',
+    fetchText: async (url) => {
+      fetched.push(url);
+      return empty;
+    },
+    processPage: async (html, page) => {
+      processed.push(page);
+      return { handled: true, next: false };
+    },
+    crawl,
+    crawlFile,
+    listingPagesPerRun: 4,
+    outOfBudget: () => false,
+  });
+  await walk();
+  assert.equal(fetched.length, 1);
+  assert.deepEqual(processed, [1]);
+  assert.ok(crawl.listings['https://example.test/forums/empty.1/'].emptyAt);
+  await walk();
+  assert.equal(fetched.length, 1);
+  fs.rmSync(dir, { recursive: true, force: true });
+});
+
 test('forum fetch: HTTP mode identifies itself and requests readable text',
   async () => {
     const calls = [];

@@ -30,6 +30,7 @@ import {
   extractFirstPostText,
   extractThreadRows,
   hasNextPage,
+  describeEmptyListing,
   listingDebugInfo,
 } from './teamscrape/forum-html.mjs';
 import {
@@ -152,7 +153,9 @@ async function main() {
       const processPage = async (html, page) => {
         const rows = extractThreadRows(html, listing);
         if (!rows.length) {
-          if (page === 1) {
+          // An empty forum (the walker records and skips it) is not a
+          // parse anomaly; anything else with no rows is worth a look.
+          if (page === 1 && !describeEmptyListing(html)) {
             console.log(
               `rmt listing ${listing}: 0 rows on page 1 ` +
               `(${listingDebugInfo(html)})`,
