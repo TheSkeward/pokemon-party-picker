@@ -125,6 +125,18 @@ export const REBORN_GAME = Object.freeze({
     promotedTmMoves: REBORN_PROMOTED_TM_MOVES,
     notes: REBORN_PROGRESSION_NOTES,
   }),
+  // The four accent hues the UI keys bench boxes and move-source pills by
+  // (styles/main.css, app/theme.js): Reborn's relic gems, its logo colors,
+  // lightened from the ideals (#a83a44 / #8a63a8 / #3e8e6c / #3d6ba8) only
+  // as far as WCAG AA demands for small text on the surface color.
+  theme: Object.freeze({
+    accents: Object.freeze([
+      { name: 'ruby', color: '#c9666f' },
+      { name: 'amethyst', color: '#9979b8' },
+      { name: 'emerald', color: '#459972' },
+      { name: 'sapphire', color: '#5f8ac0' },
+    ]),
+  }),
   data: Object.freeze({
     legalMovesDir: 'reborn-legal-moves',
     itemAvailability: 'reborn-item-availability.extracted.json',

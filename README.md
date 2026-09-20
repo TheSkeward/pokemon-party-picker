@@ -42,6 +42,11 @@ The usage prior is per generation, not per game: competitive play describes
 a mainline game well enough that only Reborn, whose mechanics stray far from
 it, carries a calibration corpus (see `SCORING.md`).
 
+The shell palette is shared; a game's descriptor supplies the four accent
+hues the bench boxes and move-source pills are keyed by (Reborn's relic
+gems, HGSS's Ho-Oh, Lugia, gold, and silver), each readable on the surface
+color at WCAG AA.
+
 ## Running Locally
 
 ```bash

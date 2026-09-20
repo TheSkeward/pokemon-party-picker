@@ -120,6 +120,21 @@ export const HGSS_GAME = Object.freeze({
       "A set's ability is assumed obtainable at catch (there is no Ability Capsule); declare a caught ability in the pool, as in Cyndaquil (Blaze), to pin it.",
     ]),
   }),
+  // Accents (styles/main.css, app/theme.js): the pair's own identity, Ho-Oh
+  // and Lugia and the two title metals. Slot 1 (box 1, egg pills) is
+  // Ho-Oh's ember; 2 (box 2, tutor pills) Lugia's deep-sea blue; 3 (box 3,
+  // level-up pills) HeartGold's gold; 4 (box 4, machine pills) SoulSilver's
+  // silver, a cool gray kept bluer than the muted text so the two never
+  // read alike. All four clear WCAG AA 4.5:1 on the surface color by a wide
+  // margin (5.8 to 9.1).
+  theme: Object.freeze({
+    accents: Object.freeze([
+      { name: 'ember', color: '#e07a58' },
+      { name: 'tide', color: '#6f9ecf' },
+      { name: 'gold', color: '#d4b24a' },
+      { name: 'silver', color: '#aebccb' },
+    ]),
+  }),
   data: Object.freeze({
     legalMovesDir: 'hgss-legal-moves',
   }),

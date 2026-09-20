@@ -5,7 +5,9 @@
   /* Native widgets (select popups, scrollbars, spinners) render in the UA's
      dark forms palette — the one surface tokens cannot reach. */
   color-scheme: dark;
-  /* Palette: warm-dark charcoal shell, hairline separations. */
+  /* Palette: a near-neutral dark charcoal shell with a faint violet cast
+     (blue is the highest channel in each), hairline separations. Shared by
+     every game. */
   --bg-base: #17161a;
   --bg-surface: #1d1b20;
   --hairline: #39353c;
@@ -17,13 +19,16 @@
   --state-warn: #c2ad72;
   --state-blocked: #c08279;
 
-  /* Reborn relic gems: the four bench box-index colors. Ratified values
-     (#a83a44 / #8a63a8 / #3e8e6c / #3d6ba8) lightened just enough that the
-     index numerals clear WCAG AA 4.5:1 against --bg-surface. */
-  --gem-ruby: #c9666f;
-  --gem-amethyst: #9979b8;
-  --gem-emerald: #459972;
-  --gem-sapphire: #5f8ac0;
+  /* Game accents: four hues per game, set on the root from the active
+     game's descriptor (`theme.accents`, applied by app/theme.js). Slot 1
+     colors bench box 1 and egg-move pills, 2 box 2 and tutor pills, 3 box 3
+     and level-up pills, 4 box 4 and machine pills. Every game's values must
+     clear WCAG AA 4.5:1 against --bg-surface (pinned by test). The defaults
+     are the default game's: Reborn's relic gems (games/reborn.js). */
+  --accent-1: #c9666f;
+  --accent-2: #9979b8;
+  --accent-3: #459972;
+  --accent-4: #5f8ac0;
 
   /* Type scale plus one display size. */
   --type-s: 13px;
@@ -600,10 +605,10 @@ button:hover {
   font-variant-numeric: tabular-nums;
 }
 
-.bench-index--box0 { color: var(--gem-ruby); } /* box 1 · 1–30 */
-.bench-index--box1 { color: var(--gem-amethyst); } /* box 2 · 31–60 */
-.bench-index--box2 { color: var(--gem-emerald); } /* box 3 · 61–90 */
-.bench-index--box3 { color: var(--gem-sapphire); } /* box 4 · 91–120 */
+.bench-index--box0 { color: var(--accent-1); } /* box 1 · 1–30 */
+.bench-index--box1 { color: var(--accent-2); } /* box 2 · 31–60 */
+.bench-index--box2 { color: var(--accent-3); } /* box 3 · 61–90 */
+.bench-index--box3 { color: var(--accent-4); } /* box 4 · 91–120 */
 
 .bench-chip.trace {
   opacity: 0.5;
@@ -1293,24 +1298,24 @@ button:hover {
 
 .legal-source-pill.level,
 .legal-source-pill.relearner {
-  border-color: var(--gem-emerald);
-  color: var(--gem-emerald);
+  border-color: var(--accent-3);
+  color: var(--accent-3);
 }
 
 .legal-source-pill.machine {
-  border-color: var(--gem-sapphire);
-  color: var(--gem-sapphire);
+  border-color: var(--accent-4);
+  color: var(--accent-4);
 }
 
 .legal-source-pill.tutor,
 .legal-source-pill.sketch {
-  border-color: var(--gem-amethyst);
-  color: var(--gem-amethyst);
+  border-color: var(--accent-2);
+  color: var(--accent-2);
 }
 
 .legal-source-pill.egg {
-  border-color: var(--gem-ruby);
-  color: var(--gem-ruby);
+  border-color: var(--accent-1);
+  color: var(--accent-1);
 }
 
 .legal-source-pill.unavailable {

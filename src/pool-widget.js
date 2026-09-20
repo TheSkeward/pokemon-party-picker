@@ -32,6 +32,7 @@ import {
 import { loadManifest } from './manifest.js';
 import { activateGameForFamily, getActiveGame } from './games/registry.js';
 import { readSavedState } from './games/saved-state.js';
+import { applyGameTheme } from './app/theme.js';
 import { renderLegalMovesPanel } from './playthrough/legal-moves-view';
 import { renderTeamAnalysisPanel } from './teamBuilder/team-analysis-view';
 import { getCurrentSpeciesForChoice } from './playthrough/current-species.js';
@@ -152,7 +153,7 @@ export function mountPoolOptimizer(container, options = {}) {
   });
 
   async function init() {
-    await gameReady;
+    applyGameTheme(await gameReady);
     state.query = getParam('poolQuery') || loadSavedPool();
     state.progression = loadSavedProgression();
     // Manifest FIRST: loading it sets the data-version tag, so every fetch
