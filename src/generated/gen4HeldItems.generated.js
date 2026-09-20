@@ -15,12 +15,12 @@ export const GEN4_HELD_ITEMS = [
     "name": "Focus Sash"
   },
   {
-    "id": "choicescarf",
-    "name": "Choice Scarf"
-  },
-  {
     "id": "sitrusberry",
     "name": "Sitrus Berry"
+  },
+  {
+    "id": "choicescarf",
+    "name": "Choice Scarf"
   },
   {
     "id": "choiceband",
@@ -55,12 +55,12 @@ export const GEN4_HELD_ITEMS = [
     "name": "Power Herb"
   },
   {
-    "id": "brightpowder",
-    "name": "Bright Powder"
-  },
-  {
     "id": "chestoberry",
     "name": "Chesto Berry"
+  },
+  {
+    "id": "brightpowder",
+    "name": "Bright Powder"
   },
   {
     "id": "shellbell",
@@ -95,40 +95,40 @@ export const GEN4_HELD_ITEMS = [
     "name": "Mental Herb"
   },
   {
-    "id": "muscleband",
-    "name": "Muscle Band"
+    "id": "berryjuice",
+    "name": "Berry Juice"
   },
   {
     "id": "scopelens",
     "name": "Scope Lens"
   },
   {
-    "id": "berryjuice",
-    "name": "Berry Juice"
+    "id": "muscleband",
+    "name": "Muscle Band"
   },
   {
     "id": "flameorb",
     "name": "Flame Orb"
   },
   {
-    "id": "toxicorb",
-    "name": "Toxic Orb"
-  },
-  {
     "id": "wiseglasses",
     "name": "Wise Glasses"
+  },
+  {
+    "id": "toxicorb",
+    "name": "Toxic Orb"
   },
   {
     "id": "razorclaw",
     "name": "Razor Claw"
   },
   {
-    "id": "blackglasses",
-    "name": "Black Glasses"
-  },
-  {
     "id": "metronome",
     "name": "Metronome"
+  },
+  {
+    "id": "blackglasses",
+    "name": "Black Glasses"
   },
   {
     "id": "apicotberry",
@@ -171,16 +171,20 @@ export const GEN4_HELD_ITEMS = [
     "name": "Black Sludge"
   },
   {
-    "id": "razorfang",
-    "name": "Razor Fang"
+    "id": "whiteherb",
+    "name": "White Herb"
   },
   {
     "id": "lightclay",
     "name": "Light Clay"
   },
   {
-    "id": "whiteherb",
-    "name": "White Herb"
+    "id": "razorfang",
+    "name": "Razor Fang"
+  },
+  {
+    "id": "ironball",
+    "name": "Iron Ball"
   },
   {
     "id": "laxincense",
@@ -189,10 +193,6 @@ export const GEN4_HELD_ITEMS = [
   {
     "id": "charcoal",
     "name": "Charcoal"
-  },
-  {
-    "id": "ironball",
-    "name": "Iron Ball"
   },
   {
     "id": "nevermeltice",
@@ -207,12 +207,12 @@ export const GEN4_HELD_ITEMS = [
     "name": "Babiri Berry"
   },
   {
-    "id": "shucaberry",
-    "name": "Shuca Berry"
-  },
-  {
     "id": "chartiberry",
     "name": "Charti Berry"
+  },
+  {
+    "id": "shucaberry",
+    "name": "Shuca Berry"
   },
   {
     "id": "leppaberry",
@@ -223,40 +223,40 @@ export const GEN4_HELD_ITEMS = [
     "name": "Cheri Berry"
   },
   {
-    "id": "miracleseed",
-    "name": "Miracle Seed"
-  },
-  {
     "id": "iapapaberry",
     "name": "Iapapa Berry"
+  },
+  {
+    "id": "miracleseed",
+    "name": "Miracle Seed"
   },
   {
     "id": "wacanberry",
     "name": "Wacan Berry"
   },
   {
-    "id": "fistplate",
-    "name": "Fist Plate"
-  },
-  {
     "id": "enigmaberry",
     "name": "Enigma Berry"
   },
   {
-    "id": "magnet",
-    "name": "Magnet"
+    "id": "fistplate",
+    "name": "Fist Plate"
   },
   {
     "id": "icicleplate",
     "name": "Icicle Plate"
   },
   {
-    "id": "starfberry",
-    "name": "Starf Berry"
+    "id": "magnet",
+    "name": "Magnet"
   },
   {
     "id": "laggingtail",
     "name": "Lagging Tail"
+  },
+  {
+    "id": "starfberry",
+    "name": "Starf Berry"
   },
   {
     "id": "earthplate",
@@ -271,6 +271,10 @@ export const GEN4_HELD_ITEMS = [
     "name": "Figy Berry"
   },
   {
+    "id": "flameplate",
+    "name": "Flame Plate"
+  },
+  {
     "id": "mindplate",
     "name": "Mind Plate"
   },
@@ -279,40 +283,40 @@ export const GEN4_HELD_ITEMS = [
     "name": "Poke Ball"
   },
   {
-    "id": "flameplate",
-    "name": "Flame Plate"
-  },
-  {
-    "id": "stickybarb",
-    "name": "Sticky Barb"
-  },
-  {
     "id": "twistedspoon",
     "name": "Twisted Spoon"
-  },
-  {
-    "id": "yacheberry",
-    "name": "Yache Berry"
   },
   {
     "id": "dragonfang",
     "name": "Dragon Fang"
   },
   {
+    "id": "ganlonberry",
+    "name": "Ganlon Berry"
+  },
+  {
     "id": "machobrace",
     "name": "Macho Brace"
   },
   {
-    "id": "meadowplate",
-    "name": "Meadow Plate"
+    "id": "stickybarb",
+    "name": "Sticky Barb"
+  },
+  {
+    "id": "hardstone",
+    "name": "Hard Stone"
   },
   {
     "id": "softsand",
     "name": "Soft Sand"
   },
   {
-    "id": "hardstone",
-    "name": "Hard Stone"
+    "id": "yacheberry",
+    "name": "Yache Berry"
+  },
+  {
+    "id": "meadowplate",
+    "name": "Meadow Plate"
   },
   {
     "id": "poisonbarb",
@@ -323,60 +327,64 @@ export const GEN4_HELD_ITEMS = [
     "name": "Wiki Berry"
   },
   {
-    "id": "ganlonberry",
-    "name": "Ganlon Berry"
+    "id": "persimberry",
+    "name": "Persim Berry"
   },
   {
     "id": "splashplate",
     "name": "Splash Plate"
   },
   {
-    "id": "passhoberry",
-    "name": "Passho Berry"
-  },
-  {
     "id": "colburberry",
     "name": "Colbur Berry"
+  },
+  {
+    "id": "passhoberry",
+    "name": "Passho Berry"
   },
   {
     "id": "pechaberry",
     "name": "Pecha Berry"
   },
   {
-    "id": "persimberry",
-    "name": "Persim Berry"
+    "id": "seaincense",
+    "name": "Sea Incense"
   },
   {
     "id": "dreadplate",
     "name": "Dread Plate"
   },
   {
-    "id": "seaincense",
-    "name": "Sea Incense"
+    "id": "gripclaw",
+    "name": "Grip Claw"
   },
   {
     "id": "spelltag",
     "name": "Spell Tag"
   },
   {
-    "id": "gripclaw",
-    "name": "Grip Claw"
+    "id": "magoberry",
+    "name": "Mago Berry"
   },
   {
     "id": "lansatberry",
     "name": "Lansat Berry"
   },
   {
+    "id": "cobaberry",
+    "name": "Coba Berry"
+  },
+  {
     "id": "rindoberry",
     "name": "Rindo Berry"
   },
   {
-    "id": "shedshell",
-    "name": "Shed Shell"
-  },
-  {
     "id": "insectplate",
     "name": "Insect Plate"
+  },
+  {
+    "id": "shedshell",
+    "name": "Shed Shell"
   },
   {
     "id": "sharpbeak",
@@ -387,20 +395,16 @@ export const GEN4_HELD_ITEMS = [
     "name": "Light Ball"
   },
   {
-    "id": "cobaberry",
-    "name": "Coba Berry"
-  },
-  {
-    "id": "magoberry",
-    "name": "Mago Berry"
-  },
-  {
-    "id": "chilanberry",
-    "name": "Chilan Berry"
+    "id": "zapplate",
+    "name": "Zap Plate"
   },
   {
     "id": "kasibberry",
     "name": "Kasib Berry"
+  },
+  {
+    "id": "chilanberry",
+    "name": "Chilan Berry"
   },
   {
     "id": "rockincense",
@@ -411,32 +415,12 @@ export const GEN4_HELD_ITEMS = [
     "name": "Wave Incense"
   },
   {
-    "id": "zapplate",
-    "name": "Zap Plate"
-  },
-  {
     "id": "silverpowder",
     "name": "Silver Powder"
   },
   {
     "id": "skyplate",
     "name": "Sky Plate"
-  },
-  {
-    "id": "masterball",
-    "name": "Master Ball"
-  },
-  {
-    "id": "metalcoat",
-    "name": "Metal Coat"
-  },
-  {
-    "id": "oddincense",
-    "name": "Odd Incense"
-  },
-  {
-    "id": "stoneplate",
-    "name": "Stone Plate"
   },
   {
     "id": "aspearberry",
@@ -447,16 +431,32 @@ export const GEN4_HELD_ITEMS = [
     "name": "Iron Plate"
   },
   {
-    "id": "smoothrock",
-    "name": "Smooth Rock"
+    "id": "mail",
+    "name": "Mail"
+  },
+  {
+    "id": "metalcoat",
+    "name": "Metal Coat"
+  },
+  {
+    "id": "masterball",
+    "name": "Master Ball"
+  },
+  {
+    "id": "oddincense",
+    "name": "Odd Incense"
+  },
+  {
+    "id": "stoneplate",
+    "name": "Stone Plate"
   },
   {
     "id": "fullincense",
     "name": "Full Incense"
   },
   {
-    "id": "mail",
-    "name": "Mail"
+    "id": "smoothrock",
+    "name": "Smooth Rock"
   },
   {
     "id": "payapaberry",
@@ -475,6 +475,10 @@ export const GEN4_HELD_ITEMS = [
     "name": "Icy Rock"
   },
   {
+    "id": "jabocaberry",
+    "name": "Jaboca Berry"
+  },
+  {
     "id": "toxicplate",
     "name": "Toxic Plate"
   },
@@ -483,20 +487,16 @@ export const GEN4_HELD_ITEMS = [
     "name": "Adamant Orb"
   },
   {
-    "id": "jabocaberry",
-    "name": "Jaboca Berry"
-  },
-  {
     "id": "roseincense",
     "name": "Rose Incense"
   },
   {
-    "id": "energypowder",
-    "name": "Energy Powder"
-  },
-  {
     "id": "rawstberry",
     "name": "Rawst Berry"
+  },
+  {
+    "id": "energypowder",
+    "name": "Energy Powder"
   },
   {
     "id": "tangaberry",
@@ -507,12 +507,12 @@ export const GEN4_HELD_ITEMS = [
     "name": "Destiny Knot"
   },
   {
-    "id": "waterstone",
-    "name": "Water Stone"
-  },
-  {
     "id": "habanberry",
     "name": "Haban Berry"
+  },
+  {
+    "id": "waterstone",
+    "name": "Water Stone"
   },
   {
     "id": "blukberry",
@@ -527,32 +527,16 @@ export const GEN4_HELD_ITEMS = [
     "name": "Rowap Berry"
   },
   {
-    "id": "belueberry",
-    "name": "Belue Berry"
-  },
-  {
     "id": "firestone",
     "name": "Fire Stone"
   },
   {
+    "id": "belueberry",
+    "name": "Belue Berry"
+  },
+  {
     "id": "grepaberry",
     "name": "Grepa Berry"
-  },
-  {
-    "id": "thunderstone",
-    "name": "Thunder Stone"
-  },
-  {
-    "id": "watmelberry",
-    "name": "Watmel Berry"
-  },
-  {
-    "id": "luckypunch",
-    "name": "Lucky Punch"
-  },
-  {
-    "id": "friendball",
-    "name": "Friend Ball"
   },
   {
     "id": "kebiaberry",
@@ -563,16 +547,32 @@ export const GEN4_HELD_ITEMS = [
     "name": "Micle Berry"
   },
   {
+    "id": "thunderstone",
+    "name": "Thunder Stone"
+  },
+  {
     "id": "ultraball",
     "name": "Ultra Ball"
   },
   {
-    "id": "leafstone",
-    "name": "Leaf Stone"
+    "id": "watmelberry",
+    "name": "Watmel Berry"
+  },
+  {
+    "id": "luckypunch",
+    "name": "Lucky Punch"
   },
   {
     "id": "poweranklet",
     "name": "Power Anklet"
+  },
+  {
+    "id": "friendball",
+    "name": "Friend Ball"
+  },
+  {
+    "id": "leafstone",
+    "name": "Leaf Stone"
   },
   {
     "id": "magostberry",
@@ -587,6 +587,10 @@ export const GEN4_HELD_ITEMS = [
     "name": "Electirizer"
   },
   {
+    "id": "healball",
+    "name": "Heal Ball"
+  },
+  {
     "id": "nomelberry",
     "name": "Nomel Berry"
   },
@@ -599,8 +603,8 @@ export const GEN4_HELD_ITEMS = [
     "name": "Dive Ball"
   },
   {
-    "id": "healball",
-    "name": "Heal Ball"
+    "id": "rarebone",
+    "name": "Rare Bone"
   },
   {
     "id": "wepearberry",
@@ -611,14 +615,6 @@ export const GEN4_HELD_ITEMS = [
     "name": "Park Ball"
   },
   {
-    "id": "rarebone",
-    "name": "Rare Bone"
-  },
-  {
-    "id": "deepseascale",
-    "name": "Deep Sea Scale"
-  },
-  {
     "id": "helixfossil",
     "name": "Helix Fossil"
   },
@@ -627,8 +623,16 @@ export const GEN4_HELD_ITEMS = [
     "name": "Oval Stone"
   },
   {
+    "id": "powerband",
+    "name": "Power Band"
+  },
+  {
     "id": "tamatoberry",
     "name": "Tamato Berry"
+  },
+  {
+    "id": "deepseascale",
+    "name": "Deep Sea Scale"
   },
   {
     "id": "dragonscale",
@@ -655,16 +659,16 @@ export const GEN4_HELD_ITEMS = [
     "name": "Old Amber"
   },
   {
+    "id": "powerlens",
+    "name": "Power Lens"
+  },
+  {
     "id": "pinapberry",
     "name": "Pinap Berry"
   },
   {
-    "id": "powerband",
-    "name": "Power Band"
-  },
-  {
-    "id": "powerlens",
-    "name": "Power Lens"
+    "id": "quickpowder",
+    "name": "Quick Powder"
   },
   {
     "id": "fastball",
@@ -675,8 +679,8 @@ export const GEN4_HELD_ITEMS = [
     "name": "Lustrous Orb"
   },
   {
-    "id": "quickpowder",
-    "name": "Quick Powder"
+    "id": "premierball",
+    "name": "Premier Ball"
   },
   {
     "id": "souldew",
@@ -723,10 +727,6 @@ export const GEN4_HELD_ITEMS = [
     "name": "Pomeg Berry"
   },
   {
-    "id": "premierball",
-    "name": "Premier Ball"
-  },
-  {
     "id": "razzberry",
     "name": "Razz Berry"
   },
@@ -753,6 +753,14 @@ export const GEN4_HELD_ITEMS = [
   {
     "id": "metalpowder",
     "name": "Metal Powder"
+  },
+  {
+    "id": "powerbelt",
+    "name": "Power Belt"
+  },
+  {
+    "id": "powerbracer",
+    "name": "Power Bracer"
   },
   {
     "id": "repeatball",
@@ -783,16 +791,16 @@ export const GEN4_HELD_ITEMS = [
     "name": "Nanab Berry"
   },
   {
-    "id": "powerbelt",
-    "name": "Power Belt"
-  },
-  {
     "id": "powerweight",
     "name": "Power Weight"
   },
   {
     "id": "rabutaberry",
     "name": "Rabuta Berry"
+  },
+  {
+    "id": "shinystone",
+    "name": "Shiny Stone"
   },
   {
     "id": "nestball",
@@ -805,10 +813,6 @@ export const GEN4_HELD_ITEMS = [
   {
     "id": "pamtreberry",
     "name": "Pamtre Berry"
-  },
-  {
-    "id": "powerbracer",
-    "name": "Power Bracer"
   },
   {
     "id": "qualotberry",
@@ -831,8 +835,8 @@ export const GEN4_HELD_ITEMS = [
     "name": "Spelon Berry"
   },
   {
-    "id": "shinystone",
-    "name": "Shiny Stone"
+    "id": "dawnstone",
+    "name": "Dawn Stone"
   },
   {
     "id": "upgrade",

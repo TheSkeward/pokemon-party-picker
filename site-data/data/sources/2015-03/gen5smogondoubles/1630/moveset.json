@@ -1,0 +1,96 @@
+{
+  "source": {
+    "month": "2015-03",
+    "formatId": "gen5smogondoubles",
+    "cutoff": 1630,
+    "dataKind": "moveset"
+  },
+  "pokemon": {
+    "abomasnow": {
+      "pokemonId": "abomasnow",
+      "name": "Abomasnow",
+      "rawCount": 8,
+      "abilities": [
+        {
+          "name": "Soundproof",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Leftovers",
+          "usage": 100
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Adamant:88/252/0/0/0/168",
+          "usage": 100
+        }
+      ],
+      "moves": [
+        {
+          "name": "Leech Seed",
+          "usage": 100
+        },
+        {
+          "name": "Ice Shard",
+          "usage": 100
+        },
+        {
+          "name": "Earthquake",
+          "usage": 100
+        },
+        {
+          "name": "Bullet Seed",
+          "usage": 100
+        },
+        {
+          "name": "Other",
+          "usage": 0
+        }
+      ]
+    },
+    "torterra": {
+      "pokemonId": "torterra",
+      "name": "Torterra",
+      "rawCount": 8,
+      "abilities": [
+        {
+          "name": "Overgrow",
+          "usage": 100
+        }
+      ],
+      "items": [
+        {
+          "name": "Choice Band",
+          "usage": 100
+        }
+      ],
+      "spreads": [
+        {
+          "name": "Adamant:88/252/0/0/0/168",
+          "usage": 100
+        }
+      ],
+      "moves": [
+        {
+          "name": "Bullet Seed",
+          "usage": 100
+        },
+        {
+          "name": "Stone Edge",
+          "usage": 100
+        },
+        {
+          "name": "Earthquake",
+          "usage": 100
+        },
+        {
+          "name": "Wood Hammer",
+          "usage": 100
+        }
+      ]
+    }
+  }
+}
