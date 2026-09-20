@@ -2,33 +2,49 @@
    these — no raw values at use sites. Saturated color is reserved for Pokémon
    type accents. */
 :root {
-  /* Native widgets (select popups, scrollbars, spinners) render in the UA's
-     dark forms palette — the one surface tokens cannot reach. */
+  /* Palette: the active game's own, top to bottom. app/theme.js sets every
+     color token here, and the native scheme, from the descriptor's `theme`
+     (games/reborn.js, games/hgss.js) when a game activates; the values
+     below are the default game's, Reborn's, and a test pins them equal.
+     Reborn's are sampled from its UI assets, HGSS's from its screens. Every
+     text, state, and accent color clears WCAG AA 4.5:1 on both the base and
+     the surface (pinned by test). */
+  /* Native widgets (select popups, scrollbars, spinners) follow the game. */
   color-scheme: dark;
-  /* Palette: a near-neutral dark charcoal shell with a faint violet cast
-     (blue is the highest channel in each), hairline separations. Shared by
-     every game. */
-  --bg-base: #17161a;
-  --bg-surface: #1d1b20;
-  --hairline: #39353c;
-  --text: #e4e0da;
-  --text-muted: #9b958c;
+  --bg-base: #131315;
+  --bg-surface: #24242a;
+  --hairline: #333338;
+  --text: #f8f8f8;
+  --text-muted: #a3a2b3;
 
   /* Semantic trio: fieldable/on-track, caution, blocked/fragile. */
-  --state-ok: #93b48b;
-  --state-warn: #c2ad72;
-  --state-blocked: #c08279;
+  --state-ok: #6cb828;
+  --state-warn: #e89008;
+  --state-blocked: #e86140;
 
-  /* Game accents: four hues per game, set on the root from the active
-     game's descriptor (`theme.accents`, applied by app/theme.js). Slot 1
-     colors bench box 1 and egg-move pills, 2 box 2 and tutor pills, 3 box 3
-     and level-up pills, 4 box 4 and machine pills. Every game's values must
-     clear WCAG AA 4.5:1 against --bg-surface (pinned by test). The defaults
-     are the default game's: Reborn's relic gems (games/reborn.js). */
-  --accent-1: #c9666f;
-  --accent-2: #9979b8;
-  --accent-3: #459972;
-  --accent-4: #5f8ac0;
+  /* Game accents: slot 1 colors bench box 1 and egg-move pills, 2 box 2 and
+     tutor pills, 3 box 3 and level-up pills, 4 box 4 and machine pills. */
+  --accent-1: #c2757c;
+  --accent-2: #9f7fb8;
+  --accent-3: #51997b;
+  --accent-4: #6a8dbc;
+
+  /* Text set on a shared fill: a dark ink from the game's palette. */
+  --fill-ink: #131315;
+
+  /* Shared fills, the only colors that hold across games: the owner's own,
+     in their order of preference. Too pale for AA as text on a light shell,
+     so they are fills and outlines only, with --fill-ink for any text on
+     them (pinned by test). */
+  --fill-action: #e8b47c; /* the primary action */
+  --fill-focus: #7aafe8; /* focus ring, selection, the active tab */
+  --fill-mark: #b37ae8; /* search matches, the row an add just touched */
+  --fill-progress: #7ae7b3; /* the optimizer's progress */
+  --fill-neutral: #b3b3b3; /* inert tracks, informational callouts */
+
+  /* The type palette (move-meta.js) is the community standard, drawn for
+     light text, so filled type badges keep this ink in every game. */
+  --type-badge-ink: #f8f8f8;
 
   /* Type scale plus one display size. */
   --type-s: 13px;
@@ -184,7 +200,14 @@ button:hover {
 }
 .view-tab.active {
   background: color-mix(in srgb, var(--hairline) 45%, var(--bg-surface));
-  border-color: var(--text-muted);
+  border-color: var(--fill-focus);
+  box-shadow: inset 0 -2px 0 var(--fill-focus);
+}
+/* Keyboard focus: the shared ring, two pixels so it reads on a light shell
+   too. */
+:focus-visible {
+  outline: 2px solid var(--fill-focus);
+  outline-offset: 1px;
 }
 .danger-button {
   color: var(--state-blocked);
@@ -253,7 +276,7 @@ button:hover {
   background: color-mix(in srgb, var(--hairline) 45%, transparent);
 }
 .usage-table tbody tr.selected {
-  background: color-mix(in srgb, var(--hairline) 60%, transparent);
+  background: color-mix(in srgb, var(--fill-focus) 30%, transparent);
 }
 .usage-browser-table tbody tr:nth-child(odd),
 .resolver-results-table tbody tr:nth-child(odd) {
@@ -448,10 +471,10 @@ button:hover {
   min-width: 64px;
 }
 .move-match-highlight {
-  background: color-mix(in srgb, var(--hairline) 45%, transparent);
+  background: color-mix(in srgb, var(--fill-mark) 35%, transparent);
 }
 .move-hover-source {
-  outline: 1px solid var(--text-muted);
+  outline: 1px solid var(--fill-focus);
   outline-offset: -1px;
 }
 .move-filter-hidden {
@@ -517,7 +540,7 @@ button:hover {
   margin-top: 10px;
   height: 6px;
   border-radius: var(--radius);
-  background: color-mix(in srgb, var(--text-muted) 18%, transparent);
+  background: color-mix(in srgb, var(--fill-neutral) 35%, transparent);
   overflow: hidden;
 }
 
@@ -525,7 +548,7 @@ button:hover {
   height: 100%;
   width: 0%;
   border-radius: var(--radius);
-  background: var(--state-ok);
+  background: var(--fill-progress);
   transition: width 0.15s ease;
 }
 
@@ -669,7 +692,7 @@ button:hover {
 
 @keyframes item-row-flash {
   0% {
-    background: color-mix(in srgb, var(--text-muted) 35%, transparent);
+    background: color-mix(in srgb, var(--fill-mark) 45%, transparent);
   }
   100% {
     background: transparent;
@@ -821,6 +844,12 @@ button:hover {
 
 .primary-action {
   font-weight: 800;
+  border-color: var(--fill-action);
+  background: var(--fill-action);
+  color: var(--fill-ink);
+}
+.primary-action:hover {
+  background: color-mix(in srgb, var(--fill-ink) 12%, var(--fill-action));
 }
 
 .pool-pick-button {
@@ -834,7 +863,7 @@ button:hover {
 }
 
 .selected-row {
-  outline: 1px solid var(--text-muted);
+  outline: 1px solid var(--fill-focus);
 }
 
 .team-builder-set-row > td {
@@ -1721,6 +1750,10 @@ button:hover {
   width: 5.25rem;
   text-align: center;
 }
+.team-analysis-type-badge,
+.opponent-bias-type {
+  color: var(--type-badge-ink);
+}
 
 .team-analysis-chip-list {
   display: flex;
@@ -1792,8 +1825,8 @@ button:hover {
   font-size: var(--type-s);
 }
 .audit-callout--info {
-  border-color: var(--text-muted);
-  background: color-mix(in srgb, var(--text-muted) 12%, transparent);
+  border-color: var(--fill-neutral);
+  background: color-mix(in srgb, var(--fill-neutral) 25%, transparent);
 }
 .audit-callout--warn {
   border-color: var(--state-warn);

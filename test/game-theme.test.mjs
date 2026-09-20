@@ -1,15 +1,21 @@
-// Every game supplies four accent hues, and each clears WCAG AA for small
-// text on the shared surface color, as the token block promises.
+// Each game's palette is its own and readable: every text, state, and
+// accent color clears WCAG AA on both of the game's surfaces, the shared
+// fills carry the game's ink at AA, the stylesheet defaults are the default
+// game's, and activating a game sets every token.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 
 import { listGames } from '../src/games/registry.js';
-import { applyGameTheme } from '../src/app/theme.js';
+import { applyGameTheme, themeProperties } from '../src/app/theme.js';
 
 const css = fs.readFileSync(path.resolve('src', 'styles', 'main.css'), 'utf8');
-const token = (name) => css.match(new RegExp(`--${name}:\\s*(#[0-9a-f]{6})`))[1];
+const rootBlock = css.slice(css.indexOf(':root {'), css.indexOf('\n}\n'));
+const token = (name) =>
+  rootBlock.match(new RegExp(`${name}: (#[0-9a-f]{6}|dark|light)`))[1];
+const sharedFills = [...rootBlock.matchAll(/--fill-(?!ink)[a-z]+:\s*(#[0-9a-f]{6})/g)]
+  .map((match) => match[1]);
 
 function luminance(hex) {
   const channel = (index) => {
@@ -22,43 +28,57 @@ function contrast(a, b) {
   const [high, low] = [luminance(a), luminance(b)].sort((x, y) => y - x);
   return (high + 0.05) / (low + 0.05);
 }
+const assertAA = (fg, bg, label) =>
+  assert.ok(contrast(fg, bg) >= 4.5, `${label}: ${fg} fails AA on ${bg}`);
 
-test('each game has four distinct accents readable on the surface', () => {
-  const surface = token('bg-surface');
+test('every game palette is complete, hex, and readable at AA', () => {
+  assert.ok(sharedFills.length >= 4, 'shared fills present in the stylesheet');
   for (const game of listGames()) {
-    const accents = game.theme.accents;
-    assert.equal(accents.length, 4, game.id);
-    const distinct = new Set(accents.map((accent) => accent.color));
-    assert.equal(distinct.size, 4, game.id);
-    for (const accent of accents) {
-      assert.match(accent.color, /^#[0-9a-f]{6}$/, `${game.id} ${accent.name}`);
-      assert.ok(
-        contrast(accent.color, surface) >= 4.5,
-        `${game.id} ${accent.name} ${accent.color} fails AA on ${surface}`,
-      );
+    const { scheme, shell, states, accents } = game.theme;
+    assert.ok(['dark', 'light'].includes(scheme), `${game.id} scheme`);
+    const text = {
+      text: shell.text,
+      textMuted: shell.textMuted,
+      ...states,
+      ...Object.fromEntries(accents.map((a) => [a.name, a.color])),
+    };
+    for (const color of [shell.base, shell.surface, shell.hairline, shell.ink,
+      ...Object.values(text)]) {
+      assert.match(color, /^#[0-9a-f]{6}$/, `${game.id} ${color}`);
     }
+    for (const [role, color] of Object.entries(text)) {
+      assertAA(color, shell.base, `${game.id} ${role}`);
+      assertAA(color, shell.surface, `${game.id} ${role}`);
+    }
+    for (const fill of sharedFills) assertAA(shell.ink, fill, `${game.id} ink`);
+    assert.equal(accents.length, 4, game.id);
+    assert.equal(new Set(accents.map((a) => a.color)).size, 4, game.id);
+    // Panels sit lighter than the ground in either scheme, so they read as
+    // raised.
+    assert.ok(
+      luminance(shell.surface) > luminance(shell.base),
+      `${game.id} surface lift`,
+    );
   }
 });
 
-test('the stylesheet defaults are the default game accents', () => {
+test('the stylesheet defaults are the default game palette', () => {
   const reborn = listGames().find((game) => game.id === 'reborn');
-  reborn.theme.accents.forEach((accent, index) => {
-    assert.equal(token(`accent-${index + 1}`), accent.color);
-  });
+  for (const [property, value] of themeProperties(reborn.theme)) {
+    assert.equal(token(property), value, property);
+  }
 });
 
-test('applying a theme sets the four slot tokens on the root', () => {
-  const set = new Map();
+test('applying a theme sets every token and the scheme on the root', () => {
+  const set = [];
   const root = {
-    style: { setProperty: (name, value) => set.set(name, value) },
+    style: { setProperty: (name, value) => set.push([name, value]) },
   };
   const hgss = listGames().find((game) => game.id === 'hgss');
   applyGameTheme(hgss, root);
-  assert.deepEqual(
-    [...set.entries()],
-    hgss.theme.accents.map((accent, index) => [
-      `--accent-${index + 1}`,
-      accent.color,
-    ]),
-  );
+  assert.deepEqual(set, themeProperties(hgss.theme));
+  assert.ok(set.some(
+    ([name, value]) => name === 'color-scheme' && value === 'light',
+  ));
+  assert.equal(set.length, 14);
 });

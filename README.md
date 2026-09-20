@@ -42,10 +42,12 @@ The usage prior is per generation, not per game: competitive play describes
 a mainline game well enough that only Reborn, whose mechanics stray far from
 it, carries a calibration corpus (see `SCORING.md`).
 
-The shell palette is shared; a game's descriptor supplies the four accent
-hues the bench boxes and move-source pills are keyed by (Reborn's relic
-gems, HGSS's Ho-Oh, Lugia, gold, and silver), each readable on the surface
-color at WCAG AA.
+The tool wears the active game's palette: its descriptor supplies the
+shell, text, state, and accent colors and whether they are a dark or light
+scheme, all drawn from the game's own UI (Reborn's dark menus and relic
+gems; HGSS's cream-and-white screens). Only the fills for actions, focus,
+progress, and highlights hold across games. Every text color clears WCAG AA
+on the game's surfaces, pinned by test.
 
 ## Running Locally
 

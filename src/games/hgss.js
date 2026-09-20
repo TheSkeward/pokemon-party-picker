@@ -120,19 +120,35 @@ export const HGSS_GAME = Object.freeze({
       "A set's ability is assumed obtainable at catch (there is no Ability Capsule); declare a caught ability in the pool, as in Cyndaquil (Blaze), to pin it.",
     ]),
   }),
-  // Accents (styles/main.css, app/theme.js): the pair's own identity, Ho-Oh
-  // and Lugia and the two title metals. Slot 1 (box 1, egg pills) is
-  // Ho-Oh's ember; 2 (box 2, tutor pills) Lugia's deep-sea blue; 3 (box 3,
-  // level-up pills) HeartGold's gold; 4 (box 4, machine pills) SoulSilver's
-  // silver, a cool gray kept bluer than the muted text so the two never
-  // read alike. All four clear WCAG AA 4.5:1 on the surface color by a wide
-  // margin (5.8 to 9.1).
+  // Palette (styles/main.css, app/theme.js): the games' own light UI, so the
+  // tool goes light with them. The Bag's pocket cream under its white panels
+  // and gray frame; the GTS's slate for text, the Pokédex's gray and
+  // near-black; the menu's green, the GTS's orange, and the HeartGold logo's
+  // red for the state trio; and for the accents the Bag's selection pink
+  // (box 1, egg pills), the Items pocket's leather (box 2, tutor pills), the
+  // PC's green (box 3, level-up pills), and the SoulSilver logo's blue (box
+  // 4, machine pills). Screen colors too pale for AA on white are deepened
+  // only as far as it demands.
   theme: Object.freeze({
+    scheme: 'light',
+    shell: Object.freeze({
+      base: '#f0e8d8',
+      surface: '#f8f8f8',
+      hairline: '#b8b8b8',
+      text: '#404850',
+      textMuted: '#606060',
+      ink: '#282828',
+    }),
+    states: Object.freeze({
+      ok: '#17783c',
+      warn: '#925e0a',
+      blocked: '#d01010',
+    }),
     accents: Object.freeze([
-      { name: 'ember', color: '#e07a58' },
-      { name: 'tide', color: '#6f9ecf' },
-      { name: 'gold', color: '#d4b24a' },
-      { name: 'silver', color: '#aebccb' },
+      { name: 'pink', color: '#a14e63' },
+      { name: 'leather', color: '#784820' },
+      { name: 'green', color: '#4e7249' },
+      { name: 'blue', color: '#0058a8' },
     ]),
   }),
   data: Object.freeze({

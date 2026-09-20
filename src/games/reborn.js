@@ -125,16 +125,32 @@ export const REBORN_GAME = Object.freeze({
     promotedTmMoves: REBORN_PROMOTED_TM_MOVES,
     notes: REBORN_PROGRESSION_NOTES,
   }),
-  // The four accent hues the UI keys bench boxes and move-source pills by
-  // (styles/main.css, app/theme.js): Reborn's relic gems, its logo colors,
+  // Palette (styles/main.css, app/theme.js), sampled from the game's own UI
+  // assets: the menu windowskin's ground, frame, and grays; the Bag's panel
+  // for the surface; the HP bar's green, yellow, and red for the state trio
+  // (the red lightened for AA); and the logo's relic gems for the accents,
   // lightened from the ideals (#a83a44 / #8a63a8 / #3e8e6c / #3d6ba8) only
-  // as far as WCAG AA demands for small text on the surface color.
+  // as far as WCAG AA demands for small text on the surface and the base.
   theme: Object.freeze({
+    scheme: 'dark',
+    shell: Object.freeze({
+      base: '#131315',
+      surface: '#24242a',
+      hairline: '#333338',
+      text: '#f8f8f8',
+      textMuted: '#a3a2b3',
+      ink: '#131315',
+    }),
+    states: Object.freeze({
+      ok: '#6cb828',
+      warn: '#e89008',
+      blocked: '#e86140',
+    }),
     accents: Object.freeze([
-      { name: 'ruby', color: '#c9666f' },
-      { name: 'amethyst', color: '#9979b8' },
-      { name: 'emerald', color: '#459972' },
-      { name: 'sapphire', color: '#5f8ac0' },
+      { name: 'ruby', color: '#c2757c' },
+      { name: 'amethyst', color: '#9f7fb8' },
+      { name: 'emerald', color: '#51997b' },
+      { name: 'sapphire', color: '#6a8dbc' },
     ]),
   }),
   data: Object.freeze({
