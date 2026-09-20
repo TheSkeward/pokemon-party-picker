@@ -213,7 +213,6 @@ export const HGSS_SHOP_ITEM_BADGES = Object.freeze({
  * @type {!Array<{id: string, name: string}>}
  */
 export const HGSS_EXTRA_INVENTORY_ITEMS = Object.freeze([
-  { id: 'dawnstone', name: 'Dawn Stone' },
   { id: 'protector', name: 'Protector' },
   { id: 'dubiousdisc', name: 'Dubious Disc' },
   { id: 'reapercloth', name: 'Reaper Cloth' },

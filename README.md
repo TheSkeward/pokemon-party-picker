@@ -27,10 +27,10 @@ https://theskeward.github.io/pokemon-party-picker/
 
 ## Games
 
-The usage-data families in the top tabs (Singles, Doubles, Gen 4 Singles,
-Gen 5 Singles) come from the data pipeline, and each activates the game
-whose prior it is: Reborn for the Gen 7 families, HGSS for Gen 4, B2W2 for
-Gen 5. A game is a descriptor
+The usage-data families in the top tabs (singles and doubles for Gen 4,
+Gen 5, and Gen 7) come from the data pipeline, and each activates the game
+whose prior it is: HGSS for Gen 4, B2W2 for Gen 5, Reborn for Gen 7. The
+tabs run in generation order, each game's families together. A game is a descriptor
 in `src/games/` naming its dex generation, usage families, progression
 schedule, machines and tutors, item content, evolution rules, and the
 mechanics it has (Reborn's Common Candy level-downs and Hidden Power Type

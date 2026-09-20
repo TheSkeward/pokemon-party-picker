@@ -47,7 +47,7 @@ export const HGSS_GAME = Object.freeze({
   dexGen: 4,
   // Loaded on demand: the Gen 4 bundle is its own chunk.
   loadDex: () => import('./dex-gen4.js').then((module) => module.GEN4_DEX),
-  families: Object.freeze(['gen4singles']),
+  families: Object.freeze(['gen4singles', 'gen4doubles']),
   schedule: Object.freeze({
     checkpoints: HGSS_PROGRESSION_CHECKPOINTS,
     itemUnlockBadges: HGSS_ITEM_UNLOCK_BADGES,

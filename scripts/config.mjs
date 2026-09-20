@@ -46,6 +46,16 @@ export const FAMILY_CONFIGS = {
     cutoffPriority: [1760, 1630, 1500, 0],
     defaultBrowserFormat: 'gen4ou',
   },
+  // Old-generation doubles: Smogon's doubles OU ladder in the months it
+  // ran, then the VGC formats of the generation's years as the thinner
+  // fallback (a different ruleset, but doubles usage all the same).
+  gen4doubles: {
+    label: 'Gen 4 Doubles',
+    gen: 4,
+    formatOrder: ['gen4doublesou', 'gen4vgc2010', 'gen4vgc2009'],
+    cutoffPriority: [1760, 1630, 1500, 0],
+    defaultBrowserFormat: 'gen4doublesou',
+  },
   // Gen 5 OU is likewise monthly; UU, RU, NU, PU, and LC are scattered.
   gen5singles: {
     label: 'Gen 5 Singles',
@@ -61,6 +71,19 @@ export const FAMILY_CONFIGS = {
     ],
     cutoffPriority: [1760, 1630, 1500, 0],
     defaultBrowserFormat: 'gen5ou',
+  },
+  gen5doubles: {
+    label: 'Gen 5 Doubles',
+    gen: 5,
+    formatOrder: [
+      'gen5doublesou',
+      'gen5smogondoubles',
+      'gen5gbudoubles',
+      'gen5vgc2013',
+      'gen5vgc2011',
+    ],
+    cutoffPriority: [1760, 1630, 1500, 0],
+    defaultBrowserFormat: 'gen5doublesou',
   },
 };
 
@@ -84,6 +107,9 @@ export const REAL_FORMATS = [
   { id: 'gen4uu', label: 'Gen 4 UU', family: 'gen4singles' },
   { id: 'gen4nu', label: 'Gen 4 NU', family: 'gen4singles' },
   { id: 'gen4lc', label: 'Gen 4 LC', family: 'gen4singles' },
+  { id: 'gen4doublesou', label: 'Gen 4 DOU', family: 'gen4doubles' },
+  { id: 'gen4vgc2010', label: 'Gen 4 VGC 2010', family: 'gen4doubles' },
+  { id: 'gen4vgc2009', label: 'Gen 4 VGC 2009', family: 'gen4doubles' },
   { id: 'gen5ubers', label: 'Gen 5 Ubers', family: 'gen5singles' },
   { id: 'gen5ou', label: 'Gen 5 OU', family: 'gen5singles' },
   { id: 'gen5uu', label: 'Gen 5 UU', family: 'gen5singles' },
@@ -91,6 +117,11 @@ export const REAL_FORMATS = [
   { id: 'gen5nu', label: 'Gen 5 NU', family: 'gen5singles' },
   { id: 'gen5pu', label: 'Gen 5 PU', family: 'gen5singles' },
   { id: 'gen5lc', label: 'Gen 5 LC', family: 'gen5singles' },
+  { id: 'gen5doublesou', label: 'Gen 5 DOU', family: 'gen5doubles' },
+  { id: 'gen5smogondoubles', label: 'Gen 5 Smogon Doubles', family: 'gen5doubles' },
+  { id: 'gen5gbudoubles', label: 'Gen 5 GBU Doubles', family: 'gen5doubles' },
+  { id: 'gen5vgc2013', label: 'Gen 5 VGC 2013', family: 'gen5doubles' },
+  { id: 'gen5vgc2011', label: 'Gen 5 VGC 2011', family: 'gen5doubles' },
 ];
 
 /** Singles format ids, strongest tier first. @type {!Array<string>} */

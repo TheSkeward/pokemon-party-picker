@@ -52,7 +52,7 @@ export const B2W2_GAME = Object.freeze({
   dexGen: 5,
   // Loaded on demand: the Gen 5 bundle is its own chunk.
   loadDex: () => import('./dex-gen5.js').then((module) => module.GEN5_DEX),
-  families: Object.freeze(['gen5singles']),
+  families: Object.freeze(['gen5singles', 'gen5doubles']),
   schedule: Object.freeze({
     checkpoints: B2W2_PROGRESSION_CHECKPOINTS,
     itemUnlockBadges: B2W2_ITEM_UNLOCK_BADGES,

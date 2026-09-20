@@ -106,6 +106,27 @@ export function gameForFamily(family) {
 }
 
 /**
+ * The published families in display order: by their game's generation,
+ * oldest first, each game's families together in the order its descriptor
+ * lists them; families no game claims follow, in the order given.
+ * @param {!Array<{id: string}>} families
+ * @return {!Array<{id: string}>}
+ */
+export function orderFamilies(families) {
+  const rank = (family) => {
+    const game = gameForFamily(family.id);
+    return game
+      ? [game.dexGen, game.families.indexOf(family.id)]
+      : [Infinity, families.indexOf(family)];
+  };
+  return [...families].sort((a, b) => {
+    const [genA, slotA] = rank(a);
+    const [genB, slotB] = rank(b);
+    return genA - genB || slotA - slotB;
+  });
+}
+
+/**
  * Loads and activates the game that claims a family. The app's family tabs
  * come from the usage data, so a family no game claims leaves the active
  * game as is.

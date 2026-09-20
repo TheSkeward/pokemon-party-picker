@@ -12,7 +12,7 @@ import {
   loadMovesetData,
   loadPokemonIndex,
 } from './data';
-import { activateGameForFamily } from './games/registry.js';
+import { activateGameForFamily, orderFamilies } from './games/registry.js';
 import { applyGameTheme } from './app/theme.js';
 import { bindAppEvents } from './app/app-events';
 import { renderBrowserPage } from './app/browser-page';
@@ -156,7 +156,7 @@ async function computeResolverResults() {
 function renderApp() {
   const state = getState();
 
-  renderAppShell(app, state, listFamilies(availability));
+  renderAppShell(app, state, orderFamilies(listFamilies(availability)));
 
   const pageRoot = document.querySelector('#page-root');
 

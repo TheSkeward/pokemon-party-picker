@@ -7,6 +7,7 @@ import {
   activateGameForFamily,
   gameForFamily,
   getActiveGame,
+  orderFamilies,
   loadGame,
   setActiveGame,
 } from '../src/games/registry.js';
@@ -66,4 +67,19 @@ test('the species index narrows to the active game and stays whole for Reborn', 
   } finally {
     setActiveGame('reborn');
   }
+});
+
+test('families display in generation order, each game\x27s together', () => {
+  const published = [
+    { id: 'singles' }, { id: 'doubles' }, { id: 'gen4singles' },
+    { id: 'gen9ou' }, { id: 'gen5doubles' }, { id: 'gen5singles' },
+    { id: 'gen4doubles' },
+  ];
+  assert.deepEqual(
+    orderFamilies(published).map((family) => family.id),
+    [
+      'gen4singles', 'gen4doubles', 'gen5singles', 'gen5doubles',
+      'singles', 'doubles', 'gen9ou',
+    ],
+  );
 });

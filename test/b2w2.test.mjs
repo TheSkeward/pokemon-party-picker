@@ -73,7 +73,7 @@ const levelUpTable = JSON.parse(
 test('b2w2 is registered on the Gen 5 dex under namespaced keys', () => {
   const game = getGame('b2w2');
   assert.equal(game.dexGen, 5);
-  assert.deepEqual(game.families, ['gen5singles']);
+  assert.deepEqual(game.families, ['gen5singles', 'gen5doubles']);
   assert.equal(game.storage.progression, 'pokemon-party-picker:b2w2:progression:v1');
   assert.equal(game.storage.pool, 'pokemon-party-picker:b2w2:owned-pool:v1');
   assert.equal(game.data.legalMovesDir, 'b2w2-legal-moves');
