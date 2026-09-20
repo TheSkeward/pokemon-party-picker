@@ -1,10 +1,13 @@
 {
   "comment": "Smogon sample-team thread URLs per format id. Add or correct URLs freely — the scraper visits every listed thread, follows pokepast.es links, reads inline importables in the opening post, and reports per-thread counts and page titles (verify a corrected id against the title in the next last-harvest.json).",
   "tournament": {
-    "comment": "Team-dump threads ({url, format} pins a format for pastes without === headers) and tournament forum listings to walk. Paste === headers and replay-link ids attribute formats directly; thread prefixes fall back through the rmt prefix maps.",
+    "comment": "Team-dump threads and tournament forum listings to walk. A dump entry is a URL or {url, format} / {url, gen, tier}: the pin says what the thread's own text leaves unsaid (UPL is Ubers in every generation, so its section headings name only the generation). Within a post the section heading before a team names its generation and tier, and replay links their format; thread prefixes fall back through the rmt prefix maps.",
     "dumpThreads": [
       "https://www.smogon.com/forums/threads/smbs-spl-x-team-dump.3650390/",
-      "https://www.smogon.com/forums/threads/upl-vii-dump.3650684/"
+   "https://www.smogon.com/forums/threads/spl-9-sm-ou-team-pulls-down-pants-dump-by-z0mog.3630442/",
+   "https://www.smogon.com/forums/threads/a-bunch-of-usm-lc-teams.3624477/",
+   { "url": "https://www.smogon.com/forums/threads/lc-in-spl-8-replays-and-team-dump.3590611/", "gen": 7, "tier": "lc" },
+      { "url": "https://www.smogon.com/forums/threads/upl-vii-dump.3650684/", "tier": "ubers" }
     ],
     "listings": [
       "https://www.smogon.com/forums/forums/ruins-of-alph.281/",

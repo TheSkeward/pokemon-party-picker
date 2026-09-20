@@ -372,6 +372,69 @@ test('tournament: replay-link format attribution incl. smogtours ids', () => {
   );
 });
 
+test('tournament: dump sections and labels attribute pastes and inline teams', async () => {
+  const { findLabels, genFromLabel } = await import(
+    '../scripts/teamscrape/tier-names.mjs',
+  );
+  const { attributeFormat, sectionInlineTeams, threadContext } = await import(
+    '../scripts/scrape-tournament-teams.mjs',
+  );
+  assert.equal(genFromLabel('USM Ubers'), 7);
+  assert.equal(genFromLabel('B2W2 OU'), 5);
+  assert.equal(genFromLabel('no generation here'), null);
+  assert.deepEqual(
+    findLabels('ADV\nteam\n\nDPP Ubers: link\nSM Doubles vs X'),
+    [
+      { index: 0, gen: 3, tier: null },
+      { index: 10, gen: 4, tier: 'ubers' },
+      { index: 26, gen: 7, tier: 'doublesou' },
+    ],
+  );
+
+  // A pin says what a multi-generation dump leaves unsaid; a prefix or the
+  // title says the rest for listing threads.
+  const upl = threadContext({ title: 'UPL VII dump', prefixFormat: null,
+    pin: { tier: 'ubers' } });
+  assert.deepEqual(upl, { format: null, gen: null, tier: 'ubers' });
+  const cup = threadContext({ title: 'SM OU Cup III - Finals',
+    prefixFormat: null, pin: {} });
+  assert.deepEqual(cup, { format: null, gen: 7, tier: 'ou' });
+  assert.equal(threadContext({ title: 'x', prefixFormat: 'gen7uu',
+    pin: {} }).format, 'gen7uu');
+
+  // Nearest evidence outward: label gen + thread tier, label alone, the
+  // post's single replay format, the thread; untracked results are null.
+  assert.equal(attributeFormat({ label: { gen: 4, tier: null },
+    replayFormat: null, thread: upl }), 'gen4ubers');
+  assert.equal(attributeFormat({ label: { gen: 3, tier: null },
+    replayFormat: 'gen7ubers', thread: upl }), null);
+  assert.equal(attributeFormat({ label: { gen: 7, tier: 'ou' },
+    replayFormat: 'gen7ubers', thread: upl }), 'gen7ou');
+  assert.equal(attributeFormat({ label: null,
+    replayFormat: 'gen7doublesou', thread: { format: null, gen: null,
+      tier: null } }), 'gen7doublesou');
+  assert.equal(attributeFormat({ label: null, replayFormat: null,
+    thread: cup }), 'gen7ou');
+  assert.equal(attributeFormat({ label: null, replayFormat: null,
+    thread: { format: null, gen: null, tier: 'ubers' } }), null);
+
+  // Inline teams never group across a section heading.
+  const set = (species) =>
+    `${species} @ Leftovers\nAbility: Pressure\n- Protect\n- Toxic\n`;
+  const names = ['Toxapex', 'Ferrothorn', 'Heatran', 'Latios', 'Kyogre',
+    'Xerneas', 'Groudon', 'Arceus', 'Yveltal', 'Magearna'];
+  const text = [
+    'some intro', 'DPP', ...names.slice(0, 6).map(set),
+    'USM Ubers', ...names.slice(6).map(set),
+  ].join('\n\n');
+  const sections = sectionInlineTeams(text);
+  assert.deepEqual(
+    sections.map((section) => [section.label?.gen, section.label?.tier,
+      section.teams.map((team) => team.length)]),
+    [[4, null, [6]], [7, 'ubers', [4]]],
+  );
+});
+
 test('forum fetch: HTTP mode identifies itself and requests readable text',
   async () => {
     const calls = [];
