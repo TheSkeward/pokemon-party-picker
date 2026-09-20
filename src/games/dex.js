@@ -3,9 +3,9 @@
  * stats, moves, and items through this accessor instead of importing a
  * generation's generated modules, so the same code serves every game.
  */
-import { getActiveGame } from './registry.js';
+import { getActiveDex } from './registry.js';
 
 /** @return {!Object} The active game's dex bundle (see dex-gen7.js). */
 export function dex() {
-  return getActiveGame().dex;
+  return getActiveDex();
 }

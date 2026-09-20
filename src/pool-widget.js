@@ -30,7 +30,7 @@ import {
   recordOptimizerSample,
 } from './teamBuilder/telemetry.js';
 import { loadManifest } from './manifest.js';
-import { getActiveGame, setActiveGameForFamily } from './games/registry.js';
+import { activateGameForFamily, getActiveGame } from './games/registry.js';
 import { renderRebornLegalMovesPanel } from './reborn/legal-moves-view';
 import { renderRebornTeamAnalysisPanel } from './reborn/team-analysis-view';
 import { getCurrentRebornSpeciesForChoice } from './reborn/current-species.js';
@@ -91,21 +91,21 @@ export function mountPoolOptimizer(container, options = {}) {
   const app = container;
   const embedded = Boolean(options.embedded);
   // The family decides the game, and the game decides whose saved pool and
-  // progression load below, so it is settled before anything is read.
+  // progression load: init() waits for it before reading either (embedded,
+  // main.js has already activated it; standalone, the widget does).
   const initialFamily =
     options.family || getParam('family') || getActiveGame().families[0];
-  setActiveGameForFamily(initialFamily);
+  const gameReady = activateGameForFamily(initialFamily);
 
   let availability = null;
   let formatsIndex = [];
   let pokemonIndex = [];
 
-  const initialQuery = getParam('poolQuery') || loadSavedPool();
-
   const state = {
     family: initialFamily,
     selection: getParam('selection') || 'all',
-    query: initialQuery,
+    // Filled by init() once the family's game is active.
+    query: '',
     progression: loadSavedRebornProgression(),
     // Default sort is the score the seats were actually chosen by — Lead % is
     // a ladder stat, informative but not the seating order.
@@ -151,6 +151,9 @@ export function mountPoolOptimizer(container, options = {}) {
   });
 
   async function init() {
+    await gameReady;
+    state.query = getParam('poolQuery') || loadSavedPool();
+    state.progression = loadSavedRebornProgression();
     // Manifest FIRST: loading it sets the data-version tag, so every fetch
     // below carries ?v=<dataSignature> and can't be served from a previous
     // deploy's CDN cache. Also the debug footer's provenance.
@@ -166,8 +169,8 @@ export function mountPoolOptimizer(container, options = {}) {
       state.family = getActiveGame().families[0];
     }
 
-    if (initialQuery.trim()) {
-      savePool(initialQuery);
+    if (state.query.trim()) {
+      savePool(state.query);
       render();
       void computeAndRender({ exhaustive: false, background: true });
     } else {

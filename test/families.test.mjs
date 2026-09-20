@@ -4,10 +4,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
+  activateGameForFamily,
   gameForFamily,
   getActiveGame,
+  loadGame,
   setActiveGame,
-  setActiveGameForFamily,
 } from '../src/games/registry.js';
 import {
   filterToActiveGame,
@@ -36,18 +37,19 @@ test('every published family is claimed by exactly one game', () => {
   assert.equal(getDefaultBrowserFormat(AVAILABILITY, 'gen9ou'), '');
 });
 
-test('selecting a family activates its game; an unclaimed family keeps the current one', () => {
+test('selecting a family loads and activates its game; an unclaimed family keeps the current one', async () => {
   try {
-    assert.equal(setActiveGameForFamily('gen4singles').id, 'soulsilver');
+    assert.equal((await activateGameForFamily('gen4singles')).id, 'soulsilver');
     assert.equal(getActiveGame().id, 'soulsilver');
-    assert.equal(setActiveGameForFamily('gen9ou').id, 'soulsilver');
-    assert.equal(setActiveGameForFamily('singles').id, 'reborn');
+    assert.equal((await activateGameForFamily('gen9ou')).id, 'soulsilver');
+    assert.equal((await activateGameForFamily('singles')).id, 'reborn');
   } finally {
     setActiveGame('reborn');
   }
 });
 
-test('the species index narrows to the active game and stays whole for Reborn', () => {
+test('the species index narrows to the active game and stays whole for Reborn', async () => {
+  await loadGame('soulsilver');
   const index = [
     { id: 'garchomp', name: 'Garchomp' },
     { id: 'sylveon', name: 'Sylveon' },

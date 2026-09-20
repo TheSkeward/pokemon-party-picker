@@ -4,7 +4,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { getActiveGame, setActiveGame } from '../src/games/registry.js';
+import {
+  getActiveGame,
+  loadGame,
+  setActiveGame,
+} from '../src/games/registry.js';
+
+await loadGame('soulsilver');
 import {
   SOULSILVER_EVOLUTION_ITEM_AVAILABILITY,
   SOULSILVER_EXTRA_INVENTORY_ITEMS,

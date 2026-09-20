@@ -10,7 +10,6 @@
  * existing player's saved pool and progression. New games namespace both by
  * game id.
  */
-import { GEN7_DEX } from './dex-gen7.js';
 import {
   REBORN_ITEM_UNLOCK_BADGES,
   REBORN_MINING_ITEM_BADGES,
@@ -46,9 +45,11 @@ export const REBORN_GAME = Object.freeze({
   label: 'Pokémon Reborn',
   // For prose ("not learnable in Reborn"); the label is for headings.
   shortLabel: 'Reborn',
-  // The generated mainline data the engine reads through dex() (games/dex.js).
+  // The generated mainline data the engine reads through dex() (games/dex.js),
+  // loaded by the registry when the game is activated. As the default game
+  // Reborn's bundle ships with the app, so this import resolves at once.
   dexGen: 7,
-  dex: GEN7_DEX,
+  loadDex: () => import('./dex-gen7.js').then((module) => module.GEN7_DEX),
   // The usage-data families (scripts/config.mjs) that serve as this game's
   // competitive prior, first one default. Selecting a family in the app
   // activates the game that claims it.

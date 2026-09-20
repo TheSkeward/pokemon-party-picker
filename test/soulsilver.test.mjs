@@ -10,8 +10,11 @@ import path from 'node:path';
 import {
   getActiveGame,
   getGame,
+  loadGame,
   setActiveGame,
 } from '../src/games/registry.js';
+
+await loadGame('soulsilver');
 
 const { dex } = await import('../src/games/dex.js');
 const { getCheckpoints } = await import('../src/games/schedule.js');

@@ -5,6 +5,7 @@ import {
   getActiveGame,
   getGame,
   listGames,
+  loadGame,
   setActiveGame,
 } from '../src/games/registry.js';
 import {
@@ -27,6 +28,16 @@ test('reborn is the default active game with its pre-registry keys intact', () =
 test('activating an unregistered game is an explicit error', () => {
   assert.throws(() => setActiveGame('rejuvenation'), /Unknown game/);
   assert.equal(getActiveGame().id, 'reborn');
+});
+
+test('a game activates only once its dex bundle is loaded', async () => {
+  // Only the default game's bundle ships with the app.
+  assert.throws(() => setActiveGame('soulsilver'), /not loaded/);
+  assert.equal(getActiveGame().id, 'reborn');
+  await loadGame('soulsilver');
+  setActiveGame('soulsilver');
+  assert.equal(getActiveGame().id, 'soulsilver');
+  setActiveGame('reborn');
 });
 
 test('gamestate backups are tagged with their game and legacy files read as reborn', () => {

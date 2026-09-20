@@ -5,7 +5,6 @@
  * state keys are namespaced by game id. Item content is curated by hand in
  * soulsilver/items.js.
  */
-import { GEN4_DEX } from './dex-gen4.js';
 import { EVOLUTION_STONE_FIELDS } from '../reborn/evolution-access.js';
 import { SOULSILVER_PROGRESSION_CHECKPOINTS } from '../soulsilver/schedule.js';
 import {
@@ -45,7 +44,8 @@ export const SOULSILVER_GAME = Object.freeze({
   label: 'Pokémon SoulSilver',
   shortLabel: 'SoulSilver',
   dexGen: 4,
-  dex: GEN4_DEX,
+  // Loaded on demand: the Gen 4 bundle is its own chunk.
+  loadDex: () => import('./dex-gen4.js').then((module) => module.GEN4_DEX),
   families: Object.freeze(['gen4singles']),
   schedule: Object.freeze({
     checkpoints: SOULSILVER_PROGRESSION_CHECKPOINTS,

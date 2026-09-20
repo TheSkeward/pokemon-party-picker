@@ -14,7 +14,7 @@ import {
   loadMovesetData,
   loadPokemonIndex,
 } from './data';
-import { setActiveGameForFamily } from './games/registry.js';
+import { activateGameForFamily } from './games/registry.js';
 import { bindAppEvents } from './app/app-events';
 import { renderBrowserPage } from './app/browser-page';
 import { captureFocusState, restoreFocusState } from './app/focus-state';
@@ -58,7 +58,7 @@ async function init() {
   // The family decides the game, and the game decides which species the
   // index keeps, so both precede the index load.
   ensureValidFamilyAndFormat();
-  setActiveGameForFamily(getState().family);
+  await activateGameForFamily(getState().family);
   pokemonIndex = await loadPokemonIndex();
 
   dataset = await loadFormatData(getState().format);
@@ -224,7 +224,7 @@ async function handleFamilyChange(nextFamily) {
 
   // A family may belong to another game: its dex narrows the species index
   // and its saved pool and progression load when the pool page remounts.
-  setActiveGameForFamily(nextFamily);
+  await activateGameForFamily(nextFamily);
   pokemonIndex = await loadPokemonIndex();
 
   const nextFormat = getDefaultBrowserFormat(availability, nextFamily);
