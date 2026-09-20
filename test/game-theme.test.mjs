@@ -49,7 +49,9 @@ test('the stylesheet defaults are the default game accents', () => {
 
 test('applying a theme sets the four slot tokens on the root', () => {
   const set = new Map();
-  const root = { style: { setProperty: (name, value) => set.set(name, value) } };
+  const root = {
+    style: { setProperty: (name, value) => set.set(name, value) },
+  };
   const hgss = listGames().find((game) => game.id === 'hgss');
   applyGameTheme(hgss, root);
   assert.deepEqual(
