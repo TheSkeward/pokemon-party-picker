@@ -36,7 +36,7 @@ const HGSS_ACCESS_FIELDS = Object.freeze([
   { key: 'evoAccessFriendship', label: 'Friendship evolutions' },
   ...STONE_FIELDS,
   { key: 'evoAccessOtherEvoItems', label: 'Other evolution items (Metal Coat, Razor Claw, …)' },
-  { key: 'evoAccessTrading', label: 'Trading (trade evolutions need a second game)' },
+  { key: 'evoAccessTrading', label: 'Trade evolutions (need a trade partner; untick if you have none)' },
   { key: 'evoAccessPartyCondition', label: 'Party-condition evolutions (Mantyke needs a Remoraid)' },
 ]);
 
@@ -109,7 +109,7 @@ export const HGSS_GAME = Object.freeze({
     promotedTmMoves: Object.freeze([]),
     notes: Object.freeze([
       'Move legality follows the Generation IV learnsets, counting only the machines and tutors HeartGold and SoulSilver have.',
-      'Level caps are the obedience thresholds. In HGSS they bind only traded Pokémon, so they mark the pace of a playthrough rather than a hard limit.',
+      'Level caps are the obedience thresholds: 10 with no badges, 20 at Zephyr, 30 at Hive, 50 at Fog, 70 at Storm, every level at Rising. In HGSS they bind only traded Pokémon, so playing to them is an honor system; pick "No cap" to switch them off.',
       'Cut, Fly, Surf, Strength, Whirlpool, Rock Smash, Waterfall, and Rock Climb are HMs.',
       'Defog was an HM in Diamond, Pearl, and Platinum only; no machine teaches it here.',
       'Event-only moves and Pokéwalker pickups are not counted.',

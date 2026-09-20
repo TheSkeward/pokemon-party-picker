@@ -47,7 +47,14 @@ export const DEFAULT_PROGRESSION = {
 export function loadSavedProgression() {
   const raw = readSavedState('progression');
 
-  if (!raw) return { ...DEFAULT_PROGRESSION };
+  // A playthrough with no save yet starts at the game's first checkpoint;
+  // "No cap" stays a choice the player makes, and the save then keeps it.
+  if (!raw) {
+    return applyCheckpoint(
+      { ...DEFAULT_PROGRESSION },
+      getActiveGame().schedule.checkpoints[0].id,
+    );
+  }
 
   try {
     const parsed = JSON.parse(raw);

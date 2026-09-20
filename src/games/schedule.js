@@ -105,11 +105,12 @@ export function getItemUnlockBadge(itemId) {
 
 /**
  * @param {?Object} checkpoint
- * @return {string} "Post N" for post-game tiers, "N badges" otherwise; "" for
- *     null.
+ * @return {string} The checkpoint's own short name when it has one, "Post N"
+ *     for post-game tiers, "N badges" otherwise; "" for null.
  */
 export function checkpointShortLabel(checkpoint) {
   if (!checkpoint) return '';
+  if (checkpoint.short) return checkpoint.short;
   if (checkpoint.postgame) return `Post ${checkpoint.postgame}`;
   return `${checkpoint.badges} badge${checkpoint.badges === 1 ? '' : 's'}`;
 }

@@ -158,7 +158,7 @@ function renderCheckpointControl(progression) {
     ? `Level cap ${selected.levelCap} (from badges)`
     : progression.levelCap
       ? `Level cap ${progression.levelCap} (saved before the badge picker; pick your badges to keep it in sync)`
-      : 'Pick your badges to set the level cap.';
+      : 'No cap: every level-up move and evolution counts as reachable.';
 
   const selectedIndex = selected
     ? getCheckpoints().findIndex((c) => c.id === selected.id)
@@ -176,7 +176,7 @@ function renderCheckpointControl(progression) {
     <label class="progression-level-control wide-control"${nextTip ? ` title="${escapeAttr(nextTip)}"` : ''}>
       <span>Badges earned</span>
       <select data-progression-checkpoint>
-        <option value="" ${selected ? '' : 'selected'}>— choose —</option>
+        <option value="" ${selected ? '' : 'selected'}>No cap</option>
         ${options}
       </select>
       <span class="muted" data-checkpoint-cap-note>${escapeHtml(capNote)}</span>

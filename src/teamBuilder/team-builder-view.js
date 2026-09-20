@@ -147,7 +147,7 @@ export function renderGamestateStrip(progression = {}) {
       ? `${checkpointShortLabel(checkpoint)} · cap ${progression.levelCap || checkpoint.levelCap}`
       : progression.levelCap
         ? `Cap ${progression.levelCap}`
-        : 'No badges set',
+        : 'No cap',
     '',
   );
   chip(`TMs ${(progression.availableTmIds || []).length}`, 'tms');

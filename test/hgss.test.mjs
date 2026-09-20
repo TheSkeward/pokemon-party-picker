@@ -17,7 +17,10 @@ import {
 await loadGame('hgss');
 
 const { dex } = await import('../src/games/dex.js');
-const { getCheckpoints } = await import('../src/games/schedule.js');
+const { checkpointShortLabel, getCheckpoint, getCheckpoints } = await import(
+  '../src/games/schedule.js',
+);
+const { loadSavedProgression } = await import('../src/playthrough/progression.js');
 const { moveSources } = await import('../src/games/legality.js');
 const { computeSetReadiness } = await import('../src/playthrough/set-readiness.js');
 const { describeEvolutionPath, getEvolutionRequirement } = await import(
@@ -83,19 +86,49 @@ test('saves made under the launch id "soulsilver" move to the hgss keys', () => 
   }
 });
 
-test('the schedule is the sixteen badges with obedience-threshold caps', () => {
+test('the schedule is the sixteen badges and the Champion, with obedience-threshold caps', () => {
   withHgss(() => {
     const checkpoints = getCheckpoints();
+    const badge = (i) => `badge-${i + 1}`;
     assert.deepEqual(
       checkpoints.map((checkpoint) => checkpoint.id),
-      ['start', ...Array.from({ length: 16 }, (_, i) => `badge-${i + 1}`)],
+      [
+        'start',
+        ...Array.from({ length: 8 }, (_, i) => badge(i)),
+        'champion',
+        ...Array.from({ length: 8 }, (_, i) => badge(i + 8)),
+      ],
     );
     assert.deepEqual(
       checkpoints.map((checkpoint) => checkpoint.levelCap),
-      // Rising and every Kanto badge: all levels obey.
-      [10, 20, 30, 30, 50, 70, 70, 70, ...Array(9).fill(100)],
+      // Rising, the Champion, and every Kanto badge: all levels obey.
+      [10, 20, 30, 30, 50, 70, 70, 70, ...Array(10).fill(100)],
     );
+    assert.equal(checkpointShortLabel(getCheckpoint('champion')), 'Champion');
   });
+});
+
+test('a playthrough with no save starts at the first checkpoint, not uncapped', () => {
+  const previous = globalThis.localStorage;
+  globalThis.localStorage = {
+    getItem: () => null,
+    setItem() {},
+    removeItem() {},
+    key: () => null,
+    length: 0,
+  };
+  try {
+    withHgss(() => {
+      const fresh = loadSavedProgression();
+      assert.equal(fresh.checkpoint, 'start');
+      assert.equal(fresh.levelCap, '10');
+    });
+    const reborn = loadSavedProgression();
+    assert.equal(reborn.checkpoint, 'start');
+    assert.equal(reborn.levelCap, '20');
+  } finally {
+    globalThis.localStorage = previous;
+  }
 });
 
 test('machines are the Gen 4 TMs and the HeartGold/SoulSilver HMs with pickup timing', () => {
@@ -132,7 +165,7 @@ test('evolutions price real trades and block the methods the game lacks', () => 
       evoAccessTrading: false,
     });
     assert.equal(blocked.status, 'blocked');
-    assert.match(blocked.reason, /Trading .* not yet accessible/);
+    assert.match(blocked.reason, /Trade evolutions .* not yet accessible/);
 
     // A trade with an item prices both: the trade and the curated item.
     const scizor = getEvolutionRequirement(species.scizor);

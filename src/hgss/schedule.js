@@ -10,8 +10,10 @@
  * Lv. 10 with no badges, then 20 at Zephyr, 30 at Hive, 50 at Fog, 70 at
  * Storm or Mineral, and every level at Rising. Plain and Glacier raise no
  * threshold, nor does any Kanto badge. In Generation IV the thresholds bind
- * only outsider (traded) Pokémon, so for a self-caught team they mark the
- * pace of a playthrough rather than a hard limit.
+ * only outsider (traded) Pokémon, so for a self-caught team playing to them
+ * is an honor system (the user's choice); the "No cap" option turns them
+ * off. A Champion checkpoint sits between Rising and the Kanto badges: it
+ * moves no cap, but it is what opens Kanto and the Battle Frontier.
  *
  * `unlocks` names what first becomes obtainable at a checkpoint: the Route 34
  * Day Care once Ilex Forest opens, the Blackthorn move relearner on arrival,
@@ -44,9 +46,12 @@ export const HGSS_PROGRESSION_CHECKPOINTS = [
     id: 'badge-7', badges: 7, label: 'Glacier Badge (Pryce)', levelCap: 70,
     unlocks: { flags: ['moveRelearnerUnlocked'] }, // Blackthorn City
   },
+  { id: 'badge-8', badges: 8, label: 'Rising Badge (Clair)', levelCap: 100, unlocks: {} },
+  // Beating the Champion opens Kanto and the National Dex; the cap does not
+  // move, but every Kanto and Battle Frontier pickup waits for it.
   {
-    id: 'badge-8', badges: 8, label: 'Rising Badge (Clair)', levelCap: 100,
-    // The Battle Frontier's BP counter, priced for a finished Johto team.
+    id: 'champion', badges: 8, postgame: 1, short: 'Champion',
+    label: 'Champion (Kanto and the Battle Frontier open)', levelCap: 100,
     unlocks: { items: ['choiceband', 'choicescarf', 'focussash'] },
   },
   { id: 'badge-9', badges: 9, label: 'Thunder Badge (Lt. Surge)', levelCap: 100, unlocks: {} },
