@@ -70,19 +70,6 @@ export const REAL_FORMATS = [
   { id: 'gen4lc', label: 'Gen 4 LC', family: 'gen4singles' },
 ];
 
-/**
- * @type {!Array<{id: string, label: string, family: string,
- *     fallbackOrder: !Array<string>}>}
- */
-export const SYNTHETIC_FORMATS = [
-  {
-    id: 'gen7best',
-    label: 'Gen 7 Best Available',
-    family: 'singles',
-    fallbackOrder: FAMILY_CONFIGS.singles.formatOrder,
-  },
-];
-
 /** Singles format ids, strongest tier first. @type {!Array<string>} */
 export const FORMAT_POWER_ORDER = FAMILY_CONFIGS.singles.formatOrder;
 /** Union of every family's cutoff priorities. @type {!Array<number>} */

@@ -8,7 +8,6 @@ import {
   FORMAT_POWER_ORDER,
   REAL_FORMATS,
   STATS_ROOT,
-  SYNTHETIC_FORMATS,
 } from './config.mjs';
 
 const projectRoot = process.cwd();
@@ -24,12 +23,7 @@ const CURRENT_MONTH_TTL_MS = 6 * 60 * 60 * 1000;
 
 const REAL_FORMATS_BY_ID =
   new Map(REAL_FORMATS.map((format) => [format.id, format]));
-const SYNTHETIC_FORMATS_BY_ID =
-  new Map(SYNTHETIC_FORMATS.map((format) => [format.id, format]));
-const ALL_FORMAT_IDS = new Set([
-  ...REAL_FORMATS.map((format) => format.id),
-  ...SYNTHETIC_FORMATS.map((format) => format.id),
-]);
+const ALL_FORMAT_IDS = new Set(REAL_FORMATS.map((format) => format.id));
 const REAL_FORMAT_ORDER = REAL_FORMATS.map((format) => format.id);
 const REAL_FORMAT_ORDER_INDEX =
   new Map(REAL_FORMAT_ORDER.map((id, index) => [id, index]));
@@ -66,10 +60,6 @@ async function main() {
   console.log(`Latest mutable month: ${latestAvailableMonth}`);
 
   const explicitRealIds = getExplicitRealIds(cli.requestedFormatIds);
-  const syntheticIdsToBuild =
-    getSyntheticIdsToBuild(cli.requestedFormatIds, explicitRealIds);
-  const implicitDependencyIds =
-    getImplicitDependencyIds(syntheticIdsToBuild, explicitRealIds);
 
   const realDatasets = {};
 
@@ -94,47 +84,7 @@ async function main() {
     printPhaseDelta(`[browser] ${format.id}`, before);
   }
 
-  for (const formatId of implicitDependencyIds) {
-    const format = REAL_FORMATS_BY_ID.get(formatId);
-    const generatedPath = path.join(byFormatDir, `${formatId}.json`);
-    const existing = !cli.refreshAll && !cli.refreshCurrent
-      ? await readJsonIfExists(generatedPath)
-      : null;
-
-    if (existing) {
-      console.log(`[browser] reusing existing generated dataset for ${format.id}`);
-      realDatasets[format.id] = existing;
-      counters.browserLoadedFromGenerated += 1;
-      continue;
-    }
-
-    const hadGeneratedDataset = Boolean(await readJsonIfExists(generatedPath));
-    const before = snapshotCounters();
-    realDatasets[format.id] = await buildRealFormatBrowserDataset(
-      format, months, latestAvailableMonth, cli);
-    await writeJson(generatedPath, realDatasets[format.id]);
-    counters.browserBuilt += 1;
-
-    const delta = diffCounters(before, counters);
-    console.log(describeBrowserBuild(format.id, {
-      hadGeneratedDataset,
-      refreshAll: cli.refreshAll,
-      refreshCurrent: cli.refreshCurrent,
-      delta,
-    }));
-    printPhaseDelta(`[browser] ${format.id}`, before);
-  }
-
-  for (const syntheticId of syntheticIdsToBuild) {
-    const format = SYNTHETIC_FORMATS_BY_ID.get(syntheticId);
-    console.log(`[browser] building synthetic ${format.id}...`);
-    const dataset = await buildSyntheticBrowserDataset(
-      format, realDatasets, months, latestAvailableMonth, cli);
-    await writeJson(path.join(byFormatDir, `${format.id}.json`), dataset);
-  }
-
-  const resolverTargetIds =
-    await getResolverTargetIds({ cli, explicitRealIds, implicitDependencyIds });
+  const resolverTargetIds = getResolverTargetIds({ cli, explicitRealIds });
 
   if (resolverTargetIds.length > 0) {
     console.log(`[resolver] updating availability + sidecars for: ${resolverTargetIds.join(', ')}`);
@@ -146,12 +96,8 @@ async function main() {
     console.log('[resolver] no sidecar update needed; reusing existing availability + sidecars');
   }
 
-  const formatsIndex = [
-    ...REAL_FORMATS.map(
-      ({ id, label, family }) => ({ id, label, family, synthetic: false })),
-    ...SYNTHETIC_FORMATS.map(
-      ({ id, label, family }) => ({ id, label, family, synthetic: true })),
-  ];
+  const formatsIndex = REAL_FORMATS.map(
+    ({ id, label, family }) => ({ id, label, family }));
   await writeJson(path.join(publicDataDir, 'formats.json'), formatsIndex);
 
   console.log('');
@@ -195,7 +141,7 @@ function printHelp() {
 Usage:
   node scripts/build-data.mjs
   node scripts/build-data.mjs gen7anythinggoes
-  node scripts/build-data.mjs gen7nfe gen7lc gen7best
+  node scripts/build-data.mjs gen7nfe gen7lc
   node scripts/build-data.mjs gen7doublesubers gen7doublesou gen7doublesuu
   node scripts/build-data.mjs gen7ou --refresh-current
   node scripts/build-data.mjs gen7anythinggoes --refresh
@@ -218,64 +164,11 @@ function getExplicitRealIds(requestedFormatIds) {
   return sortRealIds(ids);
 }
 
-function getSyntheticIdsToBuild(requestedFormatIds, explicitRealIds) {
-  if (requestedFormatIds.length === 0) {
-    return SYNTHETIC_FORMATS.map((format) => format.id);
-  }
-
-  const ids =
-    new Set(requestedFormatIds.filter((id) => SYNTHETIC_FORMATS_BY_ID.has(id)));
-
-  for (const syntheticFormat of SYNTHETIC_FORMATS) {
-    if (syntheticFormat.fallbackOrder.some(
-      (realId) => explicitRealIds.includes(realId))) {
-      ids.add(syntheticFormat.id);
-    }
-  }
-
-  return [...ids];
-}
-
-function getImplicitDependencyIds(syntheticIdsToBuild, explicitRealIds) {
-  const explicit = new Set(explicitRealIds);
-  const ids = new Set();
-
-  for (const syntheticId of syntheticIdsToBuild) {
-    const synthetic = SYNTHETIC_FORMATS_BY_ID.get(syntheticId);
-    for (const realId of synthetic.fallbackOrder) {
-      if (!explicit.has(realId)) {
-        ids.add(realId);
-      }
-    }
-  }
-
-  return sortRealIds([...ids]);
-}
-
-async function getResolverTargetIds(
-  { cli, explicitRealIds, implicitDependencyIds }) {
+function getResolverTargetIds({ cli, explicitRealIds }) {
   if (cli.requestedFormatIds.length === 0) {
     return [...REAL_FORMAT_ORDER];
   }
-
-  if (explicitRealIds.length > 0) {
-    return explicitRealIds;
-  }
-
-  const existingAvailability =
-    (await readJsonIfExists(availabilityPath)) || { months: {} };
-  const missingImplicitDeps = implicitDependencyIds.filter((formatId) =>
-    !formatAppearsAnywhereInAvailability(existingAvailability, formatId),
-  );
-
-  return missingImplicitDeps;
-}
-
-function formatAppearsAnywhereInAvailability(availability, formatId) {
-  for (const month of Object.keys(availability.months || {})) {
-    if (availability.months?.[month]?.[formatId]) return true;
-  }
-  return false;
+  return explicitRealIds;
 }
 
 function sortRealIds(ids) {
@@ -388,109 +281,6 @@ async function buildRealFormatBrowserDataset(
     monthly,
     history,
   };
-}
-
-async function buildSyntheticBrowserDataset(
-  format, realDatasets, months, latestAvailableMonth, cli) {
-  for (const realFormatId of format.fallbackOrder) {
-    await ensureBrowserRealDatasetLoaded(
-      realFormatId, realDatasets, months, latestAvailableMonth, cli);
-  }
-
-  const monthSet = new Set();
-
-  for (const realFormatId of format.fallbackOrder) {
-    for (const month of realDatasets[realFormatId]?.months || []) {
-      monthSet.add(month);
-    }
-  }
-
-  const allMonths = [...monthSet].sort();
-  const monthly = {};
-  const history = {};
-  const pokemonNames = new Map();
-  const resolvedMonths = {};
-
-  for (const month of allMonths) {
-    const resolvedFormatId = format.fallbackOrder.find((realFormatId) => {
-      return (realDatasets[realFormatId]?.monthly?.[month] || []).length > 0;
-    });
-
-    if (!resolvedFormatId) continue;
-
-    const sourceRows = realDatasets[resolvedFormatId].monthly[month];
-    resolvedMonths[month] = resolvedFormatId;
-    monthly[month] = sourceRows;
-
-    for (const row of sourceRows) {
-      pokemonNames.set(row.pokemonId, row.name);
-
-      if (!history[row.pokemonId]) {
-        history[row.pokemonId] = {
-          name: row.name,
-          months: {},
-        };
-      }
-
-      history[row.pokemonId].months[month] = {
-        rank: row.rank,
-        usage: row.usage,
-        rawCount: row.rawCount,
-        leadRawCount: row.leadRawCount || 0,
-        resolvedFormatId,
-      };
-    }
-  }
-
-  return {
-    format: format.id,
-    label: format.label,
-    family: format.family,
-    synthetic: true,
-    fallbackOrder: format.fallbackOrder,
-    resolvedMonths,
-    months: Object.keys(monthly).sort(),
-    pokemonIndex: [...pokemonNames.entries()]
-      .map(([id, name]) => ({ id, name }))
-      .sort((a, b) => a.name.localeCompare(b.name)),
-    monthly,
-    history,
-  };
-}
-
-async function ensureBrowserRealDatasetLoaded(
-  formatId, realDatasets, months, latestAvailableMonth, cli) {
-  if (realDatasets[formatId]) {
-    return realDatasets[formatId];
-  }
-
-  const format = REAL_FORMATS_BY_ID.get(formatId);
-  const generatedPath = path.join(byFormatDir, `${formatId}.json`);
-  const existing = !cli.refreshAll && !cli.refreshCurrent
-    ? await readJsonIfExists(generatedPath)
-    : null;
-
-  if (existing) {
-    realDatasets[formatId] = existing;
-    counters.browserLoadedFromGenerated += 1;
-    return existing;
-  }
-
-  const before = snapshotCounters();
-  const dataset = await buildRealFormatBrowserDataset(
-    format, months, latestAvailableMonth, cli);
-  realDatasets[formatId] = dataset;
-  await writeJson(generatedPath, dataset);
-  counters.browserBuilt += 1;
-  const delta = diffCounters(before, counters);
-  console.log(describeBrowserBuild(format.id, {
-    hadGeneratedDataset: false,
-    refreshAll: cli.refreshAll,
-    refreshCurrent: cli.refreshCurrent,
-    delta,
-  }));
-  printPhaseDelta(`[browser] ${format.id}`, before);
-  return dataset;
 }
 
 async function buildAvailabilityAndResolverSources(

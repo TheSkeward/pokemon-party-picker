@@ -12,15 +12,14 @@ const SORTERS = {
  * @param {!Element} container
  * @param {!Array<!Object>} rows
  * @param {!Object} state
- * @param {{selectionLabel: (string|undefined),
- *     resolvedFormatLabel: (string|undefined)}=} options
+ * @param {{selectionLabel: (string|undefined)}=} options
  */
 export function renderTable(container, rows, state, options = {}) {
   const filteredRows = filterRows(rows, state.search);
   const sortedRows = sortRows(filteredRows, state.sortBy, state.sortDir);
   container.innerHTML = `
     <section class="panel">
-      <div class="panel-header"><div><h2>Usage Table</h2><p>${sortedRows.length} Pokémon shown for ${options.selectionLabel || state.month}</p>${options.resolvedFormatLabel ? `<p>Resolved format: ${options.resolvedFormatLabel}</p>` : ''}</div></div>
+      <div class="panel-header"><div><h2>Usage Table</h2><p>${sortedRows.length} Pokémon shown for ${options.selectionLabel || state.month}</p></div></div>
       <table class="usage-table usage-browser-table"><thead><tr>${renderHeaderCell('rank', 'Rank', state)}${renderHeaderCell('name', 'Pokémon', state)}${renderHeaderCell('usage', 'Usage %', state)}${renderHeaderCell('leadTendency', 'Lead %', state)}${renderHeaderCell('rawCount', 'Raw Count', state)}</tr></thead><tbody>
         ${sortedRows.map((row) => `<tr data-pokemon-id="${row.pokemonId}" class="${row.pokemonId === state.selectedPokemon ? 'selected' : ''}"><td>${row.rank}</td><td>${escapeHtml(row.name)}</td><td>${row.usage.toFixed(2)}</td><td>${(row.leadTendency || 0).toFixed(1)}</td><td>${row.rawCount.toLocaleString()}</td></tr>`).join('')}
       </tbody></table>

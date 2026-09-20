@@ -1,15 +1,16 @@
 import { escapeHtml } from '../utils/html.js';
 
 /**
- * Format/month/search toolbar for the Usage Data page. Synthetic formats are
- * offered only for the singles family.
+ * Format/month/search toolbar for the Usage Data page.
  * @param {!Element} container
  * @param {!Object} state
  * @param {{months: (!Array<string>|undefined)}} dataset
  * @param {!Array<!Object>} formatsIndex
  */
 export function renderControls(container, state, dataset, formatsIndex) {
-  const familyFormats = formatsIndex.filter((format) => format.family === state.family && (!format.synthetic || state.family === 'singles'));
+  const familyFormats = formatsIndex.filter(
+    (format) => format.family === state.family,
+  );
   container.innerHTML = `
     <section class="panel">
       <div class="toolbar">

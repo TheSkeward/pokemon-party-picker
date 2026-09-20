@@ -1,7 +1,6 @@
 import {
   getMovesetEntry,
   getMovesetLookupContext,
-  getResolvedFormatLabel,
   getRowsForSelection,
   getSelectionLabel,
 } from '../data';
@@ -20,19 +19,10 @@ export function renderBrowserPage(pageRoot, context) {
   const { browserMovesetData, dataset, formatsIndex, state } = context;
 
   const rows = getRowsForSelection(dataset, state.month);
-  const resolvedFormatLabel = getResolvedFormatLabel(
-    dataset,
-    formatsIndex,
-    state.month,
-  );
   const selectionLabel = getSelectionLabel(dataset, state.month);
   const browserSelectedRow =
     rows.find((row) => row.pokemonId === state.selectedPokemon) || null;
-  const browserMovesetContext = getMovesetLookupContext(
-    dataset,
-    formatsIndex,
-    state,
-  );
+  const browserMovesetContext = getMovesetLookupContext(dataset, state);
   const browserMovesetEntry = getMovesetEntry(
     browserMovesetData,
     state.selectedPokemon,
@@ -53,7 +43,6 @@ export function renderBrowserPage(pageRoot, context) {
 
   renderTable(document.querySelector('#content-root'), rows, state, {
     isAggregate: state.month === 'all',
-    resolvedFormatLabel,
     selectionLabel,
   });
 

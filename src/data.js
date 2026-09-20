@@ -167,35 +167,11 @@ export function getSelectionLabel(dataset, selection) {
 }
 
 /**
- * @return {?string} Label of the concrete format a synthetic format resolved
- *     to for the selected month, or null when there is none (or 'all').
- */
-export function getResolvedFormatLabel(dataset, formatsIndex, selection) {
-  if (selection === 'all') return null;
-  const resolvedFormatId = dataset.resolvedMonths?.[selection];
-  if (!resolvedFormatId) return null;
-  return formatsIndex.find((format) => format.id === resolvedFormatId)
-    ?.label || resolvedFormatId;
-}
-
-/** @return {boolean} */
-export function isSyntheticFormat(formatId, formatsIndex) {
-  return Boolean(
-    formatsIndex.find((format) => format.id === formatId)?.synthetic);
-}
-
-/** @return {string} Latest month in the dataset, or '' when it has none. */
-export function getLatestMonth(dataset) {
-  const months = dataset.months || [];
-  return months[months.length - 1] || '';
-}
-
-/**
  * @return {?{formatId: string, month: string, label: string,
  *     aggregate: boolean}} Where to load movesets for the current selection,
- *     or null when no Pokémon is selected or a synthetic month is unresolved.
+ *     or null when no Pokémon is selected.
  */
-export function getMovesetLookupContext(dataset, formatsIndex, state) {
+export function getMovesetLookupContext(dataset, state) {
   if (!state.selectedPokemon) return null;
   if (state.month === 'all') {
     // Real aggregate built by scripts/build-aggregate-movesets.mjs — never
@@ -206,14 +182,6 @@ export function getMovesetLookupContext(dataset, formatsIndex, state) {
       ? `all available months (${months[0]} → ${months[months.length - 1]})`
       : 'all available months';
     return { formatId: state.format, month: 'all', label, aggregate: true };
-  }
-  if (isSyntheticFormat(state.format, formatsIndex)) {
-    const resolvedFormatId = dataset.resolvedMonths?.[state.month];
-    const resolvedFormatLabel =
-      formatsIndex.find((format) => format.id === resolvedFormatId)?.label ||
-      resolvedFormatId;
-    if (!resolvedFormatId) return null;
-    return { formatId: resolvedFormatId, month: state.month, label: `${state.month} — ${resolvedFormatLabel}`, aggregate: false };
   }
   return {
     formatId: state.format,

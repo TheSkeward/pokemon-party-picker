@@ -4,9 +4,7 @@ import {
   formatBelongsToFamily,
   getDefaultBrowserFormat,
   getLatestAvailabilityMonth,
-  getLatestMonth,
   getMovesetLookupContext,
-  isSyntheticFormat,
   listFamilies,
   loadAvailability,
   loadFormatData,
@@ -98,14 +96,6 @@ function ensureValidFamilyAndFormat() {
 function ensureValidMonth() {
   const state = getState();
   const months = dataset.months || [];
-  const synthetic = isSyntheticFormat(state.format, formatsIndex);
-
-  if (synthetic) {
-    if (state.month === 'all' || !months.includes(state.month)) {
-      setState({ month: getLatestMonth(dataset), selectedPokemon: null });
-    }
-    return;
-  }
 
   if (state.month !== 'all' && !months.includes(state.month)) {
     setState({ month: 'all', selectedPokemon: null });
@@ -134,7 +124,7 @@ async function ensureBrowserMovesetData() {
     return;
   }
 
-  const context = getMovesetLookupContext(dataset, formatsIndex, state);
+  const context = getMovesetLookupContext(dataset, state);
 
   if (!context) {
     browserMovesetData = null;
@@ -252,13 +242,9 @@ async function handleViewChange(nextView) {
 async function handleFormatChange(format) {
   clearPendingResolverDebounce();
 
-  const nextDataset = await loadFormatData(format);
-  const synthetic = isSyntheticFormat(format, formatsIndex);
-  const month = synthetic ? getLatestMonth(nextDataset) : 'all';
+  dataset = await loadFormatData(format);
 
-  dataset = nextDataset;
-
-  setState({ format, month, selectedPokemon: null });
+  setState({ format, month: 'all', selectedPokemon: null });
 
   await sync();
 }
