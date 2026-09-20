@@ -73,10 +73,14 @@ export const REBORN_GAME = Object.freeze({
   // them). Common Candy lowers a level, so a level-up entry below a form's
   // arrival is reachable by candying down and leveling back through it. The
   // Type Changer NPC picks Hidden Power's type; without one the type follows
-  // IVs and Hidden Power is never a plannable move.
+  // IVs and Hidden Power is never a plannable move. Reborn's TMs, like every
+  // game's from Gen 5 on, teach any number of Pokémon; a game with
+  // single-use TMs marks each TM option with the badge from which it can
+  // be bought again (`renewableFrom`), and a copy goes to one team member.
   mechanics: Object.freeze({
     levelDown: true,
     hiddenPowerTypeChanger: true,
+    reusableTms: true,
   }),
   // Item content (games/items.js): renewable sources by first badge, the
   // game-only inventory items, the held items the game replaces (hidden from

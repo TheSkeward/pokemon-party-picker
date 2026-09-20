@@ -237,7 +237,7 @@ function renderSourcePills(sources) {
               class="legal-source-pill ${escapeAttr(SOURCE_TONE[source.kind] || source.kind)}"
               title="${escapeAttr(source.sourceTitle || source.detail || source.label)}"
             >
-              ${escapeHtml(source.label)}
+              ${escapeHtml(source.singleCopy ? `${source.label} · one copy` : source.label)}
             </span>
           `,
         )

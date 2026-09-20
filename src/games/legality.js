@@ -16,8 +16,9 @@ export function moveSources() {
 }
 
 /**
- * @return {{levelDown: boolean, hiddenPowerTypeChanger: boolean}} The
- *     move-acquisition mechanics the game has (see games/reborn.js).
+ * @return {{levelDown: boolean, hiddenPowerTypeChanger: boolean,
+ *     reusableTms: boolean}} The move-acquisition mechanics the game has
+ *     (see games/reborn.js).
  */
 export function mechanics() {
   return getActiveGame().mechanics;

@@ -21,7 +21,7 @@ const { checkpointShortLabel, getCheckpoint, getCheckpoints } = await import(
   '../src/games/schedule.js',
 );
 const { loadSavedProgression } = await import('../src/playthrough/progression.js');
-const { moveSources } = await import('../src/games/legality.js');
+const { mechanics, moveSources } = await import('../src/games/legality.js');
 const { computeSetReadiness } = await import('../src/playthrough/set-readiness.js');
 const { describeEvolutionPath, getEvolutionRequirement } = await import(
   '../src/playthrough/evolution-requirements.js',
@@ -145,6 +145,13 @@ test('machines are the Gen 4 TMs and the HeartGold/SoulSilver HMs with pickup ti
     const roost = tmOptions.find((option) => option.id === 'tm51');
     assert.equal(roost.move, 'Roost');
     assert.equal(roost.available, 'After Badge 01');
+    // TMs are single-use: Falkner's Roost is one copy for good, Ice Beam is
+    // buyable at Goldenrod's Game Corner, Morty's Shadow Ball only once the
+    // Frontier sells it.
+    assert.equal(mechanics().reusableTms, false);
+    assert.equal(roost.renewableFrom, undefined);
+    assert.equal(tmOptions.find((option) => option.id === 'tm13').renewableFrom, 2);
+    assert.equal(tmOptions.find((option) => option.id === 'tm30').renewableFrom, 8);
     assert.ok(tutorOptions.some((option) => option.id === 'headbutt'));
     assert.ok(!tutorOptions.some((option) => option.id === 'volttackle'));
   });

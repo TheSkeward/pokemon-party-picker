@@ -1207,6 +1207,23 @@ function getChoiceOptionNote(result, best, bestNonMega) {
     : 'Team-fit option';
 }
 
+// The single-copy TMs a build cannot do without: one per move whose every
+// route is one such TM. Two members' builds may not both need the same one
+// (assignTeamBuilds).
+function singleCopyTmsOf(moves) {
+  const ids = new Set();
+  for (const move of moves) {
+    const sources = move.availableSources || [];
+    if (
+      sources.length &&
+      sources.every((source) => source.kind === 'tm' && source.singleCopy)
+    ) {
+      ids.add(sources[0].machineId);
+    }
+  }
+  return [...ids].sort();
+}
+
 function makeChoice(input, result, note) {
   // Row notes carry only what the rest of the page does NOT already show:
   // the default build label and per-move facts live on the set card, so the
@@ -1461,6 +1478,7 @@ async function resolveCandidateBuilds({
     profile.abilityKnown = abilityKnown;
     profile.abilityOptions = abilityChoices;
     profile.setReadiness = setReadiness;
+    profile.singleCopyTms = singleCopyTmsOf(buildMoves);
     return profile;
   };
 

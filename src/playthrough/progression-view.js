@@ -538,6 +538,17 @@ function renderOptionCheckbox({
   const badgeOk = badges != null && badge != null && badge <= badges;
   const obtainable = badgeOk && !selected.has(option.id);
   const facts = describeMoveMeta(getMoveMeta(option.move));
+  // In a single-use-TM game, say whether this TM is one copy or buyable.
+  const copies =
+    field === 'availableTmIds' && !mechanics().reusableTms
+      ? describeTmCopies(option, badges)
+      : '';
+  const details = [
+    option.available
+      ? `${option.available}${option.location ? ` - ${option.location}` : ''}`
+      : '',
+    copies,
+  ].filter(Boolean);
   return `
     <label class="progression-option${obtainable ? ' option-obtainable' : ''}"${badgeOk ? ' data-option-badge-ok="1"' : ''}${facts ? ` title="${escapeAttr(facts)}"` : ''}>
       <input
@@ -549,14 +560,18 @@ function renderOptionCheckbox({
       <span>
         ${option.code ? `<strong>${escapeHtml(option.code)}</strong> ` : ''}
         ${escapeHtml(option.move)}
-        ${
-          option.available
-            ? `<small>${escapeHtml(option.available)}${option.location ? ` - ${escapeHtml(option.location)}` : ''}</small>`
-            : ''
-        }
+        ${details.length ? `<small>${escapeHtml(details.join(' · '))}</small>` : ''}
       </span>
     </label>
   `;
+}
+
+// "one copy", "buyable", or "one copy until badge N" for a single-use TM,
+// against the badges held (null: no cap, every shop open).
+function describeTmCopies(option, badges) {
+  if (option.renewableFrom == null) return 'one copy';
+  if (badges == null || option.renewableFrom <= badges) return 'buyable';
+  return `one copy until badge ${option.renewableFrom}`;
 }
 
 function getUniqueGroupOptions(groups) {

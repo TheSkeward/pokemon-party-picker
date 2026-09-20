@@ -131,3 +131,7 @@ the repository.
   Pokemon; Hidden Power is never counted as plannable there (its type follows
   IVs); weather rocks, pinch berries, and event items are not tracked because
   the game offers them only by trade, Pokewalker, or event.
+- HGSS's single-use TMs are honored when each member's build is realized,
+  after the team's seats are chosen: a one-copy TM is planned for one member
+  and the others take their next-best build, but seat selection itself does
+  not count copies.

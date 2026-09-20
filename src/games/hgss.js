@@ -60,10 +60,12 @@ export const HGSS_GAME = Object.freeze({
     tutorOptions: HGSS_TUTOR_OPTIONS,
   }),
   // No Common Candy and no Type Changer: a level never goes down, and Hidden
-  // Power's type follows IVs.
+  // Power's type follows IVs. TMs are consumed on use (Generation IV), so a
+  // one-copy TM goes to a single team member until it can be bought.
   mechanics: Object.freeze({
     levelDown: false,
     hiddenPowerTypeChanger: false,
+    reusableTms: false,
   }),
   // No mining, no replaced items, no game-original held items; the shops are
   // the Athlete Shop, the Game Corners, and the Frontier's BP counter.
@@ -111,6 +113,7 @@ export const HGSS_GAME = Object.freeze({
       'Move legality follows the Generation IV learnsets, counting only the machines and tutors HeartGold and SoulSilver have.',
       'Level caps are the obedience thresholds: 10 with no badges, 20 at Zephyr, 30 at Hive, 50 at Fog, 70 at Storm, every level at Rising. In HGSS they bind only traded Pokémon, so playing to them is an honor system; pick "No cap" to switch them off.',
       'Cut, Fly, Surf, Strength, Whirlpool, Rock Smash, Waterfall, and Rock Climb are HMs.',
+      'TMs are single-use: a one-copy TM is planned for one team member, and a TM counts as unlimited only from the badge at which a shop (Department Store, Game Corner, Battle Frontier) sells it.',
       'Defog was an HM in Diamond, Pearl, and Platinum only; no machine teaches it here.',
       'Event-only moves and Pokéwalker pickups are not counted.',
       "Hidden Power's type follows IVs and cannot be changed, so it is never counted as a plannable move.",

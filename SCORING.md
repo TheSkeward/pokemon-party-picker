@@ -329,6 +329,7 @@ a genuine core near 63% of the bound and incidental same-tier pair mass near
 - Teammate usage synergy: `src/teamBuilder/teammate-synergy.js`
 - Real-team core completion: `src/teamBuilder/core-completion.js`
 - Search orchestration and result cache version: `src/teamBuilder/team-optimizer.js`
+- Build realization, including single-copy TMs: `src/teamBuilder/team-selection.js`
 - Legality, progression, and evolution requirements: `src/playthrough/`
 - Per-game data behind them (schedules, machines, items): `src/games/` with
   `src/reborn/` and `src/hgss/`

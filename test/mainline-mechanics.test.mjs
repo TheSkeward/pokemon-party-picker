@@ -96,6 +96,30 @@ test('Hidden Power is plannable only through a Type Changer', () => {
   });
 });
 
+test('a single-use TM is one copy until a shop sells it', () => {
+  // TM30 is Shadow Ball in both games: Morty's prize in HGSS, sold by the
+  // Battle Frontier once the Champion is beaten.
+  const GENGAR = {
+    pokemonId: 'gengar',
+    moves: [{ id: 'shadowball', sources: source({ tm: true }) }],
+  };
+  const tmSource = (checkpoint) =>
+    getAvailableMoves(GENGAR, {
+      levelCap: '100',
+      checkpoint,
+      availableTmIds: ['tm30'],
+    })
+      .find((move) => move.id === 'shadowball')
+      .availableSources.find((entry) => entry.kind === 'tm');
+  assert.equal(tmSource('badge-4').singleCopy, false);
+  withGame('hgss', () => {
+    assert.equal(tmSource('badge-4').machineId, 'tm30');
+    assert.equal(tmSource('badge-4').singleCopy, true);
+    assert.equal(tmSource('champion').singleCopy, false);
+    assert.equal(tmSource('').singleCopy, false); // no cap: every shop open
+  });
+});
+
 test('each game names its HM-like machines', () => {
   assert.equal(moveSources().tmxLabel, 'TMX');
   withGame('hgss', () => assert.equal(moveSources().tmxLabel, 'HM'));

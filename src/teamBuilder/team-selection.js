@@ -19,6 +19,7 @@ import {
 } from '../playthrough/type-chart.js';
 import { parallelFullSearch, PARALLEL_THRESHOLD } from './parallel-search.js';
 import { tunable } from './scoring-constants.js';
+import { moveSources } from '../games/legality.js';
 
 /**
  * Selects the best team the pool's resolved lines can field — exhaustive or
@@ -109,34 +110,113 @@ export async function choosePoolTeam(
  * Post-selection build assignment (roadmap Phase 3): with the six lines fixed,
  * pick one build per member (at most one build per evolutionary line holds by
  * construction — builds are alternatives of the same member) maximizing the
- * realized team score. Always scores through the exact path (real coverage
- * vectors, never the selection relaxation). Deterministic: fixed enumeration
- * order, strict improvement. Returns { team, score }.
+ * realized team score, with each single-copy TM (a single-use-TM game's
+ * `legalityProfile.singleCopyTms`) planned for at most one member. When no
+ * assignment can honor the copies, the unconstrained best stands and the
+ * members short a copy are told so. Always scores through the exact path
+ * (real coverage vectors, never the selection relaxation). Deterministic:
+ * fixed enumeration order, strict improvement. Returns { team, score }.
  */
 export function assignTeamBuilds(team, opponentTypeBias = {}) {
   if (!team.length) return { team, score: 0 };
   const options = team.map((choice) =>
     choice.buildAlternatives?.length ? choice.buildAlternatives : [choice],
   );
-  if (options.every((builds) => builds.length === 1)) {
-    return { team, score: getRealizedTeamScore(team, opponentTypeBias) };
-  }
+  const scoreOf = (assignment) =>
+    getRealizedTeamScore(assignment, opponentTypeBias);
+  const honored = chooseBuildAssignment(options, scoreOf, true);
+  const chosen = honored || chooseBuildAssignment(options, scoreOf, false);
+  return {
+    team: noteSingleCopyTms(chosen.team, options, Boolean(honored)),
+    score: chosen.score,
+  };
+}
 
+/**
+ * The best build per member by `scoreOf` over every combination of the
+ * members' options. With `honorCopies`, a build needing a single-copy TM
+ * that an earlier member's chosen build needs is skipped, and null comes
+ * back when no combination works. Fixed enumeration order, strict
+ * improvement.
+ * @param {!Array<!Array<!Object>>} options One build list per member.
+ * @param {function(!Array<!Object>): number} scoreOf
+ * @param {boolean} honorCopies
+ * @return {?{team: !Array<!Object>, score: number}}
+ */
+export function chooseBuildAssignment(options, scoreOf, honorCopies) {
   let best = null;
-  const assignment = new Array(team.length);
+  const assignment = new Array(options.length);
+  const holders = new Map(); // single-copy TM id -> members planning it
   const walk = (index) => {
-    if (index === team.length) {
-      const score = getRealizedTeamScore(assignment, opponentTypeBias);
+    if (index === options.length) {
+      const score = scoreOf(assignment);
       if (!best || score > best.score) best = { score, team: [...assignment] };
       return;
     }
     for (const build of options[index]) {
+      const needs = singleCopyTmsOf(build);
+      if (honorCopies && needs.some((id) => holders.get(id))) continue;
+      for (const id of needs) holders.set(id, (holders.get(id) || 0) + 1);
       assignment[index] = build;
       walk(index + 1);
+      for (const id of needs) holders.set(id, holders.get(id) - 1);
     }
   };
   walk(0);
-  return best || { team, score: getRealizedTeamScore(team, opponentTypeBias) };
+  return best;
+}
+
+const singleCopyTmsOf = (build) => build.legalityProfile?.singleCopyTms || [];
+
+/**
+ * Tells a member when a single-copy TM decided its build: its preferred
+ * build's copy is planned for another member, or, when no assignment could
+ * honor the copies, the copy it plans is planned by an earlier member too.
+ * @param {!Array<!Object>} team The chosen builds.
+ * @param {!Array<!Array<!Object>>} options Each member's builds, preferred
+ *     first.
+ * @param {boolean} honored Whether the assignment honors every copy.
+ * @return {!Array<!Object>}
+ */
+export function noteSingleCopyTms(team, options, honored) {
+  const holders = new Map();
+  team.forEach((build, index) => {
+    for (const id of singleCopyTmsOf(build)) {
+      if (!holders.has(id)) holders.set(id, []);
+      holders.get(id).push(index);
+    }
+  });
+  if (!holders.size) return team;
+  const label = (id) => {
+    const option = moveSources().tmOptions.find((tm) => tm.id === id);
+    return option ? `${option.code} ${option.move}` : id;
+  };
+  return team.map((build, index) => {
+    const notes = [];
+    if (honored) {
+      const preferred = options[index][0];
+      if (preferred !== build) {
+        for (const id of singleCopyTmsOf(preferred)) {
+          const holder = holders.get(id)?.find((other) => other !== index);
+          if (holder != null) {
+            notes.push(`${label(id)}: one copy, planned for ${team[holder].name}`);
+          }
+        }
+      }
+    } else {
+      for (const id of singleCopyTmsOf(build)) {
+        const first = holders.get(id)[0];
+        if (first !== index) {
+          notes.push(`${label(id)}: needs a second copy (${team[first].name} plans it too)`);
+        }
+      }
+    }
+    if (!notes.length) return build;
+    return {
+      ...build,
+      note: [build.note, ...notes].filter(Boolean).join('; '),
+    };
+  });
 }
 
 // Realizes each of the top relaxed teams and returns the best by EXACT realized

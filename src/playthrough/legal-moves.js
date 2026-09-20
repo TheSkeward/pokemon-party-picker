@@ -1,4 +1,5 @@
 import { mechanics, moveSources } from '../games/legality.js';
+import { getCheckpoint } from '../games/schedule.js';
 import { normalizeLevelCap } from './progression.js';
 import { dataUrl } from '../utils/data-url.js';
 import { getActiveGame } from '../games/registry.js';
@@ -133,6 +134,8 @@ export function compareEvolutionRouteOptions(a, b) {
  */
 export function getAvailableMoves(legalMoveData, progression = {}) {
   const levelCap = normalizeLevelCap(progression.levelCap);
+  // "No cap" is the end of the game: every shop is open.
+  const badgesHeld = getCheckpoint(progression.checkpoint)?.badges ?? Infinity;
   const selectedTmIds = new Set(progression.availableTmIds || []);
   const selectedTmxIds = new Set(progression.availableTmxIds || []);
   const selectedTutorMoveIds = new Set(progression.availableTutorMoveIds || []);
@@ -417,6 +420,12 @@ export function getAvailableMoves(legalMoveData, progression = {}) {
         detail: tmOption.available,
         level: null,
         learnerId: null,
+        machineId: tmOption.id,
+        // In a single-use-TM game a TM is one copy until a shop sells it.
+        singleCopy:
+          !mechanics().reusableTms &&
+          (tmOption.renewableFrom == null ||
+            badgesHeld < tmOption.renewableFrom),
       });
     }
 
