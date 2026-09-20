@@ -379,17 +379,39 @@ async function buildMemberLegalMoveEntry({
     ? (assignedItem?.name ?? topSet.item)
     : null;
 
+  // The set shown is the build the optimizer realized for this member (a
+  // coverage or utility set, a delayed-evolution set, or one assembled
+  // without a contested one-copy TM), not a fresh standard set: the pool is
+  // that build's own moves, and the preference and usage anchor follow it.
+  // A row with no realized build (tests, older results) is assembled from
+  // the pool its build key allows.
+  const realized = realizedBuildOf(row.buildKey);
+  const realizedIds = new Set(
+    (row.legalityProfile?.recommendedMoves || []).map((move) => move.id),
+  );
+  const buildPool = realizedIds.size
+    ? moves.filter((move) => realizedIds.has(move.id))
+    : moves.filter(
+      (move) =>
+        (realized.includeDelayed || !move.delayedEvolution) &&
+        !realized.withoutTms.some((tmId) => needsOnlyTm(move, tmId)),
+    );
+
   const profile = buildCandidateLegalityProfile({
     member,
-    moves,
+    moves: buildPool,
     representativeName: row.name,
     attackerStats,
     levelCap: progression.levelCap,
-    moveUsage: topSet.moveUsage,
-    moveRank: topSet.moveRank,
+    // Coverage and utility sets are assembled without the usage anchor,
+    // as the optimizer assembled them.
+    ...(realized.usageAnchored
+      ? { moveUsage: topSet.moveUsage, moveRank: topSet.moveRank }
+      : {}),
     heldItem,
     ability: topSet.ability,
     opponentTypeBias: progression.opponentTypeBias,
+    movePreference: realized.movePreference,
     fieldExtenderOwned:
       ((progression.ownedItems || {}).amplifieldrock || 0) > 0,
   });
@@ -415,6 +437,33 @@ async function buildMemberLegalMoveEntry({
   profile.observedSet = observedSet;
 
   return { member, moves, profile, topSet, row };
+}
+
+// What a realized build's key says about how its set was assembled (see
+// resolveCandidateBuilds in team-optimizer.js).
+function realizedBuildOf(buildKey) {
+  const key = String(buildKey || '');
+  const sideSet = key === 'coverage' || key === 'utility';
+  return {
+    movePreference: sideSet ? key : 'default',
+    usageAnchored: !sideSet,
+    includeDelayed: !key || key === 'delayed',
+    withoutTms: key.startsWith('without:')
+      ? key.slice('without:'.length).split('+')
+      : [],
+  };
+}
+
+// A move whose only route is the given single-copy TM.
+function needsOnlyTm(move, tmId) {
+  const sources = move.availableSources || [];
+  return (
+    sources.length > 0 &&
+    sources.every(
+      (source) =>
+        source.kind === 'tm' && source.singleCopy && source.machineId === tmId,
+    )
+  );
 }
 
 /**

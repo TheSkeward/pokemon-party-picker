@@ -42,6 +42,7 @@ import { attachCoreLift } from './core-completion.js';
 import { attachTeammateLift } from './teammate-synergy.js';
 import { loadPersistedResults, persistResult } from './result-cache-store.js';
 import { getDataSignature } from '../manifest.js';
+import { moveSources } from '../games/legality.js';
 import {
   SCORED_POOL_LIMIT,
   deduplicateUsageEntries,
@@ -243,7 +244,11 @@ const MAX_RESULT_CACHE = 400;
 // anchor corpus scopes its claims to acquisition windows, so nothing caps
 // endgame drag — a converged mon with a competitive prior scores at its
 // usage rank, and late-game orderings change accordingly.
-const RESULT_CACHE_VERSION = '55';
+// v56: single-use TMs. A one-copy TM is planned for one member at build
+// realization, and a member that loses the copy realizes a set assembled
+// without it (a fallback build variant). Reborn's results are unchanged
+// (reusable TMs); HGSS results with contested TMs differ.
+const RESULT_CACHE_VERSION = '56';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.
@@ -1124,10 +1129,19 @@ function pruneDominatedBuilds(rows) {
     return true;
   };
 
+  // The "without a one-copy TM" fallbacks are dominated by the standard set
+  // by construction; they exist for build realization, not on merit, so
+  // they neither prune nor count against the cap.
+  const isFallback = (row) => String(row.buildKey).startsWith('without:');
   const kept = [];
+  const fallbacks = [];
   for (let b = 0; b < rows.length; b++) {
+    if (isFallback(rows[b])) {
+      fallbacks.push(rows[b]);
+      continue;
+    }
     const dominated = rows.some((_, a) => {
-      if (a === b) return false;
+      if (a === b || isFallback(rows[a])) return false;
       if (!dominates(a, b)) return false;
       // Mutually-equal twins: keep the earlier (default-first) one only.
       if (dominates(b, a)) return a < b;
@@ -1145,7 +1159,7 @@ function pruneDominatedBuilds(rows) {
       (a.legalityProfile?.frictionCost || 0) -
         (b.legalityProfile?.frictionCost || 0),
   );
-  return kept.slice(0, 4);
+  return [...kept.slice(0, 4), ...fallbacks];
 }
 
 // Element-wise max of the kept builds' coverage vectors: the line's optimistic
@@ -1478,8 +1492,23 @@ async function resolveCandidateBuilds({
     profile.abilityKnown = abilityKnown;
     profile.abilityOptions = abilityChoices;
     profile.setReadiness = setReadiness;
-    profile.singleCopyTms = singleCopyTmsOf(buildMoves);
+    profile.singleCopyTms = singleCopyTmsOf(profile.recommendedMoves || []);
     return profile;
+  };
+  // A move whose only route is the given single-copy TM.
+  const needsOnly = (move, tmId) => {
+    const sources = move.availableSources || [];
+    return (
+      sources.length > 0 &&
+      sources.every(
+        (source) =>
+          source.kind === 'tm' && source.singleCopy && source.machineId === tmId,
+      )
+    );
+  };
+  const tmLabel = (tmId) => {
+    const option = moveSources().tmOptions.find((tm) => tm.id === tmId);
+    return option ? `${option.code} ${option.move}` : tmId;
   };
 
   const variants = [
@@ -1497,6 +1526,31 @@ async function resolveCandidateBuilds({
   ];
 
   if (!fastMode) {
+    // Fallbacks for a single-use-TM game: one set assembled without each
+    // one-copy TM the standard set depends on (and one without all of them
+    // when it depends on several), so that when another member is planned
+    // the copy, this one still has a build to realize. They are dominated
+    // by the standard set on merit and exempt from pruning for that reason.
+    const contested = variants[0].profile.singleCopyTms || [];
+    const withoutSets = contested.map((id) => [id]);
+    if (contested.length > 1) withoutSets.push(contested);
+    for (const tmIds of withoutSets) {
+      const pool = naturalMoves.filter(
+        (move) => !tmIds.some((tmId) => needsOnly(move, tmId)),
+      );
+      variants.push({
+        key: `without:${tmIds.join('+')}`,
+        label: `Set without ${tmIds.map(tmLabel).join(' and ')}`,
+        profile: makeProfile({
+          movePreference: 'default',
+          buildMoves: pool,
+          ability: assumedAbility,
+          preMegaAbility,
+          usageAnchored: true,
+        }),
+      });
+    }
+
     variants.push(
       {
         key: 'coverage',
