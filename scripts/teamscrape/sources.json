@@ -23,9 +23,12 @@
     ]
   },
   "rmt": {
-    "comment": "RMT listings to walk. past-gen-teams.319 holds the old-gen RMTs, labeled by generation; ?prefix_id=474 filters the listing to Gen 7, 75 to Gen 4, and 185 to Gen 5 (what the Ruins of Alph forums' \"Rate My Team\" links resolve to), so every row is relevant. Threads are attributed via their prefix label: prefixMap maps tier prefixes directly, genPrefixMap maps generation-only labels with the tier read from the thread title. Unmapped prefixes are reported by the scraper log so the maps can grow.",
+    "comment": "RMT listings to walk: a URL, or {url, gen} for a forum whose rows carry no prefix. past-gen-teams.319 holds the old-gen RMTs, labeled by generation; ?prefix_id=75 filters it to Gen 4 and 185 to Gen 5 (what the Ruins of Alph forums' \"Rate My Team\" links resolve to), so every row is relevant. Gen 7 RMTs moved to Ruins of Alph's SM Rate My Team forum, whose rows are unlabeled, so that listing pins gen7 and the tier comes from the title. Threads are attributed via their prefix label: prefixMap maps tier prefixes directly, genPrefixMap maps generation-only labels with the tier read from the thread title. Unmapped prefixes are reported by the scraper log so the maps can grow.",
     "listings": [
-      "https://www.smogon.com/forums/forums/past-gen-teams.319/?prefix_id=474",
+      {
+        "url": "https://www.smogon.com/forums/forums/sm-rate-my-team.1052/",
+        "gen": "gen7"
+      },
       "https://www.smogon.com/forums/forums/past-gen-teams.319/?prefix_id=75",
       "https://www.smogon.com/forums/forums/past-gen-teams.319/?prefix_id=185"
     ],

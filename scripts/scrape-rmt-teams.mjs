@@ -1,7 +1,8 @@
 /**
  * @fileoverview RMT-forum harvester: walks the Smogon RMT forum listings in
- * teamscrape/sources.json (rmt.listings), maps each thread's prefix label
- * to a format id — directly via rmt.prefixMap ("SM OU"), or a
+ * teamscrape/sources.json (rmt.listings; a URL, or {url, gen} for a forum
+ * whose rows carry no prefix), maps each thread's prefix label to a
+ * format id — directly via rmt.prefixMap ("SM OU"), or a
  * generation-only label ("Gen 7", rmt.genPrefixMap) refined by the tier in
  * the thread title — and harvests the OPENING POST only — the team being
  * rated. Replies are suggested edits, not teams.
@@ -65,14 +66,18 @@ const knownFormats = new Set(REAL_FORMATS.map((format) => format.id));
 /**
  * Thread → format id: the explicit prefix map first ("SM OU"), else a
  * generation-only prefix ("Gen 7", the past-gen forum's labeling) refined
- * by the tier named in the thread title.
+ * by the tier named in the thread title, else the listing's own generation
+ * (a single-generation RMT forum, whose rows carry no prefix) refined the
+ * same way.
+ * @param {!Object} row A listing row.
+ * @param {!Object} rmt The rmt config.
+ * @param {?string=} listingGen The listing's pinned generation ("gen7").
  * @return {?string}
  */
-function resolveFormat(row, rmt) {
-  if (!row.prefix) return null;
-  const direct = rmt.prefixMap?.[row.prefix];
+export function resolveFormat(row, rmt, listingGen = null) {
+  const direct = row.prefix ? rmt.prefixMap?.[row.prefix] : null;
   if (direct) return direct;
-  const gen = rmt.genPrefixMap?.[row.prefix];
+  const gen = (row.prefix && rmt.genPrefixMap?.[row.prefix]) || listingGen;
   if (gen) {
     const tier = tierFromTitle(row.title);
     if (tier) return knownFormats.has(gen + tier) ? gen + tier : null;
@@ -145,7 +150,9 @@ async function main() {
 
   let fresh = 0;
   const unmappedPrefixes = new Map();
-  for (const listing of rmt.listings) {
+  for (const entry of rmt.listings) {
+    const { url: listing, gen: listingGen } =
+      typeof entry === 'string' ? { url: entry } : entry;
     try {
       let rowsSeen = 0;
       let pagesWalked = 0;
@@ -171,7 +178,7 @@ async function main() {
             handled = false;
             break;
           }
-          const formatId = resolveFormat(row, rmt);
+          const formatId = resolveFormat(row, rmt, listingGen);
           if (!formatId) {
             const known =
               rmt.prefixMap?.[row.prefix] || rmt.genPrefixMap?.[row.prefix];

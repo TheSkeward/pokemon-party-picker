@@ -619,6 +619,29 @@ test('replay harvest spends its budget on tours, then elite, then the rest', asy
   fs.rmSync(dir, { recursive: true, force: true });
 });
 
+test('rmt: an unlabeled listing attributes by its pinned generation', async () => {
+  const { resolveFormat } = await import('../scripts/scrape-rmt-teams.mjs');
+  const rmt = {
+    prefixMap: { 'SM OU': 'gen7ou' },
+    genPrefixMap: { 'Gen 4': 'gen4' },
+  };
+  assert.equal(resolveFormat({ prefix: 'SM OU', title: 'x' }, rmt), 'gen7ou');
+  assert.equal(
+    resolveFormat({ prefix: 'Gen 4', title: 'DPP UU stall' }, rmt), 'gen4uu');
+  assert.equal(resolveFormat({ prefix: null, title: 'AG Drifblim' }, rmt),
+    null);
+  assert.equal(
+    resolveFormat({ prefix: null, title: 'AG Drifblim' }, rmt, 'gen7'),
+    'gen7anythinggoes');
+  assert.equal(
+    resolveFormat({ prefix: null, title: 'my first team' }, rmt, 'gen7'),
+    null);
+  // A pinned generation never overrides a real prefix.
+  assert.equal(
+    resolveFormat({ prefix: 'Gen 4', title: 'OU balance' }, rmt, 'gen7'),
+    'gen4ou');
+});
+
 test('forum fetch: HTTP mode identifies itself and requests readable text',
   async () => {
     const calls = [];
