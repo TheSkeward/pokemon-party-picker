@@ -1,5 +1,4 @@
 import {
-  readLocalStorage,
   removeLocalStorage,
   writeLocalStorage,
 } from '../storage/safe-local-storage';
@@ -9,6 +8,7 @@ import { analysisTypes } from './type-chart.js';
 import { accessFields } from '../games/evolution.js';
 import { getCheckpoint } from '../games/schedule.js';
 import { getActiveGame } from '../games/registry.js';
+import { readSavedState } from '../games/saved-state.js';
 import { toId as normalizeSearch } from '../utils/ids.js';
 
 // Per-game: each game's playthrough progression is its own saved state (the
@@ -45,7 +45,7 @@ export const DEFAULT_PROGRESSION = {
  * @return {Object}
  */
 export function loadSavedProgression() {
-  const raw = readLocalStorage(progressionStorageKey(), '');
+  const raw = readSavedState('progression');
 
   if (!raw) return { ...DEFAULT_PROGRESSION };
 

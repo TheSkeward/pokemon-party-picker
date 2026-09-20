@@ -1,5 +1,5 @@
 /**
- * @fileoverview The SoulSilver progression timeline, in the shape
+ * @fileoverview The HGSS progression timeline, in the shape
  * games/schedule.js reads (see reborn/badge-timeline.js for the field
  * conventions). Sixteen badge checkpoints: the eight Johto gyms in the order
  * the game funnels the player through them, then the eight Kanto gyms in the
@@ -16,11 +16,11 @@
  * `unlocks` names what first becomes obtainable at a checkpoint: the Route 34
  * Day Care once Ilex Forest opens, the Blackthorn move relearner on arrival,
  * and the headline competitive items (the full item timeline is
- * soulsilver/items.js; the badges here agree with it).
+ * hgss/items.js; the badges here agree with it).
  */
 
 /** @type {!Array<!Object>} */
-export const SOULSILVER_PROGRESSION_CHECKPOINTS = [
+export const HGSS_PROGRESSION_CHECKPOINTS = [
   { id: 'start', badges: 0, label: 'No badges', detail: 'Game start', levelCap: 10, unlocks: {} },
   {
     id: 'badge-1', badges: 1, label: 'Zephyr Badge (Falkner)', levelCap: 20,

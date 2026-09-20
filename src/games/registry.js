@@ -18,11 +18,11 @@
  */
 import { GEN7_DEX } from './dex-gen7.js';
 import { REBORN_GAME } from './reborn.js';
-import { SOULSILVER_GAME } from './soulsilver.js';
+import { HGSS_GAME } from './hgss.js';
 
 const GAMES = Object.freeze({
   [REBORN_GAME.id]: REBORN_GAME,
-  [SOULSILVER_GAME.id]: SOULSILVER_GAME,
+  [HGSS_GAME.id]: HGSS_GAME,
 });
 
 // Loaded dex bundles by game id. The default game's is bundled with the app

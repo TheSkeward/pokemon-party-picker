@@ -1,15 +1,15 @@
 /**
- * @fileoverview SoulSilver's item content, curated by hand from Bulbapedia's
+ * @fileoverview HGSS's item content, curated by hand from Bulbapedia's
  * per-item acquisition tables (HGSS rows), the Pokéathlon Dome's Athlete
  * Shop, and the Battle Frontier's Exchange Service Corner, in the shapes
  * games/items.js and games/schedule.js read. Every entry says where it comes
  * from; anything absent is unknown, and the engine surfaces it as such.
  *
- * Badges follow the schedule's gym order (soulsilver/schedule.js): the count
+ * Badges follow the schedule's gym order (hgss/schedule.js): the count
  * held when a location is normally reached. Kanto opens after the eighth
  * badge, so a Kanto pickup before any Kanto gym is badge 8; the Battle
  * Frontier is placed at 8 as well, since its BP prices are no mid-game grind.
- * Weather rocks, the pinch berries, and the event orbs are absent: SoulSilver
+ * Weather rocks, the pinch berries, and the event orbs are absent: HGSS
  * offers them only by trade, Pokéwalker, or event, so they stay untracked.
  */
 
@@ -19,7 +19,7 @@
  * real grind (5% wild holds only, or a 48 BP Frontier price).
  * @type {!Object<string, {status: string, source: string}>}
  */
-export const SOULSILVER_EVOLUTION_ITEM_AVAILABILITY = Object.freeze({
+export const HGSS_EVOLUTION_ITEM_AVAILABILITY = Object.freeze({
   // The Athlete Shop sells one a day from the National Park on; the phone
   // gift trainers and Bill's grandfather add copies.
   firestone: { status: 'farmable', source: 'Athlete Shop (Tuesday), Alan on Route 36, Bill\'s grandfather' },
@@ -56,7 +56,7 @@ export const SOULSILVER_EVOLUTION_ITEM_AVAILABILITY = Object.freeze({
  * or holder.
  * @type {!Object<string, {badge: number, via: string}>}
  */
-export const SOULSILVER_ITEM_UNLOCK_BADGES = Object.freeze({
+export const HGSS_ITEM_UNLOCK_BADGES = Object.freeze({
   // Johto, before the League.
   mysticwater: { badge: 0, via: 'Cherrygrove City' },
   twistedspoon: { badge: 0, via: 'Route 29 (Tuesday)' },
@@ -174,7 +174,7 @@ export const SOULSILVER_ITEM_UNLOCK_BADGES = Object.freeze({
  * after the National Dex), the Game Corners, and the Frontier's BP counter.
  * @type {!Object<string, number>}
  */
-export const SOULSILVER_SHOP_ITEM_BADGES = Object.freeze({
+export const HGSS_SHOP_ITEM_BADGES = Object.freeze({
   firestone: 2,
   waterstone: 2,
   thunderstone: 2,
@@ -212,7 +212,7 @@ export const SOULSILVER_SHOP_ITEM_BADGES = Object.freeze({
  * overrides its access gate.
  * @type {!Array<{id: string, name: string}>}
  */
-export const SOULSILVER_EXTRA_INVENTORY_ITEMS = Object.freeze([
+export const HGSS_EXTRA_INVENTORY_ITEMS = Object.freeze([
   { id: 'dawnstone', name: 'Dawn Stone' },
   { id: 'protector', name: 'Protector' },
   { id: 'dubiousdisc', name: 'Dubious Disc' },

@@ -1,5 +1,5 @@
 /**
- * @fileoverview SoulSilver's machines and tutors with pickup timing, in the
+ * @fileoverview HGSS's machines and tutors with pickup timing, in the
  * shape games/legality.js serves (see reborn/progression-options.js). The
  * Generation IV TM list is shared by every Gen 4 game; the HM list, the
  * pickup locations, and the tutors are HeartGold/SoulSilver's own
@@ -117,7 +117,7 @@ const MACHINE_AVAILABILITY = {
 };
 
 /** The 92 Generation IV TMs, sorted by unlock badge then location. */
-export const SOULSILVER_TM_OPTIONS = [
+export const HGSS_TM_OPTIONS = [
   ['tm01', 'TM01', 'Focus Punch'],
   ['tm02', 'TM02', 'Dragon Claw'],
   ['tm03', 'TM03', 'Water Pulse'],
@@ -216,7 +216,7 @@ export const SOULSILVER_TM_OPTIONS = [
  * The eight HeartGold/SoulSilver HMs (HM05 is Whirlpool, not Diamond and
  * Pearl's Defog), same shape and ordering as the TMs.
  */
-export const SOULSILVER_HM_OPTIONS = [
+export const HGSS_HM_OPTIONS = [
   ['hm01', 'HM01', 'Cut'],
   ['hm02', 'HM02', 'Fly'],
   ['hm03', 'HM03', 'Surf'],
@@ -233,7 +233,7 @@ export const SOULSILVER_HM_OPTIONS = [
  * @type {!Array<{label: string, available: string, moves: !Array<string>,
  *     options: !Array<{id: string, move: string}>}>}
  */
-export const SOULSILVER_TUTOR_GROUPS = [
+export const HGSS_TUTOR_GROUPS = [
   {
     label: 'Ilex Forest',
     available: 'After Badge 02',
@@ -280,7 +280,7 @@ export const SOULSILVER_TUTOR_GROUPS = [
 }));
 
 /** Every tutor move once. @type {!Array<{id: string, move: string}>} */
-export const SOULSILVER_TUTOR_OPTIONS = SOULSILVER_TUTOR_GROUPS.flatMap(
+export const HGSS_TUTOR_OPTIONS = HGSS_TUTOR_GROUPS.flatMap(
   (group) => group.options,
 );
 

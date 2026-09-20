@@ -331,7 +331,7 @@ a genuine core near 63% of the bound and incidental same-tier pair mass near
 - Search orchestration and result cache version: `src/teamBuilder/team-optimizer.js`
 - Legality, progression, and evolution requirements: `src/playthrough/`
 - Per-game data behind them (schedules, machines, items): `src/games/` with
-  `src/reborn/` and `src/soulsilver/`
+  `src/reborn/` and `src/hgss/`
 - Badge-bucket anchors: `test/calibration/`
 
 The score-breakdown schema is consumed by the UI and caches. Important fields

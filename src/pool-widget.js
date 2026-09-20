@@ -31,6 +31,7 @@ import {
 } from './teamBuilder/telemetry.js';
 import { loadManifest } from './manifest.js';
 import { activateGameForFamily, getActiveGame } from './games/registry.js';
+import { readSavedState } from './games/saved-state.js';
 import { renderLegalMovesPanel } from './playthrough/legal-moves-view';
 import { renderTeamAnalysisPanel } from './teamBuilder/team-analysis-view';
 import { getCurrentSpeciesForChoice } from './playthrough/current-species.js';
@@ -1606,7 +1607,7 @@ export function savePool(value) {
 
 /** @return {string} The saved pool text, or '' when none. */
 export function loadSavedPool() {
-  return readLocalStorage(poolStorageKey(), '');
+  return readSavedState('pool');
 }
 
 function saveTeamSort(value) {

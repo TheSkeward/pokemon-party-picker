@@ -13,7 +13,7 @@
  * (HeartGold and SoulSilver moved several from Diamond and Pearl's) takes
  * its own list from the table instead; a machine entry becomes a TM or an HM
  * source according to the game's machine tables, so a machine another game
- * of the generation has and this one lacks (Defog in SoulSilver) teaches
+ * of the generation has and this one lacks (Defog in HGSS) teaches
  * nothing; a tutor entry counts only for the game's own tutors; egg entries
  * are egg moves; a form-change entry (Rotom-Wash's Hydro Pump) is recorded
  * as an evolution move, granted on taking the form. Event-only entries are

@@ -1,10 +1,11 @@
 # Pokemon Party Picker
 
 A static web app for planning playthrough teams from the Pokemon you
-currently have available, for Pokemon Reborn and Pokemon SoulSilver.
+currently have available, for Pokemon Reborn and Pokemon HeartGold and
+SoulSilver (HGSS).
 
 The app uses Smogon usage data of the game's generation (Gen 7 for Reborn,
-Gen 4 for SoulSilver) as a prior for which forms, sets, and teammates are
+Gen 4 for HGSS) as a prior for which forms, sets, and teammates are
 worth considering, then checks those ideas against the game's progression:
 level caps, TMs and HMs, tutors, move relearner, daycare, evolution access,
 held items, legal moves, coverage, and defensive fit.
@@ -16,7 +17,7 @@ https://theskeward.github.io/pokemon-party-picker/
 ## Features
 
 - Paste an owned Pokemon pool and get a recommended team.
-- Lock a Pokemon into the team by suffixing it with `!` (`Gothitelle!`);
+- Lock a Pokemon into the team by suffixing it with `!` (`Gengar!`);
   the optimizer fills the remaining slots around it.
 - Track each game's progression locally in your browser.
 - Inspect legal current moves, recommended sets, breeding chains, item picks,
@@ -28,12 +29,12 @@ https://theskeward.github.io/pokemon-party-picker/
 
 The usage-data families in the top tabs (Singles, Doubles, Gen 4 Singles)
 come from the data pipeline, and each activates the game whose prior it is:
-Reborn for the Gen 7 families, SoulSilver for Gen 4. A game is a descriptor
+Reborn for the Gen 7 families, HGSS for Gen 4. A game is a descriptor
 in `src/games/` naming its dex generation, usage families, progression
 schedule, machines and tutors, item content, evolution rules, and the
 mechanics it has (Reborn's Common Candy level-downs and Hidden Power Type
 Changer, for instance); its curated data lives in `src/reborn/` or
-`src/soulsilver/`. Legal moves come from the game's own data: Reborn's from
+`src/hgss/`. Legal moves come from the game's own data: Reborn's from
 its mons.dat, a mainline game's from `@pkmn/dex` with the game's level-up
 lists taken from Bulbapedia where its generation's games differ.
 
@@ -90,8 +91,8 @@ src/app/                       App shell and page wiring
 src/views/                     Shared render views
 src/teamBuilder/               Pool parsing, scoring, search, analysis, UI
 src/playthrough/               Progression state, move legality, evolution, breeding
-src/games/                     Game registry and descriptors (Reborn, SoulSilver)
-src/reborn/, src/soulsilver/   Each game's curated data
+src/games/                     Game registry and descriptors (Reborn, HGSS)
+src/reborn/, src/hgss/         Each game's curated data
 src/resolver/                  Input-name and representative resolution
 src/setDetails/                Precomputed set-detail loading
 src/generated/                 Checked-in generated modules
@@ -126,7 +127,7 @@ the repository.
   would be too expensive.
 - The level-cap investment view advances the level cap only; it does not model
   future TM, tutor, item, or location unlocks.
-- SoulSilver's level caps are the obedience thresholds, which bind only traded
+- HGSS's level caps are the obedience thresholds, which bind only traded
   Pokemon; Hidden Power is never counted as plannable there (its type follows
   IVs); weather rocks, pinch berries, and event items are not tracked because
   the game offers them only by trade, Pokewalker, or event.

@@ -31,7 +31,7 @@ test('every published family is claimed by exactly one game', () => {
   );
   assert.equal(gameForFamily('singles').id, 'reborn');
   assert.equal(gameForFamily('doubles').id, 'reborn');
-  assert.equal(gameForFamily('gen4singles').id, 'soulsilver');
+  assert.equal(gameForFamily('gen4singles').id, 'hgss');
   assert.equal(gameForFamily('gen9ou'), null);
   assert.equal(getDefaultBrowserFormat(AVAILABILITY, 'gen4singles'), 'gen4ou');
   assert.equal(getDefaultBrowserFormat(AVAILABILITY, 'gen9ou'), '');
@@ -39,9 +39,9 @@ test('every published family is claimed by exactly one game', () => {
 
 test('selecting a family loads and activates its game; an unclaimed family keeps the current one', async () => {
   try {
-    assert.equal((await activateGameForFamily('gen4singles')).id, 'soulsilver');
-    assert.equal(getActiveGame().id, 'soulsilver');
-    assert.equal((await activateGameForFamily('gen9ou')).id, 'soulsilver');
+    assert.equal((await activateGameForFamily('gen4singles')).id, 'hgss');
+    assert.equal(getActiveGame().id, 'hgss');
+    assert.equal((await activateGameForFamily('gen9ou')).id, 'hgss');
     assert.equal((await activateGameForFamily('singles')).id, 'reborn');
   } finally {
     setActiveGame('reborn');
@@ -49,7 +49,7 @@ test('selecting a family loads and activates its game; an unclaimed family keeps
 });
 
 test('the species index narrows to the active game and stays whole for Reborn', async () => {
-  await loadGame('soulsilver');
+  await loadGame('hgss');
   const index = [
     { id: 'garchomp', name: 'Garchomp' },
     { id: 'sylveon', name: 'Sylveon' },
@@ -58,7 +58,7 @@ test('the species index narrows to the active game and stays whole for Reborn', 
   ];
   assert.deepEqual(filterToActiveGame(index), index);
   try {
-    setActiveGame('soulsilver');
+    setActiveGame('hgss');
     assert.deepEqual(
       filterToActiveGame(index).map((entry) => entry.id),
       ['garchomp', 'rotomwash'],

@@ -1,4 +1,4 @@
-// SoulSilver is the first mainline game on the registry: a Gen 4 dex, real
+// HGSS is the first mainline game on the registry: a Gen 4 dex, real
 // trades, obedience-threshold level caps, and the machines and tutors of
 // HeartGold/SoulSilver alone. These pin the descriptor and the engine
 // branches Reborn never exercised.
@@ -14,7 +14,7 @@ import {
   setActiveGame,
 } from '../src/games/registry.js';
 
-await loadGame('soulsilver');
+await loadGame('hgss');
 
 const { dex } = await import('../src/games/dex.js');
 const { getCheckpoints } = await import('../src/games/schedule.js');
@@ -24,10 +24,11 @@ const { describeEvolutionPath, getEvolutionRequirement } = await import(
   '../src/playthrough/evolution-requirements.js',
 );
 const { tunable } = await import('../src/teamBuilder/scoring-constants.js');
+const { readSavedState } = await import('../src/games/saved-state.js');
 
-function withSoulSilver(fn) {
+function withHgss(fn) {
   const previous = getActiveGame().id;
-  setActiveGame('soulsilver');
+  setActiveGame('hgss');
   try {
     return fn();
   } finally {
@@ -38,19 +39,19 @@ function withSoulSilver(fn) {
 function legalMoves(id) {
   return JSON.parse(
     fs.readFileSync(
-      path.resolve('site-data', 'data', 'soulsilver-legal-moves', 'all', `${id}.json`),
+      path.resolve('site-data', 'data', 'hgss-legal-moves', 'all', `${id}.json`),
       'utf8',
     ),
   );
 }
 
-test('soulsilver is registered on the Gen 4 dex under namespaced keys', () => {
-  const game = getGame('soulsilver');
+test('hgss is registered on the Gen 4 dex under namespaced keys', () => {
+  const game = getGame('hgss');
   assert.equal(game.dexGen, 4);
-  assert.equal(game.storage.progression, 'pokemon-party-picker:soulsilver:progression:v1');
-  assert.equal(game.storage.pool, 'pokemon-party-picker:soulsilver:owned-pool:v1');
-  assert.equal(game.data.legalMovesDir, 'soulsilver-legal-moves');
-  withSoulSilver(() => {
+  assert.equal(game.storage.progression, 'pokemon-party-picker:hgss:progression:v1');
+  assert.equal(game.storage.pool, 'pokemon-party-picker:hgss:owned-pool:v1');
+  assert.equal(game.data.legalMovesDir, 'hgss-legal-moves');
+  withHgss(() => {
     assert.equal(dex().gen, 4);
     assert.equal(dex().types.length, 17);
     assert.ok('garchomp' in dex().progressionSpecies);
@@ -59,8 +60,31 @@ test('soulsilver is registered on the Gen 4 dex under namespaced keys', () => {
   assert.equal(getActiveGame().id, 'reborn');
 });
 
+test('saves made under the launch id "soulsilver" move to the hgss keys', () => {
+  const store = new Map();
+  const previous = globalThis.localStorage;
+  globalThis.localStorage = {
+    getItem: (key) => (store.has(key) ? store.get(key) : null),
+    setItem: (key, value) => store.set(key, String(value)),
+    removeItem: (key) => store.delete(key),
+    key: () => null,
+    length: 0,
+  };
+  store.set('pokemon-party-picker:soulsilver:owned-pool:v1', 'Cyndaquil');
+  try {
+    withHgss(() => {
+      assert.equal(readSavedState('pool'), 'Cyndaquil');
+      assert.equal(store.get('pokemon-party-picker:hgss:owned-pool:v1'), 'Cyndaquil');
+      assert.ok(!store.has('pokemon-party-picker:soulsilver:owned-pool:v1'));
+      assert.equal(readSavedState('progression'), '');
+    });
+  } finally {
+    globalThis.localStorage = previous;
+  }
+});
+
 test('the schedule is the sixteen badges with obedience-threshold caps', () => {
-  withSoulSilver(() => {
+  withHgss(() => {
     const checkpoints = getCheckpoints();
     assert.deepEqual(
       checkpoints.map((checkpoint) => checkpoint.id),
@@ -75,7 +99,7 @@ test('the schedule is the sixteen badges with obedience-threshold caps', () => {
 });
 
 test('machines are the Gen 4 TMs and the HeartGold/SoulSilver HMs with pickup timing', () => {
-  withSoulSilver(() => {
+  withHgss(() => {
     const { tmOptions, tmxOptions, tutorOptions } = moveSources();
     assert.equal(tmOptions.length, 92);
     assert.equal(new Set(tmOptions.map((option) => option.move)).size, 92);
@@ -94,7 +118,7 @@ test('machines are the Gen 4 TMs and the HeartGold/SoulSilver HMs with pickup ti
 });
 
 test('evolutions price real trades and block the methods the game lacks', () => {
-  withSoulSilver(() => {
+  withHgss(() => {
     const species = dex().progressionSpecies;
 
     const gengar = getEvolutionRequirement(species.gengar);
@@ -133,7 +157,7 @@ test('evolutions price real trades and block the methods the game lacks', () => 
       const requirement = getEvolutionRequirement(species[id]);
       assert.equal(requirement.status, 'blocked', id);
       assert.match(requirement.reason, method);
-      assert.match(requirement.reason, /does not exist in SoulSilver/);
+      assert.match(requirement.reason, /does not exist in HGSS/);
     }
 
     assert.equal(getEvolutionRequirement(species.mantine).status, 'legal');
@@ -141,8 +165,8 @@ test('evolutions price real trades and block the methods the game lacks', () => 
   });
 });
 
-test('set readiness prices SoulSilver machines against its own caps', () => {
-  withSoulSilver(() => {
+test('set readiness prices HGSS machines against its own caps', () => {
+  withHgss(() => {
     const readiness = computeSetReadiness({
       legalMoveData: {
         pokemonId: 'pidgey',
@@ -160,12 +184,12 @@ test('set readiness prices SoulSilver machines against its own caps', () => {
 test('move-evolution levels follow the HGSS level-up table', () => {
   const table = JSON.parse(
     fs.readFileSync(
-      path.resolve('scripts', 'soulsilver', 'level-up.generated.json'),
+      path.resolve('scripts', 'hgss', 'level-up.generated.json'),
       'utf8',
     ),
   );
   const toId = (value) => String(value).toLowerCase().replace(/[^a-z0-9]/g, '');
-  const moveEvolutions = withSoulSilver(() =>
+  const moveEvolutions = withHgss(() =>
     Object.values(dex().progressionSpecies).filter(
       (species) => species.evoType === 'levelMove',
     ),
@@ -192,7 +216,7 @@ test('legal-move files carry Gen 4 sources in the Reborn file shape', () => {
   );
   assert.ok(!byId.has('scald'));
 
-  // Defog is a Diamond/Pearl HM, not a SoulSilver machine.
+  // Defog is a Diamond/Pearl HM, not a HGSS machine.
   const crobat = legalMoves('crobat');
   const defog = crobat.moves.find((move) => move.id === 'defog');
   assert.ok(!defog || (!defog.sources.tm && !defog.sources.tmx));

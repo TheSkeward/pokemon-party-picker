@@ -10,7 +10,7 @@ import {
   setActiveGame,
 } from '../src/games/registry.js';
 
-await loadGame('soulsilver');
+await loadGame('hgss');
 
 const { getAvailableMoves } = await import('../src/playthrough/legal-moves.js');
 const { normalizeProgression } = await import('../src/playthrough/progression.js');
@@ -53,7 +53,7 @@ test('a below-arrival level-up is a candy-down route only where levels can be lo
   assert.equal(mechanics().levelDown, true);
   assert.equal(closeCombat({ levelCap: '50' }).availableSources[0].candyDown, true);
 
-  withGame('soulsilver', () => {
+  withGame('hgss', () => {
     assert.equal(mechanics().levelDown, false);
     const locked = closeCombat({ levelCap: '50' });
     assert.ok(!locked || locked.availableSources.length === 0);
@@ -80,7 +80,7 @@ test('Hidden Power is plannable only through a Type Changer', () => {
   assert.equal(hiddenPowers(progression).length, 16);
   assert.equal(changerFlag(), true);
 
-  withGame('soulsilver', () => {
+  withGame('hgss', () => {
     assert.equal(tm10(), 'Hidden Power');
     assert.equal(hiddenPowers(progression).length, 0);
     assert.equal(changerFlag(), false);
@@ -92,11 +92,11 @@ test('Hidden Power is plannable only through a Type Changer', () => {
       progression: {},
     });
     assert.equal(readiness.moves[0].status, 'blocked');
-    assert.match(readiness.moves[0].detail, /IVs .*SoulSilver/);
+    assert.match(readiness.moves[0].detail, /IVs .*HGSS/);
   });
 });
 
 test('each game names its HM-like machines', () => {
   assert.equal(moveSources().tmxLabel, 'TMX');
-  withGame('soulsilver', () => assert.equal(moveSources().tmxLabel, 'HM'));
+  withGame('hgss', () => assert.equal(moveSources().tmxLabel, 'HM'));
 });

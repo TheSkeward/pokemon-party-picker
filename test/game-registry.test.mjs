@@ -32,11 +32,11 @@ test('activating an unregistered game is an explicit error', () => {
 
 test('a game activates only once its dex bundle is loaded', async () => {
   // Only the default game's bundle ships with the app.
-  assert.throws(() => setActiveGame('soulsilver'), /not loaded/);
+  assert.throws(() => setActiveGame('hgss'), /not loaded/);
   assert.equal(getActiveGame().id, 'reborn');
-  await loadGame('soulsilver');
-  setActiveGame('soulsilver');
-  assert.equal(getActiveGame().id, 'soulsilver');
+  await loadGame('hgss');
+  setActiveGame('hgss');
+  assert.equal(getActiveGame().id, 'hgss');
   setActiveGame('reborn');
 });
 

@@ -1,24 +1,25 @@
 /**
- * The Pokémon SoulSilver game descriptor (see reborn.js for what each field
- * means). A mainline game: no game-original items, real trades, and the
- * Generation IV learnsets as the legality basis. Its data paths and saved-
- * state keys are namespaced by game id. Item content is curated by hand in
- * soulsilver/items.js.
+ * The Pokémon HeartGold and SoulSilver game descriptor (see reborn.js for
+ * what each field means). One game for both versions: nothing the engine
+ * models differs between them. A mainline game: no game-original items,
+ * real trades, and the Generation IV learnsets as the legality basis. Its
+ * data paths and saved-state keys are namespaced by game id. Item content
+ * is curated by hand in hgss/items.js.
  */
 import { EVOLUTION_STONE_FIELDS } from '../reborn/evolution-access.js';
-import { SOULSILVER_PROGRESSION_CHECKPOINTS } from '../soulsilver/schedule.js';
+import { HGSS_PROGRESSION_CHECKPOINTS } from '../hgss/schedule.js';
 import {
-  SOULSILVER_EVOLUTION_ITEM_AVAILABILITY,
-  SOULSILVER_EXTRA_INVENTORY_ITEMS,
-  SOULSILVER_ITEM_UNLOCK_BADGES,
-  SOULSILVER_SHOP_ITEM_BADGES,
-} from '../soulsilver/items.js';
+  HGSS_EVOLUTION_ITEM_AVAILABILITY,
+  HGSS_EXTRA_INVENTORY_ITEMS,
+  HGSS_ITEM_UNLOCK_BADGES,
+  HGSS_SHOP_ITEM_BADGES,
+} from '../hgss/items.js';
 import {
-  SOULSILVER_HM_OPTIONS,
-  SOULSILVER_TM_OPTIONS,
-  SOULSILVER_TUTOR_GROUPS,
-  SOULSILVER_TUTOR_OPTIONS,
-} from '../soulsilver/move-sources.js';
+  HGSS_HM_OPTIONS,
+  HGSS_TM_OPTIONS,
+  HGSS_TUTOR_GROUPS,
+  HGSS_TUTOR_OPTIONS,
+} from '../hgss/move-sources.js';
 
 // Generation IV has no Ice Stone; the other nine stones exist.
 const STONE_FIELDS = EVOLUTION_STONE_FIELDS.filter(
@@ -26,12 +27,12 @@ const STONE_FIELDS = EVOLUTION_STONE_FIELDS.filter(
 );
 
 /**
- * The access gates SoulSilver's progression exposes, in display order. The
+ * The access gates HGSS's progression exposes, in display order. The
  * location evolutions (magnetic field, Moss Rock, Ice Rock) have no gate
  * because the game has no such place; see `unavailableAccessKeys`.
  * @type {!Array<{key: string, label: string, item: (string|undefined)}>}
  */
-const SOULSILVER_ACCESS_FIELDS = Object.freeze([
+const HGSS_ACCESS_FIELDS = Object.freeze([
   { key: 'evoAccessFriendship', label: 'Friendship evolutions' },
   ...STONE_FIELDS,
   { key: 'evoAccessOtherEvoItems', label: 'Other evolution items (Metal Coat, Razor Claw, …)' },
@@ -39,24 +40,24 @@ const SOULSILVER_ACCESS_FIELDS = Object.freeze([
   { key: 'evoAccessPartyCondition', label: 'Party-condition evolutions (Mantyke needs a Remoraid)' },
 ]);
 
-export const SOULSILVER_GAME = Object.freeze({
-  id: 'soulsilver',
-  label: 'Pokémon SoulSilver',
-  shortLabel: 'SoulSilver',
+export const HGSS_GAME = Object.freeze({
+  id: 'hgss',
+  label: 'Pokémon HeartGold and SoulSilver',
+  shortLabel: 'HGSS',
   dexGen: 4,
   // Loaded on demand: the Gen 4 bundle is its own chunk.
   loadDex: () => import('./dex-gen4.js').then((module) => module.GEN4_DEX),
   families: Object.freeze(['gen4singles']),
   schedule: Object.freeze({
-    checkpoints: SOULSILVER_PROGRESSION_CHECKPOINTS,
-    itemUnlockBadges: SOULSILVER_ITEM_UNLOCK_BADGES,
+    checkpoints: HGSS_PROGRESSION_CHECKPOINTS,
+    itemUnlockBadges: HGSS_ITEM_UNLOCK_BADGES,
   }),
   moveSources: Object.freeze({
-    tmOptions: SOULSILVER_TM_OPTIONS,
-    tmxOptions: SOULSILVER_HM_OPTIONS,
+    tmOptions: HGSS_TM_OPTIONS,
+    tmxOptions: HGSS_HM_OPTIONS,
     tmxLabel: 'HM',
-    tutorGroups: SOULSILVER_TUTOR_GROUPS,
-    tutorOptions: SOULSILVER_TUTOR_OPTIONS,
+    tutorGroups: HGSS_TUTOR_GROUPS,
+    tutorOptions: HGSS_TUTOR_OPTIONS,
   }),
   // No Common Candy and no Type Changer: a level never goes down, and Hidden
   // Power's type follows IVs.
@@ -67,12 +68,12 @@ export const SOULSILVER_GAME = Object.freeze({
   // No mining, no replaced items, no game-original held items; the shops are
   // the Athlete Shop, the Game Corners, and the Frontier's BP counter.
   items: Object.freeze({
-    shopItemBadges: SOULSILVER_SHOP_ITEM_BADGES,
+    shopItemBadges: HGSS_SHOP_ITEM_BADGES,
     miningItemBadges: Object.freeze({}),
-    extraInventoryItems: SOULSILVER_EXTRA_INVENTORY_ITEMS,
+    extraInventoryItems: HGSS_EXTRA_INVENTORY_ITEMS,
     hiddenInventoryItemIds: new Set(),
     inventoryMigration: Object.freeze({}),
-    evolutionItemAvailability: SOULSILVER_EVOLUTION_ITEM_AVAILABILITY,
+    evolutionItemAvailability: HGSS_EVOLUTION_ITEM_AVAILABILITY,
     fieldSeeds: Object.freeze({
       names: Object.freeze([]),
       proxyItems: Object.freeze([]),
@@ -94,7 +95,7 @@ export const SOULSILVER_GAME = Object.freeze({
       'evoAccessOtherLocations',
     ]),
     formNotes: Object.freeze({}),
-    accessFields: SOULSILVER_ACCESS_FIELDS,
+    accessFields: HGSS_ACCESS_FIELDS,
   }),
   rules: Object.freeze({
     legalityBase: Object.freeze({
@@ -102,13 +103,13 @@ export const SOULSILVER_GAME = Object.freeze({
       baseGames: 'HGSS',
       transferMovesAvailableByDefault: false,
     }),
-    tmxMoves: [...SOULSILVER_HM_OPTIONS]
+    tmxMoves: [...HGSS_HM_OPTIONS]
       .sort((a, b) => a.code.localeCompare(b.code))
       .map((option) => option.move),
     promotedTmMoves: Object.freeze([]),
     notes: Object.freeze([
       'Move legality follows the Generation IV learnsets, counting only the machines and tutors HeartGold and SoulSilver have.',
-      'Level caps are the obedience thresholds. In SoulSilver they bind only traded Pokémon, so they mark the pace of a playthrough rather than a hard limit.',
+      'Level caps are the obedience thresholds. In HGSS they bind only traded Pokémon, so they mark the pace of a playthrough rather than a hard limit.',
       'Cut, Fly, Surf, Strength, Whirlpool, Rock Smash, Waterfall, and Rock Climb are HMs.',
       'Defog was an HM in Diamond, Pearl, and Platinum only; no machine teaches it here.',
       'Event-only moves and Pokéwalker pickups are not counted.',
@@ -117,10 +118,16 @@ export const SOULSILVER_GAME = Object.freeze({
     ]),
   }),
   data: Object.freeze({
-    legalMovesDir: 'soulsilver-legal-moves',
+    legalMovesDir: 'hgss-legal-moves',
   }),
+  // The game launched under the id "soulsilver"; saves made under those keys
+  // move to the new ones on first read (games/saved-state.js).
   storage: Object.freeze({
-    progression: 'pokemon-party-picker:soulsilver:progression:v1',
-    pool: 'pokemon-party-picker:soulsilver:owned-pool:v1',
+    progression: 'pokemon-party-picker:hgss:progression:v1',
+    pool: 'pokemon-party-picker:hgss:owned-pool:v1',
+    legacy: Object.freeze({
+      progression: 'pokemon-party-picker:soulsilver:progression:v1',
+      pool: 'pokemon-party-picker:soulsilver:owned-pool:v1',
+    }),
   }),
 });
