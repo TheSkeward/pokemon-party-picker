@@ -47,11 +47,11 @@ const USER_AGENT =
 const REQUEST_GAP_MS = 600;
 // search.json returns up to 51; fewer means the end
 const SEARCH_PAGE_SIZE = 51;
-const DEFAULT_MAX_NEW_PER_FORMAT = 300;
+const DEFAULT_MAX_NEW_PER_FORMAT = 600;
 /** The elite pass rests this long once it has walked below the floor. */
 const ELITE_REST_MS = 30 * 24 * 60 * 60 * 1000;
 /** Pages the scan-ahead pass reads per format per run. */
-const DEFAULT_SCAN_PAGES_PER_RUN = 20;
+const DEFAULT_SCAN_PAGES_PER_RUN = 100;
 /** Newest pages read per format per run before the backfill takes over. */
 const DEFAULT_FRESH_PAGES_PER_RUN = 12;
 /** Games rated here or above are worth reaching ahead of the backfill. */

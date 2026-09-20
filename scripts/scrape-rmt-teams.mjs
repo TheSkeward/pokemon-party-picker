@@ -58,7 +58,7 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const ARCHIVE_DIR = path.join(scriptDir, 'teamscrape', 'archive');
 const SOURCES_PATH = path.join(scriptDir, 'teamscrape', 'sources.json');
 
-const DEFAULT_MAX_NEW_THREADS = 40;
+const DEFAULT_MAX_NEW_THREADS = 80;
 const DEFAULT_LISTING_PAGES_PER_RUN = 8;
 
 const knownFormats = new Set(REAL_FORMATS.map((format) => format.id));

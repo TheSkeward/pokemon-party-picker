@@ -40,7 +40,7 @@ export const SCRAPERS = [
 
 /**
  * Resolves an --only= selection to script paths. The replay backfill takes
- * ~40 minutes per run, so any single-source question (are the forum seed
+ * a few hours per run, so any single-source question (are the forum seed
  * URLs right?) must be runnable without it.
  *
  * @param {string} only Comma-separated scraper names; empty selects all.
