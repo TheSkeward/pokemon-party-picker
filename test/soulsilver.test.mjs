@@ -107,10 +107,19 @@ test('evolutions price real trades and block the methods the game lacks', () => 
     assert.equal(blocked.status, 'blocked');
     assert.match(blocked.reason, /Trading .* not yet accessible/);
 
-    // Metal Coat's availability is not curated yet: surfaced, not decided.
+    // A trade with an item prices both: the trade and the curated item.
     const scizor = getEvolutionRequirement(species.scizor);
-    assert.equal(scizor.status, 'unknown');
-    assert.match(scizor.reason, /Metal Coat availability unknown/);
+    assert.equal(scizor.status, 'legal');
+    assert.equal(scizor.method, 'trade');
+    assert.match(scizor.reason, /trade evolution.*Metal Coat \(farmable: Athlete Shop/);
+    assert.equal(
+      scizor.friction,
+      tunable('TRADE_FRICTION') + tunable('ITEM_FRICTION'),
+    );
+    // A 48 BP Frontier price is a real grind.
+    const weavile = getEvolutionRequirement(species.weavile);
+    assert.equal(weavile.status, 'legal');
+    assert.equal(weavile.friction, Math.round(tunable('ITEM_FRICTION') * 1.5));
 
     for (const [id, method] of [
       ['leafeon', /Moss Rock/],

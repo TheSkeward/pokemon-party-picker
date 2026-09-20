@@ -2,16 +2,18 @@
  * The Pokémon SoulSilver game descriptor (see reborn.js for what each field
  * means). A mainline game: no game-original items, real trades, and the
  * Generation IV learnsets as the legality basis. Its data paths and saved-
- * state keys are namespaced by game id.
- *
- * Deliberately empty for now, to be curated: renewable item sources by
- * badge, evolution-item availability (every item evolution surfaces as
- * "availability unknown" until then), and the badge at which each held item
- * first arrives.
+ * state keys are namespaced by game id. Item content is curated by hand in
+ * soulsilver/items.js.
  */
 import { GEN4_DEX } from './dex-gen4.js';
 import { EVOLUTION_STONE_FIELDS } from '../reborn/evolution-access.js';
 import { SOULSILVER_PROGRESSION_CHECKPOINTS } from '../soulsilver/schedule.js';
+import {
+  SOULSILVER_EVOLUTION_ITEM_AVAILABILITY,
+  SOULSILVER_EXTRA_INVENTORY_ITEMS,
+  SOULSILVER_ITEM_UNLOCK_BADGES,
+  SOULSILVER_SHOP_ITEM_BADGES,
+} from '../soulsilver/items.js';
 import {
   SOULSILVER_HM_OPTIONS,
   SOULSILVER_TM_OPTIONS,
@@ -47,7 +49,7 @@ export const SOULSILVER_GAME = Object.freeze({
   families: Object.freeze(['gen4singles']),
   schedule: Object.freeze({
     checkpoints: SOULSILVER_PROGRESSION_CHECKPOINTS,
-    itemUnlockBadges: Object.freeze({}),
+    itemUnlockBadges: SOULSILVER_ITEM_UNLOCK_BADGES,
   }),
   moveSources: Object.freeze({
     tmOptions: SOULSILVER_TM_OPTIONS,
@@ -62,13 +64,15 @@ export const SOULSILVER_GAME = Object.freeze({
     levelDown: false,
     hiddenPowerTypeChanger: false,
   }),
+  // No mining, no replaced items, no game-original held items; the shops are
+  // the Athlete Shop, the Game Corners, and the Frontier's BP counter.
   items: Object.freeze({
-    shopItemBadges: Object.freeze({}),
+    shopItemBadges: SOULSILVER_SHOP_ITEM_BADGES,
     miningItemBadges: Object.freeze({}),
-    extraInventoryItems: Object.freeze([]),
+    extraInventoryItems: SOULSILVER_EXTRA_INVENTORY_ITEMS,
     hiddenInventoryItemIds: new Set(),
     inventoryMigration: Object.freeze({}),
-    evolutionItemAvailability: Object.freeze({}),
+    evolutionItemAvailability: SOULSILVER_EVOLUTION_ITEM_AVAILABILITY,
     fieldSeeds: Object.freeze({
       names: Object.freeze([]),
       proxyItems: Object.freeze([]),
