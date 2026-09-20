@@ -1,13 +1,10 @@
 {
-  "finishedAt": "2026-09-19T15:42:11.204Z",
+  "finishedAt": "2026-09-20T16:41:14.323Z",
   "results": [
     {
       "script": "scrape-pkmn-teams.mjs",
       "exitCode": 0,
       "outputTail": [
-        "gen7anythinggoes: +0 of 4 (archive 4)",
-        "gen7ubers: +0 of 8 (archive 103)",
-        "gen7ou: +0 of 26 (archive 144)",
         "gen7uu: +0 of 8 (archive 68)",
         "gen7ru: +0 of 5 (archive 15)",
         "gen7nu: +0 of 7 (archive 14)",
@@ -17,47 +14,118 @@
         "gen7lc: +0 of 10 (archive 173)",
         "gen7doublesubers: no teams file upstream",
         "gen7doublesou: +0 of 9 (archive 333)",
-        "gen7doublesuu: no teams file upstream"
+        "gen7doublesuu: no teams file upstream",
+        "gen4ubers: +6 of 6 (archive 6)",
+        "gen4ou: +18 of 18 (archive 57)",
+        "gen4uu: +9 of 9 (archive 9)",
+        "gen4nu: +10 of 10 (archive 10)",
+        "gen4lc: +5 of 5 (archive 5)",
+        "gen4doublesou: no teams file upstream",
+        "gen4vgc2010: no teams file upstream",
+        "gen4vgc2009: no teams file upstream",
+        "gen5ubers: +20 of 20 (archive 20)",
+        "gen5ou: +13 of 13 (archive 70)",
+        "gen5uu: +9 of 9 (archive 9)",
+        "gen5ru: +4 of 4 (archive 4)",
+        "gen5nu: +9 of 9 (archive 9)",
+        "gen5pu: +6 of 6 (archive 6)",
+        "gen5lc: +7 of 7 (archive 7)",
+        "gen5doublesou: +7 of 7 (archive 7)",
+        "gen5smogondoubles: no teams file upstream",
+        "gen5gbudoubles: no teams file upstream",
+        "gen5vgc2013: no teams file upstream",
+        "gen5vgc2011: no teams file upstream"
+      ]
+    },
+    {
+      "script": "scrape-sample-teams.mjs",
+      "exitCode": 0,
+      "outputTail": [
+        "gen7ou https://www.smogon.com/forums/threads/usm-ou-sample-teams.3626219/: +0 of 0 paste link(s), +0 inline (7 author post(s), 108 sets, 1 page(s), unchanged) — \"Resource - USM OU Sample Teams | Smogon Forums\" (archive 144)",
+        "gen7ou https://www.smogon.com/forums/threads/usm-ou-sample-teams-v2-up.3638845/: +0 of 0 paste link(s), +0 inline (10 author post(s), 66 sets, 1 page(s), unchanged) — \"Resource - USM OU Sample Teams v2 (up) | Smogon Forums\" (archive 144)",
+        "  skip paste 938f74ad7bd815a: 404 https://pokepast.es/938f74ad7bd815a/raw",
+        "  scanned 5 post(s), 11942 chars, 0 sets — no \" @ \" anywhere; starts \"\\n\\t\\t\\t\\n\\t\\t\\t\\t\\n\\t\\t\\t\\n\\n\\t\\t\\t\\n\\t\\t\\t\\t\\n\\t\\t\\t\\t\\tHi! With the end of SPL XIII and SMPL I in its early stages, I'm here to submit some teams \"",
+        "gen7ou https://www.smogon.com/forums/threads/sm-ou-sample-teams.3695427/: +0 of 54 paste link(s), +0 inline (5 author post(s), 0 sets, 1 page(s), unchanged) — \"Resource - SM OU Sample Teams | Smogon Forums\" (archive 144)",
+        "gen7uu https://www.smogon.com/forums/threads/usum-uu-sample-teams.3621217/: +0 of 14 paste link(s), +0 inline (6 author post(s), 60 sets, 1 page(s), unchanged) — \"USUM Sample Teams | Smogon Forums\" (archive 68)",
+        "gen7ru https://www.smogon.com/forums/threads/usm-ru-sample-teams-thread.3622057/: +0 of 0 paste link(s), +0 inline (5 author post(s), 42 sets, 1 page(s), unchanged) — \"Resource - USM RU Sample Teams Thread | Smogon Forums\" (archive 15)",
+        "gen7nu https://www.smogon.com/forums/threads/usum-nu-sample-teams.3641525/: +0 of 0 paste link(s), +0 inline (3 author post(s), 42 sets, 1 page(s), unchanged) — \"Resource - USUM NU Sample Teams v2.0 | Smogon Forums\" (archive 14)",
+        "gen7pu https://www.smogon.com/forums/threads/usum-pu-sample-teams.3611496/: +0 of 0 paste link(s), +0 inline (6 author post(s), 60 sets, 1 page(s), unchanged) — \"Resource - PU Sample Teams and Resources Thread | Smogon Forums\" (archive 21)",
+        "gen7lc https://www.smogon.com/forums/threads/usum-lc-sample-teams.3639319/: +0 of 3 paste link(s), +0 inline (7 author post(s), 78 sets, 1 page(s), unchanged) — \"Resource - Multigen LC Sample Teams | Smogon Forums\" (archive 173)",
+        "gen7ubers https://www.smogon.com/forums/threads/usum-ubers-sample-teams.3639330/: +0 of 3 paste link(s), +0 inline (8 author post(s), 126 sets, 1 page(s), unchanged) — \"Resource - USM Sample Teams [Submissions closed] | Smogon Forums\" (archive 103)",
+        "gen7doublesou https://www.smogon.com/forums/threads/usum-doubles-ou-sample-teams.3645990/: +0 of 0 paste link(s), +0 inline (7 author post(s), 162 sets, 1 page(s), unchanged) — \"Resource - Doubles OU Sample Teams and Team Showcase | Smogon Forums\" (archive 333)",
+        "  scanned 6 post(s), 8711 chars, 0 sets — no \" @ \" anywhere; starts \"\\n\\t\\t\\t\\n\\t\\t\\t\\t\\n\\t\\t\\t\\n\\n\\t\\t\\t\\n\\t\\t\\t\\t\\n\\t\\t\\t\\t\\t\\n\\t\\t\\n\\t\\t\\n\\t\\n\\n\\n\\t\\n\\t\\n\\t\\t\\n\\t\\n\\n(banner by Band)​\\n\\nAfter just over 4 years, we now have fully revamped\"",
+        "gen4ou https://www.smogon.com/forums/threads/dpp-ou-sample-teams-v2.3767939/: +0 of 20 paste link(s), +0 inline (6 author post(s), 0 sets, 1 page(s), unchanged) — \"OU - DPP OU Sample Teams v2 | Smogon Forums\" (archive 57)",
+        "  scanned 5 post(s), 2743 chars, 0 sets — no \" @ \" anywhere; starts \"\\n\\t\\t\\t\\n\\t\\t\\t\\t\\n\\t\\t\\t\\n\\n\\t\\t\\t\\n\\t\\t\\t\\t\\n\\t\\t\\t\\t\\t\\n\\t\\t\\n\\t\\t\\n\\t\\n\\n\\n\\t\\n\\t\\n\\t\\t\\n\\t\\n\\n(banner by Bandkrook)\\n​\\nHello! This thread is here to archive teams fr\"",
+        "gen4ou https://www.smogon.com/forums/threads/dpp-ou-sample-teams.3687351/: +0 of 19 paste link(s), +0 inline (5 author post(s), 0 sets, 1 page(s), unchanged) — \"OU - DPP OU Sample Teams | Smogon Forums\" (archive 57)",
+        "  scanned 5 post(s), 9363 chars, 0 sets — no \" @ \" anywhere; starts \"\\n\\t\\t\\t\\n\\t\\t\\t\\t\\n\\t\\t\\t\\n\\n\\t\\t\\t\\n\\t\\t\\t\\t\\n\\t\\t\\t\\t\\t\\n\\t\\t\\n\\t\\t\\n\\t\\n\\n\\n\\t\\n\\t\\n\\t\\t\\n\\t\\n\\nMaintained by the BW moderation team\\nFNH's previous version of this th\"",
+        "gen5ou https://www.smogon.com/forums/threads/bw-ou-sample-teams-mk-2.3762882/: +0 of 17 paste link(s), +0 inline (5 author post(s), 0 sets, 1 page(s), unchanged) — \"Resource - BW OU Sample Teams mk. 2 | Smogon Forums\" (archive 70)",
+        "  scanned 5 post(s), 23583 chars, 0 sets — no \" @ \" anywhere; starts \"\\n\\t\\t\\t\\n\\t\\t\\t\\t\\n\\t\\t\\t\\n\\n\\t\\t\\t\\n\\t\\t\\t\\t\\n\\t\\t\\t\\t\\t\\n\\t\\t\\n\\t\\t\\n\\t\\n\\n\\n\\t\\n\\t\\n\\t\\t\\n\\t\\n\\n\\t\\t\\n\\t\\n\\nMaintained by the BW community.\\n\\nHello! This thread is here to a\"",
+        "gen5ou https://www.smogon.com/forums/threads/bw-ou-samples-thread.3686880/: +0 of 40 paste link(s), +0 inline (5 author post(s), 0 sets, 1 page(s), unchanged) — \"OU - BW OU Samples Thread | Smogon Forums\" (archive 70)"
       ]
     },
     {
       "script": "scrape-tournament-teams.mjs",
       "exitCode": 0,
       "outputTail": [
-        "  thread 3611697: 403 https://www.smogon.com/forums/threads/oras-ou-role-compendium-v2.3541745/",
-        "tournament: +0 paste teams, +0 replays"
+        "tournament: +0 teams, +75 replays"
       ]
     },
     {
       "script": "scrape-forum-teams.mjs",
       "exitCode": 0,
       "outputTail": [
-        "forum listing https://www.smogon.com/forums/forums/sm-om-submissions.398/: 0 rows on page 1 (len 39574, thread hrefs 1, preview attrs 0, labels 0)",
-        "forum listing https://www.smogon.com/forums/forums/vgc-2019-ultra-series-analyses.514/: 0 rows on page 1 (len 38084, thread hrefs 1, preview attrs 0, labels 0)",
-        "forum listing https://www.smogon.com/forums/forums/sm-closed-submissions.407/: 0 rows on page 1 (len 38571, thread hrefs 1, preview attrs 0, labels 0)",
-        "forum gen7ou: archive 2035",
-        "forums: page budget — 27 listing, 49 new-thread, 1 resume, 0 bumped, 0 recheck (21 deferred to next run, thread cap 50)",
-        "forums: +6 teams this run"
+        "forum gen4ou: archive 47",
+        "forums: page budget — 2 listing, 21 new-thread, 3 resume, 0 bumped, 0 recheck (21 deferred to next run, thread cap 50)",
+        "forums: +47 teams this run"
+      ]
+    },
+    {
+      "script": "scrape-rmt-teams.mjs",
+      "exitCode": 0,
+      "outputTail": [
+        "rmt listing https://www.smogon.com/forums/forums/past-gen-teams.319/?prefix_id=474: 0 rows on page 1 (len 37818, thread hrefs 1, preview attrs 0, labels 0)",
+        "rmt listing https://www.smogon.com/forums/forums/past-gen-teams.319/?prefix_id=75: 120 row(s) across 3 page(s)",
+        "rmt listing https://www.smogon.com/forums/forums/past-gen-teams.319/?prefix_id=185: 40 row(s) across 1 page(s)",
+        "rmt gen4ubers: archive 5",
+        "rmt gen4ou: archive 46",
+        "rmt gen4nu: archive 2",
+        "rmt: +40 new teams this run"
       ]
     },
     {
       "script": "scrape-replay-teams.mjs",
       "exitCode": 0,
       "outputTail": [
-        "gen7anythinggoes: +300 (archive 18301)",
-        "gen7ubers: +300 (archive 18308)",
-        "gen7ou: +300 (archive 18600)",
-        "gen7uu: +300 (archive 18600)",
-        "gen7ru: +300 (archive 18325)",
-        "gen7nu: +300 (archive 18300)",
-        "gen7pu: +300 (archive 18600)",
-        "gen7zu: +300 (archive 18600)",
-        "gen7nfe: +0 (archive 1368)",
-        "gen7lc: +300 (archive 18600)",
-        "gen7doublesubers: +300 (archive 18600)",
-        "  skip gen7doublesou-2560475408: 404 https://replay.pokemonshowdown.com/gen7doublesou-2560475408.json",
-        "gen7doublesou: +300 (archive 18609)",
-        "gen7doublesuu: +0 (archive 15782)"
+        "gen7uu: +300 (archive 18904; tours 1, elite 299, fresh 0, rest 0)",
+        "gen7ru: +300 (archive 18629; tours 5, elite 7, fresh 1, rest 287)",
+        "gen7nu: +300 (archive 18604; tours 0, elite 0, fresh 0, rest 300)",
+        "gen7pu: +300 (archive 18904; tours 0, elite 34, fresh 1, rest 265)",
+        "gen7zu: +300 (archive 18904; tours 0, elite 0, fresh 0, rest 300)",
+        "gen7nfe: +0 (archive 1368; tours 0, elite 0, fresh 0, rest 0)",
+        "gen7lc: +300 (archive 18956; tours 0, elite 2, fresh 0, rest 298)",
+        "gen7doublesubers: +300 (archive 18904; tours 0, elite 300, fresh 0, rest 0)",
+        "gen7doublesou: +300 (archive 18913; tours 0, elite 300, fresh 0, rest 0)",
+        "gen7doublesuu: +0 (archive 15782; tours 0, elite 0, fresh 0, rest 0)",
+        "gen4ubers: +300 (archive 300; tours 96, elite 0, fresh 204, rest 0)",
+        "gen4ou: +300 (archive 383; tours 99, elite 9, fresh 192, rest 0)",
+        "gen4uu: +300 (archive 300; tours 300, elite 0, fresh 0, rest 0)",
+        "gen4nu: +300 (archive 300; tours 300, elite 0, fresh 0, rest 0)",
+        "gen4lc: +300 (archive 300; tours 300, elite 0, fresh 0, rest 0)",
+        "gen4doublesou: +300 (archive 300; tours 107, elite 0, fresh 193, rest 0)",
+        "gen4vgc2010: +300 (archive 300; tours 8, elite 0, fresh 292, rest 0)",
+        "gen4vgc2009: +300 (archive 300; tours 4, elite 0, fresh 296, rest 0)",
+        "gen5ubers: +300 (archive 307; tours 91, elite 0, fresh 209, rest 0)",
+        "gen5ou: +300 (archive 300; tours 182, elite 15, fresh 103, rest 0)",
+        "gen5uu: +300 (archive 300; tours 300, elite 0, fresh 0, rest 0)",
+        "gen5ru: +300 (archive 300; tours 300, elite 0, fresh 0, rest 0)",
+        "gen5nu: +300 (archive 300; tours 300, elite 0, fresh 0, rest 0)",
+        "gen5pu: +300 (archive 300; tours 300, elite 0, fresh 0, rest 0)",
+        "gen5lc: +300 (archive 300; tours 300, elite 0, fresh 0, rest 0)",
+        "gen5doublesou: +300 (archive 300; tours 103, elite 0, fresh 197, rest 0)",
+        "gen5smogondoubles: +300 (archive 300; tours 17, elite 0, fresh 283, rest 0)",
+        "gen5gbudoubles: +300 (archive 300; tours 19, elite 0, fresh 281, rest 0)",
+        "gen5vgc2013: +300 (archive 300; tours 42, elite 0, fresh 258, rest 0)",
+        "gen5vgc2011: +300 (archive 300; tours 0, elite 0, fresh 300, rest 0)"
       ]
     }
   ]
