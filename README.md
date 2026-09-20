@@ -126,19 +126,3 @@ Read that before changing optimizer behavior or scoring constants.
 GitHub Actions builds and deploys the app to GitHub Pages from `main`.
 Scheduled refreshes can update generated data and commit those results back to
 the repository.
-
-## Known Limits
-
-- Mega and Z availability are not currently progression-gated.
-- Very large pools use a coverage-preserving shortlist when full exact search
-  would be too expensive.
-- The level-cap investment view advances the level cap only; it does not model
-  future TM, tutor, item, or location unlocks.
-- HGSS's level caps are the obedience thresholds, which bind only traded
-  Pokemon; Hidden Power is never counted as plannable there (its type follows
-  IVs); weather rocks, pinch berries, and event items are not tracked because
-  the game offers them only by trade, Pokewalker, or event.
-- HGSS's single-use TMs are honored when each member's build is realized,
-  after the team's seats are chosen: a one-copy TM is planned for one member
-  and the others take their next-best build, but seat selection itself does
-  not count copies.
