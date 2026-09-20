@@ -495,6 +495,38 @@ test('an empty forum is recorded and left unfetched for a month', async () => {
   fs.rmSync(dir, { recursive: true, force: true });
 });
 
+test('forum roots carry their generation; link forums are not subforums', async () => {
+  const { extractSubforums, forumRoots } = await import(
+    '../scripts/scrape-forum-teams.mjs',
+  );
+  assert.deepEqual(
+    forumRoots({
+      gen: 'gen7',
+      listings: [
+        'https://www.smogon.com/forums/forums/gen-7-competitive-discussion.249/',
+        { url: 'https://www.smogon.com/forums/forums/dpp/', gen: 'gen4' },
+      ],
+    }),
+    [
+      {
+        listing: 'https://www.smogon.com/forums/forums/gen-7-competitive-discussion.249/',
+        gen: 'gen7',
+        tier: null,
+      },
+      { listing: 'https://www.smogon.com/forums/forums/dpp/', gen: 'gen4', tier: null },
+    ],
+  );
+  const index = `
+    <h3 class="node-title"><a href="/forums/forums/dpp-lower-tiers.1004/">DPP Lower Tiers</a></h3>
+    <h3 class="node-title"><a href="/forums/link-forums/rate-my-team-dpp.780/">Rate My Team (DPP)</a></h3>
+    <h3 class="node-title"><a href="/forums/forums/dpp-archive.944/">DPP Archive</a></h3>`;
+  assert.deepEqual(
+    extractSubforums(index, 'https://www.smogon.com/forums/forums/dpp/')
+      .map((sub) => sub.name),
+    ['DPP Lower Tiers', 'DPP Archive'],
+  );
+});
+
 test('forum fetch: HTTP mode identifies itself and requests readable text',
   async () => {
     const calls = [];

@@ -28,6 +28,7 @@ import { groupInlineTeams, normalizeSampleTeam } from
 import {
   appendJsonlRecord,
   createFormatArchives,
+  readJsonlLatest,
 } from './teamscrape/jsonl-records.mjs';
 import {
   archivePath,
@@ -103,6 +104,17 @@ export function extractReplayIds(html) {
 }
 
 const archives = createFormatArchives(ARCHIVE_DIR, 'tournament-');
+// Paste ids already in any tournament archive. Dump threads are re-walked
+// every run (a completed listing begins another sweep), and a paste's
+// content is fixed, so a known id need not be fetched again.
+const harvestedPastes = new Set(
+  fs.existsSync(ARCHIVE_DIR)
+    ? fs.readdirSync(ARCHIVE_DIR)
+      .filter((name) => /^tournament-gen\d.*\.jsonl$/.test(name))
+      .flatMap((name) =>
+        [...readJsonlLatest(path.join(ARCHIVE_DIR, name)).keys()])
+    : [],
+);
 
 /** @return {?number} The generation of a format id. */
 const genOf = (formatId) =>
@@ -208,7 +220,7 @@ async function harvestPost(post, { thread, threadUrl, threadId, postIndex,
   const seenPastes = new Set();
   for (const match of post.html.matchAll(/pokepast\.es\/([0-9a-f]{8,16})/g)) {
     const pasteId = match[1];
-    if (seenPastes.has(pasteId)) continue;
+    if (seenPastes.has(pasteId) || harvestedPastes.has(pasteId)) continue;
     seenPastes.add(pasteId);
     let parsed;
     try {
@@ -225,6 +237,7 @@ async function harvestPost(post, { thread, threadUrl, threadId, postIndex,
       { pasteId, formatId, thread: threadUrl, sets: parsed.sets });
     record.source = 'tournament';
     counters.teams += Number(appendJsonlRecord(file, record, latest));
+    harvestedPastes.add(pasteId);
   }
 
   // Inline importables, by section.
@@ -287,8 +300,12 @@ async function harvestThread({ row, prefixFormat, pin, counters, crawl,
     const html = await fetchText(
       page === 1 ? row.url : `${row.url}page-${page}`);
     budget.threadPages += 1;
-    const title =
-      row.title || (/<title>([^<]*)<\/title>/.exec(html)?.[1] || '').trim();
+    // The listing's prefix label ("DPP", "BW") names the generation the
+    // title may leave out ("OU Cup IV").
+    const title = [
+      row.prefix,
+      row.title || (/<title>([^<]*)<\/title>/.exec(html)?.[1] || '').trim(),
+    ].filter(Boolean).join(' ');
     await harvestThreadPage(html, page, {
       thread: threadContext({ title, prefixFormat, pin: pin || {} }),
       threadUrl: row.url,

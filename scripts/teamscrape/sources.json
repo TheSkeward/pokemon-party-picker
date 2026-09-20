@@ -1,23 +1,33 @@
 {
   "comment": "Smogon sample-team thread URLs per format id. Add or correct URLs freely — the scraper visits every listed thread, follows pokepast.es links, reads inline importables in the opening post, and reports per-thread counts and page titles (verify a corrected id against the title in the next last-harvest.json).",
   "tournament": {
-    "comment": "Team-dump threads and tournament forum listings to walk. A dump entry is a URL or {url, format} / {url, gen, tier}: the pin says what the thread's own text leaves unsaid (UPL is Ubers in every generation, so its section headings name only the generation). Within a post the section heading before a team names its generation and tier, and replay links their format; thread prefixes fall back through the rmt prefix maps.",
+    "comment": "Team-dump threads and tournament forum listings to walk. A dump entry is a URL or {url, format} / {url, gen, tier}: the pin says what the thread's own text leaves unsaid (UPL is Ubers in every generation, so its section headings name only the generation). Within a post the section heading before a team names its generation and tier, and replay links their format; thread prefixes fall back through the rmt prefix maps. The circuit listings are the Old Gen Metagames Circuits forum filtered to one generation's prefix (what the DPP and BW forums' \"Circuit Tournaments\" links resolve to); Smogon Classic carries every generation, and rows of untracked ones are skipped by title.",
     "dumpThreads": [
       "https://www.smogon.com/forums/threads/smbs-spl-x-team-dump.3650390/",
-   "https://www.smogon.com/forums/threads/spl-9-sm-ou-team-pulls-down-pants-dump-by-z0mog.3630442/",
-   "https://www.smogon.com/forums/threads/a-bunch-of-usm-lc-teams.3624477/",
-   { "url": "https://www.smogon.com/forums/threads/lc-in-spl-8-replays-and-team-dump.3590611/", "gen": 7, "tier": "lc" },
-      { "url": "https://www.smogon.com/forums/threads/upl-vii-dump.3650684/", "tier": "ubers" }
+      "https://www.smogon.com/forums/threads/spl-9-sm-ou-team-pulls-down-pants-dump-by-z0mog.3630442/",
+      "https://www.smogon.com/forums/threads/a-bunch-of-usm-lc-teams.3624477/",
+      {
+        "url": "https://www.smogon.com/forums/threads/lc-in-spl-8-replays-and-team-dump.3590611/",
+        "gen": 7,
+        "tier": "lc"
+      },
+      {
+        "url": "https://www.smogon.com/forums/threads/upl-vii-dump.3650684/",
+        "tier": "ubers"
+      }
     ],
     "listings": [
-      "https://www.smogon.com/forums/forums/ruins-of-alph.281/",
+      "https://www.smogon.com/forums/forums/old-gen-metagames-circuits.475/?prefix_id=420",
+      "https://www.smogon.com/forums/forums/old-gen-metagames-circuits.475/?prefix_id=432",
       "https://www.smogon.com/forums/forums/smogon-classic.334/"
     ]
   },
   "rmt": {
-    "comment": "RMT listings to walk. past-gen-teams.319 holds the old-gen RMTs, labeled by generation; ?prefix_id=474 filters the listing to Gen 7 so every row is relevant. Threads are attributed via their prefix label: prefixMap maps tier prefixes directly, genPrefixMap maps generation-only labels with the tier read from the thread title. Unmapped prefixes are reported by the scraper log so the maps can grow.",
+    "comment": "RMT listings to walk. past-gen-teams.319 holds the old-gen RMTs, labeled by generation; ?prefix_id=474 filters the listing to Gen 7, 75 to Gen 4, and 185 to Gen 5 (what the Ruins of Alph forums' \"Rate My Team\" links resolve to), so every row is relevant. Threads are attributed via their prefix label: prefixMap maps tier prefixes directly, genPrefixMap maps generation-only labels with the tier read from the thread title. Unmapped prefixes are reported by the scraper log so the maps can grow.",
     "listings": [
-      "https://www.smogon.com/forums/forums/past-gen-teams.319/?prefix_id=474"
+      "https://www.smogon.com/forums/forums/past-gen-teams.319/?prefix_id=474",
+      "https://www.smogon.com/forums/forums/past-gen-teams.319/?prefix_id=75",
+      "https://www.smogon.com/forums/forums/past-gen-teams.319/?prefix_id=185"
     ],
     "prefixMap": {
       "SM OU": "gen7ou",
@@ -75,14 +85,30 @@
     ],
     "gen7doublesou": [
       "https://www.smogon.com/forums/threads/usum-doubles-ou-sample-teams.3645990/"
+    ],
+    "gen4ou": [
+      "https://www.smogon.com/forums/threads/dpp-ou-sample-teams-v2.3767939/",
+      "https://www.smogon.com/forums/threads/dpp-ou-sample-teams.3687351/"
+    ],
+    "gen5ou": [
+      "https://www.smogon.com/forums/threads/bw-ou-sample-teams-mk-2.3762882/",
+      "https://www.smogon.com/forums/threads/bw-ou-samples-thread.3686880/"
     ]
   },
   "forums": {
-    "comment": "Competitive-discussion forum roots to walk in full, one level of subforums included: bazaars, teambuilding competitions, and team archives live here. Harvested from every post at community-paste trust (source \"forum\"); gen combines with tiers read from thread and subforum titles when a paste has no === header.",
+    "comment": "Competitive-discussion forum roots to walk in full, one level of subforums included: bazaars, teambuilding competitions, and team archives live here. A root is a URL, taking `gen`, or {url, gen} for another generation's forum. Harvested from every post at community-paste trust (source \"forum\"); the generation combines with tiers read from thread and subforum titles when a paste has no === header.",
     "gen": "gen7",
     "discoverSubforums": true,
     "listings": [
-      "https://www.smogon.com/forums/forums/gen-7-competitive-discussion.249/"
+      "https://www.smogon.com/forums/forums/gen-7-competitive-discussion.249/",
+      {
+        "url": "https://www.smogon.com/forums/forums/dpp/",
+        "gen": "gen4"
+      },
+      {
+        "url": "https://www.smogon.com/forums/forums/bw/",
+        "gen": "gen5"
+      }
     ]
   }
 }

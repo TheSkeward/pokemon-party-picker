@@ -1,15 +1,18 @@
 /**
  * @fileoverview Competitive-discussion forum harvester: walks the configured
- * forum roots (teamscrape/sources.json `forums.listings`, e.g. Gen 7
- * Competitive Discussion) plus their one-level subforums, and harvests whole
- * teams from every post of every thread — bazaars, teambuilding
- * competitions, resource threads. Community-shared rather than curated, so
- * records carry source:"forum" and the index builders weight them at the
- * community-paste tier, far below samples.
+ * forum roots (teamscrape/sources.json `forums.listings`: Gen 7
+ * Competitive Discussion, and Ruins of Alph's DPP and BW forums, each root
+ * naming its generation) plus their one-level subforums, and harvests
+ * whole teams from every post of every thread — bazaars, teambuilding
+ * competitions, resource threads. Link forums (a subforum entry that is a
+ * redirect into the RMT or tournament forums) are not walked: those are
+ * other harvesters' sources at other trust tiers. Community-shared rather
+ * than curated, so records carry source:"forum" and the index builders
+ * weight them at the community-paste tier, far below samples.
  *
  * Format attribution, most→least reliable: the paste's own "=== [gen7ou] ==="
  * header, the tier named in the thread title, the tier named in the
- * subforum's name — the last two combined with the config's `gen`.
+ * subforum's name — the last two combined with the root's `gen`.
  * Listing and thread cursors are durable, so polite per-run request caps pause
  * work rather than truncating the corpus. Completed listings begin another
  * sweep. Completed threads rescan promptly when the listing row shows new
@@ -67,7 +70,8 @@ const DEFAULT_THREAD_PAGES_PER_RUN = 50;
 
 const knownFormats = new Set(REAL_FORMATS.map((format) => format.id));
 /**
- * Subforum links on a forum index page: the node list's title anchors.
+ * Subforum links on a forum index page: the node list's title anchors,
+ * less the link forums, which are redirects into other forums.
  * @return {!Array<{url: string, name: string}>}
  */
 export function extractSubforums(html, baseUrl) {
@@ -77,7 +81,7 @@ export function extractSubforums(html, baseUrl) {
     /class="node-title"[^>]*>\s*<a href="((?:\/forums)?\/forums\/[^"]+?\.\d+\/)"[^>]*>([^<]*)/g,
   )) {
     const url = new URL(match[1], baseUrl).href;
-    if (seen.has(url)) continue;
+    if (seen.has(url) || /\/link-forums\//.test(url)) continue;
     seen.add(url);
     out.push({ url, name: match[2].trim() });
   }
@@ -156,7 +160,7 @@ async function walkListing({ listing, gen, listingTier, config, counters,
         if (!config.walked.has(sub.url)) {
           config.walked.add(sub.url);
           config.queue.push(
-            { listing: sub.url, tier: tierFromTitle(sub.name) });
+            { listing: sub.url, gen, tier: tierFromTitle(sub.name) });
         }
       }
     }
@@ -244,6 +248,21 @@ async function walkListing({ listing, gen, listingTier, config, counters,
   });
 }
 
+/**
+ * The configured forum roots as queue items. A listing is a URL, taking
+ * the config's `gen` (Gen 7 Competitive Discussion), or {url, gen} for a
+ * forum of another generation (Ruins of Alph's DPP and BW forums).
+ * @param {{listings: !Array<(string|{url: string, gen: string})>,
+ *     gen: (string|undefined)}} forums
+ * @return {!Array<{listing: string, gen: string, tier: ?string}>}
+ */
+export function forumRoots(forums) {
+  return (forums.listings || []).map((entry) => {
+    const { url, gen } = typeof entry === 'string' ? { url: entry } : entry;
+    return { listing: url, gen: gen || forums.gen || 'gen7', tier: null };
+  });
+}
+
 async function main() {
   const { forums } = JSON.parse(fs.readFileSync(SOURCES_PATH, 'utf8'));
   if (!forums?.listings?.length) {
@@ -275,15 +294,15 @@ async function main() {
       recheckPages: 0,
     },
   };
-  const gen = forums.gen || 'gen7';
+  const roots = forumRoots(forums);
   const config = {
     discoverSubforums: Boolean(forums.discoverSubforums),
-    walked: new Set(forums.listings),
-    queue: forums.listings.map((listing) => ({ listing, tier: null })),
+    walked: new Set(roots.map((item) => item.listing)),
+    queue: roots,
   };
 
   while (config.queue.length && counters.teams < maxNew) {
-    const { listing, tier } = config.queue.shift();
+    const { listing, gen, tier } = config.queue.shift();
     try {
       await walkListing({
         listing, gen, listingTier: tier, config, counters,
