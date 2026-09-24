@@ -76,7 +76,8 @@ export function stitchPokemonSetDetail({
 // `ranking`): a sub-bar mon's highest-tier appearance is a noisy handful of
 // teams, so drop down the ladder to where it's genuinely played. For mons
 // below the bar EVERYWHERE, prefer the resolver-index `trace` tier — their
-// best sub-bar signal (the trace value itself still never enters scoring).
+// first tier at the first successful five-game relaxation step (not the
+// largest sub-bar percentage). The trace remains below the scoring bar.
 // Only a mon with no usage signal at all falls back to the deepest appearing
 // tier in the build's own family.
 function choosePrimaryIndex({ present, ranking, trace, family }) {

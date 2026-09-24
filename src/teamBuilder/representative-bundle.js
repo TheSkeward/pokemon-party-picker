@@ -2,6 +2,7 @@ import {
   loadSourceData,
   resolveBestAvailableLightBundle as resolveIndexedBestAvailableLightBundle,
 } from '../data';
+import { compareTraceUsage } from './trace-usage.js';
 
 const LEAD_SMOOTHING_K = 200;
 
@@ -32,7 +33,20 @@ export async function resolveRepresentativeLightBundle({
     return indexedBundle || { usage: null, leads: null };
   }
 
+  // Set sources and evolutionary identities use long-run evidence even
+  // while the displayed usage/leads are for a selected month.
+  const canonical = await resolveIndexedBestAvailableLightBundle({
+    availability, family, pokemonId, selection: 'all',
+  });
+  const canonicalFacts = {
+    ranking: canonical?.ranking ?? null,
+    trace: canonical?.trace ?? null,
+    lineRanking: canonical?.lineRanking,
+    lineTrace: canonical?.lineTrace,
+  };
   let bestTrace = null;
+  let bestTraceRow = null;
+  let tierRank = -1;
 
   for (const candidate of iterateCandidateSources(
     availability,
@@ -40,23 +54,27 @@ export async function resolveRepresentativeLightBundle({
     selection,
     'usage',
   )) {
+    tierRank += 1;
     const usage = await aggregateUsageCandidate(candidate, pokemonId);
     if (!usage) continue;
 
     const leads = await aggregateLeadsCandidate(candidate, pokemonId);
 
-    const bundle = { usage, leads };
+    const bundle = { usage, leads, ...canonicalFacts };
 
     if (usage.value >= minMeaningfulUsagePercent) {
       return bundle;
     }
 
-    if (!bestTrace || usage.value > bestTrace.usage.value) {
+    const traceRow = { value: usage.value, tierRank };
+    if (usage.value > 0 &&
+      (!bestTraceRow || compareTraceUsage(traceRow, bestTraceRow) < 0)) {
       bestTrace = bundle;
+      bestTraceRow = traceRow;
     }
   }
 
-  return bestTrace || { usage: null, leads: null };
+  return bestTrace || { usage: null, leads: null, ...canonicalFacts };
 }
 
 function* iterateCandidateSources(availability, family, selection, dataKind) {

@@ -4,10 +4,11 @@ import {
   resolveQueryEntries,
 } from '../data';
 import { toId as normalizeName } from '../utils/ids.js';
+import { getCanonicalLineCandidates } from '../teamBuilder/usage-line-ranking.js';
 
 /**
  * Resolves each query token to result rows: normally one row carrying the
- * token's best-scoring line representative (exact form-specific inputs force
+ * token's canonical usage representative (exact form-specific inputs force
  * their own form), or one literal row per match when the token is a broad
  * match, spans multiple lines, or is a form-specific prefix. Literal groups
  * larger than `literalResolveLimit` skip bundle resolution and come back as
@@ -76,20 +77,16 @@ export async function computeResolverRepresentativeResults({
         }),
       );
 
-      const best =
-        candidateResults
-          .filter((result) => Number.isFinite(result.score))
-          .sort((a, b) => b.score - a.score)[0] ||
+      const canonical = getCanonicalLineCandidates(candidateResults
+        .filter((result) => Number.isFinite(result.score))
+        .sort((a, b) => b.score - a.score));
+      const best = canonical[0] ||
         candidateResults.find((result) => result.candidate.isExactInput) ||
         candidateResults[0];
 
-      const bestNonMega =
-        candidateResults
-          .filter(
-            (result) =>
-              Number.isFinite(result.score) && !result.candidate.isMega,
-          )
-          .sort((a, b) => b.score - a.score)[0] || null;
+      const bestNonMega = canonical.find(
+        (result) => !result.candidate.isMega,
+      ) || null;
 
       const displayInput = getDisplayInputForGroup(group.entries);
 

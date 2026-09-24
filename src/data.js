@@ -394,6 +394,8 @@ export async function resolveBestAvailableLightBundle(
     leads,
     ranking: canonical?.ranking ?? null,
     trace: canonical?.trace ?? null,
+    lineRanking: canonical?.lineRanking,
+    lineTrace: canonical?.lineTrace,
   };
   resolverSummaryCache.set(cacheKey, bundle);
   return bundle;

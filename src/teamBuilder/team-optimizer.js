@@ -32,7 +32,6 @@ import {
   MIN_MEANINGFUL_USAGE_PERCENT,
   compareScoredCandidates,
   computeUsageRamp,
-  getUsageRanking,
   hasCompetitivePriorEvidence,
   scoreCandidate,
 } from './candidate-scoring';
@@ -46,6 +45,7 @@ import { moveSources } from '../games/legality.js';
 import {
   SCORED_POOL_LIMIT,
   deduplicateUsageEntries,
+  getCanonicalLineCandidates,
   getLineUsageOrder,
   takeTopUsageEntries,
 } from './usage-line-ranking.js';
@@ -248,7 +248,8 @@ const MAX_RESULT_CACHE = 400;
 // realization, and a member that loses the copy realizes a set assembled
 // without it (a fallback build variant). Reborn's results are unchanged
 // (reusable TMs); HGSS results with contested TMs differ.
-const RESULT_CACHE_VERSION = '56';
+// v57: stepped trace sourcing and usage-selected canonical evolutionary forms.
+const RESULT_CACHE_VERSION = '57';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.
@@ -879,8 +880,8 @@ async function resolvePoolLine({
   );
 
   // Usage trust (w) is a property of the LINE, anchored to its
-  // representative — the form with the best first-meaningful tier (higher
-  // usage % breaks ties; FEAR-class pre-evos win this legitimately). Every
+  // representative — first meaningful tier, or the first tier qualifying
+  // under the shared five-game relaxation. Every
   // form then blends under that SAME w against its OWN prior, so a lesser
   // line-mate can't dodge the endgame drag by having a trivially-complete
   // set while the real form converges.
@@ -888,20 +889,9 @@ async function resolvePoolLine({
   const formatOrder = familyConfig.formatOrder || [];
   const cutoffPriority = familyConfig.cutoffPriority || [];
   const levelCap = Number.parseInt(progression.levelCap, 10) || 0;
-  let repRank = null;
-  let repEntry = null;
-  for (const entry of prepared) {
-    if (entry.error || !entry.bundle?.usage) continue;
-    const rank = getUsageRanking(entry.bundle, formatOrder, cutoffPriority);
-    if (
-      !repRank ||
-      rank.tierRank < repRank.tierRank ||
-      (rank.tierRank === repRank.tierRank && rank.value > repRank.value)
-    ) {
-      repRank = rank;
-      repEntry = entry;
-    }
-  }
+  const repEntry = getCanonicalLineCandidates(prepared.filter(
+    (entry) => !entry.error && entry.bundle?.usage,
+  ))[0];
   const lineRamp = repEntry
     ? computeUsageRamp(
       repEntry.builds?.variants?.[0]?.profile || null, levelCap)
@@ -1029,9 +1019,9 @@ async function resolvePoolLine({
     }
   });
 
-  const ranked = scored
+  const ranked = getCanonicalLineCandidates(scored
     .filter((candidate) => Number.isFinite(candidate.score))
-    .sort(compareScoredCandidates);
+    .sort(compareScoredCandidates));
   const degraded = scored.some((candidate) => candidate.error) || undefined;
 
   if (!ranked.length) {

@@ -177,6 +177,25 @@ current value only breaks exact quantized ties.
 
 ### Usage trust
 
+Canonical set sources and evolutionary targets share one usage rule. Scan the
+ordered format/rating-cutoff ladder at the 25-game bar (2.7345%). If nothing
+qualifies, lower the bar to 30, 35, 40, ... games until something does. At the
+first successful step, the earliest tier wins; usage percentage breaks ties
+only within that tier. Thus a slightly more-used lower-tier row cannot replace
+a higher-tier row that qualifies at the same step. Zero/absent usage never
+qualifies. These relaxed sources remain traces, not new meaningful ranks.
+
+The same rule chooses the reachable canonical target for an evolutionary
+line, but excludes LC and NFE at every step. Those formats can still supply
+the selected species' set; they cannot make it win the line. Separate
+`lineRanking`/`lineTrace` facts preserve admissible signals even when a
+species' main set source qualifies only in LC/NFE. The target may still be
+a pre-evolution if its evidence comes from another format. The optimizer scores
+that target's currently fieldable form and build variants; it does not replace the
+canonical target with a different evolution because its mechanical score is
+higher. A canonical non-Mega fallback remains when the target is a Mega. With
+no usage signal anywhere, the existing score-based fallback remains.
+
 The readiness ramp is line-anchored: the representative form's canonical set
 determines one earned-evidence ramp for the line, while every fielded form is
 blended against its own prior.

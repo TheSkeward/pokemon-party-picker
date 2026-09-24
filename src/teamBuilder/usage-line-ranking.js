@@ -1,4 +1,4 @@
-import { gamesToLikelySee } from './trace-usage.js';
+import { compareTraceUsage, gamesToLikelySee } from './trace-usage.js';
 
 /**
  * Six team slots plus four numbered 30-slot bench boxes. Pool entries beyond
@@ -6,6 +6,26 @@ import { gamesToLikelySee } from './trace-usage.js';
  * the expensive build-resolution and team-search path.
  */
 export const SCORED_POOL_LIMIT = 126;
+
+/** LC/NFE can supply sets, but cannot nominate an evolutionary target. */
+export function isLineUsageFormat(formatId) {
+  return !/(?:lc|nfe)$/i.test(String(formatId || ''));
+}
+
+function lineSignals(bundle = {}) {
+  // New indexes keep this independent of set sourcing: an LC-ranked mon
+  // may still have an admissible AG trace that must not be discarded.
+  if (bundle.lineRanking !== undefined || bundle.lineTrace !== undefined) {
+    return { ranking: bundle.lineRanking, trace: bundle.lineTrace };
+  }
+  // Legacy/test bundles have only the original signals. Never let a known
+  // LC/NFE source qualify, even when the independent fields are absent.
+  return {
+    ranking: isLineUsageFormat(bundle.ranking?.formatId)
+      ? bundle.ranking : null,
+    trace: isLineUsageFormat(bundle.trace?.formatId) ? bundle.trace : null,
+  };
+}
 
 /**
  * The line's best form by usage ranking: shallowest meaningful tier, then
@@ -18,7 +38,7 @@ export const SCORED_POOL_LIMIT = 126;
 export function getLineCeilingRanking(candidates = []) {
   let best = null;
   for (const row of candidates) {
-    const ranking = row.bundle?.ranking;
+    const ranking = lineSignals(row.bundle).ranking;
     if (!ranking) continue;
     const next = {
       tierRank: ranking.tierRank,
@@ -40,7 +60,7 @@ export function getLineCeilingRanking(candidates = []) {
 }
 
 /**
- * Best display-only trace row for a line with no meaningful usage anywhere.
+ * Canonical trace row for a line with no meaningful usage anywhere.
  *
  * @param {!Array<!Object>} candidates Rows carrying { candidate, bundle }.
  * @return {?Object}
@@ -48,12 +68,11 @@ export function getLineCeilingRanking(candidates = []) {
 export function getLineTraceRanking(candidates = []) {
   let best = null;
   for (const row of candidates) {
-    const trace = row.bundle?.trace;
+    const trace = lineSignals(row.bundle).trace;
     if (!trace || !(trace.value > 0)) continue;
     if (
       !best ||
-      trace.value > best.value ||
-      (trace.value === best.value && trace.tierRank < best.tierRank)
+      compareTraceUsage(trace, best) < 0
     ) {
       best = {
         tierRank: trace.tierRank,
@@ -84,6 +103,25 @@ export function getLineUsageOrder(candidates, fallbackName = '') {
     trace: ceiling ? null : getLineTraceRanking(candidates),
     fallbackName,
   };
+}
+
+/**
+ * Canonical evolutionary target, plus a canonical non-Mega fallback when
+ * necessary. Mechanical scores choose teams/builds, not the line's identity.
+ * With no usage signal at all, leave the caller's existing fallback intact.
+ */
+export function getCanonicalLineCandidates(candidates = []) {
+  const select = (rows) => {
+    const order = getLineUsageOrder(rows);
+    const id = order.ceiling?.pokemonId || order.trace?.pokemonId;
+    return id ? rows.find((row) => row.candidate?.id === id) : null;
+  };
+  const canonical = select(candidates);
+  if (!canonical) return candidates;
+  if (!canonical.candidate.isMega) return [canonical];
+  const nonMega = candidates.filter((row) => !row.candidate?.isMega);
+  const fallback = select(nonMega) || nonMega[0];
+  return fallback ? [canonical, fallback] : [canonical];
 }
 
 /**
@@ -120,11 +158,7 @@ export function compareLineUsageStrength(a, b) {
 
   if (Boolean(a.trace) !== Boolean(b.trace)) return a.trace ? -1 : 1;
   if (a.trace && b.trace) {
-    return (
-      a.trace.games - b.trace.games ||
-      a.trace.tierRank - b.trace.tierRank ||
-      b.trace.value - a.trace.value
-    );
+    return compareTraceUsage(a.trace, b.trace);
   }
 
   return 0;

@@ -1,4 +1,4 @@
-// Display-only seen-within-N-games relaxation (bench tail labels). The
+// Shared seen-within-N-games relaxation (including bench tail labels). The
 // meaningful bar is 50%-seen-within-25-games (≈2.73%); below it, the label's
 // N is the smallest 5-step ≥ the exact horizon for that usage.
 import test from 'node:test';
