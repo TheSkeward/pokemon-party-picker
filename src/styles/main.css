@@ -577,18 +577,19 @@ button:hover {
   margin-top: 12px;
   padding-top: 10px;
   border-top: 1px solid var(--hairline);
-  font-size: var(--type-s);
+  font-size: var(--type-m);
 }
 
 .bench-label {
   color: var(--text-muted);
+  font-size: var(--type-s);
   white-space: nowrap;
 }
 
 .bench-items {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 8px;
+  gap: var(--space-2) var(--space-3);
 }
 
 .bench-group {
@@ -598,15 +599,12 @@ button:hover {
   gap: 4px 8px;
 }
 
-.bench-label,
 .bench-tier {
-  color: var(--text-muted);
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.06em;
-}
-
-.bench-tier {
-  font-size: 0.85em;
+  /* Tier, rating and trace horizon must be as readable as the names. */
+  color: var(--text);
+  font-size: inherit;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 
 .bench-sep {
@@ -620,16 +618,16 @@ button:hover {
 }
 
 .bench-chip em {
-  color: var(--text-muted);
+  color: var(--text);
   font-style: normal;
 }
 
 /* Box-position number on the first 120 bench chips (four PC boxes' worth, in
    display order), so sorting a box by descending usage tier is copy-down work.
    One relic-gem colour per box (30 chips each) so a box boundary reads at a
-   glance and none is confused with the muted tier labels or the "worst" flag. */
+   glance and none is confused with the tier labels or the "worst" flag. */
 .bench-index {
-  font-size: 0.85em;
+  font-size: inherit;
   font-variant-numeric: tabular-nums;
 }
 
