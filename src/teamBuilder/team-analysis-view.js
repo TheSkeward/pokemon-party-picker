@@ -49,7 +49,14 @@ export function renderTeamAnalysisPanel(root, {
   }
 
   const memoKey = JSON.stringify([
-    team.map((member) => `${member.pokemonId}|${member.buildKey || ''}`),
+    // A progression edit first renders the old build under the new rules.
+    // Re-optimization can keep the species/build key but replace its moves;
+    // the completed set must not reuse that interim, incomplete analysis.
+    team.map((member) => [
+      member.pokemonId,
+      member.buildKey || '',
+      (member.legalityProfile?.recommendedMoves || []).map((move) => move.id),
+    ]),
     itemAssignments || null,
     progression || null,
     family || '',
