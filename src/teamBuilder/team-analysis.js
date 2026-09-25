@@ -403,11 +403,10 @@ async function buildMemberLegalMoveEntry({
     representativeName: row.name,
     attackerStats,
     levelCap: progression.levelCap,
-    // Coverage and utility sets are assembled without the usage anchor,
-    // as the optimizer assembled them.
-    ...(realized.usageAnchored
-      ? { moveUsage: topSet.moveUsage, moveRank: topSet.moveRank }
-      : {}),
+    // Match the optimizer: alternative builds skip the usage anchor,
+    // but all builds retain the fallback order for empty move slots.
+    moveRank: topSet.moveRank,
+    ...(realized.usageAnchored ? { moveUsage: topSet.moveUsage } : {}),
     heldItem,
     ability: topSet.ability,
     opponentTypeBias: progression.opponentTypeBias,

@@ -248,8 +248,8 @@ const MAX_RESULT_CACHE = 400;
 // realization, and a member that loses the copy realizes a set assembled
 // without it (a fallback build variant). Reborn's results are unchanged
 // (reusable TMs); HGSS results with contested TMs differ.
-// v57: stepped trace sourcing and usage-selected canonical evolutionary forms.
-const RESULT_CACHE_VERSION = '57';
+// v58: retain fallback move ranks when filling alternative builds.
+const RESULT_CACHE_VERSION = '58';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.
@@ -1467,9 +1467,10 @@ async function resolveCandidateBuilds({
       movePreference,
       fieldExtenderOwned:
         ((progression.ownedItems || {}).amplifieldrock || 0) > 0,
-      ...(usageAnchored
-        ? { moveUsage: topSet.moveUsage, moveRank: topSet.moveRank }
-        : {}),
+      // Alternative builds keep their own priorities, but still use the
+      // canonical fallback order to fill otherwise empty move slots.
+      moveRank: topSet.moveRank,
+      ...(usageAnchored ? { moveUsage: topSet.moveUsage } : {}),
     });
     profile.fieldedId = currentSpecies?.id || member.id;
     profile.fieldedName = currentSpecies?.name || member.name;
