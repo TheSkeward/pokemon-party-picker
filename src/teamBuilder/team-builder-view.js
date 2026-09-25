@@ -999,7 +999,7 @@ export function renderBenchLine(result) {
           : '';
       return `<span class="bench-group"><span class="bench-tier"${tierTitle}>${escapeHtml(label)}</span>${chips}</span>`;
     })
-    .join('');
+    .join('<span class="bench-sep">·</span>');
 
   return `
     <div class="bench-line">
