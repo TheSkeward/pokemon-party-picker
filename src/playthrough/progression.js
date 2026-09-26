@@ -197,6 +197,20 @@ export function setOwnedItemCount(progression, itemId, count) {
 }
 
 /**
+ * The progression with the given owned items set aside, as if the bag held
+ * none: how the team planner asks what form a line reaches without spending
+ * a copy-limited evolution item on it. Pure; unknown ids are ignored.
+ * @param {Object} progression
+ * @param {!Array<string>} itemIds
+ * @return {Object}
+ */
+export function withoutOwnedItems(progression, itemIds) {
+  const owned = { ...(progression?.ownedItems || {}) };
+  for (const itemId of itemIds) delete owned[normalizeSearch(itemId)];
+  return { ...progression, ownedItems: owned };
+}
+
+/**
  * Bulk inventory merge (shop sync / batch adds): raises each item to the
  * given count, never LOWERING one — re-running a sync can't shrink a stack
  * the player recorded by hand. Counts clamp to the tracking cap.

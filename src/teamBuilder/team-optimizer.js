@@ -9,7 +9,12 @@ import {
 } from '../playthrough/sketch.js';
 import {
   getCurrentSpeciesForChoice,
+  withoutItemsBuildKey,
 } from '../playthrough/current-species.js';
+import {
+  contestedEvolutionItems,
+} from '../playthrough/evolution-requirements.js';
+import { withoutOwnedItems } from '../playthrough/progression.js';
 import {
   getAvailableMoves,
   loadLegalMoveData,
@@ -1121,10 +1126,12 @@ function pruneDominatedBuilds(rows) {
     return true;
   };
 
-  // The "without a one-copy TM" fallbacks are dominated by the standard set
-  // by construction; they exist for build realization, not on merit, so
-  // they neither prune nor count against the cap.
-  const isFallback = (row) => String(row.buildKey).startsWith('without:');
+  // The "without a one-copy TM" and "without a contested evolution item"
+  // fallbacks are dominated by the standard set by construction; they exist
+  // for build realization, not on merit, so they neither prune nor count
+  // against the cap.
+  const isFallback = (row) =>
+    /^without(-items)?:/.test(String(row.buildKey));
   const kept = [];
   const fallbacks = [];
   for (let b = 0; b < rows.length; b++) {
@@ -1423,6 +1430,11 @@ async function resolveCandidateBuilds({
       blocked: currentSpecies.blockedEvolutions || [],
     }
     : { friction: 0, steps: [], blocked: [] };
+  // Owned evolution items this form spent while the game does not supply
+  // them yet: copy-limited across the team, like a single-use TM.
+  const contestedItems = currentSpecies
+    ? contestedEvolutionItems(currentSpecies.id, input.id, progression)
+    : [];
 
   // Canonical-set readiness (Phase 1) — a property of the LINE, shared by
   // every build variant. Feeds the readiness badges and the w ramp.
@@ -1481,6 +1493,7 @@ async function resolveCandidateBuilds({
     profile.abilityOptions = abilityChoices;
     profile.setReadiness = setReadiness;
     profile.singleCopyTms = singleCopyTmsOf(profile.recommendedMoves || []);
+    profile.consumedItems = contestedItems;
     return profile;
   };
   // A move whose only route is the given single-copy TM.
@@ -1537,6 +1550,35 @@ async function resolveCandidateBuilds({
           usageAnchored: true,
         }),
       });
+    }
+
+    // A copy-limited evolution item (one Moon Stone in the bag while the game
+    // does not sell them yet) evolves one candidate, not every one that wants
+    // it. This form's fallback is the form the line reaches without spending
+    // the item, resolved as its own standard set, so that when another
+    // member is planned the copy, this one still has a build to realize.
+    if (contestedItems.length) {
+      const itemIds = contestedItems.map((item) => item.id);
+      const fallback = await resolveCandidateBuilds({
+        breedingContext,
+        sketchContext,
+        candidate,
+        family,
+        input,
+        progression: withoutOwnedItems(progression, itemIds),
+        selection,
+        abilityOverride,
+        fastMode: true,
+      });
+      const profile = fallback.variants[0]?.profile;
+      if (profile && profile.fieldedId !== currentSpecies?.id) {
+        const names = contestedItems.map((item) => item.name).join(' and ');
+        variants.push({
+          key: withoutItemsBuildKey(itemIds),
+          label: `Set without ${names} (stays ${profile.fieldedName})`,
+          profile,
+        });
+      }
     }
 
     variants.push(

@@ -67,6 +67,61 @@ function ownedItemCount(access, itemName) {
   return id ? access.ownedItems[id] || 0 : 0;
 }
 
+// Whether the progression closes an access gate: an explicit false, or, for
+// legacy saves, the old blanket `evoAccessStones: false` standing in for an
+// item gate whose per-item key was never set.
+function gateClosed(access, key) {
+  if (!access) return false;
+  if (access[key] === false) return true;
+  return (
+    itemGates().keys.has(key) &&
+    access[key] === undefined &&
+    access.evoAccessStones === false
+  );
+}
+
+/**
+ * The evolution items the chain from `inputId` up to `fieldedId` spends out
+ * of the bag alone: each item whose gate the progression closes (the game
+ * does not supply it yet) but which the player owns. Owning one lets ONE
+ * evolution through, not every candidate's, so the team planner treats these
+ * as copy-limited, like a single-use TM. Empty without a progression, for an
+ * open gate, or when nothing on the chain needs an item.
+ * @param {?string} fieldedId
+ * @param {?string} inputId
+ * @param {?Object} access The progression.
+ * @return {!Array<{id: string, name: string, copies: number}>}
+ */
+export function contestedEvolutionItems(fieldedId, inputId, access) {
+  if (!access) return [];
+  const rules = evolutionRules();
+  const contested = new Map();
+  const consider = (name, key) => {
+    if (!name || !gateClosed(access, key)) return;
+    const copies = ownedItemCount(access, name);
+    if (copies > 0) contested.set(toId(name), { id: toId(name), name, copies });
+  };
+  const input = toId(inputId);
+  const seen = new Set();
+  let id = toId(fieldedId);
+  while (id && id !== input && !seen.has(id)) {
+    seen.add(id);
+    const species = dex().progressionSpecies[id];
+    if (!species?.prevoId) break;
+    const evoType = species.evoType || '';
+    if (evoType === 'useItem' || evoType === 'levelHold') {
+      consider(species.evoItem, evoItemAccessKey(species.evoItem));
+    } else if (evoType === 'trade') {
+      consider(rules.tradeItem, rules.tradeAccessKey);
+      if (species.evoItem) {
+        consider(species.evoItem, evoItemAccessKey(species.evoItem));
+      }
+    }
+    id = species.prevoId;
+  }
+  return [...contested.values()];
+}
+
 // Item-shaped gates per game, keyed by its access-field list.
 const ITEM_GATES = new WeakMap();
 function itemGates() {
@@ -191,13 +246,7 @@ export function getEvolutionRequirement(species, access = null) {
     const denied = required.find(
       (key) => {
         const itemGate = itemGates().keys.has(key);
-        // Legacy saves: the old blanket `evoAccessStones: false` blocks every
-        // item gate whose per-item key hasn't been set explicitly.
-        const blocked =
-          access[key] === false ||
-          (itemGate && access[key] === undefined &&
-            access.evoAccessStones === false);
-        if (!blocked) return false;
+        if (!gateClosed(access, key)) return false;
         if (itemGate && ownedItemCount(access, species.evoItem)) {
           return false;
         }

@@ -3,8 +3,33 @@ import {
   getEvolutionRequirement,
   evolutionChainProof,
 } from './evolution-requirements.js';
-import { normalizeLevelCap } from './progression.js';
+import { normalizeLevelCap, withoutOwnedItems } from './progression.js';
 import { dex } from '../games/dex.js';
+
+// A build key "without-items:moonstone+ovalstone" names a build realized
+// without spending those owned evolution items (team-optimizer.js makes one
+// when a copy-limited item is contested). The form such a build holds is
+// judged with the items set aside, so every reader of a choice agrees on it.
+const WITHOUT_ITEMS_KEY = 'without-items:';
+
+/**
+ * @param {!Array<string>} itemIds
+ * @return {string} The build key for a build that forgoes these items.
+ */
+export function withoutItemsBuildKey(itemIds) {
+  return `${WITHOUT_ITEMS_KEY}${itemIds.join('+')}`;
+}
+
+/**
+ * @param {?string} buildKey
+ * @return {!Array<string>} The item ids a build forgoes; empty otherwise.
+ */
+export function buildKeyWithoutItems(buildKey) {
+  const key = String(buildKey || '');
+  return key.startsWith(WITHOUT_ITEMS_KEY)
+    ? key.slice(WITHOUT_ITEMS_KEY.length).split('+').filter(Boolean)
+    : [];
+}
 
 /**
  * The form a picked mon actually holds under the given progression state: the
@@ -22,16 +47,20 @@ export function getCurrentSpeciesForChoice(choice, progression = {}) {
 
   if (!inputId) return null;
 
+  const forgone = buildKeyWithoutItems(choice?.buildKey);
+  const access = forgone.length
+    ? withoutOwnedItems(progression, forgone)
+    : progression;
   const current = getBestLevelReachableSpecies({
     inputId,
     levelCap: normalizeLevelCap(progression.levelCap),
     representativeId,
-    access: progression,
+    access,
   });
 
   if (!current) return null;
 
-  const proof = evolutionChainProof(current.id, progression, inputId);
+  const proof = evolutionChainProof(current.id, access, inputId);
   // "The representative lies AHEAD of the current form" — true only when the
   // current form is an ancestor of the representative (Frogadier → Greninja).
   // When the representative is a PRE-evolution of the current form (a Noivern

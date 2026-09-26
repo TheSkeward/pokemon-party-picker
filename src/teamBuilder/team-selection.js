@@ -134,10 +134,10 @@ export function assignTeamBuilds(team, opponentTypeBias = {}) {
 
 /**
  * The best build per member by `scoreOf` over every combination of the
- * members' options. With `honorCopies`, a build needing a single-copy TM
- * that an earlier member's chosen build needs is skipped, and null comes
- * back when no combination works. Fixed enumeration order, strict
- * improvement.
+ * members' options. With `honorCopies`, a build needing a copy-limited
+ * resource whose copies earlier members' chosen builds already plan is
+ * skipped, and null comes back when no combination works. Fixed enumeration
+ * order, strict improvement.
  * @param {!Array<!Array<!Object>>} options One build list per member.
  * @param {function(!Array<!Object>): number} scoreOf
  * @param {boolean} honorCopies
@@ -146,7 +146,7 @@ export function assignTeamBuilds(team, opponentTypeBias = {}) {
 export function chooseBuildAssignment(options, scoreOf, honorCopies) {
   let best = null;
   const assignment = new Array(options.length);
-  const holders = new Map(); // single-copy TM id -> members planning it
+  const holders = new Map(); // resource id -> members planning it
   const walk = (index) => {
     if (index === options.length) {
       const score = scoreOf(assignment);
@@ -154,12 +154,17 @@ export function chooseBuildAssignment(options, scoreOf, honorCopies) {
       return;
     }
     for (const build of options[index]) {
-      const needs = singleCopyTmsOf(build);
-      if (honorCopies && needs.some((id) => holders.get(id))) continue;
-      for (const id of needs) holders.set(id, (holders.get(id) || 0) + 1);
+      const needs = resourcesOf(build);
+      if (
+        honorCopies &&
+        needs.some(({ id, copies }) => (holders.get(id) || 0) >= copies)
+      ) {
+        continue;
+      }
+      for (const { id } of needs) holders.set(id, (holders.get(id) || 0) + 1);
       assignment[index] = build;
       walk(index + 1);
-      for (const id of needs) holders.set(id, holders.get(id) - 1);
+      for (const { id } of needs) holders.set(id, holders.get(id) - 1);
     }
   };
   walk(0);
@@ -168,10 +173,38 @@ export function chooseBuildAssignment(options, scoreOf, honorCopies) {
 
 const singleCopyTmsOf = (build) => build.legalityProfile?.singleCopyTms || [];
 
+const tmLabel = (id) => {
+  const option = moveSources().tmOptions.find((tm) => tm.id === id);
+  return option ? `${option.code} ${option.move}` : id;
+};
+
+// The copy-limited resources a build spends: the single-use TMs it needs
+// (one copy each) and the owned evolution items its form spent while the
+// game does not supply them yet (as many copies as the bag holds — see
+// contestedEvolutionItems in playthrough/evolution-requirements.js).
+function resourcesOf(build) {
+  return [
+    ...singleCopyTmsOf(build).map((id) => ({
+      id: `tm:${id}`,
+      copies: 1,
+      label: tmLabel(id),
+    })),
+    ...(build.legalityProfile?.consumedItems || []).map((item) => ({
+      id: `item:${item.id}`,
+      copies: item.copies,
+      label: item.name,
+    })),
+  ];
+}
+
+const copiesText = (copies) =>
+  copies === 1 ? 'one copy' : `${copies} copies`;
+
 /**
- * Tells a member when a single-copy TM decided its build: its preferred
- * build's copy is planned for another member, or, when no assignment could
- * honor the copies, the copy it plans is planned by an earlier member too.
+ * Tells a member when a copy-limited resource decided its build: its
+ * preferred build's copies are planned for other members, or, when no
+ * assignment could honor the copies, the copy it plans is planned by an
+ * earlier member too.
  * @param {!Array<!Object>} team The chosen builds.
  * @param {!Array<!Array<!Object>>} options Each member's builds, preferred
  *     first.
@@ -181,33 +214,35 @@ const singleCopyTmsOf = (build) => build.legalityProfile?.singleCopyTms || [];
 export function noteSingleCopyTms(team, options, honored) {
   const holders = new Map();
   team.forEach((build, index) => {
-    for (const id of singleCopyTmsOf(build)) {
+    for (const { id } of resourcesOf(build)) {
       if (!holders.has(id)) holders.set(id, []);
       holders.get(id).push(index);
     }
   });
   if (!holders.size) return team;
-  const label = (id) => {
-    const option = moveSources().tmOptions.find((tm) => tm.id === id);
-    return option ? `${option.code} ${option.move}` : id;
-  };
   return team.map((build, index) => {
     const notes = [];
     if (honored) {
       const preferred = options[index][0];
       if (preferred !== build) {
-        for (const id of singleCopyTmsOf(preferred)) {
-          const holder = holders.get(id)?.find((other) => other !== index);
-          if (holder != null) {
-            notes.push(`${label(id)}: one copy, planned for ${team[holder].name}`);
+        for (const { id, label, copies } of resourcesOf(preferred)) {
+          const others = (holders.get(id) || [])
+            .filter((other) => other !== index)
+            .map((other) => team[other].name);
+          if (others.length) {
+            notes.push(
+              `${label}: ${copiesText(copies)}, planned for ${others.join(' and ')}`,
+            );
           }
         }
       }
     } else {
-      for (const id of singleCopyTmsOf(build)) {
+      for (const { id, label, copies } of resourcesOf(build)) {
         const first = holders.get(id)[0];
         if (first !== index) {
-          notes.push(`${label(id)}: needs a second copy (${team[first].name} plans it too)`);
+          notes.push(
+            `${label}: needs ${copies === 1 ? 'a second' : 'another'} copy (${team[first].name} plans it too)`,
+          );
         }
       }
     }
