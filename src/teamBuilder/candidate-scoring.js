@@ -115,8 +115,8 @@ export function scoreCandidate({
 
   // w ramps with how far the canonical competitive set is toward complete.
   // `lineRamp` (the optimizer's line-anchored w — computed from the LINE's
-  // representative, the form with the best first-meaningful tier) is the
-  // authoritative source: every form in a line blends under the SAME w
+  // canonical form, chosen by the usage rule in usage-line-ranking.js) is
+  // the authoritative source: every form in a line blends under the SAME w
   // against its OWN prior, so a lesser line-mate can't dodge the endgame
   // drag the real form is subject to. Callers without line context (display
   // paths) fall back to this form's own ramp.

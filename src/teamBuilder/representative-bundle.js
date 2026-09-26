@@ -7,9 +7,12 @@ import { compareTraceUsage } from './trace-usage.js';
 const LEAD_SMOOTHING_K = 200;
 
 /**
- * @return {Promise<{usage: ?Object, leads: ?Object}>} The first
- *     format/cutoff bundle at or above the meaningful-usage bar, else the
- *     best trace found; nulls when the mon is absent everywhere.
+ * @return {Promise<{usage: ?Object, leads: ?Object, ranking: ?Object,
+ *     trace: ?Object, lineRanking: (?Object|undefined),
+ *     lineTrace: (?Object|undefined)}>} The first format/cutoff bundle at or
+ *     above the meaningful-usage bar, else the best trace found, carrying
+ *     the long-run set-source and line-identity signals; nulls when the mon
+ *     is absent everywhere.
  */
 export async function resolveRepresentativeLightBundle({
   availability,

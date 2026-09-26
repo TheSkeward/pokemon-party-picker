@@ -12,7 +12,10 @@ export function isLineUsageFormat(formatId) {
   return !/(?:lc|nfe)$/i.test(String(formatId || ''));
 }
 
-function lineSignals(bundle = {}) {
+function lineSignals(bundle) {
+  // A failed bundle fetch leaves null (see the rank phase in
+  // team-optimizer.js): no signal, never a crash.
+  if (!bundle) return { ranking: null, trace: null };
   // New indexes keep this independent of set sourcing: an LC-ranked mon
   // may still have an admissible AG trace that must not be discarded.
   if (bundle.lineRanking !== undefined || bundle.lineTrace !== undefined) {

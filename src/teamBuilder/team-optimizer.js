@@ -888,10 +888,10 @@ async function resolvePoolLine({
 
   // Usage trust (w) is a property of the LINE, anchored to its
   // representative — first meaningful tier, or the first tier qualifying
-  // under the shared five-game relaxation. Every
-  // form then blends under that SAME w against its OWN prior, so a lesser
-  // line-mate can't dodge the endgame drag by having a trivially-complete
-  // set while the real form converges.
+  // under the shared five-game relaxation. Every form then blends under
+  // that SAME w against its OWN prior, so a lesser line-mate can't dodge
+  // the endgame drag by having a trivially-complete set while the real
+  // form converges.
   const familyConfig = availability?.familyConfigs?.[family] || {};
   const formatOrder = familyConfig.formatOrder || [];
   const cutoffPriority = familyConfig.cutoffPriority || [];

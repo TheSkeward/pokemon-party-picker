@@ -127,3 +127,13 @@ test('ability-annotated inputs never merge with differently annotated ones', () 
   const unique = deduplicateUsageEntries(entries);
   assert.equal(unique.length, 2);
 });
+
+test('a candidate whose bundle fetch failed carries no signal, not a crash', () => {
+  const order = getLineUsageOrder(
+    [{ candidate: { name: 'Lost' }, bundle: null }],
+    'Lost input',
+  );
+  assert.equal(order.ceiling, null);
+  assert.equal(order.trace, null);
+  assert.equal(order.fallbackName, 'Lost input');
+});
