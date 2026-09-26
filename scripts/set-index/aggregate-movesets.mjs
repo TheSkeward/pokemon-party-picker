@@ -6,9 +6,12 @@ import { normalizeName } from './string-utils.mjs';
 /**
  * Aggregates a candidate's monthly moveset sidecars, weighting each entry's
  * usage% by that month's rawCount so the final percentages are count-based.
+ * Each aggregate also carries the tier's mean usage share (`value`) and
+ * ladder position (`tierRank`), so set sourcing can rank the tiers that
+ * actually hold moveset data by the same stepped rule as the resolver index.
  *
  * @param {{family: string, selection: string, formatId: string,
- *     cutoff: number, months: !Array<string>}} candidate
+ *     cutoff: number, months: !Array<string>, tierRank: number}} candidate
  * @return {!Promise<!Map<string, !Object>>} pokemonId → aggregate with a
  *     monthly-summed `entry` (moves/items/abilities/spreads).
  */
@@ -16,17 +19,17 @@ export async function aggregateCandidateSource(candidate) {
   const byPokemon = new Map();
 
   for (const month of candidate.months) {
-    const sourcePath = path.join(
+    const sourceDir = path.join(
       DATA_ROOT,
       'sources',
       month,
       candidate.formatId,
       String(candidate.cutoff),
-      'moveset.json',
     );
 
-    const source = await readJsonIfExists(sourcePath);
+    const source = await readJsonIfExists(path.join(sourceDir, 'moveset.json'));
     if (!source?.pokemon) continue;
+    const usage = await readJsonIfExists(path.join(sourceDir, 'usage.json'));
 
     for (const [pokemonId, entry] of Object.entries(source.pokemon)) {
       const aggregate = getOrCreateAggregate({
@@ -38,6 +41,7 @@ export async function aggregateCandidateSource(candidate) {
 
       aggregate.monthsPresent += 1;
       aggregate.rawCount += entry.rawCount || 0;
+      aggregate.usageTotal += usage?.pokemon?.[pokemonId]?.usage || 0;
       aggregate.name = entry.name || aggregate.name;
 
       accumulateSection(
@@ -78,9 +82,11 @@ function getOrCreateAggregate({ byPokemon, candidate, entry, pokemonId }) {
       cutoff: candidate.cutoff,
       monthsAvailable: candidate.months.length,
       monthsPresent: 0,
+      tierRank: candidate.tierRank,
       pokemonId,
       name: entry.name,
       rawCount: 0,
+      usageTotal: 0,
       sections: {
         moves: new Map(),
         items: new Map(),
@@ -109,6 +115,10 @@ function finalizeAggregates(byPokemon) {
       cutoff: aggregate.cutoff,
       monthsAvailable: aggregate.monthsAvailable,
       monthsPresent: aggregate.monthsPresent,
+      tierRank: aggregate.tierRank,
+      // Mean usage share over the tier's months, as the resolver index
+      // averages it; zero when the tier has moveset data but no usage row.
+      value: aggregate.usageTotal / aggregate.monthsAvailable,
       entry: {
         pokemonId,
         name: aggregate.name,

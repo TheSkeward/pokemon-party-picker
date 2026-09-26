@@ -34,6 +34,9 @@ export function getMovesetCandidates(availability, family, selection) {
         formatId,
         cutoff,
         months,
+        // Position on the family's format×cutoff ladder, counting only tiers
+        // with data: the tie-break of the stepped usage rule.
+        tierRank: candidates.length,
       });
     }
   }

@@ -172,3 +172,33 @@ test('monthly resolution uses stepped fallback and preserves canonical facts', a
     globalThis.fetch = fetchBefore;
   }
 });
+
+test('a trace tier without moveset data yields to the next tier by the same rule', () => {
+  const aggregate = (formatId, tierRank, value, family = 'singles') => ({
+    formatId, cutoff: 0, tierRank, value, family, selection: 'all',
+    monthsAvailable: 1, monthsPresent: 1,
+    entry: { name: 'Example', moves: [{ name: formatId, usage: 90 }],
+      items: [], abilities: [], spreads: [] },
+  });
+  const sources = (rows) => rows.map((row) => ({
+    aggregateByPokemon: new Map([['example', row]]),
+  }));
+  const stitch = (rows) => stitchPokemonSetDetail({
+    family: 'singles', formatsIndex: [], pokemon: { id: 'example' },
+    ranking: null, selection: 'all', sourceAggregates: sources(rows),
+    // The resolver's trace tier holds usage but no moveset data.
+    trace: { tierRank: 0, formatId: 'high', cutoff: 0, value: 2.0 },
+  });
+  // Own family first, ranked by horizon: 2.0% (35 games) in a middle tier
+  // beats 1.3% (55 games) deeper down, and the sibling family's 5% never
+  // competes while the own family has a row.
+  const own = stitch([
+    aggregate('other', 0, 5, 'doubles'),
+    aggregate('mid', 3, 2.0),
+    aggregate('deep', 6, 1.3),
+  ]);
+  assert.equal(own.primarySource.formatId, 'mid');
+  // Only with no own-family moveset data at all does a sibling row serve.
+  const sibling = stitch([aggregate('other', 0, 5, 'doubles')]);
+  assert.equal(sibling.primarySource.formatId, 'other');
+});

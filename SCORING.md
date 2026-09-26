@@ -191,7 +191,10 @@ qualifies, lower the bar to 30, 35, 40, ... games until something does. At the
 first successful step, the earliest tier wins; usage percentage breaks ties
 only within that tier. Thus a slightly more-used lower-tier row cannot replace
 a higher-tier row that qualifies at the same step. Zero/absent usage never
-qualifies. These relaxed sources remain traces, not new meaningful ranks.
+qualifies. These relaxed sources remain traces, not new meaningful ranks. When
+the winning tier holds usage but no moveset data, set sourcing runs the same
+rule over the tiers that do, own family first; a mon with moveset data in no
+tier of its own family takes a sibling family's best row, the one exception.
 
 The same rule chooses the reachable canonical target for an evolutionary
 line, but excludes LC and NFE at every step. Those formats can still supply

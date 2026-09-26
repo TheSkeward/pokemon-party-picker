@@ -1,5 +1,6 @@
 import { MIN_MEANINGFUL_SET_ENTRY_USAGE_PERCENT } from './constants.mjs';
 import { formatSource } from './candidates.mjs';
+import { compareTraceUsage } from '../../src/teamBuilder/trace-usage.js';
 import { buildRelatedPokemonChain } from './species-context.mjs';
 import { normalizeName } from './string-utils.mjs';
 
@@ -71,18 +72,15 @@ export function stitchPokemonSetDetail({
   return detail;
 }
 
-// Which appearing tier supplies the primary (headline) set. Prefer the first
-// tier whose usage clears the meaningful-usage bar (the resolver-index
-// `ranking`): a sub-bar mon's highest-tier appearance is a noisy handful of
-// teams, so drop down the ladder to where it's genuinely played. For mons
-// below the bar EVERYWHERE, prefer the resolver-index `trace` tier — their
-// first tier at the first successful five-game relaxation step (not the
-// largest sub-bar percentage). The trace remains below the scoring bar.
-// Only a mon with no usage signal at all falls back to the deepest appearing
-// tier in the build's own family.
+// Which appearing tier supplies the primary (headline) set: the resolver
+// index's tier for this mon (its `ranking`, else its `trace`, the one usage
+// rule of SCORING.md) whenever that tier holds moveset data. When it does
+// not, the same stepped rule runs over the tiers that do, own family first;
+// a mon with moveset data in no tier of its own family takes a sibling
+// family's best row, the one exception, so a NatDex Bagon still shows a
+// set. A mon with no usage anywhere keeps its family's deepest appearing
+// tier.
 function choosePrimaryIndex({ present, ranking, trace, family }) {
-  // A ranking/trace tier may lack moveset data even when it has usage data;
-  // fall through to the next rule in that case.
   const matchIndex = (tier) =>
     tier?.formatId != null
       ? present.findIndex(
@@ -91,21 +89,18 @@ function choosePrimaryIndex({ present, ranking, trace, family }) {
             aggregate.cutoff === tier.cutoff,
       )
       : -1;
+  const matched = matchIndex(ranking?.formatId != null ? ranking : trace);
+  if (matched >= 0) return matched;
 
-  if (ranking?.formatId != null) {
-    const matched = matchIndex(ranking);
-    return matched >= 0 ? matched : 0;
-  }
-
-  const tracedMatch = matchIndex(trace);
-  if (tracedMatch >= 0) return tracedMatch;
-
-  let deepestOwnFamily = -1;
-  for (const [index, aggregate] of present.entries()) {
-    if (aggregate.family === family) deepestOwnFamily = index;
-  }
-
-  return deepestOwnFamily >= 0 ? deepestOwnFamily : present.length - 1;
+  const rows = present.map((aggregate, index) => ({ aggregate, index }));
+  const own = rows.filter((row) => row.aggregate.family === family);
+  const stepped = (candidates) =>
+    candidates
+      .filter((row) => row.aggregate.value > 0)
+      .sort((a, b) => compareTraceUsage(a.aggregate, b.aggregate))[0]?.index;
+  const chosen = stepped(own) ?? stepped(rows);
+  if (chosen != null) return chosen;
+  return own.length ? own.at(-1).index : present.length - 1;
 }
 
 /**

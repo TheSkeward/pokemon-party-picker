@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { compareTraceUsage } from '../src/teamBuilder/trace-usage.js';
 import { isLineUsageFormat } from '../src/teamBuilder/usage-line-ranking.js';
 
@@ -77,7 +78,23 @@ async function buildFamilyAllIndex(availability, family) {
   };
 }
 
-async function resolveAllPokemonUsage(availability, family) {
+/**
+ * One family's usage signals per Pokémon under the stepped rule of
+ * SCORING.md's Usage trust: the headline tier, the first tier clearing the
+ * meaningful bar, else the best relaxed trace, and the same pair with LC and
+ * NFE excluded for evolutionary lines.
+ * @param {!Object} availability
+ * @param {string} family
+ * @param {function(string, string, number, string): !Promise<?Object>=}
+ *     readSource Month/format/cutoff/kind reader; tests inject fixtures.
+ * @return {!Promise<{resolved: !Object, ranking: !Object, trace: !Object,
+ *     lineRanking: !Object, lineTrace: !Object}>}
+ */
+export async function resolveAllPokemonUsage(
+  availability,
+  family,
+  readSource = readSourceData,
+) {
   const resolved = {}; // first tier the mon appears in at all (the headline)
   const ranking = {}; // first tier whose usage clears the meaningful bar
   // For mons that never clear the meaningful bar anywhere: the single best
@@ -92,7 +109,7 @@ async function resolveAllPokemonUsage(availability, family) {
     const aggregate = new Map();
 
     for (const month of candidate.months) {
-      const source = await readSourceData(month, candidate.formatId, candidate.cutoff, 'usage');
+      const source = await readSource(month, candidate.formatId, candidate.cutoff, 'usage');
       if (!source?.pokemon) continue;
 
       for (const [pokemonId, entry] of Object.entries(source.pokemon)) {
@@ -313,7 +330,13 @@ async function readJson(filePath) {
   return JSON.parse(await fs.readFile(filePath, 'utf8'));
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+// Run only as the entry point, so tests can import the rule.
+const invokedDirectly =
+  process.argv[1] &&
+  import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
+if (invokedDirectly) {
+  main().catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+}
