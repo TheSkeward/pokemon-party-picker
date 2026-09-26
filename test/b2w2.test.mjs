@@ -164,6 +164,12 @@ test('evolutions price real trades and keep every location evolution', () => {
       evoAccessTrading: false,
     });
     assert.equal(blocked.status, 'blocked');
+    // A real trade with a Shelmet is the trade itself, not a party condition.
+    const escavalier = getEvolutionRequirement(species.escavalier, {
+      evoAccessPartyCondition: false,
+    });
+    assert.equal(escavalier.status, 'legal');
+    assert.match(escavalier.reason, /trade, with a Shelmet$/);
     // Unova has the location evolutions HGSS lacked.
     for (const id of ['leafeon', 'glaceon', 'magnezone']) {
       assert.equal(getEvolutionRequirement(species[id]).status, 'legal', id);

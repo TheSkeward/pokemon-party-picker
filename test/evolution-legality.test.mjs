@@ -90,6 +90,24 @@ test('trade evolution: legal via Link Stone (Reborn), trade + item stack for Ste
   });
 });
 
+test('trade with a partner species: the Link Stone wants the partner in the party', () => {
+  const escavalier = getEvolutionRequirement(species('escavalier'));
+  assert.equal(escavalier.status, 'legal');
+  assert.match(escavalier.reason, /Link Stone .*with a Shelmet in the party/);
+  // The party gate holds even with a Link Stone in the bag; a plain trade
+  // (Alakazam) never sees that gate.
+  const blocked = getEvolutionRequirement(species('escavalier'), {
+    evoAccessPartyCondition: false,
+    ownedItems: { linkstone: 1 },
+  });
+  assert.equal(blocked.status, 'blocked');
+  assert.match(blocked.reason, /Party-condition/);
+  const alakazam = getEvolutionRequirement(species('alakazam'), {
+    evoAccessPartyCondition: false,
+  });
+  assert.equal(alakazam.status, 'legal');
+});
+
 test('unknown item: surfaced as unknown, not silently blocked or allowed', () => {
   const milotic = getEvolutionRequirement(species('milotic'));
   assert.equal(milotic.status, 'unknown');

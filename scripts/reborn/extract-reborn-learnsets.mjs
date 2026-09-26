@@ -85,7 +85,9 @@ function resolveMonData(ourId, bySpecies) {
   const target = normForm(species.forme);
   let matched = null;
   for (const [formName, monData] of forms) {
-    const token = normForm(formName);
+    // Some Reborn form names carry the species ("Hoopa Unbound", "White
+    // Kyurem"); drop it so the token compares to the dex forme alone.
+    const token = normForm(formName).replace(baseId, '');
     if (
       token &&
       (token === target || token.startsWith(target) || target.startsWith(token))
@@ -94,6 +96,9 @@ function resolveMonData(ourId, bySpecies) {
       break;
     }
   }
+  // A forme newer than Reborn's dex with no form entry of its own (Hisuian
+  // Arcanine) is not in the game; the base's learnset is not a stand-in.
+  if (!matched && species.gen > dex.gen) return null;
   return { primary: pickMonData(forms, matched), base };
 }
 

@@ -9,7 +9,8 @@
  *   item / hold / trade:  legal if the item is farmable (curated, sourced
  *                         table), K = item friction (higher when tedious);
  *                         UNKNOWN item availability is surfaced, not silently
- *                         blocked or allowed
+ *                         blocked or allowed; where an item stands in for the
+ *                         trade, "with a Shelmet" is a party requirement
  *   special condition:    affection ⇒ friendship-like; trivial party/time
  *                         conditions ⇒ minor friction; location evolutions
  *                         (moss/ice rock, magnetic field, Lanakila equivalent)
@@ -42,6 +43,22 @@ function regionAccess(species) {
   const entry = region ? evolutionRules().regionAccess?.[region] : null;
   if (!entry || (entry.except || []).includes(species.id)) return null;
   return entry;
+}
+
+// The partner of a "trade with a Shelmet" evolution where an item replaces
+// the trade: Reborn's Trading.rb refuses the Link Stone unless that species is
+// in the party, so the evolution also needs a specific mon the player may not
+// own. Under real trades the partner is the trade itself.
+function tradePartner(species) {
+  if (species?.evoType !== 'trade' || !evolutionRules().tradeItem) return null;
+  const match = /^with an? (.+)$/i.exec(species.evoCondition || '');
+  return match ? match[1] : null;
+}
+
+// The recorded condition, worded for the active game.
+function evoConditionText(species) {
+  const condition = species?.evoCondition || '';
+  return tradePartner(species) ? `${condition} in the party` : condition;
 }
 
 function ownedItemCount(access, itemName) {
@@ -100,6 +117,7 @@ function requiredAccessKeys(evoType, condition, species) {
   if (evoType === 'trade') {
     // Trade-with-item (Metal Coat Scizor) needs the item too.
     const tradeKeys = [evolutionRules().tradeAccessKey].filter(Boolean);
+    if (tradePartner(species)) tradeKeys.push('evoAccessPartyCondition');
     return species.evoItem
       ? [...tradeKeys, evoItemAccessKey(species.evoItem), ...regionKeys]
       : [...tradeKeys, ...regionKeys];
@@ -148,7 +166,7 @@ export function getEvolutionRequirement(species, access = null) {
   }
 
   const evoType = species.evoType || '';
-  const condition = species.evoCondition || '';
+  const condition = evoConditionText(species);
   const rules = evolutionRules();
   const required = requiredAccessKeys(evoType, condition, species);
 
@@ -398,7 +416,7 @@ function shortStepRequirement(species) {
   const rules = evolutionRules();
   const note =
     rules.formNotes?.[species.id] ?? FORM_EVOLUTION_NOTES[species.id];
-  const condition = species.evoCondition || '';
+  const condition = evoConditionText(species);
   const evoType = species.evoType || '';
   const region = regionAccess(species)?.label || '';
   const extras = (base) =>

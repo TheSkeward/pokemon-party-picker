@@ -18,6 +18,10 @@ test("multi-step chains sequence with 'then'; level-only runs collapse", () => {
     '@21 (then Leaf Stone)',
   );
   assert.equal(describeEvolutionPath('abra', 'alakazam'), '@16 (then Link Stone)');
+  assert.equal(
+    describeEvolutionPath('karrablast', 'escavalier'),
+    ' (Link Stone, with a Shelmet in the party)',
+  );
   // Weedle -> Kakuna@7 -> Beedrill@10: the final level implies the first.
   assert.equal(describeEvolutionPath('weedle', 'beedrill'), '@10');
 });
