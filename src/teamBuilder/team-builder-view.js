@@ -195,6 +195,15 @@ export function renderGamestateStrip(progression = {}) {
   `;
 }
 
+/**
+ * @param {number} count Unique entries in the donor box.
+ * @return {string} The box's caption; the widget rewrites it in place when
+ *     the pool's entries join the box.
+ */
+export function donorBoxLabel(count) {
+  return `Donor box · ${count} entries · your whole box: everything you add to the pool lands here and stays when you remove it; donors supply egg moves, Sketch partners and move transfers, and only the pool above is fielded`;
+}
+
 function renderPoolControls({
   embedded,
   families,
@@ -236,7 +245,7 @@ function renderPoolControls({
         </label>
 
         <label class="wide-control">
-          <span>Donor box · ${donorStats.uniqueCount} entries · never fielded; they only supply egg moves, Sketch partners and move transfers to the pool above</span>
+          <span>${escapeHtml(donorBoxLabel(donorStats.uniqueCount))}</span>
           <textarea id="donor-query-input" rows="3" placeholder="Ditto, Smeargle, the rest of your PC boxes...">${escapeHtml(state.donorQuery || '')}</textarea>
         </label>
       </div>

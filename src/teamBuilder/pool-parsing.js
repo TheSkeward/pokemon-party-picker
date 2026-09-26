@@ -225,3 +225,24 @@ export function withDonors(query, donorQuery = '') {
   const donors = String(donorQuery || '').trim();
   return donors ? `${String(query || '')}\n${donors}` : String(query || '');
 }
+
+/**
+ * The donor box after the pool's entries join it: every Pokémon named in the
+ * pool, as a plain name (no lock marker or ability annotation), merged with
+ * the donors already listed, deduplicated and alphabetized. The widget calls
+ * this whenever the pool is committed, never when something leaves the pool,
+ * so the donor box only grows: the box is everything the player has listed,
+ * and the pool is its fieldable subset.
+ * @param {string} donorQuery
+ * @param {string} query
+ * @param {Array<Object>} pokemonIndex
+ * @return {string}
+ */
+export function absorbPoolIntoDonors(donorQuery, query, pokemonIndex) {
+  const names = parsePoolTokens(query, pokemonIndex);
+  if (!names.length) return String(donorQuery || '');
+  return normalizePoolText(
+    `${String(donorQuery || '')}\n${names.join(', ')}`,
+    pokemonIndex,
+  );
+}

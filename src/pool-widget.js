@@ -8,10 +8,12 @@ import {
 import {
   getSortedTeam,
   renderGamestateStrip,
+  donorBoxLabel,
   renderTeamBuilderPage,
 } from './teamBuilder/team-builder-view';
 import { createTeamBuilderSetDetailsLoader } from './teamBuilder/set-details-loader';
 import {
+  absorbPoolIntoDonors,
   getPoolStats,
   normalizePoolText,
   setPoolEntryLock,
@@ -180,6 +182,7 @@ export function mountPoolOptimizer(container, options = {}) {
 
     if (state.query.trim()) {
       savePool(state.query);
+      absorbPool();
       render();
       void computeAndRender({ exhaustive: false, background: true });
     } else {
@@ -228,6 +231,7 @@ export function mountPoolOptimizer(container, options = {}) {
 
     try {
       state.query = normalizePoolText(state.query, pokemonIndex);
+      absorbPool();
 
       const saved = savePool(state.query);
 
@@ -1010,6 +1014,14 @@ export function mountPoolOptimizer(container, options = {}) {
         updatePoolStatusMessage(state.statusMessage);
       });
 
+    // The pool's entries join the donor box when the edit is committed
+    // (blur), not on every keystroke, so a half-typed name never lands.
+    app
+      .querySelector('#pool-query-input')
+      ?.addEventListener('change', () => {
+        absorbPool();
+      });
+
     app
       .querySelector('#donor-query-input')
       ?.addEventListener('input', (event) => {
@@ -1115,6 +1127,7 @@ export function mountPoolOptimizer(container, options = {}) {
         savePool(state.query);
         state.donorQuery = imported.donors || '';
         saveDonors(state.donorQuery);
+        absorbPool();
         // Round-trip the imported progression through the normal save/load
         // path so it gets the same normalization (terrain-seed migration,
         // count clamps, unknown-field drops) as any other stored state.
@@ -1133,15 +1146,15 @@ export function mountPoolOptimizer(container, options = {}) {
       );
       if (!confirmed) return;
 
+      // The donor box is the whole box and outlives the pool: clearing the
+      // pool empties the fieldable subset only.
       state.query = '';
-      state.donorQuery = '';
       state.result = null;
       state.resultProgressionKey = '';
       state.statusMessage = 'Saved pool cleared';
 
       setDetails.cancel();
       removeLocalStorage(poolStorageKey());
-      removeLocalStorage(savedStateKey('donors'));
       writeUrl();
       render();
     });
@@ -1476,6 +1489,30 @@ export function mountPoolOptimizer(container, options = {}) {
       pokemonName: selected.name,
       progression: state.progression,
     });
+  }
+
+  // Every Pokémon in the pool joins the donor box, which only ever grows: the
+  // box is everything the player has listed, the pool its fieldable subset.
+  // Updates the box's textarea and count in place, so the pool textarea the
+  // player is editing keeps its focus.
+  function absorbPool() {
+    const absorbed = absorbPoolIntoDonors(
+      state.donorQuery,
+      state.query,
+      pokemonIndex,
+    );
+    if (absorbed === state.donorQuery) return;
+    state.donorQuery = absorbed;
+    saveDonors(state.donorQuery);
+    const box = app.querySelector('#donor-query-input');
+    if (!box) return;
+    box.value = state.donorQuery;
+    const label = box.closest('label')?.querySelector('span');
+    if (label) {
+      label.textContent = donorBoxLabel(
+        getPoolStats(state.donorQuery, pokemonIndex).uniqueCount,
+      );
+    }
   }
 
   function refreshTeamAnalysisPanel() {
