@@ -187,9 +187,12 @@ qualifies. These relaxed sources remain traces, not new meaningful ranks.
 
 The same rule chooses the reachable canonical target for an evolutionary
 line, but excludes LC and NFE at every step. Those formats can still supply
-the selected species' set; they cannot make it win the line. Separate
-`lineRanking`/`lineTrace` facts preserve admissible signals even when a
-species' main set source qualifies only in LC/NFE. The target may still be
+the selected species' set; they cannot make it win the line. The line's place
+on the bench and in the scoring cut follows the same rule: a Snover ranked in
+LC sits where Abomasnow's trace puts the line, labelled by that trace, because
+a line is judged by its best member and LC cannot say which member that is.
+Separate `lineRanking`/`lineTrace` facts preserve admissible signals even when
+a species' main set source qualifies only in LC/NFE. The target may still be
 a pre-evolution if its evidence comes from another format. The optimizer scores
 that target's currently fieldable form and build variants; it does not replace
 the canonical target with a different evolution because its mechanical score is
