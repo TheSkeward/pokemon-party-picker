@@ -225,3 +225,45 @@ function compareDuplicateRepresentatives(a, b) {
 function signalName(order) {
   return order.ceiling?.name || order.trace?.name || order.fallbackName || '';
 }
+
+/**
+ * Each pool line's usage order, keyed by the input species it was resolved
+ * from, so the team table can show and sort a pick by its LINE's best form
+ * (a Pidgeotto fielded because the Mega slot went elsewhere still belongs to
+ * a line whose Pidgeot-Mega ranks in AG), exactly as the bench does.
+ * @param {!Array<!Object>} lines Resolved pool lines carrying candidates and
+ *     a best or bestNonMega choice.
+ * @return {!Map<string, !Object>} inputPokemonId → getLineUsageOrder result.
+ */
+export function lineUsageByInputId(lines = []) {
+  const byInput = new Map();
+  for (const line of lines) {
+    const representative = line?.best || line?.bestNonMega;
+    const inputId = representative?.inputPokemonId;
+    if (!inputId || byInput.has(inputId)) continue;
+    byInput.set(inputId, getLineUsageOrder(line.candidates || [], inputId));
+  }
+  return byInput;
+}
+
+/**
+ * The usage signals a team row displays and sorts by: its line's ceiling
+ * and trace when the line is known, else the row's own bundle (older results
+ * and tests). `form` names the form that earned the signal when it is not
+ * the row's own.
+ * @param {!Object} row A team choice.
+ * @param {?Object=} lineUsage The row's entry from lineUsageByInputId.
+ * @return {{ranking: ?Object, trace: ?Object, form: string}}
+ */
+export function rowUsageSignals(row, lineUsage = null) {
+  const ranking = lineUsage ? lineUsage.ceiling : row.bundle?.ranking || null;
+  const trace = lineUsage
+    ? (lineUsage.ceiling ? null : lineUsage.trace)
+    : row.bundle?.trace || null;
+  const earned = (ranking || trace)?.name || '';
+  return {
+    ranking,
+    trace,
+    form: earned && earned !== row.name ? earned : '',
+  };
+}

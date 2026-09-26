@@ -64,3 +64,34 @@ test('team-table tier sort puts the trace tail in bench order', () => {
     ['Greninja', 'Arbok', 'Raticate', 'Watchog', 'Noctowl', 'Pachirisu', 'Mothim'],
   );
 });
+
+test('the tier sort reads a pick through its line, like the bench', async () => {
+  const { lineUsageByInputId } = await import(
+    '../src/teamBuilder/usage-line-ranking.js',
+  );
+  // Pidgeotto holds the slot because the Mega went elsewhere, and its own
+  // bundle is a ZU trace; its line ranks in AG through Pidgeot-Mega, so it
+  // sorts with the ranked rows, ahead of a lower AG usage.
+  const row = (name, inputPokemonId, bundle) =>
+    ({ name, inputPokemonId, score: 1, bundle });
+  const team = [
+    row('Pidgeotto', 'pidgey', { trace: { tierRank: 6, value: 0.7 } }),
+    row('Lopunny-Mega', 'buneary', { ranking: { tierRank: 0, value: 2.8 } }),
+    row('Klink', 'klink', { ranking: { tierRank: 5, value: 5.9 } }),
+  ];
+  const lines = lineUsageByInputId([
+    {
+      best: { inputPokemonId: 'pidgey' },
+      candidates: [
+        { candidate: { name: 'Pidgeot' }, bundle: { trace: { tierRank: 6, value: 0.7 } } },
+        { candidate: { name: 'Pidgeot-Mega' }, bundle: { ranking: { tierRank: 0, value: 3.6 } } },
+      ],
+    },
+  ]);
+  assert.deepEqual(
+    getSortedTeam(team, 'tier', 'desc', {}, lines).map((entry) => entry.name),
+    ['Pidgeotto', 'Lopunny-Mega', 'Klink'],
+  );
+  // Without line signals the row's own trace still puts it in the tail.
+  assert.equal(getSortedTeam(team, 'tier', 'desc').at(-1).name, 'Pidgeotto');
+});

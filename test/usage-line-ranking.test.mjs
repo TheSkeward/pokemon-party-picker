@@ -5,6 +5,8 @@ import {
   compareLineUsageBestFirst,
   deduplicateUsageEntries,
   getLineUsageOrder,
+  lineUsageByInputId,
+  rowUsageSignals,
   takeTopUsageEntries,
 } from '../src/teamBuilder/usage-line-ranking.js';
 
@@ -182,4 +184,28 @@ test('LC and NFE ranks place a line by its evolved form, on the bench and in the
     [legacy, ranked].sort(compareLineUsageBestFirst).map((o) => o.fallbackName),
     ['Ranked input', 'Snover input'],
   );
+});
+
+test('a team row shows and sorts by its line, naming the form that earned it', () => {
+  const byInput = lineUsageByInputId([{
+    best: { inputPokemonId: 'pidgey' },
+    candidates: [
+      candidate('Pidgeot', { trace: { tierRank: 6, value: 0.7, formatId: 'gen7zu' } }),
+      candidate('Pidgeot-Mega', {
+        ranking: { tierRank: 0, value: 3.6, formatId: 'gen7anythinggoes' },
+      }),
+    ],
+  }]);
+  const row = {
+    inputPokemonId: 'pidgey',
+    name: 'Pidgeot',
+    bundle: { trace: { tierRank: 6, value: 0.7, formatId: 'gen7zu' } },
+  };
+  const signals = rowUsageSignals(row, byInput.get('pidgey'));
+  assert.equal(signals.ranking.formatId, 'gen7anythinggoes');
+  assert.equal(signals.trace, null);
+  assert.equal(signals.form, 'Pidgeot-Mega');
+  // Without its line, the row falls back to its own bundle, unnamed.
+  assert.equal(rowUsageSignals(row).trace.tierRank, 6);
+  assert.equal(rowUsageSignals(row).form, '');
 });

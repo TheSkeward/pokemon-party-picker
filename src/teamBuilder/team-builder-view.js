@@ -21,6 +21,8 @@ import { teamMemberKey } from './item-recommendations';
 import {
   getLineCeilingRanking,
   getLineTraceRanking,
+  lineUsageByInputId,
+  rowUsageSignals,
 } from './usage-line-ranking.js';
 import {
   explainSeatedChoice,
@@ -85,6 +87,7 @@ export function renderTeamBuilderPage({
         state.teamSort,
         state.teamSortDir,
         state.progression,
+        lineUsageByInputId(state.result?.lines),
       ),
     },
   );
@@ -318,11 +321,13 @@ function renderResult({ familyLabel, formatsIndex, setDetails, state }) {
       : '';
   const megaRule = hasMegas ? ' at most one Mega,' : '';
 
+  const lineUsageByInput = lineUsageByInputId(result.lines);
   const sortedTeam = getSortedTeam(
     result.team,
     state.teamSort,
     state.teamSortDir,
     state.progression,
+    lineUsageByInput,
   );
   const progressionStale = Boolean(state.resultProgressionStale);
 
@@ -355,7 +360,7 @@ function renderResult({ familyLabel, formatsIndex, setDetails, state }) {
             </tr>
           </thead>
           <tbody>
-            ${sortedTeam.map((row, index) => renderTeamRow({ formatsIndex, index, itemRecommendations: state.itemRecommendations, progression: state.progression, progressionStale, row, setDetails })).join('')}
+            ${sortedTeam.map((row, index) => renderTeamRow({ formatsIndex, index, itemRecommendations: state.itemRecommendations, lineUsage: lineUsageByInput.get(row.inputPokemonId), progression: state.progression, progressionStale, row, setDetails })).join('')}
           </tbody>
         </table>
       </div>
@@ -1138,6 +1143,7 @@ function renderTeamRow({
   formatsIndex,
   index,
   itemRecommendations,
+  lineUsage = null,
   progression,
   progressionStale,
   row,
@@ -1188,7 +1194,7 @@ function renderTeamRow({
             : `<span class="muted">—</span>`
         }
       </td>
-      <td>${renderMeaningfulUsage(row, formatsIndex)}</td>
+      <td>${renderMeaningfulUsage(row, formatsIndex, lineUsage)}</td>
       <td>${formatPercent(row.bundle?.leads?.value)}</td>
       <td>${Number.isFinite(row.score) ? Math.round(row.score).toLocaleString() : ''}</td>
       <td data-team-note>${escapeHtml(note)}</td>
@@ -1205,25 +1211,29 @@ function renderTeamRow({
 // The pick's FIRST MEANINGFUL usage tier ("AG 1760 · 1.1%"), not its usage at
 // the top tier — "0.00 at AG 1760" says nothing about a mon that owns PU. The
 // headline top-tier source (with months of data) moves to the tooltip.
-function renderMeaningfulUsage(row, formatsIndex) {
-  const ranking = row.bundle?.ranking;
+// The pick's LINE's usage, as the bench shows it: the best form's first
+// meaningful tier, else its trace. A Pidgeotto fielded because the Mega slot
+// went elsewhere still ranks through Pidgeot-Mega, and that form is named
+// when it is not the row's own.
+function renderMeaningfulUsage(row, formatsIndex, lineUsage = null) {
+  const { ranking, trace, form } = rowUsageSignals(row, lineUsage);
   const headline = renderSource(row.bundle?.usage, formatsIndex);
+  const earned = form ? ` ${escapeHtml(form)}` : '';
   if (!ranking || typeof ranking.value !== 'number') {
     // Below the meaningful bar everywhere: same relaxed seen-within-N-games
     // treatment as the bench tail — "ZU 1500 (65)" reads "at its ZU-1500
     // usage, even odds of seeing one within 65 games" — from the resolver
     // index's trace row. Honest "no usage data" only when the form has no
     // recorded usage at all.
-    const trace = row.bundle?.trace;
     const games = trace ? gamesToLikelySee(trace.value) : null;
     if (trace && games != null) {
       const label = `${SHORT_FORMAT[trace.formatId] || trace.formatId} ${trace.cutoff} (${games})`;
-      return `<span class="muted" title="${escapeAttr(`Below the meaningful-usage bar (50% chance of being seen within 25 games ≈ 2.7%) in every tier. Best trace signal: ~${truncatePercent(trace.value)} here — 50% chance of being seen within ${games} games. Best available: ${headline || 'none'}`)}">${escapeHtml(label)}</span>`;
+      return `<span class="muted" title="${escapeAttr(`Below the meaningful-usage bar (50% chance of being seen within 25 games ≈ 2.7%) in every tier. Best trace signal: ~${truncatePercent(trace.value)} here — 50% chance of being seen within ${games} games. Best available: ${headline || 'none'}`)}">${escapeHtml(label)}${earned}</span>`;
     }
     return `<span class="muted" title="${escapeAttr(`No recorded usage in any tier. Best available: ${headline || 'none'}`)}">no usage data</span>`;
   }
   const label = `${SHORT_FORMAT[ranking.formatId] || ranking.formatId} ${ranking.cutoff}`;
-  return `<span title="${escapeAttr(`First meaningful tier. Best available: ${headline || 'none'}`)}">${escapeHtml(label)} · ${escapeHtml(truncatePercent(ranking.value))}</span>`;
+  return `<span title="${escapeAttr(`First meaningful tier of the line's best form. Best available: ${headline || 'none'}`)}">${escapeHtml(label)} · ${escapeHtml(truncatePercent(ranking.value))}${form ? ` <span class="muted">${escapeHtml(form)}</span>` : ''}</span>`;
 }
 
 function renderSelectedSetDetails({ app, pokemonIndex, setDetails, state }) {
@@ -1296,11 +1306,22 @@ function getSelectedTeamChoice({ setDetails, state }) {
  * @param {string=} sortDir "asc" or "desc".
  * @return {!Array<!Object>} A sorted copy; the input team is not mutated.
  */
-export function getSortedTeam(team, sortBy, sortDir = 'desc', progression = {}) {
+export function getSortedTeam(
+  team,
+  sortBy,
+  sortDir = 'desc',
+  progression = {},
+  lineUsageByInput = null,
+) {
   const rows = [...team];
   const direction = sortDir === 'asc' ? 1 : -1;
   const currentName = (row) =>
     getCurrentSpeciesForChoice(row, progression)?.name || row.name;
+  // The tier sort reads the LINE's signals, like the usage column.
+  const signalsOf = new Map(rows.map((row) => [
+    row,
+    rowUsageSignals(row, lineUsageByInput?.get(row.inputPokemonId)),
+  ]));
 
   rows.sort((a, b) => {
     let primary = 0;
@@ -1315,21 +1336,21 @@ export function getSortedTeam(team, sortBy, sortDir = 'desc', progression = {}) 
       // Unranked rows form a trace TAIL after every ranked one, ordered the
       // same way as the bench display: seen-within-N games ascending, then
       // the tier ladder, then trace usage; no-trace rows dead last.
-      const rankOf = (row) => row.bundle?.ranking?.tierRank ?? Infinity;
+      const rankOf = (row) => signalsOf.get(row).ranking?.tierRank ?? Infinity;
       const valueOf = (row) =>
-        typeof row.bundle?.ranking?.value === 'number'
-          ? row.bundle.ranking.value
+        typeof signalsOf.get(row).ranking?.value === 'number'
+          ? signalsOf.get(row).ranking.value
           : -Infinity;
       const traceGamesOf = (row) => {
-        const games = row.bundle?.trace
-          ? gamesToLikelySee(row.bundle.trace.value)
-          : null;
+        const trace = signalsOf.get(row).trace;
+        const games = trace ? gamesToLikelySee(trace.value) : null;
         return games == null ? Infinity : games;
       };
-      const traceRankOf = (row) => row.bundle?.trace?.tierRank ?? Infinity;
+      const traceRankOf = (row) =>
+        signalsOf.get(row).trace?.tierRank ?? Infinity;
       const traceValueOf = (row) =>
-        typeof row.bundle?.trace?.value === 'number'
-          ? row.bundle.trace.value
+        typeof signalsOf.get(row).trace?.value === 'number'
+          ? signalsOf.get(row).trace.value
           : -Infinity;
       primary =
         compareNumber(rankOf(b), rankOf(a)) ||

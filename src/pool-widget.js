@@ -20,7 +20,10 @@ import {
   optimizeTeamFromPool,
   persistPostAnalysis,
 } from './teamBuilder/team-optimizer';
-import { SCORED_POOL_LIMIT } from './teamBuilder/usage-line-ranking.js';
+import {
+  SCORED_POOL_LIMIT,
+  lineUsageByInputId,
+} from './teamBuilder/usage-line-ranking.js';
 import { computeTeamConfidence } from './teamBuilder/confidence.js';
 import { computeInvestmentPlan } from './teamBuilder/investment.js';
 import { setScoringOverrides } from './teamBuilder/scoring-constants.js';
@@ -1455,6 +1458,7 @@ export function mountPoolOptimizer(container, options = {}) {
         state.teamSort,
         state.teamSortDir,
         state.progression,
+        lineUsageByInputId(state.result?.lines),
       ),
     });
   }
