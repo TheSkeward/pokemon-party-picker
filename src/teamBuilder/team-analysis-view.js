@@ -69,6 +69,9 @@ export function renderTeamAnalysisPanel(root, {
     family || '',
     selection || '',
     poolQuery,
+    // The bench fix suggestions read the pool lines; a render without them
+    // (a progression edit's quick refresh) must not settle for one with.
+    lines.map((line) => (line.best || line.bestNonMega)?.inputPokemonId || ''),
   ]);
 
   if (analysisMemo.key !== memoKey) {
@@ -110,8 +113,11 @@ export function renderTeamAnalysisPanel(root, {
   // Returned so callers can sequence heavy background work (the confidence
   // sweep) AFTER the movesets are actually on screen. Resolves on failure too —
   // it signals "the panel is settled", not "the analysis succeeded".
-  return analysisMemo.promise.then((analysis) => {
-    if (!root.isConnected) return; // this render was superseded by a newer one
+  const memo = analysisMemo;
+  return memo.promise.then((analysis) => {
+    // Superseded: the root is gone, or a newer analysis with another key
+    // started on the same root and must be the one that paints last.
+    if (!root.isConnected || analysisMemo !== memo) return;
     if (analysis) {
       root.innerHTML = renderAnalysis(analysis);
       wirePokepasteCopy(root, analysis);
