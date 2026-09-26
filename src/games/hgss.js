@@ -66,6 +66,7 @@ export const HGSS_GAME = Object.freeze({
     levelDown: false,
     hiddenPowerTypeChanger: false,
     reusableTms: false,
+    hiddenAbilities: false, // Generation IV has none.
   }),
   // No mining, no replaced items, no game-original held items; the shops are
   // the Athlete Shop, the Game Corners, and the Frontier's BP counter.

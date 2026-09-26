@@ -163,6 +163,14 @@ Ability annotations and sensitivity swap that caught ability without replacing
 the Mega's fixed active ability. Before the base species is reachable, a Mega
 candidate continues to use the actual pre-evolution's battle form and ability.
 
+Abilities follow evolutionary slots: an unevolved form is scored with the
+ability its slot gives it now and shown with the target's, and a pool pin may
+name either. A game that hands out no hidden abilities (Black 2 and White 2,
+whose only source is the Hidden Grottoes, all late and each a grind) never
+assumes one: the set's best normal ability stands in unless the pool pins the
+hidden one. The owner chose this over modelling the grottoes species by
+species; revisit if a B2W2 run finds it wanting.
+
 ### Usage prior: U_rank
 
 Smogon usage is a prior, not a verdict. `U_rank` is a tier-dominant rank scalar

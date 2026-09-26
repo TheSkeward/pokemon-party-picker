@@ -65,11 +65,14 @@ export const B2W2_GAME = Object.freeze({
     tutorOptions: B2W2_TUTOR_OPTIONS,
   }),
   // No Common Candy and no Type Changer: a level never goes down, and Hidden
-  // Power's type follows IVs. Generation V made TMs reusable.
+  // Power's type follows IVs. Generation V made TMs reusable. Hidden
+  // Abilities come only from the Hidden Grottoes, all at badge 4 or later
+  // and each a grind, so no set assumes one; a caught one is pinned.
   mechanics: Object.freeze({
     levelDown: false,
     hiddenPowerTypeChanger: false,
     reusableTms: true,
+    hiddenAbilities: false,
   }),
   // No mining, no replaced items, no game-original held items; the shops are
   // the Driftveil Market, the Battle Subway and PWT prize counters, and the
@@ -116,7 +119,7 @@ export const B2W2_GAME = Object.freeze({
       'The shard tutors charge 2 to 12 shards of one color per move; shards come from hidden items and dust clouds, so the price is a grind but never a wall.',
       'Event-only moves (Relic Song, Secret Sword) and Dream World abilities are not counted.',
       "Hidden Power's type follows IVs and cannot be changed, so it is never counted as a plannable move.",
-      "A set's ability is assumed obtainable at catch (there is no Ability Capsule); declare a caught ability in the pool, as in Snivy (Overgrow), to pin it. Hidden Abilities need the Hidden Grottoes or Dream World and are not counted.",
+      "A set's ability is assumed obtainable at catch (there is no Ability Capsule); declare a caught ability in the pool, as in Snivy (Overgrow), to pin it. Hidden Abilities come only from the Hidden Grottoes, all at badge 4 or later and each a grind, so no set assumes one: a set that wants one is planned with the species' best normal ability unless you declare a caught one, as in Foongus (Regenerator).",
     ]),
   }),
   // Palette (styles/main.css, app/theme.js): the games' own dark UI, black

@@ -1,4 +1,5 @@
 import { dex } from '../games/dex.js';
+import { mechanics } from '../games/legality.js';
 import { toId } from '../utils/ids.js';
 
 function slotsFor(pokemonId) {
@@ -18,12 +19,23 @@ function slotOf(slots, ability) {
   ) ?? null;
 }
 
+// The set's best-used ability that is not the hidden one, by slot.
+function normalSlotByUsage(source, slots) {
+  for (const entry of source?.abilities || []) {
+    const slot = slotOf(slots, entry.name);
+    if (slot != null && slot !== 'H') return slot;
+  }
+  return null;
+}
+
 /**
  * Keep the canonical target's ability slot, but use the ability that slot
  * supplies on the current form. Usage order is NOT ability-slot order.
  * An explicit annotation describes the input species, before any evolution.
- * Megas retain their existing split: a base ability before Mega Evolution,
- * and the fixed Mega ability in battle.
+ * A game that hands out no hidden abilities (`mechanics.hiddenAbilities`
+ * false) never assumes one: the set's best normal ability stands in, and
+ * only a pin can name the hidden slot. Megas keep their split: a base
+ * ability before Mega Evolution, and the fixed Mega ability in battle.
  */
 export function resolveBuildAbilities({
   inputId,
@@ -41,7 +53,11 @@ export function resolveBuildAbilities({
   const sourceSlots = slotsFor(sourceId);
   const currentSlots = slotsFor(currentId);
   const inputSlots = slotsFor(inputId || currentId);
+  const hiddenObtainable = mechanics().hiddenAbilities !== false;
   let slot = slotOf(sourceSlots, source?.ability) || '0';
+  if (!hiddenObtainable && slot === 'H') {
+    slot = normalSlotByUsage(source, sourceSlots) || '0';
+  }
 
   // A pin names the caught form's ability. Older pins, and the app's own
   // earlier advice, named the target's instead; the slot is unambiguous
@@ -71,6 +87,9 @@ export function resolveBuildAbilities({
   for (const entry of source?.abilities || []) {
     const optionSlot = slotOf(sourceSlots, entry.name);
     if (optionSlot == null) continue;
+    // An unobtainable hidden ability is neither assumed nor probed for
+    // sensitivity; a pin to it keeps it.
+    if (optionSlot === 'H' && !hiddenObtainable && slot !== 'H') continue;
     const name = abilityAt(currentSlots, optionSlot);
     if (!name || seen.has(name)) continue;
     seen.add(name);

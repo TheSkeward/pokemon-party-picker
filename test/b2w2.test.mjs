@@ -27,6 +27,9 @@ const { getEvolutionRequirement } = await import(
 );
 const { getRenewablyObtainableItems } = await import('../src/games/items.js');
 const { toId } = await import('../src/utils/ids.js');
+const { resolveBuildAbilities } = await import(
+  '../src/teamBuilder/ability-path.js',
+);
 const {
   B2W2_EVOLUTION_ITEM_AVAILABILITY,
   B2W2_EXTRA_INVENTORY_ITEMS,
@@ -282,4 +285,42 @@ test('B2W2 checkpoint headline items agree with the timeline', () => {
     const late = getRenewablyObtainableItems(8).map((item) => item.id);
     assert.ok(late.includes('choicescarf') && late.includes('lifeorb'));
   });
+});
+
+test('hidden abilities are never assumed; a pin still names one', () => {
+  const game = getGame('b2w2');
+  assert.equal(game.mechanics.hiddenAbilities, false);
+  // Breloom's top set runs Technician, its hidden ability; Poison Heal is
+  // the best normal one. Shroomish shares the slots.
+  const breloomSet = {
+    ability: 'Technician',
+    abilities: [
+      { name: 'Technician', usage: 90 },
+      { name: 'Poison Heal', usage: 10 },
+    ],
+  };
+  const shroomish = (overrides = {}) => resolveBuildAbilities({
+    inputId: 'shroomish',
+    currentId: 'shroomish',
+    representativeId: 'breloom',
+    topSet: breloomSet,
+    ...overrides,
+  });
+  withB2w2(() => {
+    const assumed = shroomish();
+    assert.equal(assumed.assumedAbility, 'Poison Heal');
+    assert.equal(assumed.targetAbility, 'Poison Heal');
+    assert.ok(
+      !assumed.abilityOptions.some((entry) => entry.name === 'Quick Feet'),
+      'the hidden ability is not probed either',
+    );
+    const pinned = shroomish({ abilityOverride: 'Quick Feet' });
+    assert.equal(pinned.assumedAbility, 'Quick Feet');
+    assert.equal(pinned.targetAbility, 'Technician');
+    assert.equal(pinned.abilityKnown, true);
+  });
+  // Reborn hands out hidden abilities, so the usage ability stands.
+  const reborn = shroomish();
+  assert.equal(reborn.assumedAbility, 'Quick Feet');
+  assert.equal(reborn.targetAbility, 'Technician');
 });
