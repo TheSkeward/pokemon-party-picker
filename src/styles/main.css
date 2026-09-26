@@ -582,36 +582,44 @@ button:hover {
 
 .bench-label {
   color: var(--text-muted);
+  font-variant-caps: all-small-caps;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   white-space: nowrap;
 }
 
 .bench-items {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 8px;
+  gap: var(--space-1) var(--space-4);
 }
 
+/* A tier group hangs its label in the left margin of its chips, so a tier is
+   found by scanning the left edge rather than reading through the line; the
+   label and the wide gap between groups are the only separators. */
 .bench-group {
   display: inline-flex;
-  flex-wrap: wrap;
   align-items: baseline;
-  gap: 4px 8px;
+  gap: var(--space-2);
 }
 
-.bench-label,
+.bench-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  min-width: 0;
+}
+
+/* Tier labels are capitals and digits already; small caps only shrank them
+   below legibility. Muted semibold at the line's own size reads like the
+   table's column headers: findable, and quieter than the names. */
 .bench-tier {
+  flex: none;
   color: var(--text-muted);
-  font-variant-caps: all-small-caps;
+  font-weight: 600;
   letter-spacing: 0.06em;
-}
-
-.bench-tier {
-  font-size: 0.85em;
-}
-
-.bench-sep {
-  color: var(--text-muted);
-  margin: 0 2px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .bench-chip {
@@ -637,10 +645,6 @@ button:hover {
 .bench-index--box1 { color: var(--accent-2); } /* box 2 · 31–60 */
 .bench-index--box2 { color: var(--accent-3); } /* box 3 · 61–90 */
 .bench-index--box3 { color: var(--accent-4); } /* box 4 · 91–120 */
-
-.bench-chip.trace {
-  opacity: 0.5;
-}
 
 /* The weakest line(s) in the pool — judged by the best form's usage. */
 .bench-chip.worst {

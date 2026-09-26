@@ -997,9 +997,9 @@ export function renderBenchLine(result) {
         group.games != null
           ? ` title="Below the meaningful-usage bar (50% chance of being seen within 25 games ≈ 2.7%) in every tier. Best trace signal: ~${truncatePercent(group.maxTraceValue)} here — 50% chance of being seen within ${group.games} games."`
           : '';
-      return `<span class="bench-group"><span class="bench-tier"${tierTitle}>${escapeHtml(label)}</span>${chips}</span>`;
+      return `<span class="bench-group"><span class="bench-tier"${tierTitle}>${escapeHtml(label)}</span><span class="bench-chips">${chips}</span></span>`;
     })
-    .join('<span class="bench-sep">·</span>');
+    .join('');
 
   return `
     <div class="bench-line">
@@ -1212,8 +1212,8 @@ function renderMeaningfulUsage(row, formatsIndex) {
     // Below the meaningful bar everywhere: same relaxed seen-within-N-games
     // treatment as the bench tail — "ZU 1500 (65)" reads "at its ZU-1500
     // usage, even odds of seeing one within 65 games" — from the resolver
-    // index's display-only trace row. Honest "no usage data" only when the
-    // form has no recorded usage at all.
+    // index's trace row. Honest "no usage data" only when the form has no
+    // recorded usage at all.
     const trace = row.bundle?.trace;
     const games = trace ? gamesToLikelySee(trace.value) : null;
     if (trace && games != null) {
