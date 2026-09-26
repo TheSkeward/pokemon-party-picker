@@ -117,3 +117,36 @@ test('the optimizer fields at most one Moon Stone evolution per owned stone', as
   );
   assert.deepEqual(openForms.sort(), ['clefable', 'nidoking']);
 });
+
+test('an item the team spends on an evolution is not offered as a held item', async () => {
+  const { assignTeamItems, teamMemberKey } = await import(
+    '../src/teamBuilder/item-recommendations.js',
+  );
+  const team = [{
+    inputPokemonId: 'clefairy', pokemonId: 'clefable', name: 'Clefable',
+    score: 10,
+  }];
+  const key = teamMemberKey(team[0]);
+  const progression = {
+    ...progressionAt({ badge: 3, levelCap: 40 }),
+    ownedItems: { moonstone: 1, leftovers: 1 },
+  };
+  const charged = assignTeamItems({
+    team, usageByMember: new Map(), ownedItems: progression.ownedItems,
+    itemContext: null, progression,
+  });
+  assert.equal(charged[key].id, 'leftovers');
+  // Only the stone in the bag, and the evolution took it: nothing to hold.
+  const stoneOnly = { ...progression, ownedItems: { moonstone: 1 } };
+  const bare = assignTeamItems({
+    team, usageByMember: new Map(), ownedItems: stoneOnly.ownedItems,
+    itemContext: null, progression: stoneOnly,
+  });
+  assert.equal(bare[key], undefined);
+  // Without a progression the bag is taken as given, as before.
+  const uncharged = assignTeamItems({
+    team, usageByMember: new Map(), ownedItems: { moonstone: 1 },
+    itemContext: null,
+  });
+  assert.equal(uncharged[key]?.id, 'moonstone');
+});

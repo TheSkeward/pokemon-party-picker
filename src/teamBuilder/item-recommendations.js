@@ -3,6 +3,8 @@ import { fetchJsonCached } from '../utils/fetch-json-cached.js';
 import { toId } from '../utils/ids.js';
 import { dex } from '../games/dex.js';
 import { gameItems } from '../games/items.js';
+import { getCurrentSpeciesForChoice } from '../playthrough/current-species.js';
+import { spentEvolutionItems } from '../playthrough/evolution-requirements.js';
 
 // Proxy tables per game, keyed by its item content: the mainline items whose
 // usage stands in for the game's own seeds and gems (SCORING.md, "Borrowed
@@ -156,13 +158,25 @@ export async function loadTeamItemUsage(
  *   2. an ultimate fallback that hands any leftover owned items to still-
  *      itemless members — a held item beats none — giving the best generic
  *      item to the highest-scoring member first.
+ * With a progression, the bag is first charged for the evolution items the
+ * team's own evolutions spend (the one Moon Stone that made Nidoking is not
+ * in the bag for Nidoking to hold).
  * @return {Object<string, Object>} memberKey -> assigned item.
  */
 export function assignTeamItems(
-  { team, usageByMember, ownedItems, itemContext }) {
+  { team, usageByMember, ownedItems, itemContext, progression = null }) {
   const remaining = { ...(ownedItems || {}) };
   const assignments = {};
   const members = team || [];
+  if (progression) {
+    for (const choice of members) {
+      const fielded = getCurrentSpeciesForChoice(choice, progression)?.id;
+      const spent = spentEvolutionItems(fielded, choice.inputPokemonId);
+      for (const { id } of spent) {
+        if (remaining[id] > 0) remaining[id] -= 1;
+      }
+    }
+  }
   const allowedGemTypesFor = (key) => itemContext?.get(key)?.damageTypes;
   const fieldSetterShareFor = (key) =>
     itemContext?.get(key)?.fieldSetterShare ?? null;

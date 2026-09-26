@@ -1238,6 +1238,7 @@ export function mountPoolOptimizer(container, options = {}) {
       usageByMember: state.teamItemUsage,
       ownedItems: state.progression.ownedItems,
       itemContext: state.teamItemContext,
+      progression: state.progression,
     });
   }
 

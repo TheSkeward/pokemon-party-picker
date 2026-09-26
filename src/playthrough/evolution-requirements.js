@@ -94,12 +94,30 @@ function gateClosed(access, key) {
  */
 export function contestedEvolutionItems(fieldedId, inputId, access) {
   if (!access) return [];
-  const rules = evolutionRules();
   const contested = new Map();
-  const consider = (name, key) => {
-    if (!name || !gateClosed(access, key)) return;
+  const spent = spentEvolutionItems(fieldedId, inputId);
+  for (const { id, name, accessKey } of spent) {
+    if (!gateClosed(access, accessKey)) continue;
     const copies = ownedItemCount(access, name);
-    if (copies > 0) contested.set(toId(name), { id: toId(name), name, copies });
+    if (copies > 0) contested.set(id, { id, name, copies });
+  }
+  return [...contested.values()];
+}
+
+/**
+ * Every item the chain from `inputId` up to `fieldedId` consumes, one entry
+ * per evolution step that spends one (a stone, a held evolution item, the
+ * game's trade item), with the access gate that governs it. Gate and bag are
+ * not consulted: this is what the evolutions cost, whoever pays.
+ * @param {?string} fieldedId
+ * @param {?string} inputId
+ * @return {!Array<{id: string, name: string, accessKey: string}>}
+ */
+export function spentEvolutionItems(fieldedId, inputId) {
+  const rules = evolutionRules();
+  const spent = [];
+  const add = (name, accessKey) => {
+    if (name) spent.push({ id: toId(name), name, accessKey });
   };
   const input = toId(inputId);
   const seen = new Set();
@@ -110,16 +128,16 @@ export function contestedEvolutionItems(fieldedId, inputId, access) {
     if (!species?.prevoId) break;
     const evoType = species.evoType || '';
     if (evoType === 'useItem' || evoType === 'levelHold') {
-      consider(species.evoItem, evoItemAccessKey(species.evoItem));
+      add(species.evoItem, evoItemAccessKey(species.evoItem));
     } else if (evoType === 'trade') {
-      consider(rules.tradeItem, rules.tradeAccessKey);
+      add(rules.tradeItem, rules.tradeAccessKey);
       if (species.evoItem) {
-        consider(species.evoItem, evoItemAccessKey(species.evoItem));
+        add(species.evoItem, evoItemAccessKey(species.evoItem));
       }
     }
     id = species.prevoId;
   }
-  return [...contested.values()];
+  return spent;
 }
 
 // Item-shaped gates per game, keyed by its access-field list.
