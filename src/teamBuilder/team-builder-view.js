@@ -57,15 +57,15 @@ export function renderTeamBuilderPage({
   app.innerHTML = `
     ${embedded ? '' : renderStandaloneHeader({ baseUrl })}
 
-    ${renderPoolControls({ embedded, families, poolStats, donorStats, state })}
+    ${renderTeamRail(state)}
 
-    ${renderGamestateStrip(state.progression)}
+    ${renderPoolControls({ embedded, families, poolStats, donorStats, state })}
 
     ${state.loading ? renderLoading(state) : ''}
 
     ${state.result ? renderResult({ familyLabel, formatsIndex, setDetails, state }) : renderEmpty(state)}
 
-    <details class="progression-collapse" ${detailsStateAttrs('progression-panel', false)}>
+    <details class="progression-collapse" id="progression" ${detailsStateAttrs('progression-panel', false)}>
       <summary>${getActiveGame().shortLabel} Progression <span class="muted">(level cap, TMs, evolution access, items — the save-file settings)</span></summary>
       ${renderProgressionPanel(state.progression, { includeBias: false })}
     </details>
@@ -201,7 +201,62 @@ export function renderGamestateStrip(progression = {}) {
  *     the pool's entries join the box.
  */
 export function donorBoxLabel(count) {
-  return `Donor box · ${count} entries · your whole box: everything you add to the pool lands here and stays when you remove it; donors supply egg moves, Sketch partners and move transfers, and only the pool above is fielded`;
+  return `Donor box · ${count} entries · everything the pool ever held`;
+}
+
+/** The donor box's hover text: what it is for and how it grows. */
+export const DONOR_BOX_TITLE =
+  'Your whole box. Everything you add to the pool lands here and stays ' +
+  'when you remove it; donors supply egg moves, Sketch partners and move ' +
+  'transfers, and only the pool is fielded.';
+
+/**
+ * The sticky rail under the tabs: the current team's six names as jumps to
+ * their set cards, and links to the page's sections, so the team is always
+ * one glance and one click away however far the page has scrolled. Rendered
+ * with or without a result so the page never jumps when the first result
+ * arrives.
+ * @param {!Object} state
+ * @return {string}
+ */
+export function renderTeamRail(state) {
+  const result = state.result;
+  const picks = result?.team?.length
+    ? getSortedTeam(
+      result.team,
+      state.teamSort,
+      state.teamSortDir,
+      state.progression,
+      lineUsageByInputId(result.lines),
+    ).map((row) => {
+      const current = getCurrentSpeciesForChoice(row, state.progression);
+      return {
+        id: current?.id || row.pokemonId,
+        name: current?.name || row.name,
+      };
+    })
+    : [];
+  const stale = Boolean(state.resultProgressionStale);
+  const pickMarkup = picks.length
+    ? picks
+      .map(
+        (pick) =>
+          `<button type="button" class="team-rail-pick" data-jump-set-card="${escapeAttr(pick.id)}" title="Jump to this pick's set">${escapeHtml(pick.name)}</button>`,
+      )
+      .join('')
+    : '<span class="muted">not optimized yet</span>';
+  return `
+    <nav class="team-rail"${stale ? ' data-stale' : ''} aria-label="Team and page sections">
+      <a class="team-rail-label" href="#team">Team</a>
+      <div class="team-rail-picks">${pickMarkup}</div>
+      <div class="team-rail-sections">
+        <a href="#pool">Pool</a>
+        <a href="#bench">Bench</a>
+        <a href="#reborn-team-analysis-root">Sets</a>
+        <a href="#progression">Progression</a>
+      </div>
+    </nav>
+  `;
 }
 
 function renderPoolControls({
@@ -212,7 +267,7 @@ function renderPoolControls({
   state,
 }) {
   return `
-    <section class="panel">
+    <section class="panel" id="pool">
       <div class="panel-header">
         <div>
           <h2>Owned Pokémon Pool</h2>
@@ -221,7 +276,7 @@ function renderPoolControls({
       </div>
 
       <div class="toolbar pool-toolbar">
-        <label>
+        <label hidden>
           <span>Period</span>
           <select id="selection-input">
             <option value="all" ${state.selection === 'all' ? 'selected' : ''}>All available</option>
@@ -239,18 +294,18 @@ function renderPoolControls({
               </label>`
         }
 
-        <label class="wide-control">
-          <span>Available Pokémon pool</span>
-          <textarea id="pool-query-input" rows="8" placeholder="Bulbasaur, Charmander, Squirtle...">${escapeHtml(state.query)}</textarea>
+        <label class="pool-list">
+          <span>Pool · fielded</span>
+          <textarea id="pool-query-input" rows="10" placeholder="Bulbasaur, Charmander, Squirtle...">${escapeHtml(state.query)}</textarea>
         </label>
 
-        <label class="wide-control">
-          <span>${escapeHtml(donorBoxLabel(donorStats.uniqueCount))}</span>
-          <textarea id="donor-query-input" rows="3" placeholder="Ditto, Smeargle, the rest of your PC boxes...">${escapeHtml(state.donorQuery || '')}</textarea>
+        <label class="pool-list">
+          <span title="${escapeAttr(DONOR_BOX_TITLE)}">${escapeHtml(donorBoxLabel(donorStats.uniqueCount))}</span>
+          <textarea id="donor-query-input" rows="10" placeholder="Ditto, Smeargle, the rest of your PC boxes...">${escapeHtml(state.donorQuery || '')}</textarea>
         </label>
       </div>
 
-      <div class="toolbar">
+      <div class="pool-actions">
         <button class="view-tab primary-action" id="optimize-button"${usageTrustTooltip(state) ? ` title="${escapeAttr(usageTrustTooltip(state))}"` : ''}>${state.loading ? 'Optimizing...' : 'Normalize + optimize team'}</button>
         <button class="view-tab" id="copy-pool-button">Copy pool</button>
         <button class="view-tab" id="export-gamestate-button" title="Download pool + progression + inventory as a JSON backup file. Everything lives in this browser's local storage — one data clear loses it all without a backup.">Export gamestate</button>
@@ -303,18 +358,16 @@ function renderLoading(state) {
   `;
 }
 
+// The gamestate strip belongs to the result it describes; with no result it
+// keeps its place here so the in-place chip refresh always finds it.
 function renderEmpty(state) {
-  if (!state.query.trim()) {
-    return `
-      <section class="panel">
-        <p class="muted">Enter your available Pokémon pool, then optimize. Your list is stored locally in this browser.</p>
-      </section>
-    `;
-  }
-
+  const prompt = !state.query.trim()
+    ? 'Enter your available Pokémon pool, then optimize. Your list is stored locally in this browser.'
+    : 'No recommendation yet. Click Normalize + optimize team.';
   return `
-    <section class="panel">
-      <p class="muted">No recommendation yet. Click Normalize + optimize team.</p>
+    <section class="panel" id="team">
+      <p class="muted">${prompt}</p>
+      ${renderGamestateStrip(state.progression)}
     </section>
   `;
 }
@@ -324,9 +377,10 @@ function renderResult({ familyLabel, formatsIndex, setDetails, state }) {
 
   if (!result.team.length) {
     return `
-      <section class="panel team-results-panel">
+      <section class="panel team-results-panel" id="team">
         <h2>Recommended ${escapeHtml(familyLabel)} Team</h2>
         <p class="muted">No viable team picks found from ${result.linesConsidered} resolved input lines.</p>
+        ${renderGamestateStrip(state.progression)}
         ${renderScoringPoolNote(result)}
       </section>
 
@@ -353,18 +407,20 @@ function renderResult({ familyLabel, formatsIndex, setDetails, state }) {
   );
   const progressionStale = Boolean(state.resultProgressionStale);
 
+  // The scoring rule rides on the heading as hover text: the panel shows the
+  // team, the strip states what the scores assume, and the prose waits.
+  const scoringRule = `Scored at level cap ${String(state.progression?.levelCap || '?')}: each pick's current-form value plus a readiness-gated competitive ceiling, minus build friction (evolution requirements are shown as information, never priced); the team is chosen with damage-aware coverage and shared-weakness fit,${megaRule} one build realized per line. Displayed by ${getSortLabel(state.teamSort, state.teamSortDir)}. Click a row to inspect its set.`;
   const teamPanel = `
-    <section class="panel team-results-panel">
+    <section class="panel team-results-panel" id="team">
       <div class="panel-header">
         <div>
-          <h2>Recommended ${escapeHtml(familyLabel)} Team</h2>
+          <h2 title="${escapeAttr(scoringRule)}">Recommended ${escapeHtml(familyLabel)} Team</h2>
           <p>${result.team.length} picks from ${result.linesConsidered} resolved input lines.${megaText}</p>
-          ${renderScoringPoolNote(result)}
-          <p>Scored at level cap ${escapeHtml(String(state.progression?.levelCap || '?'))}: each pick's current-form value plus a readiness-gated competitive ceiling, minus build friction (evolution requirements are shown as information, never priced); the team is chosen with damage-aware coverage and shared-weakness fit,${megaRule} one build realized per line. Displayed by ${escapeHtml(getSortLabel(state.teamSort, state.teamSortDir))}. Click a row to inspect its set.</p>
+          ${renderGamestateStrip(state.progression)}
           <p class="muted" data-progression-stale-warning ${progressionStale ? '' : 'hidden'}>Progression changed after this team was optimized. Re-optimize before trusting row scores or legal move notes.</p>
           ${result.ignoredLocks?.length ? `<p class="muted">Locked but not fieldable at this progression, so ignored: ${escapeHtml(result.ignoredLocks.join(', '))}.</p>` : ''}
         </div>
-        <button type="button" class="view-tab" data-copy-pokepaste title="Copies once the Team Analysis below has finished loading">Copy team as poképaste</button>
+        <button type="button" class="view-tab" data-copy-pokepaste title="Copies once the sets below have finished loading">Copy team as poképaste</button>
       </div>
       ${renderSwapAuditCallout(result)}
 
@@ -386,16 +442,29 @@ function renderResult({ familyLabel, formatsIndex, setDetails, state }) {
           </tbody>
         </table>
       </div>
-
-      ${renderBenchLine(result)}
     </section>
   `;
+
+  // The bench is its own panel: a full panel break bounds the team table, so
+  // scrolling up from the set cards never reads chips as more team.
+  const benchLine = renderBenchLine(result);
+  const scoringPoolNote = renderScoringPoolNote(result);
+  const benchPanel = benchLine || scoringPoolNote
+    ? `
+    <section class="panel bench-panel" id="bench">
+      ${scoringPoolNote}
+      ${benchLine}
+    </section>
+  `
+    : '';
 
   // The constantly-read outputs first (team, then the set cards you act on at
   // the PC), planning views after, diagnostics last. The provenance/perf
   // footer renders at page level, below the progression panel.
   return `
     ${teamPanel}
+
+    ${benchPanel}
 
     <div id="reborn-team-analysis-root"></div>
 

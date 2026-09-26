@@ -504,6 +504,8 @@ button:hover {
 @media (max-width: 900px) {
   .toolbar,
   .resolver-toolbar,
+  /* Outranks the two-column pool rule declared below this block. */
+  .toolbar.pool-toolbar,
   .moveset-summary-grid,
   .moveset-main-grid {
     grid-template-columns: 1fr;
@@ -511,6 +513,113 @@ button:hover {
   .panel-header {
     flex-direction: column;
   }
+}
+
+/* The pool and the donor box side by side at equal height: the box holds
+   the pool, and both show sixty-odd names instead of the box's four when
+   it fell into the toolbar's narrow first column. Everything else in the
+   toolbar (a hidden Period, the standalone page's Family) spans the row. */
+.pool-toolbar {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+}
+.pool-toolbar > label:not(.pool-list) {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+.toolbar label[hidden] {
+  display: none;
+}
+.pool-list textarea {
+  flex: 1;
+}
+/* One wrapping row of actions, the destructive one pushed to the far end,
+   the status line beneath: the same shape as the progression panel's
+   actions. */
+.pool-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+.pool-actions .danger-button {
+  margin-left: auto;
+}
+.pool-actions [data-pool-status] {
+  flex-basis: 100%;
+  font-size: var(--type-s);
+}
+
+/* The team rail: a quieter third row under the game and view tabs that
+   stays put while the page scrolls, in the table's column-header voice
+   (muted small-caps label, names at 600) on the page ground. It takes no
+   game accent, since those already mean bench boxes and move sources. */
+html {
+  scroll-padding-top: calc(var(--space-8) + var(--space-4));
+}
+.team-rail {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-4);
+  padding: var(--space-2) 0;
+  background: var(--bg-base);
+  border-bottom: 1px solid var(--hairline);
+  font-size: var(--type-m);
+}
+.team-rail a {
+  color: var(--text-muted);
+}
+.team-rail a:hover {
+  color: var(--text);
+}
+.team-rail-label {
+  font-weight: 600;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.06em;
+}
+.team-rail-picks,
+.team-rail-sections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+}
+.team-rail-sections {
+  margin-left: auto;
+}
+.team-rail-pick {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--text);
+  font-weight: 600;
+}
+.team-rail-pick:hover {
+  background: none;
+  text-decoration: underline;
+}
+.team-rail[data-stale] .team-rail-pick {
+  color: var(--text-muted);
+}
+
+/* The team panel: the strip states the result's assumptions right under
+   the heading, the copy button keeps its one line, and the bench, in its
+   own panel, needs no rule of its own to separate it from the table. */
+.panel-header > .view-tab {
+  flex: none;
+  white-space: nowrap;
+}
+.team-results-panel .gamestate-strip {
+  margin: var(--space-2) 0 0;
+}
+.bench-panel > .bench-line {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
 }
 @media (max-width: 760px) {
   .move-entry {

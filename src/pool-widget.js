@@ -1539,6 +1539,8 @@ export function mountPoolOptimizer(container, options = {}) {
 
     const warning = app.querySelector('[data-progression-stale-warning]');
     if (warning) warning.hidden = !stale;
+    // The rail's picks dim with the warning: a stale team is not the team.
+    app.querySelector('.team-rail')?.toggleAttribute('data-stale', stale);
 
     app.querySelectorAll('[data-team-note]').forEach((noteNode) => {
       const row = getTeamChoiceForRow(noteNode.closest('[data-team-pokemon-id]'));

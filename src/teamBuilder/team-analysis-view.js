@@ -102,7 +102,7 @@ export function renderTeamAnalysisPanel(root, {
       <section class="panel reborn-team-analysis-panel">
         <div class="panel-header">
           <div>
-            <h2>Team Analysis</h2>
+            <h2>Sets &amp; coverage</h2>
             <p class="muted">Checking defensive profile and legal attacking coverage...</p>
           </div>
         </div>
@@ -124,7 +124,7 @@ export function renderTeamAnalysisPanel(root, {
     } else {
       root.innerHTML = `
         <section class="panel reborn-team-analysis-panel">
-          <h2>Team Analysis</h2>
+          <h2>Sets &amp; coverage</h2>
           <p class="muted">Team analysis could not be loaded.</p>
         </section>
       `;
@@ -199,10 +199,9 @@ function renderAnalysis(analysis) {
     <section class="panel reborn-team-analysis-panel">
       <div class="panel-header team-analysis-header">
         <div>
-          <h2>Team Analysis</h2>
+          <h2>Sets &amp; coverage</h2>
           <p>${analysis.members.length} picks at the current ${getActiveGame().shortLabel} progression. Damage shown is naive unresisted output at your level cap.</p>
         </div>
-        <button type="button" class="view-tab" data-copy-pokepaste>Copy team as poképaste</button>
       </div>
 
       <div class="team-analysis-grid">
