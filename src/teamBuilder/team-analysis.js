@@ -29,7 +29,7 @@ import {
   parseSpread,
 } from './damage-model.js';
 import { loadTopSet } from './top-spread.js';
-import { resolveBuildAbilities } from './ability-path.js';
+import { formatAbilityPath, resolveBuildAbilities } from './ability-path.js';
 import { computeSetReadiness } from '../playthrough/set-readiness.js';
 import { teamMemberKey } from './item-recommendations.js';
 import { selectObservedSet } from './observed-sets.js';
@@ -976,9 +976,13 @@ export function formatShowdownSet(set) {
   if (!set) return '';
 
   const lines = [set.item ? `${set.species} @ ${set.item}` : set.species];
-  // Showdown reads the whole line as one ability name; the evolution path
-  // belongs to the set card, not the export.
-  if (set.ability) lines.push(`Ability: ${set.ability}`);
+  // The ability line carries the evolution path on purpose ("Simple /
+  // Solid Rock"): the owner builds toward a target ability and needs to
+  // know which pre-evolution ability to catch. Showdown's importer will not
+  // read the path as one ability; that is accepted.
+  if (set.ability) {
+    lines.push(`Ability: ${formatAbilityPath(set.ability, set.targetAbility)}`);
+  }
   if (set.level && set.level !== 100) lines.push(`Level: ${set.level}`);
 
   const evLine = formatEvLine(set.evs);

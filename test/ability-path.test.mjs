@@ -149,10 +149,10 @@ test('optimizer, analysis, display, and export agree on current / eventual abili
     assert.equal(profile.assumedAbility, current);
     assert.equal(profile.recommendedSet.ability, current);
     assert.equal(profile.recommendedSet.targetAbility, eventual);
-    // The export names one ability, as Showdown's importer expects; the
-    // path is shown on the set card only.
-    const exported = formatShowdownSet(profile.recommendedSet).split('\n');
-    assert.ok(exported.includes(`Ability: ${current}`));
+    // The export carries the path too: the owner reads it to know which
+    // pre-evolution ability to catch.
+    assert.ok(formatShowdownSet(profile.recommendedSet).includes(
+      `Ability: ${current} / ${eventual}`));
   }
   const root = {
     innerHTML: '', isConnected: true,

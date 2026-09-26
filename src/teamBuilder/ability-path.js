@@ -94,7 +94,11 @@ export function resolveBuildAbilities({
   };
 }
 
-/** Display-only ability path; calculation fields always stay single-valued. */
+/**
+ * The ability path as the set card and the export show it ("Simple / Solid
+ * Rock": the caught form's ability, then the target's). Calculation fields
+ * always stay single-valued.
+ */
 export function formatAbilityPath(ability, targetAbility) {
   if (!ability) return '';
   return targetAbility && toId(targetAbility) !== toId(ability)
