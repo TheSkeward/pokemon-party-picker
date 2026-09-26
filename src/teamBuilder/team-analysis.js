@@ -29,6 +29,7 @@ import {
   parseSpread,
 } from './damage-model.js';
 import { loadTopSet } from './top-spread.js';
+import { formatAbilityPath, resolveBuildAbilities } from './ability-path.js';
 import { computeSetReadiness } from '../playthrough/set-readiness.js';
 import { teamMemberKey } from './item-recommendations.js';
 import { selectObservedSet } from './observed-sets.js';
@@ -343,14 +344,23 @@ async function buildMemberLegalMoveEntry({
   const caughtTopSet = representativeRecord?.isMega
     ? await loadTopSet({ family, pokemonId: megaBaseId, selection })
     : topSet;
-  const assumedAbility =
-    row.legalityProfile?.assumedAbility ||
-    (megaReady
-      ? topSet.ability
-      : caughtTopSet?.ability || topSet.ability);
-  const preMegaAbility = megaReady
-    ? row.legalityProfile?.preMegaAbility || caughtTopSet?.ability || null
-    : null;
+  const canonicalTopSet = topSet;
+  const previousProfile = row.legalityProfile;
+  const {
+    assumedAbility, preMegaAbility, targetAbility, inputAbility,
+    abilityKnown, abilityOptions,
+  } = resolveBuildAbilities({
+    inputId: row.inputPokemonId || currentSpecies?.id || row.pokemonId,
+    currentId: currentSpecies?.id || row.pokemonId,
+    representativeId: row.pokemonId,
+    topSet,
+    baseTopSet: caughtTopSet,
+    abilityOverride: previousProfile?.abilityKnown
+      ? previousProfile.inputAbility || previousProfile.preMegaAbility ||
+        previousProfile.assumedAbility
+      : null,
+    megaReady,
+  });
   // The panel retains the representative's canonical spread/moves/item, but
   // its displayed and damage-active ability must match the form in battle.
   if (assumedAbility !== topSet.ability) {
@@ -417,9 +427,12 @@ async function buildMemberLegalMoveEntry({
   profile.fieldedId = currentSpecies?.id || member.id;
   profile.fieldedName = currentSpecies?.name || member.name;
   profile.preMegaAbility = preMegaAbility;
+  profile.targetAbility = currentSpecies?.representativeIsFuture
+    ? targetAbility : null;
+  profile.inputAbility = inputAbility;
   profile.megaReady = megaReady;
-  profile.abilityKnown = Boolean(row.legalityProfile?.abilityKnown);
-  profile.abilityOptions = row.legalityProfile?.abilityOptions || [];
+  profile.abilityKnown = abilityKnown;
+  profile.abilityOptions = abilityOptions;
   profile.legalityProof.fielded = profile.fieldedId;
   if (profile.currentId !== profile.fieldedId) {
     profile.legalityProof.battleForm = profile.currentId;
@@ -428,7 +441,7 @@ async function buildMemberLegalMoveEntry({
   profile.setReadiness = computeSetReadiness({
     legalMoveData,
     availableMoves: moves,
-    topSet,
+    topSet: canonicalTopSet,
     progression: memberProgression,
   });
   // Labeled context, not a recommendation: the most-run real set regardless
@@ -938,6 +951,7 @@ function buildRecommendedSet(
     representativeName: member.representativeName || '',
     item: assignedItem?.name || topSet.item || null,
     ability: topSet.ability || null,
+    targetAbility: profile.targetAbility || null,
     nature: parsed?.nature ? capitalize(parsed.nature) : null,
     evs: parsed?.evs || null,
     level: normalizeLevel(levelCap),
@@ -962,7 +976,9 @@ export function formatShowdownSet(set) {
   if (!set) return '';
 
   const lines = [set.item ? `${set.species} @ ${set.item}` : set.species];
-  if (set.ability) lines.push(`Ability: ${set.ability}`);
+  if (set.ability) {
+    lines.push(`Ability: ${formatAbilityPath(set.ability, set.targetAbility)}`);
+  }
   if (set.level && set.level !== 100) lines.push(`Level: ${set.level}`);
 
   const evLine = formatEvLine(set.evs);

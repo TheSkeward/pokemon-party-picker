@@ -8,6 +8,7 @@ import {
 import { toId } from '../utils/ids.js';
 import { describeNature } from '../natures.js';
 import { computeFinalStats } from './damage-model.js';
+import { formatAbilityPath } from './ability-path.js';
 import { describeEvolutionPath } from '../playthrough/evolution-requirements.js';
 import {
   buildTeamAnalysis,
@@ -54,7 +55,13 @@ export function renderTeamAnalysisPanel(root, {
     // the completed set must not reuse that interim, incomplete analysis.
     team.map((member) => [
       member.pokemonId,
+      member.inputPokemonId || '',
       member.buildKey || '',
+      member.legalityProfile?.assumedAbility || '',
+      member.legalityProfile?.targetAbility || '',
+      member.legalityProfile?.preMegaAbility || '',
+      member.legalityProfile?.inputAbility || '',
+      Boolean(member.legalityProfile?.abilityKnown),
       (member.legalityProfile?.recommendedMoves || []).map((move) => move.id),
     ]),
     itemAssignments || null,
@@ -480,7 +487,8 @@ function renderSetCard(profile) {
   const natureTip = set.nature ? describeNature(set.nature) : '';
   const metaParts = [
     escapeHtml(set.item || 'No item recommended'),
-    set.ability ? escapeHtml(set.ability) : null,
+    set.ability
+      ? escapeHtml(formatAbilityPath(set.ability, set.targetAbility)) : null,
     set.level ? escapeHtml(`Lv ${set.level}`) : null,
     set.nature
       ? `<span${natureTip ? ` title="${escapeHtml(natureTip)}"` : ''}>${escapeHtml(`${set.nature} nature`)}</span>`

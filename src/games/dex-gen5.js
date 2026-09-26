@@ -3,6 +3,7 @@
  * from the generated Gen 5 modules (scripts/build-dex-modules.mjs 4).
  */
 import {
+  GEN5_ABILITY_SLOTS,
   GEN5_BASE_HP,
   GEN5_BASE_STATS,
   GEN5_BASE_STAT_TOTALS,
@@ -25,6 +26,7 @@ import { GEN5_UNBURDEN_SPECIES } from '../generated/gen5UnburdenSpecies.generate
 /** @const {!Object} */
 export const GEN5_DEX = Object.freeze({
   gen: 5,
+  abilitySlots: GEN5_ABILITY_SLOTS,
   baseHp: GEN5_BASE_HP,
   baseStats: GEN5_BASE_STATS,
   baseStatTotals: GEN5_BASE_STAT_TOTALS,

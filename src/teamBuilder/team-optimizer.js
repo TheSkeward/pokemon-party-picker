@@ -16,6 +16,7 @@ import {
 } from '../playthrough/legal-moves';
 import { buildCandidateLegalityProfile } from './team-analysis';
 import { loadTopSet } from './top-spread.js';
+import { resolveBuildAbilities } from './ability-path.js';
 import { computeSetReadiness } from '../playthrough/set-readiness.js';
 import { buildInputGroups } from './input-groups';
 import { parseAbilityAnnotations, parseLockedNames } from './pool-parsing';
@@ -249,7 +250,8 @@ const MAX_RESULT_CACHE = 400;
 // without it (a fallback build variant). Reborn's results are unchanged
 // (reusable TMs); HGSS results with contested TMs differ.
 // v58: retain fallback move ranks when filling alternative builds.
-const RESULT_CACHE_VERSION = '58';
+// v59: map canonical ability slots onto the current evolutionary form.
+const RESULT_CACHE_VERSION = '59';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.
@@ -1401,26 +1403,18 @@ async function resolveCandidateBuilds({
       selection,
     })
     : topSet;
-  const abilitySource = caughtTopSet || topSet;
-  const abilityChoices = abilitySource?.abilities || [];
-  const matchedOverride = abilityOverride
-    ? abilityChoices.find(
-      (entry) => entry.name.toLowerCase() === abilityOverride.toLowerCase(),
-    )?.name || null
-    : null;
-  const caughtAssumedAbility =
-    matchedOverride || abilitySource?.ability || topSet?.ability || null;
-  const assumedAbility = megaReady
-    ? topSet?.ability || caughtAssumedAbility
-    : caughtAssumedAbility;
-  const preMegaAbility = megaReady ? caughtAssumedAbility : null;
-  const abilityKnown = Boolean(matchedOverride);
-  const secondaryAbility =
-    !abilityKnown && abilityChoices.length > 1
-      ? abilityChoices.find(
-        (entry) => entry.name !== caughtAssumedAbility,
-      )?.name || null
-      : null;
+  const {
+    assumedAbility, preMegaAbility, targetAbility, inputAbility,
+    abilityKnown, abilityOptions: abilityChoices, secondaryAbility,
+  } = resolveBuildAbilities({
+    inputId: input.id,
+    currentId: currentSpecies?.id || candidate.id,
+    representativeId: candidate.id,
+    topSet,
+    baseTopSet: caughtTopSet,
+    abilityOverride,
+    megaReady,
+  });
 
   const evolution = currentSpecies
     ? {
@@ -1475,6 +1469,9 @@ async function resolveCandidateBuilds({
     profile.fieldedId = currentSpecies?.id || member.id;
     profile.fieldedName = currentSpecies?.name || member.name;
     profile.preMegaAbility = buildPreMegaAbility;
+    profile.targetAbility = currentSpecies?.representativeIsFuture
+      ? targetAbility : null;
+    profile.inputAbility = inputAbility;
     profile.megaReady = megaReady;
     profile.legalityProof.fielded = profile.fieldedId;
     if (profile.currentId !== profile.fieldedId) {

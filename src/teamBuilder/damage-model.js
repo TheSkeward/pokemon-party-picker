@@ -48,8 +48,8 @@ function abilityStab(ability, attackerTypes, moveType) {
 }
 
 // ————————————————— Ability damage layer —————————————————
-// The set's assumed ability (the form's top competitive ability, same source
-// as the STAB handling above) scales damage when its condition is a property
+// The current battle form's assumed ability (mapped from the canonical
+// target's evolutionary slot) scales damage when its condition is a property
 // of the MOVE — its type, flags, or base power — rather than of the battle
 // state. Battle-state-conditional abilities are deliberately NOT modeled,
 // because the estimate prices a typical unconditioned turn against a neutral

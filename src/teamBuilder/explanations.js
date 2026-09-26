@@ -136,6 +136,8 @@ export function explainSeatedChoice(choice, team, confidenceEntry) {
 
   const moves = (profile.recommendedMoves || []).map((move) => move.name);
   if (moves.length) lines.push(`Set: ${moves.join(' / ')}.`);
+  const inputAbility = profile.inputAbility || profile.preMegaAbility ||
+    profile.assumedAbility;
 
   if (profile.preMegaAbility && profile.assumedAbility) {
     const sameAbility =
@@ -154,19 +156,23 @@ export function explainSeatedChoice(choice, team, confidenceEntry) {
         : `${profile.preMegaAbility} before Mega Evolution, then ${profile.assumedAbility}`;
       lines.push(
         sensitivity > 100
-          ? `Assumes ${path} — the score leans on the starting ability (−${sensitivity} with the other ability); pin it with "${choice.inputName} (${profile.preMegaAbility})" if yours matches.`
+          ? `Assumes ${path} — the score leans on the starting ability (−${sensitivity} with the other ability); pin it with "${choice.inputName} (${inputAbility})" if yours matches.`
           : `Assumes ${path}; the starting ability is not required for inclusion (−${sensitivity} with the other ability).`,
       );
     }
   } else if (profile.assumedAbility) {
+    const path = profile.targetAbility &&
+      profile.targetAbility !== profile.assumedAbility
+      ? `${profile.assumedAbility} now, then ${profile.targetAbility} after evolution`
+      : profile.assumedAbility;
     if (profile.abilityKnown) {
-      lines.push(`Ability: ${profile.assumedAbility} (yours).`);
+      lines.push(`Ability: ${path} (yours).`);
     } else {
       const sensitivity = choice.abilitySensitivity || 0;
       lines.push(
         sensitivity > 100
-          ? `Assumes ${profile.assumedAbility} — the score leans on it (−${sensitivity} with the other ability); pin it with "${choice.inputName} (${profile.assumedAbility})" if yours matches.`
-          : `Assumes ${profile.assumedAbility}; not required for inclusion (−${sensitivity} with the other ability).`,
+          ? `Assumes ${path} — the score leans on the current ability (−${sensitivity} with the other ability); pin it with "${choice.inputName} (${inputAbility})" if yours matches.`
+          : `Assumes ${path}; not required for inclusion (−${sensitivity} with the other ability).`,
       );
     }
   }

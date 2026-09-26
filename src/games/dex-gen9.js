@@ -3,6 +3,7 @@
  * from the generated Gen 9 modules (scripts/build-dex-modules.mjs 9).
  */
 import {
+  GEN9_ABILITY_SLOTS,
   GEN9_BASE_HP,
   GEN9_BASE_STATS,
   GEN9_BASE_STAT_TOTALS,
@@ -25,6 +26,7 @@ import { GEN9_UNBURDEN_SPECIES } from '../generated/gen9UnburdenSpecies.generate
 /** @const {!Object} */
 export const GEN9_DEX = Object.freeze({
   gen: 9,
+  abilitySlots: GEN9_ABILITY_SLOTS,
   baseHp: GEN9_BASE_HP,
   baseStats: GEN9_BASE_STATS,
   baseStatTotals: GEN9_BASE_STAT_TOTALS,

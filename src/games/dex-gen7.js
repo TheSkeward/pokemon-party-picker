@@ -5,6 +5,7 @@
  * same shape, so the engine never imports a generation-specific module.
  */
 import {
+  GEN7_ABILITY_SLOTS,
   GEN7_BASE_HP,
   GEN7_BASE_STATS,
   GEN7_BASE_STAT_TOTALS,
@@ -27,6 +28,7 @@ import { GEN7_UNBURDEN_SPECIES } from '../generated/gen7UnburdenSpecies.generate
 /** @const {!Object} */
 export const GEN7_DEX = Object.freeze({
   gen: 7,
+  abilitySlots: GEN7_ABILITY_SLOTS,
   baseHp: GEN7_BASE_HP,
   baseStats: GEN7_BASE_STATS,
   baseStatTotals: GEN7_BASE_STAT_TOTALS,
