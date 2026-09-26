@@ -1423,7 +1423,8 @@ async function resolveCandidateBuilds({
     : topSet;
   const {
     assumedAbility, preMegaAbility, targetAbility, inputAbility,
-    abilityKnown, abilityOptions: abilityChoices, secondaryAbility,
+    abilityKnown, targetKnown, abilityOptions: abilityChoices,
+    secondaryAbility,
   } = resolveBuildAbilities({
     inputId: input.id,
     currentId: currentSpecies?.id || candidate.id,
@@ -1501,6 +1502,7 @@ async function resolveCandidateBuilds({
       profile.legalityProof.battleForm = profile.currentId;
     }
     profile.abilityKnown = abilityKnown;
+    profile.targetKnown = targetKnown;
     profile.abilityOptions = abilityChoices;
     profile.setReadiness = setReadiness;
     profile.singleCopyTms = singleCopyTmsOf(profile.recommendedMoves || []);

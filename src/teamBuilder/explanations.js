@@ -166,7 +166,17 @@ export function explainSeatedChoice(choice, team, confidenceEntry) {
       ? `${profile.assumedAbility} now, then ${profile.targetAbility} after evolution`
       : profile.assumedAbility;
     if (profile.abilityKnown) {
-      lines.push(`Ability: ${path} (yours).`);
+      // A pin that leaves the target ambiguous (Shed Skin on a Metapod)
+      // vouches for the current ability only.
+      const targetOpen =
+        profile.targetKnown === false &&
+        profile.targetAbility &&
+        profile.targetAbility !== profile.assumedAbility;
+      lines.push(
+        targetOpen
+          ? `Ability: ${profile.assumedAbility} (yours), then ${profile.targetAbility} after evolution (assumed; ${profile.assumedAbility} does not say which it becomes).`
+          : `Ability: ${path} (yours).`,
+      );
     } else {
       const sensitivity = choice.abilitySensitivity || 0;
       lines.push(

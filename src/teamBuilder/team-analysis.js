@@ -348,7 +348,7 @@ async function buildMemberLegalMoveEntry({
   const previousProfile = row.legalityProfile;
   const {
     assumedAbility, preMegaAbility, targetAbility, inputAbility,
-    abilityKnown, abilityOptions,
+    abilityKnown, targetKnown, abilityOptions,
   } = resolveBuildAbilities({
     inputId: row.inputPokemonId || currentSpecies?.id || row.pokemonId,
     currentId: currentSpecies?.id || row.pokemonId,
@@ -432,6 +432,7 @@ async function buildMemberLegalMoveEntry({
   profile.inputAbility = inputAbility;
   profile.megaReady = megaReady;
   profile.abilityKnown = abilityKnown;
+  profile.targetKnown = targetKnown;
   profile.abilityOptions = abilityOptions;
   profile.legalityProof.fielded = profile.fieldedId;
   if (profile.currentId !== profile.fieldedId) {

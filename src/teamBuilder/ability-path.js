@@ -54,6 +54,8 @@ export function resolveBuildAbilities({
   const currentSlots = slotsFor(currentId);
   const inputSlots = slotsFor(inputId || currentId);
   const hiddenObtainable = mechanics().hiddenAbilities !== false;
+  // With no usage at all, or an ability outside the slot table, the first
+  // slot stands in (SCORING.md, abilities).
   let slot = slotOf(sourceSlots, source?.ability) || '0';
   if (!hiddenObtainable && slot === 'H') {
     slot = normalSlotByUsage(source, sourceSlots) || '0';
@@ -76,6 +78,24 @@ export function resolveBuildAbilities({
   ) {
     slot = overrideSlot;
   }
+  // A pin decides the target only when every slot the caught form could be
+  // in evolves to the same ability: Shed Skin on a Metapod says nothing
+  // about Compound Eyes versus Tinted Lens.
+  const slotKeys = new Set([
+    ...Object.keys(inputSlots),
+    ...Object.keys(sourceSlots),
+    ...Object.keys(currentSlots),
+  ]);
+  const targetKnown = !abilityKnown
+    ? false
+    : inputOverrideSlot == null ||
+      new Set(
+        [...slotKeys]
+          .filter(
+            (key) => toId(abilityAt(inputSlots, key)) === toId(abilityOverride),
+          )
+          .map((key) => toId(abilityAt(sourceSlots, key))),
+      ).size <= 1;
   const currentAbility = abilityAt(currentSlots, slot);
   const targetAbility = isMega
     ? abilityAt(slotsFor(representativeId), '0')
@@ -84,16 +104,27 @@ export function resolveBuildAbilities({
 
   const abilityOptions = [];
   const seen = new Set();
+  const addOption = (name, usage) => {
+    if (!name || seen.has(name)) return;
+    seen.add(name);
+    abilityOptions.push({ name, usage });
+  };
   for (const entry of source?.abilities || []) {
     const optionSlot = slotOf(sourceSlots, entry.name);
     if (optionSlot == null) continue;
     // An unobtainable hidden ability is neither assumed nor probed for
     // sensitivity; a pin to it keeps it.
     if (optionSlot === 'H' && !hiddenObtainable && slot !== 'H') continue;
-    const name = abilityAt(currentSlots, optionSlot);
-    if (!name || seen.has(name)) continue;
-    seen.add(name);
-    abilityOptions.push({ name, usage: entry.usage });
+    addOption(abilityAt(currentSlots, optionSlot), entry.usage);
+    // Every current slot that reaches this target ability is a way the
+    // player may have caught it (Eevee's Run Away and Adaptability both
+    // become Vaporeon's Water Absorb), so each is probed for sensitivity.
+    for (const key of slotKeys) {
+      if (key === 'H' && !hiddenObtainable) continue;
+      if (toId(abilityAt(sourceSlots, key)) === toId(entry.name)) {
+        addOption(abilityAt(currentSlots, key), entry.usage);
+      }
+    }
   }
   if (currentAbility && !seen.has(currentAbility)) {
     abilityOptions.unshift({ name: currentAbility, usage: 0 });
@@ -108,6 +139,7 @@ export function resolveBuildAbilities({
     inputAbility: abilityAt(inputSlots, slot),
     preMegaAbility: megaReady ? currentAbility : null,
     abilityKnown,
+    targetKnown,
     abilityOptions,
     secondaryAbility,
   };

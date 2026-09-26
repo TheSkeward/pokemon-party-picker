@@ -193,3 +193,29 @@ test('once evolved, the active ability is shown only once', async () => {
   assert.equal(set.targetAbility, null);
   assert.match(formatShowdownSet(set), /Ability: Solid Rock\n/);
 });
+
+test('every current slot that reaches the target is probed; an ambiguous pin leaves the target open', () => {
+  // Eevee's Run Away and Adaptability both become Vaporeon's Water Absorb.
+  const eevee = resolveBuildAbilities({
+    inputId: 'eevee', currentId: 'eevee', representativeId: 'vaporeon',
+    topSet: { ability: 'Water Absorb', abilities: [{ name: 'Water Absorb', usage: 100 }] },
+  });
+  assert.equal(eevee.assumedAbility, 'Run Away');
+  assert.equal(eevee.targetAbility, 'Water Absorb');
+  assert.ok(eevee.abilityOptions.some((entry) => entry.name === 'Adaptability'));
+  assert.equal(eevee.secondaryAbility, 'Adaptability');
+
+  // Shed Skin on a Metapod pins the current ability but not the target.
+  const metapod = resolveBuildAbilities({
+    inputId: 'metapod', currentId: 'metapod', representativeId: 'butterfree',
+    topSet: { ability: 'Tinted Lens' }, abilityOverride: 'Shed Skin',
+  });
+  assert.equal(metapod.abilityKnown, true);
+  assert.equal(metapod.targetKnown, false);
+  assert.equal(metapod.targetAbility, 'Tinted Lens');
+
+  // Oblivious on a Numel decides Magma Armor.
+  assert.equal(numelPath({ abilityOverride: 'Oblivious' }).targetKnown, true);
+  // A pin naming the target decides it too.
+  assert.equal(numelPath({ abilityOverride: 'Solid Rock' }).targetKnown, true);
+});
