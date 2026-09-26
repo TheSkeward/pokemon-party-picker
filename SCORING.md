@@ -68,7 +68,13 @@ screen_support = non_passive
 
 Geometric means require every axis of a role to be credible. Speed and bulk are
 percentiles blended between the full dex and forms reachable at the current
-cap. Damage is measured against a stage-reference hit.
+cap. Damage is measured against a stage-reference hit. The reference defender
+is a median-stat wall with no single typing: ordinary effectiveness stays out
+of the estimate (the coverage vector applies it per defending type), but the
+defender carries fractional types, each type combination in the share of the
+game's species that have it, so a move whose damage depends on the defender's
+type (Synchronoise) is priced by the chance its condition holds. Pairs are
+kept whole, since types do not occur independently.
 
 The additive routes (specialist bulk, tempo, and the priority-utility
 saturation) can overshoot 1, so they saturate through `soft_ceiling` rather

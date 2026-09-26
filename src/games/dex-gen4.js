@@ -19,6 +19,7 @@ import { MOVE_META } from '../generated/gen4MoveMeta.generated.js';
 import { GEN4_PROGRESSION_SPECIES } from '../generated/gen4ProgressionSpecies.generated.js';
 import {
   GEN4_TYPES,
+  GEN4_TYPE_COMBINATION_SHARES,
   GEN4_TYPE_DAMAGE_TAKEN,
 } from '../generated/gen4TypeChart.generated.js';
 import { GEN4_UNBURDEN_SPECIES } from '../generated/gen4UnburdenSpecies.generated.js';
@@ -40,4 +41,5 @@ export const GEN4_DEX = Object.freeze({
   unburdenSpecies: GEN4_UNBURDEN_SPECIES,
   types: GEN4_TYPES,
   typeDamageTaken: GEN4_TYPE_DAMAGE_TAKEN,
+  typeCombinationShares: GEN4_TYPE_COMBINATION_SHARES,
 });

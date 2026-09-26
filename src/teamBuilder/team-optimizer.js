@@ -260,10 +260,9 @@ const MAX_RESULT_CACHE = 400;
 // (reusable TMs); HGSS results with contested TMs differ.
 // v58: retain fallback move ranks when filling alternative builds.
 // v59: map canonical ability slots onto the current evolutionary form.
-// Bump whenever the same inputs must produce a different result: '60'
-// retires verdicts that spent one owned evolution item on several members
-// or assumed a hidden ability a game does not hand out.
-const RESULT_CACHE_VERSION = '60';
+// Bump whenever the same inputs must produce a different result: '61'
+// retires verdicts that priced Synchronoise as if it always hit.
+const RESULT_CACHE_VERSION = '61';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.

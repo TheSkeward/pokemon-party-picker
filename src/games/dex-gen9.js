@@ -19,6 +19,7 @@ import { MOVE_META } from '../generated/gen9MoveMeta.generated.js';
 import { GEN9_PROGRESSION_SPECIES } from '../generated/gen9ProgressionSpecies.generated.js';
 import {
   GEN9_TYPES,
+  GEN9_TYPE_COMBINATION_SHARES,
   GEN9_TYPE_DAMAGE_TAKEN,
 } from '../generated/gen9TypeChart.generated.js';
 import { GEN9_UNBURDEN_SPECIES } from '../generated/gen9UnburdenSpecies.generated.js';
@@ -40,4 +41,5 @@ export const GEN9_DEX = Object.freeze({
   unburdenSpecies: GEN9_UNBURDEN_SPECIES,
   types: GEN9_TYPES,
   typeDamageTaken: GEN9_TYPE_DAMAGE_TAKEN,
+  typeCombinationShares: GEN9_TYPE_COMBINATION_SHARES,
 });

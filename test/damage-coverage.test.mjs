@@ -3,7 +3,12 @@
 // ability that boosts the wrong moves).
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { estimateMoveDamage } from '../src/teamBuilder/damage-model.js';
+import {
+  estimateMoveDamage,
+  isTypeConditionalMove,
+  typeConditionMultiplier,
+} from '../src/teamBuilder/damage-model.js';
+import { dex } from '../src/games/dex.js';
 import { getTypeMultiplier } from '../src/playthrough/type-chart.js';
 
 const attacker = { level: 50, atk: 120, spa: 120 };
@@ -177,4 +182,35 @@ test('fixed-damage coverage: flat into everything its type can touch, zero into 
   assert.equal(coverageDamageIntoType('karatechop', 'Fighting', 30, 'Flying'), 15);
   assert.ok(isFixedDamageMove('superfang'));
   assert.ok(!isFixedDamageMove('karatechop'));
+});
+
+test('Synchronoise is priced by the chance the fractional-type defender shares a type', () => {
+  const shares = dex().typeCombinationShares;
+  const shareOf = (types) => Object.entries(shares)
+    .filter(([combination]) =>
+      combination.split('/').some((type) => types.includes(type)))
+    .reduce((sum, [, share]) => sum + share, 0);
+  assert.ok(isTypeConditionalMove('synchronoise'));
+  assert.ok(!isTypeConditionalMove('psychic'));
+  assert.equal(typeConditionMultiplier('psychic', ['Psychic']), 1);
+
+  const psychic = typeConditionMultiplier('synchronoise', ['Psychic']);
+  assert.ok(psychic > 0.05 && psychic < 0.3, String(psychic));
+  assert.ok(Math.abs(psychic - shareOf(['Psychic'])) < 1e-9);
+
+  // A dual-typed user counts a defender carrying both of its types once:
+  // the union of the two singles, not their sum.
+  const pair = typeConditionMultiplier('synchronoise', ['Normal', 'Flying']);
+  const union = shareOf(['Normal']) + shareOf(['Flying']) -
+    (shares['Normal/Flying'] || 0);
+  assert.ok(Math.abs(pair - union) < 1e-9);
+  assert.ok(pair < shareOf(['Normal']) + shareOf(['Flying']));
+
+  const move = {
+    moveId: 'synchronoise', basePower: 120, category: 'Special',
+    type: 'Psychic', attackerStats: attacker, attackerTypes: ['Psychic'],
+  };
+  const full = estimateMoveDamage({ ...move, moveId: 'psychic' });
+  const conditioned = estimateMoveDamage(move);
+  assert.ok(Math.abs(conditioned - full * psychic) <= 1, `${conditioned} vs ${full * psychic}`);
 });

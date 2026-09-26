@@ -26,6 +26,48 @@ const DEFAULT_LEVEL = 100;
 const REFERENCE_DEFENSE_BASE = 70;
 const STAB_MULTIPLIER = 1.5;
 
+// ————— The reference defender's fractional types —————
+// The neutral wall has no single typing; it carries each type combination
+// (mono-type or pair) in the share of the game's species that have it,
+// generated per generation from the progression species. Pairs are kept
+// whole because types do not occur independently. Ordinary effectiveness
+// still stays out of the estimate (the coverage vector applies it per
+// defending type), but a move whose damage depends on the defender's type
+// is priced by the chance its condition holds against that defender.
+const TYPE_CONDITIONAL_MOVES = {
+  // Hits only a target sharing a type with the user: the summed share of
+  // every combination that contains one of the user's types.
+  synchronoise: (combinations, attackerTypes) => {
+    const own = new Set(attackerTypes);
+    let chance = 0;
+    for (const [combination, share] of Object.entries(combinations)) {
+      if (combination.split('/').some((type) => own.has(type))) chance += share;
+    }
+    return Math.min(1, chance);
+  },
+};
+
+/**
+ * @param {string} moveId
+ * @return {boolean} Whether the move's damage depends on the defender's type.
+ */
+export function isTypeConditionalMove(moveId) {
+  return Object.hasOwn(TYPE_CONDITIONAL_MOVES, String(moveId || ''));
+}
+
+/**
+ * The chance a type-conditional move's condition holds against the reference
+ * defender, given the user's types; 1 for every other move.
+ * @param {?string} moveId
+ * @param {!Array<string>} attackerTypes
+ * @return {number}
+ */
+export function typeConditionMultiplier(moveId, attackerTypes = []) {
+  const rule = TYPE_CONDITIONAL_MOVES[String(moveId || '')];
+  if (!rule) return 1;
+  return rule(dex().typeCombinationShares || {}, attackerTypes);
+}
+
 function abilityId(ability) {
   return String(ability || '')
     .toLowerCase()
@@ -543,6 +585,10 @@ export function estimateMoveDamage({
   const fixed = fixedMoveDamage(moveId, lvl);
   if (fixed != null) return fixed;
 
+  // A type-conditional move lands only as often as the reference defender's
+  // fractional types satisfy it.
+  const typeCondition = typeConditionMultiplier(moveId, attackerTypes);
+
   // Variable-power moves arrive with base power 0; resolve their effective
   // power against the reference defender at this level, using the attacker's
   // exact speed when the stat line carries it.
@@ -555,7 +601,9 @@ export function estimateMoveDamage({
 
   if (!attackerStats) {
     return Math.round(
-      resolvedPower * stab * itemMultiplier * abilityMultiplier);
+      resolvedPower * stab * itemMultiplier * abilityMultiplier *
+        typeCondition,
+    );
   }
 
   // Foul Play deals damage with the TARGET's Attack stat, not the user's —
@@ -573,5 +621,7 @@ export function estimateMoveDamage({
       (Math.floor(((2 * lvl) / 5 + 2) * resolvedPower * attack) / defense) / 50,
     ) + 2;
 
-  return Math.round(baseDamage * stab * itemMultiplier * abilityMultiplier);
+  return Math.round(
+    baseDamage * stab * itemMultiplier * abilityMultiplier * typeCondition,
+  );
 }
