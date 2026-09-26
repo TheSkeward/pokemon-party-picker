@@ -57,8 +57,17 @@ test('input annotations follow their slot through evolution, including hidden ab
   assert.equal(evolved.assumedAbility, 'Anger Point');
   assert.equal(evolved.inputAbility, 'Own Tempo');
   assert.equal(evolved.abilityKnown, true);
-  // A future ability is not a valid annotation for the caught Numel.
-  assert.equal(numelPath({ abilityOverride: 'Solid Rock' }).abilityKnown, false);
+  // A pin may name the target's ability, as the app once advised; the slot
+  // is unambiguous, so it is honored rather than dropped.
+  const targetPinned = numelPath({ abilityOverride: 'Solid Rock' });
+  assert.equal(targetPinned.abilityKnown, true);
+  assert.equal(targetPinned.assumedAbility, 'Simple');
+  assert.equal(targetPinned.targetAbility, 'Solid Rock');
+  const magma = numelPath({ abilityOverride: 'Magma Armor' });
+  assert.deepEqual(
+    [magma.assumedAbility, magma.targetAbility],
+    ['Oblivious', 'Magma Armor'],
+  );
 });
 
 test('single-ability intermediate forms retain the target path', () => {
@@ -140,8 +149,10 @@ test('optimizer, analysis, display, and export agree on current / eventual abili
     assert.equal(profile.assumedAbility, current);
     assert.equal(profile.recommendedSet.ability, current);
     assert.equal(profile.recommendedSet.targetAbility, eventual);
-    assert.ok(formatShowdownSet(profile.recommendedSet).includes(
-      `Ability: ${current} / ${eventual}`));
+    // The export names one ability, as Showdown's importer expects; the
+    // path is shown on the set card only.
+    const exported = formatShowdownSet(profile.recommendedSet).split('\n');
+    assert.ok(exported.includes(`Ability: ${current}`));
   }
   const root = {
     innerHTML: '', isConnected: true,

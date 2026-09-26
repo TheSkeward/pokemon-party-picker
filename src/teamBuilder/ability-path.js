@@ -43,9 +43,19 @@ export function resolveBuildAbilities({
   const inputSlots = slotsFor(inputId || currentId);
   let slot = slotOf(sourceSlots, source?.ability) || '0';
 
-  const overrideSlot = slotOf(inputSlots, abilityOverride);
+  // A pin names the caught form's ability. Older pins, and the app's own
+  // earlier advice, named the target's instead; the slot is unambiguous
+  // either way, so the target's and the current form's slots are read too
+  // rather than dropping the pin (which could flip it to the other ability).
+  const inputOverrideSlot = slotOf(inputSlots, abilityOverride);
+  const overrideSlot =
+    inputOverrideSlot ??
+    slotOf(sourceSlots, abilityOverride) ??
+    slotOf(currentSlots, abilityOverride);
   const abilityKnown = overrideSlot != null;
-  if (
+  if (inputOverrideSlot == null && abilityKnown) {
+    slot = overrideSlot;
+  } else if (
     abilityKnown && toId(abilityAt(inputSlots, slot)) !== toId(abilityOverride)
   ) {
     slot = overrideSlot;
