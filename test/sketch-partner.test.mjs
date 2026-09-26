@@ -193,10 +193,10 @@ test('a Sketch breeding relay guides the root learner, not Smeargle',
         interimLevelCap: guide.interimLevelCap,
         forMoves: guide.forMoves.map((move) => move.name),
       })),
-      [
-        { donorId: 'natu', interimLevelCap: 27, forMoves: ['Wish'] },
-        { donorId: 'munna', interimLevelCap: 24, forMoves: ['Synchronoise'] },
-      ],
+      // Munna's Synchronoise relay is breedable (the context test above) but
+      // no longer makes Sylveon's set: from a Fairy user it lands only as
+      // often as the reference defender carries Fairy.
+      [{ donorId: 'natu', interimLevelCap: 27, forMoves: ['Wish'] }],
     );
   });
 
