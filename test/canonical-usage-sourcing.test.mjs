@@ -7,6 +7,11 @@ import {
   isLineUsageFormat,
 } from '../src/teamBuilder/usage-line-ranking.js';
 import { stitchPokemonSetDetail } from '../scripts/set-index/stitch-set-details.mjs';
+import {
+  getCurrentSpeciesForChoice,
+  getReachableSpecies,
+} from '../src/playthrough/current-species.js';
+import { bestChoice, progressionAt, runPool } from './helpers/harness.mjs';
 
 const row = (id, tierRank, value, extra = {}) => ({
   candidate: { id, name: id, isMega: false, ...extra },
@@ -45,11 +50,27 @@ test('every exact five-game cutoff is inclusive', () => {
   }
 });
 
-test('Rattata stays canonical instead of a higher-scoring Raticate', () => {
-  const rattata = { ...row('rattata', 3, 2.035246486486487), score: 10 };
-  const raticate = { ...row('raticate', 30, 1.9535422727272727), score: 1000 };
+test('the usage rows alone pick the canonical form; scores never reach it', () => {
+  const rattata = row('rattata', 3, 2.035246486486487);
+  const raticate = row('raticate', 30, 1.9535422727272727);
   const canonical = getCanonicalLineCandidates([raticate, rattata]);
   assert.deepEqual(canonical.map((entry) => entry.candidate.id), ['rattata']);
+});
+
+test('the optimizer fields the usage-canonical form, thin usage included', async () => {
+  // Rattata's fringe AG (FEAR) usage outranks Raticate's, which no ladder
+  // shows, so a Rattata is fielded as Rattata even once Raticate is
+  // reachable: the owner's call, recorded in SCORING.md.
+  const progression = progressionAt({ badge: 3, levelCap: 40 });
+  assert.ok(
+    getReachableSpecies('rattata', progression)
+      .some((species) => species.id === 'raticate'),
+    'Raticate is reachable at this cap',
+  );
+  const result = await runPool({ pool: ['Rattata'], progression });
+  const choice = bestChoice(result, 'Rattata');
+  assert.equal(choice.pokemonId, 'rattata');
+  assert.equal(getCurrentSpeciesForChoice(choice, progression).id, 'rattata');
 });
 
 test('meaningful ranks precede trace and retain a canonical non-Mega fallback', () => {

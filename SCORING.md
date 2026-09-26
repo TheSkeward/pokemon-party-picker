@@ -191,10 +191,11 @@ the selected species' set; they cannot make it win the line. Separate
 `lineRanking`/`lineTrace` facts preserve admissible signals even when a
 species' main set source qualifies only in LC/NFE. The target may still be
 a pre-evolution if its evidence comes from another format. The optimizer scores
-that target's currently fieldable form and build variants; it does not replace the
-canonical target with a different evolution because its mechanical score is
-higher. A canonical non-Mega fallback remains when the target is a Mega. With
-no usage signal anywhere, the existing score-based fallback remains.
+that target's currently fieldable form and build variants; it does not replace
+the canonical target with a different evolution because its mechanical score is
+higher, however thin the target's usage: the usage is evidence of what plays,
+the score is not. A canonical non-Mega fallback remains when the target is a
+Mega. With no usage signal anywhere, the existing score-based fallback remains.
 
 The readiness ramp is line-anchored: the representative form's canonical set
 determines one earned-evidence ramp for the line, while every fielded form is
@@ -240,8 +241,11 @@ grind defaults to zero score cost: the app recommends the strongest satisfiable
 team and lets the player decide whether the grind is worthwhile. Delaying an
 evolution to learn a move remains an in-run strength cost.
 
-Usage and presentation metadata may break exact ties, but no boolean usage rule
-may override `V`.
+`V` chooses among lines and among a form's builds; there, usage and
+presentation metadata only break exact ties. Within a line, usage alone
+chooses the canonical form (see Usage trust), fringe usage included: a Rattata
+with FEAR play in AG outranks a Raticate seen nowhere, because the signal is
+evidence of what actually plays and a form no ladder has seen has none.
 
 ### Borrowed priors for fangame-original items
 
