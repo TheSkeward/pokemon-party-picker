@@ -17,10 +17,12 @@ test('export/import round-trips pool and progression', () => {
   };
   const text = buildGamestateExport({
     query: 'Froakie\nOnix (Sturdy)\nSpearow',
+    donorQuery: 'Ditto\nSmeargle',
     progression,
   });
   const back = parseGamestateImport(text);
   assert.equal(back.pool, 'Froakie\nOnix (Sturdy)\nSpearow');
+  assert.equal(back.donors, 'Ditto\nSmeargle');
   assert.deepEqual(back.progression, progression);
 });
 
@@ -34,6 +36,8 @@ test('old exports carrying the retired scoringModel field still import', () => {
   });
   const back = parseGamestateImport(old);
   assert.equal(back.pool, 'Froakie');
+  // Backups made before the donor box existed restore with an empty one.
+  assert.equal(back.donors, '');
   assert.deepEqual(back.progression, { levelCap: '20' });
   assert.ok(!('scoringModel' in back), 'retired field must not round-trip');
 });

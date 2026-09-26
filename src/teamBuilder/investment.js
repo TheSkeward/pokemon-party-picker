@@ -50,6 +50,7 @@ export async function computeInvestmentPlan({
   pokemonIndex,
   progression,
   query,
+  donorQuery = '',
   selection,
   result,
   // Checked before each future-cap optimize. A user optimize awaits the whole
@@ -89,6 +90,7 @@ export async function computeInvestmentPlan({
         pokemonIndex,
         progression: { ...progression, levelCap: String(cap) },
         query,
+        donorQuery,
         selection,
         searchMode: 'fast',
       }),

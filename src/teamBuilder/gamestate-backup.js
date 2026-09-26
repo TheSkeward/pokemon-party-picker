@@ -18,7 +18,7 @@ const VERSION = 1;
  * @param {{query: ?string, progression: ?Object}} state
  * @return {string} Pretty-printed JSON gamestate export.
  */
-export function buildGamestateExport({ query, progression }) {
+export function buildGamestateExport({ query, donorQuery = '', progression }) {
   return JSON.stringify(
     {
       format: FORMAT,
@@ -28,6 +28,8 @@ export function buildGamestateExport({ query, progression }) {
       game: getActiveGame().id,
       exportedAt: new Date().toISOString(),
       pool: String(query || ''),
+      // The donor box; absent on exports made before it existed.
+      donors: String(donorQuery || ''),
       progression: progression || {},
     },
     null,
@@ -44,7 +46,8 @@ export function buildGamestateExport({ query, progression }) {
  * save/load path so normalizeProgression sanitizes it the same way it
  * sanitizes every other stored progression.
  * @param {string} text
- * @return {{pool: string, progression: Object, game: string}}
+ * @return {{pool: string, donors: string, progression: Object,
+ *     game: string}}
  */
 export function parseGamestateImport(text) {
   let parsed;
@@ -69,6 +72,7 @@ export function parseGamestateImport(text) {
   }
   return {
     pool: parsed.pool,
+    donors: typeof parsed.donors === 'string' ? parsed.donors : '',
     progression: parsed.progression,
     // Pre-registry exports carry no game field; they are all Reborn. The
     // caller decides how to route a backup for a different game than the

@@ -19,6 +19,8 @@ https://theskeward.github.io/pokemon-party-picker/
 - Paste an owned Pokemon pool and get a recommended team.
 - Lock a Pokemon into the team by suffixing it with `!` (`Gengar!`);
   the optimizer fills the remaining slots around it.
+- Keep the rest of your box in the donor list: those Pokemon are never
+  fielded, but they supply egg moves, Sketch partners, and move transfers.
 - Track each game's progression locally in your browser.
 - Inspect legal current moves, recommended sets, breeding chains, item picks,
   coverage, defensive profile, confidence, and level-cap investment.

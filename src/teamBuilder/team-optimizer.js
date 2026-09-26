@@ -24,7 +24,11 @@ import { loadTopSet } from './top-spread.js';
 import { resolveBuildAbilities } from './ability-path.js';
 import { computeSetReadiness } from '../playthrough/set-readiness.js';
 import { buildInputGroups } from './input-groups';
-import { parseAbilityAnnotations, parseLockedNames } from './pool-parsing';
+import {
+  parseAbilityAnnotations,
+  parseLockedNames,
+  withDonors,
+} from './pool-parsing';
 import { normalizeName } from './name-utils';
 import {
   tunable,
@@ -293,6 +297,10 @@ export async function optimizeTeamFromPool({
   pokemonIndex,
   progression = {},
   query,
+  // The donor box: Pokémon the player owns but will not field. They join
+  // the pool for egg moves, Sketch partners and move transfers only, and
+  // never become lines, candidates or bench entries.
+  donorQuery = '',
   selection,
   onProgress,
   exhaustive = true,
@@ -332,7 +340,7 @@ export async function optimizeTeamFromPool({
     await buildMoveTransferContexts({
       pokemonIndex,
       progression,
-      query,
+      query: withDonors(query, donorQuery),
     });
 
   const progressionSig = stableStringify(progression);

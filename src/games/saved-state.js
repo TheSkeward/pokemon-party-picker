@@ -13,17 +13,30 @@ import {
 } from '../storage/safe-local-storage';
 
 /**
- * @param {string} kind 'progression' or 'pool'.
+ * The active game's localStorage key for a kind of saved state. The donor
+ * box (Pokémon owned but never fielded, kept for egg moves and Sketch) hangs
+ * off the pool key so no descriptor has to name it.
+ * @param {string} kind 'progression', 'pool' or 'donors'.
+ * @return {string}
+ */
+export function savedStateKey(kind) {
+  const { storage } = getActiveGame();
+  return kind === 'donors' ? `${storage.pool}:donors` : storage[kind];
+}
+
+/**
+ * @param {string} kind 'progression', 'pool' or 'donors'.
  * @return {string} The saved text, or '' when none.
  */
 export function readSavedState(kind) {
   const { storage } = getActiveGame();
-  const raw = readLocalStorage(storage[kind], '');
+  const key = savedStateKey(kind);
+  const raw = readLocalStorage(key, '');
   if (raw) return raw;
   const legacyKey = storage.legacy?.[kind];
   if (!legacyKey) return '';
   const legacy = readLocalStorage(legacyKey, '');
-  if (legacy && writeLocalStorage(storage[kind], legacy)) {
+  if (legacy && writeLocalStorage(key, legacy)) {
     removeLocalStorage(legacyKey);
   }
   return legacy;

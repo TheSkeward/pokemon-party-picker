@@ -15,6 +15,7 @@ import {
   getPoolStats,
   normalizePoolText,
   setPoolEntryLock,
+  withDonors,
 } from './teamBuilder/pool-parsing';
 import {
   optimizeTeamFromPool,
@@ -34,7 +35,7 @@ import {
 } from './teamBuilder/telemetry.js';
 import { loadManifest } from './manifest.js';
 import { activateGameForFamily, getActiveGame } from './games/registry.js';
-import { readSavedState } from './games/saved-state.js';
+import { readSavedState, savedStateKey } from './games/saved-state.js';
 import { applyGameTheme } from './app/theme.js';
 import { renderLegalMovesPanel } from './playthrough/legal-moves-view';
 import { renderTeamAnalysisPanel } from './teamBuilder/team-analysis-view';
@@ -111,6 +112,8 @@ export function mountPoolOptimizer(container, options = {}) {
     selection: getParam('selection') || 'all',
     // Filled by init() once the family's game is active.
     query: '',
+    // The donor box: owned, never fielded, kept for move transfers.
+    donorQuery: '',
     progression: loadSavedProgression(),
     // Default sort is the score the seats were actually chosen by — Lead % is
     // a ladder stat, informative but not the seating order.
@@ -158,6 +161,7 @@ export function mountPoolOptimizer(container, options = {}) {
   async function init() {
     applyGameTheme(await gameReady);
     state.query = getParam('poolQuery') || loadSavedPool();
+    state.donorQuery = loadSavedDonors();
     state.progression = loadSavedProgression();
     // Manifest FIRST: loading it sets the data-version tag, so every fetch
     // below carries ?v=<dataSignature> and can't be served from a previous
@@ -238,6 +242,7 @@ export function mountPoolOptimizer(container, options = {}) {
         pokemonIndex,
         progression: state.progression,
         query: state.query,
+        donorQuery: state.donorQuery,
         selection: state.selection,
         onProgress: updateOptimizeProgress,
         // The explicit Optimize button (and other direct triggers) run an exact
@@ -268,7 +273,7 @@ export function mountPoolOptimizer(container, options = {}) {
           family: state.family,
           selection: state.selection,
           pokemonIndex,
-          query: state.query,
+          query: withDonors(state.query, state.donorQuery),
         },
       );
       if (runToken !== optimizeRunToken) return;
@@ -436,6 +441,7 @@ export function mountPoolOptimizer(container, options = {}) {
         pokemonIndex,
         progression: state.progression,
         query: state.query,
+        donorQuery: state.donorQuery,
         selection: state.selection,
         result: forResult,
         shouldAbort: () => sweepAbortRequested || state.result !== forResult,
@@ -583,6 +589,7 @@ export function mountPoolOptimizer(container, options = {}) {
       formatsIndex,
       pokemonIndex,
       poolStats: getPoolStats(state.query, pokemonIndex),
+      donorStats: getPoolStats(state.donorQuery, pokemonIndex),
       setDetails,
       state,
     });
@@ -1004,6 +1011,26 @@ export function mountPoolOptimizer(container, options = {}) {
       });
 
     app
+      .querySelector('#donor-query-input')
+      ?.addEventListener('input', (event) => {
+        state.donorQuery = event.target.value;
+        const saved = saveDonors(state.donorQuery);
+        // Donors change what the pool can breed or Sketch, so the result
+        // and everything derived from it are stale.
+        state.result = null;
+        state.resultProgressionKey = '';
+        state.availabilityText = '';
+        state.teamItemUsage = null;
+        state.teamItemContext = null;
+        state.itemRecommendations = {};
+        setDetails.cancel();
+        state.statusMessage = saved
+          ? 'Saved locally'
+          : 'Not saved locally; browser storage is full.';
+        updatePoolStatusMessage(state.statusMessage);
+      });
+
+    app
       .querySelector('#optimize-button')
       ?.addEventListener('click', async () => {
         await computeAndRender();
@@ -1042,6 +1069,7 @@ export function mountPoolOptimizer(container, options = {}) {
           [
             buildGamestateExport({
               query: state.query,
+              donorQuery: state.donorQuery,
               progression: state.progression,
             }),
           ],
@@ -1085,6 +1113,8 @@ export function mountPoolOptimizer(container, options = {}) {
         }
         state.query = imported.pool;
         savePool(state.query);
+        state.donorQuery = imported.donors || '';
+        saveDonors(state.donorQuery);
         // Round-trip the imported progression through the normal save/load
         // path so it gets the same normalization (terrain-seed migration,
         // count clamps, unknown-field drops) as any other stored state.
@@ -1104,12 +1134,14 @@ export function mountPoolOptimizer(container, options = {}) {
       if (!confirmed) return;
 
       state.query = '';
+      state.donorQuery = '';
       state.result = null;
       state.resultProgressionKey = '';
       state.statusMessage = 'Saved pool cleared';
 
       setDetails.cancel();
       removeLocalStorage(poolStorageKey());
+      removeLocalStorage(savedStateKey('donors'));
       writeUrl();
       render();
     });
@@ -1439,7 +1471,7 @@ export function mountPoolOptimizer(container, options = {}) {
       currentSpecies: getCurrentSpeciesForSelected(selected),
       movesetEntry: setDetails.getDetail(),
       pokemonIndex,
-      poolQuery: state.query,
+      poolQuery: withDonors(state.query, state.donorQuery),
       pokemonId: selected.pokemonId,
       pokemonName: selected.name,
       progression: state.progression,
@@ -1451,7 +1483,7 @@ export function mountPoolOptimizer(container, options = {}) {
       family: state.family,
       itemAssignments: state.itemRecommendations,
       pokemonIndex,
-      poolQuery: state.query,
+      poolQuery: withDonors(state.query, state.donorQuery),
       progression: state.progression,
       selection: state.selection,
       team: getSortedTeam(
@@ -1614,6 +1646,16 @@ export function savePool(value) {
 /** @return {string} The saved pool text, or '' when none. */
 export function loadSavedPool() {
   return readSavedState('pool');
+}
+
+/** @return {boolean} Whether the donor box text was persisted. */
+export function saveDonors(value) {
+  return writeLocalStorage(savedStateKey('donors'), value);
+}
+
+/** @return {string} The saved donor box text, or '' when none. */
+export function loadSavedDonors() {
+  return readSavedState('donors');
 }
 
 function saveTeamSort(value) {

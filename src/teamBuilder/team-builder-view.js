@@ -18,6 +18,7 @@ import { renderTeamAnalysisPanel } from './team-analysis-view';
 import { getCurrentSpeciesForChoice } from '../playthrough/current-species.js';
 import { describeEvolutionPath } from '../playthrough/evolution-requirements.js';
 import { teamMemberKey } from './item-recommendations';
+import { withDonors } from './pool-parsing';
 import {
   getLineCeilingRanking,
   getLineTraceRanking,
@@ -44,6 +45,7 @@ export function renderTeamBuilderPage({
   formatsIndex,
   pokemonIndex,
   poolStats,
+  donorStats = { uniqueCount: 0 },
   setDetails,
   state,
 }) {
@@ -55,7 +57,7 @@ export function renderTeamBuilderPage({
   app.innerHTML = `
     ${embedded ? '' : renderStandaloneHeader({ baseUrl })}
 
-    ${renderPoolControls({ embedded, families, poolStats, state })}
+    ${renderPoolControls({ embedded, families, poolStats, donorStats, state })}
 
     ${renderGamestateStrip(state.progression)}
 
@@ -79,7 +81,7 @@ export function renderTeamBuilderPage({
       itemAssignments: state.itemRecommendations,
       lines: state.result?.lines || [],
       pokemonIndex,
-      poolQuery: state.query,
+      poolQuery: withDonors(state.query, state.donorQuery),
       progression: state.progression,
       selection: state.selection,
       team: getSortedTeam(
@@ -193,7 +195,13 @@ export function renderGamestateStrip(progression = {}) {
   `;
 }
 
-function renderPoolControls({ embedded, families, poolStats, state }) {
+function renderPoolControls({
+  embedded,
+  families,
+  poolStats,
+  donorStats = { uniqueCount: 0 },
+  state,
+}) {
   return `
     <section class="panel">
       <div class="panel-header">
@@ -225,6 +233,11 @@ function renderPoolControls({ embedded, families, poolStats, state }) {
         <label class="wide-control">
           <span>Available Pokémon pool</span>
           <textarea id="pool-query-input" rows="8" placeholder="Bulbasaur, Charmander, Squirtle...">${escapeHtml(state.query)}</textarea>
+        </label>
+
+        <label class="wide-control">
+          <span>Donor box · ${donorStats.uniqueCount} entries · never fielded; they only supply egg moves, Sketch partners and move transfers to the pool above</span>
+          <textarea id="donor-query-input" rows="3" placeholder="Ditto, Smeargle, the rest of your PC boxes...">${escapeHtml(state.donorQuery || '')}</textarea>
         </label>
       </div>
 
@@ -1276,7 +1289,7 @@ function renderSelectedSetDetails({ app, pokemonIndex, setDetails, state }) {
     currentSpecies,
     movesetEntry: detail,
     pokemonIndex,
-    poolQuery: state.query,
+    poolQuery: withDonors(state.query, state.donorQuery),
     pokemonId: selected.pokemonId,
     pokemonName: selected.name,
     progression: state.progression,

@@ -150,6 +150,7 @@ export function progressionAt(
 
 export async function runPool({
   pool,
+  donorPool = [],
   badge = 1,
   levelCap = 25,
   opponentTypeBias = {},
@@ -167,6 +168,7 @@ export async function runPool({
       progression:
         progression || progressionAt({ badge, levelCap, opponentTypeBias }),
       query: pool.join('\n'),
+      donorQuery: donorPool.join('\n'),
       selection: 'all',
       scoreAllLines,
     });

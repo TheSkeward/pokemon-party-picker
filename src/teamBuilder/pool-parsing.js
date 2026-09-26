@@ -212,3 +212,16 @@ function normalizeName(value) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '');
 }
+
+/**
+ * The pool text every move-transfer reader sees: the fielded pool plus the
+ * donor box (Pokémon owned but never fielded, kept for egg moves, Sketch
+ * partners and move transfers), one entry per line.
+ * @param {string} query
+ * @param {string=} donorQuery
+ * @return {string}
+ */
+export function withDonors(query, donorQuery = '') {
+  const donors = String(donorQuery || '').trim();
+  return donors ? `${String(query || '')}\n${donors}` : String(query || '');
+}
