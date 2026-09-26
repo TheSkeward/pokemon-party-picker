@@ -1,0 +1,4 @@
+# Every text file is stored and checked out with LF, whatever a clone's
+# core.autocrlf says: the data manifest hashes working-tree bytes, so a CRLF
+# checkout rebuilt it with different fingerprints (see scripts/build-manifest.mjs).
+* text=auto eol=lf
