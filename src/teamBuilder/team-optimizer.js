@@ -260,10 +260,10 @@ const MAX_RESULT_CACHE = 400;
 // (reusable TMs); HGSS results with contested TMs differ.
 // v58: retain fallback move ranks when filling alternative builds.
 // v59: map canonical ability slots onto the current evolutionary form.
-// Bump whenever the same inputs must produce a different result: '64'
-// retires verdicts priced before multi-turn moves were rated over the
-// expected stint and the audit's remaining ability edge cases landed.
-const RESULT_CACHE_VERSION = '64';
+// Bump whenever the same inputs must produce a different result: '65'
+// retires verdicts whose coverage and utility builds dropped the canonical
+// utility moves.
+const RESULT_CACHE_VERSION = '65';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.
@@ -1325,11 +1325,12 @@ function formatLegalityNote(profile) {
 // used only to measure ability sensitivity (the optimizer must never "choose"
 // an ability the player doesn't control; a user annotation pins it instead).
 //
-// Score what you show: the default/delayed builds (and the probe, which
-// measures the default set) anchor on the SAME inputs the analysis pane
-// displays — canonical move usage and the stitched competitive move rank.
-// Coverage/utility variants stay damage-/role-led by design: they exist as
-// alternatives to the canonical set. TWO deliberate differences remain:
+// Score what you show: every build (and the probe, which measures the
+// default set) anchors on the SAME inputs the analysis pane displays —
+// canonical move usage and the stitched competitive move rank. The
+// coverage and utility variants keep the canonical utility moves and differ
+// from the standard set only in how they spend the remaining slots
+// (recommendCurrentMoves). TWO deliberate differences remain:
 // scoring stays item-blind
 // (items are inventory-dependent and priced by the owned-item system;
 // folding the top competitive item into scored damage would double-count),
@@ -1471,7 +1472,6 @@ async function resolveCandidateBuilds({
     buildFriction = 0,
     ability,
     preMegaAbility: buildPreMegaAbility = null,
-    usageAnchored = false,
   }) => {
     const profile = buildCandidateLegalityProfile({
       member,
@@ -1485,10 +1485,11 @@ async function resolveCandidateBuilds({
       movePreference,
       fieldExtenderOwned:
         ((progression.ownedItems || {}).amplifieldrock || 0) > 0,
-      // Alternative builds keep their own priorities, but still use the
-      // canonical fallback order to fill otherwise empty move slots.
+      // Every build anchors on the mon's canonical usage and fills empty
+      // slots by the competitive fallback order; the builds differ in how
+      // recommendCurrentMoves spends the slots the canonical moves leave.
       moveRank: topSet.moveRank,
-      ...(usageAnchored ? { moveUsage: topSet.moveUsage } : {}),
+      moveUsage: topSet.moveUsage,
     });
     profile.fieldedId = currentSpecies?.id || member.id;
     profile.fieldedName = currentSpecies?.name || member.name;
@@ -1534,7 +1535,6 @@ async function resolveCandidateBuilds({
         buildMoves: naturalMoves,
         ability: assumedAbility,
         preMegaAbility,
-        usageAnchored: true,
       }),
     },
   ];
@@ -1560,7 +1560,6 @@ async function resolveCandidateBuilds({
           buildMoves: pool,
           ability: assumedAbility,
           preMegaAbility,
-          usageAnchored: true,
         }),
       });
     }
@@ -1623,7 +1622,6 @@ async function resolveCandidateBuilds({
         buildMoves: [...naturalMoves, ...delayedMoves],
         ability: assumedAbility,
         preMegaAbility,
-        usageAnchored: true,
       });
       const delayedIds = new Set(delayedMoves.map((move) => move.id));
       const usedDelayed = (delayedProfile.recommendedMoves || []).filter(
@@ -1652,7 +1650,6 @@ async function resolveCandidateBuilds({
         buildMoves: naturalMoves,
         ability: megaReady ? assumedAbility : secondaryAbility,
         preMegaAbility: megaReady ? secondaryAbility : null,
-        usageAnchored: true,
       })
       : null;
 

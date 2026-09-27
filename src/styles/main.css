@@ -1566,6 +1566,22 @@ html {
   text-align: right;
 }
 
+/* The build a set card shows when it is not the standard set: an
+   informational callout, so the neutral fill. */
+.team-set-build {
+  border: 1px solid color-mix(in srgb, var(--fill-neutral) 60%, transparent);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  cursor: help;
+  font-size: var(--type-s);
+  font-weight: 600;
+  line-height: 1.2;
+  margin-left: 0.35rem;
+  padding: 0.1rem 0.45rem;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
 .team-set-meta {
   font-size: var(--type-s);
   color: var(--text);

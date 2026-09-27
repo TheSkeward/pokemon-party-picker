@@ -167,6 +167,15 @@ attacks add diminishing breadth through a noisy-OR, bounded by the peak threat.
 This distinguishes a coverage build from a support build without inflating the
 top of the score distribution.
 
+Every build keeps the canonical moves the player can use now. The standard
+set locks all of them; the coverage set keeps the canonical utility moves and
+spends the remaining slots on attacking-type breadth; the utility set ranks
+its utility moves by usage, so the canonical ones seat first. A build may
+trade a canonical attack for coverage, never a canonical utility move: a
+Forretress without Rapid Spin and Spikes is not a Forretress build, and
+before this rule its four-attack coverage set outscored the real one on
+standalone value with no coverage gain for the team.
+
 Utility is currently derived from accuracy-weighted move roles such as
 recovery, hazards, removal, speed control, setup, pivoting, phazing, screens,
 disruption, status, and priority. The utility roles are gated by the Pokemon's

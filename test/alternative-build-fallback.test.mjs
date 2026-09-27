@@ -10,7 +10,9 @@ const progression = {
   availableTmxIds: [],
   availableTutorMoveIds: [],
 };
-const expectedMoves = ['spark', 'quickattack', 'nuzzle', 'charm'];
+// The canonical Nuzzle leads: every build anchors on usage, and the card
+// lists canonical moves before the damage-ordered rest.
+const expectedMoves = ['nuzzle', 'spark', 'quickattack', 'charm'];
 const moveIds = (profile) => profile.recommendedMoves.map((move) => move.id);
 const analysisOptions = { family: 'singles', selection: 'all' };
 
@@ -31,13 +33,19 @@ test('Pachirisu fills its alternative set without changing its coverage prioriti
 
 test('analysis retains fallback ranks when assembling coverage and utility sets', async () => {
   const result = await runPool({ pool: ['Pachirisu'], progression });
+  // The utility set seats its utility moves by usage and, for Pachirisu,
+  // coincides with the standard set; Endure comes from the fallback rank.
+  const expectedByBuild = {
+    coverage: expectedMoves,
+    utility: ['nuzzle', 'quickattack', 'charm', 'endure'],
+  };
 
-  for (const buildKey of ['coverage', 'utility']) {
+  for (const [buildKey, expected] of Object.entries(expectedByBuild)) {
     const analysis = await buildTeamAnalysis(
       [{ ...result.team[0], buildKey, legalityProfile: null }],
       progression,
       analysisOptions,
     );
-    assert.deepEqual(moveIds(analysis.profiles[0]), expectedMoves, buildKey);
+    assert.deepEqual(moveIds(analysis.profiles[0]), expected, buildKey);
   }
 });

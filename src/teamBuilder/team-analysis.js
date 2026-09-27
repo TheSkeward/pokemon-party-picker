@@ -415,10 +415,10 @@ async function buildMemberLegalMoveEntry({
     representativeName: row.name,
     attackerStats,
     levelCap: progression.levelCap,
-    // Match the optimizer: alternative builds skip the usage anchor,
-    // but all builds retain the fallback order for empty move slots.
+    // Match the optimizer: every build anchors on canonical usage and
+    // retains the fallback order for empty move slots.
     moveRank: topSet.moveRank,
-    ...(realized.usageAnchored ? { moveUsage: topSet.moveUsage } : {}),
+    moveUsage: topSet.moveUsage,
     heldItem,
     ability: topSet.ability,
     opponentTypeBias: progression.opponentTypeBias,
@@ -428,6 +428,10 @@ async function buildMemberLegalMoveEntry({
   });
   profile.fieldedId = currentSpecies?.id || member.id;
   profile.fieldedName = currentSpecies?.name || member.name;
+  // Which build this set is, so the card can say when it is not the
+  // standard set.
+  profile.buildKey = row.buildKey || 'default';
+  profile.buildLabel = row.buildLabel || '';
   profile.preMegaAbility = preMegaAbility;
   profile.targetAbility = currentSpecies?.representativeIsFuture
     ? targetAbility : null;
@@ -461,7 +465,6 @@ function realizedBuildOf(buildKey) {
   const sideSet = key === 'coverage' || key === 'utility';
   return {
     movePreference: sideSet ? key : 'default',
-    usageAnchored: !sideSet,
     includeDelayed: !key || key === 'delayed',
     withoutTms: key.startsWith('without:')
       ? key.slice('without:'.length).split('+')
@@ -1778,6 +1781,11 @@ function moveHitMultiplier(move, ability) {
 // quality table stands in for usage ranking, so the mon still gets a sensible
 // damage-led set. There is deliberately no "must have an attack" guarantee: a
 // mon whose pros run four status moves keeps four status moves.
+// The alternative builds share these steps and differ at step 1: the coverage
+// build keeps only the canonical UTILITY moves and opens with the best STAB
+// attack, so it may trade a canonical attack for breadth but never a
+// canonical utility move; the utility build seats its three highest-usage
+// utility moves, which are the canonical ones whenever the set runs them.
 function recommendCurrentMoves(
   member,
   moves,
@@ -1823,11 +1831,30 @@ function recommendCurrentMoves(
     return true;
   };
 
+  // The canonical set: the mon's top-4 moves by usage, in usage order.
+  const canonicalIds = [...moveUsage.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 4)
+    .map(([id]) => id);
+  const addCanonical = (keep) => {
+    for (const id of canonicalIds) {
+      const move = byId.get(id);
+      if (
+        move && keep(move) && isSelectableMove(move, selected, member.heldItem)
+      ) {
+        add(move);
+      }
+    }
+  };
+
   if (movePreference === 'coverage') {
-    // Coverage build: best STAB nuke first, then greedily add fresh attacking
-    // types by damage (the shared fill loop below keeps extending coverage).
-    // A build the team optimizer can pick when it needs THIS mon's off-type
-    // answers rather than its canonical competitive set.
+    // Coverage build: the canonical utility moves available now stay (a
+    // Forretress keeps Rapid Spin and Spikes in every build), then the best
+    // STAB nuke, then fresh attacking types by damage (the shared fill loop
+    // below keeps extending coverage). A build the team optimizer can pick
+    // when it needs THIS mon's off-type answers rather than its canonical
+    // attacks.
+    addCanonical((move) => move.utility);
     add(
       usableDamaging()
         .filter(
@@ -1837,24 +1864,17 @@ function recommendCurrentMoves(
         .sort(compareByDamage)[0],
     );
   } else if (movePreference === 'utility') {
-    // Utility build: the strongest role moves (recovery/hazards/speed control
-    // rank above chip status via utilityWeight), plus the guaranteed attack
-    // from the shared steps so it can't go fully passive.
+    // Utility build: the strongest role moves by usage, so the canonical
+    // utility moves seat first (recovery/hazards/speed control rank above
+    // chip status via utilityWeight when usage is silent), plus the
+    // guaranteed attack from the shared steps so it can't go fully passive.
     const rankedUtility = usableUtility
       .filter((move) => move.usage > 0 || move.utilityWeight > 0)
       .sort(compareUtilityByUsage);
     for (const move of rankedUtility.slice(0, 3)) add(move);
   } else {
-    // 1. Canonical (top-4 by usage), in usage order, each kept if available
-    // now.
-    const canonicalIds = [...moveUsage.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 4)
-      .map(([id]) => id);
-    for (const id of canonicalIds) {
-      const move = byId.get(id);
-      if (move && isSelectableMove(move, selected, member.heldItem)) add(move);
-    }
+    // 1. Canonical moves, each kept if available now.
+    addCanonical(() => true);
   }
 
   // 2. Guarantee at least one attack — but only if none was picked yet. A mon

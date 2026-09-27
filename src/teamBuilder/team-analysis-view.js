@@ -517,7 +517,10 @@ function renderSetCard(profile) {
   return `
     <div class="team-set-card ${profile.bestStabMove ? '' : 'warning'}" data-set-card="${escapeHtml(profile.fieldedId || profile.currentId || '')}">
       <div class="team-set-head">
-        <strong>${escapeHtml(profile.currentName)}</strong>
+        <span>
+          <strong>${escapeHtml(profile.currentName)}</strong>
+          ${renderBuildLabel(profile)}
+        </span>
         ${subParts.length ? `<small>${escapeHtml(subParts.join(' · '))}</small>` : ''}
       </div>
       <div class="team-set-meta">${metaParts.join(' · ')}</div>
@@ -536,6 +539,29 @@ function renderSetCard(profile) {
       </div>
     </div>
   `;
+}
+
+// Names the build when it is not the standard set, with the canonical moves
+// the set line calls ready that this build left out, so the card never
+// contradicts the readiness line beneath it without saying why.
+function renderBuildLabel(profile) {
+  if (!profile.buildKey || profile.buildKey === 'default') return '';
+  const carried = new Set(
+    (profile.recommendedMoves || []).map((move) => move.id),
+  );
+  const traded = (profile.setReadiness?.moves || [])
+    .filter(
+      (move) =>
+        (move.status === 'ready' || move.status === 'scaling') &&
+        !carried.has(move.id),
+    )
+    .map((move) => move.label);
+  const label = profile.buildLabel || 'Alternative set';
+  const title = traded.length
+    ? `An alternative to the standard set, chosen for the team; it leaves out ${traded.join(' and ')}.`
+    : 'An alternative to the standard set, chosen for the team; it keeps every canonical move available now.';
+  const text = traded.length ? `${label} · without ${traded.join(', ')}` : label;
+  return `<span class="team-set-build" title="${escapeHtml(title)}">${escapeHtml(text)}</span>`;
 }
 
 // One line of truth about the competitive set: how much of it exists yet and
