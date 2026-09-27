@@ -80,11 +80,3 @@ export function parseGamestateImport(text) {
     game: typeof parsed.game === 'string' ? parsed.game : 'reborn',
   };
 }
-
-/**
- * @param {Date} now
- * @return {string} Date-stamped .json filename.
- */
-export function gamestateFileName(now = new Date()) {
-  return `reborn-gamestate-${now.toISOString().slice(0, 10)}.json`;
-}

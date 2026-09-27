@@ -1,10 +1,11 @@
-// Gamestate backup: export downloads a parseable file, import restores it
-// (modulo the app's own pool normalization), corrupt files are rejected
-// with a readable status.
-import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs';
+// Gamestate backup: export copies a parseable gamestate to the clipboard,
+// import restores a saved copy (modulo the app's own pool normalization),
+// corrupt files are rejected with a readable status.
+import { writeFileSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import {
+  BASE_URL,
   launchBrowser,
   openPoolPage,
   check,
@@ -13,28 +14,27 @@ import {
 const browser = await launchBrowser();
 const workDir = mkdtempSync(path.join(tmpdir(), 'gamestate-e2e-'));
 try {
-  const page = await openPoolPage(browser);
+  const context = await browser.newContext();
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'], {
+    origin: new URL(BASE_URL).origin,
+  });
+  const page = await openPoolPage(context);
   await page.fill('textarea', 'Froakie\nOnix');
 
-  const [download] = await Promise.all([
-    page.waitForEvent('download'),
-    page.click('#export-gamestate-button'),
-  ]);
-  const file = path.join(workDir, download.suggestedFilename());
-  await download.saveAs(file);
-  const exported = JSON.parse(readFileSync(file, 'utf8'));
+  await page.click('#export-gamestate-button');
+  await page.waitForTimeout(400);
+  const copied = await page.evaluate(() => navigator.clipboard.readText());
+  const exported = JSON.parse(copied);
   check(
-    'download is a versioned gamestate',
+    'clipboard holds a versioned gamestate',
     exported.format === 'pokemon-usage-viewer-gamestate' && exported.version === 1,
   );
   check('pool captured', exported.pool.includes('Froakie'), exported.pool);
-  check(
-    'file name is date-stamped',
-    /^reborn-gamestate-\d{4}-\d{2}-\d{2}\.json$/.test(
-      download.suggestedFilename()),
-    download.suggestedFilename(),
-  );
+  const copyStatus = await page.evaluate(() => document.querySelector('[data-pool-status]')?.textContent || '');
+  check('status reports the copy', /copied to clipboard/i.test(copyStatus), copyStatus);
 
+  const file = path.join(workDir, 'gamestate.json');
+  writeFileSync(file, copied);
   await page.fill('textarea', '');
   page.on('dialog', (dialog) => dialog.accept());
   await page.click('#import-gamestate-button');

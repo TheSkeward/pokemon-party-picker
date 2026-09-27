@@ -73,7 +73,6 @@ import {
 import { getTeamItemContext } from './teamBuilder/team-analysis';
 import {
   buildGamestateExport,
-  gamestateFileName,
   parseGamestateImport,
 } from './teamBuilder/gamestate-backup.js';
 import {
@@ -1085,24 +1084,20 @@ export function mountPoolOptimizer(container, options = {}) {
 
     app
       .querySelector('#export-gamestate-button')
-      ?.addEventListener('click', () => {
-        const blob = new Blob(
-          [
-            buildGamestateExport({
-              query: state.query,
-              donorQuery: state.donorQuery,
-              progression: state.progression,
-            }),
-          ],
-          { type: 'application/json' },
-        );
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = gamestateFileName();
-        link.click();
-        URL.revokeObjectURL(url);
-        updatePoolStatusMessage(`Gamestate downloaded (${link.download}).`);
+      ?.addEventListener('click', async () => {
+        // To the clipboard like the pool and availability copies: the user
+        // pastes it wherever the backup lives, or straight into a chat.
+        const text = buildGamestateExport({
+          query: state.query,
+          donorQuery: state.donorQuery,
+          progression: state.progression,
+        });
+        try {
+          await navigator.clipboard.writeText(text);
+          updatePoolStatusMessage('Gamestate copied to clipboard');
+        } catch {
+          updatePoolStatusMessage('Clipboard copy failed');
+        }
       });
 
     app
