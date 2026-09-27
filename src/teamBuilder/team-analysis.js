@@ -1544,7 +1544,7 @@ function computeDamageEstimate(move, member, attackerStats) {
   if (hitMultiplier !== 1 && move.basePower) {
     steps.splice(
       1, 0,
-      `Base power ${move.basePower} × ${Math.round(hitMultiplier * 100) / 100} for a turn's hits (multi-hit average, recharge, or escalation)`,
+      `Base power ${move.basePower} × ${Math.round(hitMultiplier * 100) / 100} for a turn's hits (multi-hit average, recharge, escalation, or Truant)`,
     );
   }
   if (effectiveType !== move.type) {
@@ -1554,10 +1554,17 @@ function computeDamageEstimate(move, member, attackerStats) {
   // (Focus Blast: 120 BP @ 70%) ranks below a reliable lower-power move (e.g. a
   // 90 BP @ 100% move: 84 vs 90 expected). Applied after the per-hit estimate
   // so it also scales fixed-damage/OHKO moves (Fissure @ 30%).
-  const accuracy = getAccuracyFactor(move);
+  const accuracy = getAccuracyFactor(move, member.ability);
   const damage = Math.round(perHit * accuracy);
   if (accuracy !== 1) {
-    steps.push(`× ${Math.round(accuracy * 100)}% accuracy = ${damage} expected`);
+    const lifted = accuracy !== getAccuracyFactor(move)
+      ? ` (${member.ability})`
+      : '';
+    steps.push(
+      `× ${Math.round(accuracy * 100)}% accuracy${lifted} = ${damage} expected`,
+    );
+  } else if (getAccuracyFactor(move) !== 1) {
+    steps.push(`${member.ability}: never misses`);
   }
   return { damage, steps };
 }
@@ -1565,10 +1572,23 @@ function computeDamageEstimate(move, member, attackerStats) {
 // A move's hit rate as a 0–1 factor. Never-miss and perfect-accuracy moves
 // (normalized to 100 in the meta) and any move without numeric accuracy return
 // 1.
-function getAccuracyFactor(move) {
+/**
+ * How often a move lands, as the fraction that scales its expected damage.
+ * The user's ability can lift it: No Guard never misses, Compound Eyes
+ * multiplies accuracy by 1.3 and Victory Star by 1.1, capped at 1.
+ * @param {!Object} move
+ * @param {?string=} ability
+ * @return {number}
+ */
+export function getAccuracyFactor(move, ability = null) {
   const accuracy = move.accuracy;
   if (!accuracy || accuracy >= 100) return 1;
-  return accuracy / 100;
+  const id = toId(ability);
+  if (id === 'noguard') return 1;
+  const boost = id === 'compoundeyes' ? 1.3 : id === 'victorystar' ? 1.1 : 1;
+  // Accuracy is a whole percent in the games; rounding also keeps binary
+  // noise (70 × 1.3) out of the figure.
+  return Math.min(1, Math.round(accuracy * boost) / 100);
 }
 
 function getMovePower(move) {
@@ -1635,8 +1655,16 @@ const FAILS_IF_DISRUPTED = new Set(['focuspunch', 'shelltrap']);
  * @return {number}
  */
 export function getEffectiveHitMultiplier(move, ability = null) {
+  const hits = moveHitMultiplier(move, ability);
+  // Truant acts every other turn: the same amortization as a recharge
+  // move, whose recharge turn is the loafing turn, so it is not paid twice.
+  if (toId(ability) === 'truant' && !move.recharge) return hits * (2 / 3);
+  return hits;
+}
+
+function moveHitMultiplier(move, ability) {
   if (ESCALATING_MOVE_IDS.has(move.id)) {
-    const hitChance = getAccuracyFactor(move);
+    const hitChance = getAccuracyFactor(move, ability);
     let weightedPower = 0;
     let totalWeight = 0;
     for (let turn = 0; turn < ESCALATING_TURNS; turn += 1) {

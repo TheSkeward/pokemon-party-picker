@@ -74,7 +74,15 @@ of the estimate (the coverage vector applies it per defending type), but the
 defender carries fractional types, each type combination in the share of the
 game's species that have it, so a move whose damage depends on the defender's
 type (Synchronoise) is priced by the chance its condition holds. Pairs are
-kept whole, since types do not occur independently.
+kept whole, since types do not occur independently. A species whose fixed
+ability puts it in another form the moment it attacks or enters battle is
+priced from that form (Aegislash's Blade, Wishiwashi's School from level 20,
+Minior's Meteor at full HP, Terapagos's Terastal); forms a set cannot
+guarantee stay excluded with the other battle-state abilities. Accuracy
+abilities scale expected damage (No Guard, Compound Eyes, Victory Star),
+Truant amortizes every non-recharge move like a recharge move, and Protean
+and Libero give STAB on every move because both fangames' engines apply them
+that way.
 
 The additive routes (specialist bulk, tempo, and the priority-utility
 saturation) can overshoot 1, so they saturate through `soft_ceiling` rather

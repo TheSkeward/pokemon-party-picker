@@ -81,9 +81,11 @@ function abilityId(ability) {
 // 1.5-if-matching.
 function abilityStab(ability, attackerTypes, moveType) {
   const id = abilityId(ability);
-  // Protean only — Libero is a Gen 8 ability and vanilla Reborn is Gen 7, so it
-  // would never legally appear; left out rather than pretending to support it.
-  if (id === 'protean') return STAB_MULTIPLIER;
+  // Protean and Libero change the user's type before every attack in both
+  // fangames: Reborn's Battler.rb never checks a once-per-switch-in flag and
+  // Rejuvenation's sets that flag only when it is not running as
+  // Rejuvenation, so the Gen 9 once-per-entry rule never applies.
+  if (id === 'protean' || id === 'libero') return STAB_MULTIPLIER;
   const matches = attackerTypes.includes(moveType);
   if (id === 'adaptability') return matches ? 2 : 1;
   return matches ? STAB_MULTIPLIER : 1;
@@ -180,6 +182,12 @@ export function getAbilityDamageMultiplier(ability, move) {
   // Type-keyed boosts.
   if (id === 'waterbubble' && type === 'Water') multiplier *= 2;
   if (id === 'steelworker' && type === 'Steel') multiplier *= 1.5;
+  // Transistor was 1.5x in Gen 8 and 1.3x from Gen 9; Rejuvenation's engine
+  // keys the same split on its generation constant. Its terrain bonus is a
+  // field condition and stays out.
+  if (id === 'transistor' && type === 'Electric') {
+    multiplier *= dex().gen >= 9 ? 1.3 : 1.5;
+  }
   if (id === 'darkaura' && type === 'Dark') multiplier *= 4 / 3;
   if (id === 'fairyaura' && type === 'Fairy') multiplier *= 4 / 3;
   if (ATE_CONVERSIONS[id] && type === 'Normal') multiplier *= 1.2;
@@ -460,6 +468,36 @@ function statValue(base, ev, level, natureMultiplier) {
   return Math.floor((inner + 5) * natureMultiplier);
 }
 
+// Species whose fixed ability puts them in another form the moment they
+// attack or enter battle, so their attacks come from that form's stats:
+// Stance Change (Blade on any attack), Schooling (School form from level
+// 20), Shields Down (Meteor form above half HP, and the estimate assumes
+// full HP), Tera Shift (Terastal form on entry). Battle-state forms that a
+// set cannot guarantee (Zen Mode, Power Construct, Hero) stay excluded
+// with the other battle-state abilities.
+const BATTLE_FORMS = Object.freeze({
+  aegislash: { form: 'aegislashblade', label: 'Blade form' },
+  wishiwashi: { form: 'wishiwashischool', label: 'School form', fromLevel: 20 },
+  minior: { form: 'miniormeteor', label: 'Meteor form' },
+  terapagos: { form: 'terapagosterastal', label: 'Terastal form' },
+});
+
+function battleFormEntry(pokemonId, level) {
+  const entry = BATTLE_FORMS[pokemonId];
+  if (!entry || level < (entry.fromLevel || 0)) return null;
+  return dex().baseStats[entry.form] ? entry : null;
+}
+
+/**
+ * @param {string} pokemonId
+ * @param {number} level
+ * @return {?string} The id of the form the species attacks from at this
+ *     level, when the active game's dex has it; null otherwise.
+ */
+export function battleFormFor(pokemonId, level) {
+  return battleFormEntry(pokemonId, level)?.form || null;
+}
+
 /**
  * Computes a member's effective Atk and SpA at the given level. With a real top
  * spread we honour its EVs + nature; without one we assume the Pokémon invests
@@ -470,10 +508,11 @@ function statValue(base, ev, level, natureMultiplier) {
  *     the species has no base-stat row.
  */
 export function getAttackingStats({ pokemonId, levelCap, spread }) {
-  const stats = dex().baseStats[toId(pokemonId)];
-  if (!stats) return null;
-
   const level = normalizeLevel(levelCap);
+  const battleForm = battleFormEntry(toId(pokemonId), level);
+  const stats = dex().baseStats[battleForm?.form || toId(pokemonId)];
+  if (!stats) return null;
+  const formLabel = battleForm ? `${battleForm.label}, ` : '';
   const baseAtk = stats[STAT_INDEX.atk];
   const baseSpa = stats[STAT_INDEX.spa];
   const baseSpe = stats[STAT_INDEX.spe];
@@ -485,7 +524,7 @@ export function getAttackingStats({ pokemonId, levelCap, spread }) {
     return {
       level,
       // Where the figures come from, for the damage working shown on hover.
-      spreadLabel: `${parsed.natureLabel}, EVs ${parsed.evs.join('/')}`,
+      spreadLabel: `${formLabel}${parsed.natureLabel}, EVs ${parsed.evs.join('/')}`,
       atk: statValue(baseAtk, parsed.evs[EV_INDEX.atk], level, nature.atk ?? 1),
       spa: statValue(baseSpa, parsed.evs[EV_INDEX.spa], level, nature.spa ?? 1),
       // The spread's REAL speed (EVs + nature) — the same figure the stat
@@ -504,7 +543,7 @@ export function getAttackingStats({ pokemonId, levelCap, spread }) {
   const physicalIsStronger = baseAtk >= baseSpa;
   return {
     level,
-    spreadLabel: `assumed 252 EVs and a boosting nature in ${physicalIsStronger ? 'Atk' : 'SpA'}`,
+    spreadLabel: `${formLabel}assumed 252 EVs and a boosting nature in ${physicalIsStronger ? 'Atk' : 'SpA'}`,
     atk: statValue(
       baseAtk,
       physicalIsStronger ? 252 : 0,

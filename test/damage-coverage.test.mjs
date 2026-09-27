@@ -101,14 +101,20 @@ test('Weak chip coverage stays low even when super-effective', () => {
   assert.ok(lickNeutral * 2 < hydroPump);
 });
 
-test('Libero is inert (Gen-8 ability; vanilla Reborn is Gen-7)', () => {
+test('Libero gives STAB on every move, like Protean, as both fangames apply it', () => {
   const plain = estimateMoveDamage({ ...waterPulse, attackerTypes: ['Normal'] });
   const libero = estimateMoveDamage({
     ...waterPulse,
     attackerTypes: ['Normal'],
     ability: 'Libero',
   });
-  assert.equal(libero, plain);
+  const protean = estimateMoveDamage({
+    ...waterPulse,
+    attackerTypes: ['Normal'],
+    ability: 'Protean',
+  });
+  assert.equal(libero, protean);
+  assert.ok(libero > plain);
 });
 
 // --- Fixed-damage moves: real in-game damage, not base-power fictions --------
@@ -253,4 +259,71 @@ test('the damage working names every factor and lands on the estimate', () => {
   });
   assert.equal(toss.damage, 50);
   assert.match(toss.steps[0], /fixed damage, 50 at level 50/);
+});
+
+test('a species that attacks from another form is priced from that form', async () => {
+  const { battleFormFor, getAttackingStats } = await import(
+    '../src/teamBuilder/damage-model.js',
+  );
+  const { dex } = await import('../src/games/dex.js');
+  const atkOf = (id, level) =>
+    getAttackingStats({ pokemonId: id, levelCap: level }).atk;
+  // Stance Change: Aegislash attacks from Blade form's 150 Atk, not 50.
+  assert.equal(battleFormFor('aegislash', 50), 'aegislashblade');
+  assert.equal(atkOf('aegislash', 50), atkOf('aegislashblade', 50));
+  assert.ok(atkOf('aegislash', 50) > 150);
+  const blade = getAttackingStats({ pokemonId: 'aegislash', levelCap: 50 });
+  assert.match(blade.spreadLabel, /^Blade form, /);
+  // Schooling: School form from level 20, Solo form before it.
+  assert.equal(battleFormFor('wishiwashi', 19), null);
+  assert.equal(battleFormFor('wishiwashi', 20), 'wishiwashischool');
+  assert.ok(atkOf('wishiwashi', 20) > 3 * atkOf('wishiwashi', 19));
+  // Shields Down: at full HP Minior is in Meteor form, the weaker attacker.
+  assert.equal(battleFormFor('minior', 50), 'miniormeteor');
+  assert.equal(dex().baseStats.miniormeteor[0], 60);
+  assert.equal(battleFormFor('gengar', 50), null);
+});
+
+test('accuracy abilities, Truant, Libero and Transistor reach the estimate', async () => {
+  const { getAccuracyFactor, getEffectiveHitMultiplier } = await import(
+    '../src/teamBuilder/team-analysis.js',
+  );
+  const { setActiveGame, getActiveGame, loadGame } = await import(
+    '../src/games/registry.js',
+  );
+  await loadGame('rejuv');
+  const hurricane = { id: 'hurricane', accuracy: 70, basePower: 110 };
+  assert.equal(getAccuracyFactor(hurricane), 0.7);
+  assert.equal(getAccuracyFactor(hurricane, 'No Guard'), 1);
+  assert.equal(getAccuracyFactor(hurricane, 'Compound Eyes'), 0.91);
+  assert.equal(getAccuracyFactor({ id: 'thunder', accuracy: 70 }, 'Victory Star'), 0.77);
+  assert.equal(getAccuracyFactor({ id: 'stoneedge', accuracy: 80 }, 'Compound Eyes'), 1);
+
+  // Truant: every move loses a turn in two; a recharge move already has.
+  const ret = { id: 'return', basePower: 102 };
+  const hyperBeam = { id: 'hyperbeam', basePower: 150, recharge: true };
+  const bulletSeed = { id: 'bulletseed', basePower: 25, multihit: [2, 5] };
+  assert.equal(getEffectiveHitMultiplier(ret, 'Truant'), 2 / 3);
+  assert.equal(getEffectiveHitMultiplier(hyperBeam, 'Truant'), 2 / 3);
+  assert.ok(Math.abs(getEffectiveHitMultiplier(bulletSeed, 'Truant') - 3.1 * (2 / 3)) < 1e-9);
+  assert.equal(getEffectiveHitMultiplier(ret), 1);
+
+  // Libero gives STAB on every move, like Protean, in both fangames.
+  const bare = { ...waterPulse, attackerTypes: ['Fire'] };
+  assert.equal(
+    estimateMoveDamage({ ...bare, ability: 'Libero' }),
+    estimateMoveDamage({ ...bare, ability: 'Protean' }),
+  );
+  assert.ok(estimateMoveDamage({ ...bare, ability: 'Libero' }) > estimateMoveDamage(bare));
+
+  // Transistor: 1.5x on Gen 7 data, 1.3x on Gen 9 data.
+  const thunderbolt = { id: 'thunderbolt', type: 'Electric', category: 'Special', basePower: 90, flags: {} };
+  assert.equal(getAbilityDamageMultiplier('Transistor', thunderbolt), 1.5);
+  const previous = getActiveGame().id;
+  setActiveGame('rejuv');
+  try {
+    assert.equal(getAbilityDamageMultiplier('Transistor', thunderbolt), 1.3);
+  } finally {
+    setActiveGame(previous);
+  }
 });
