@@ -12,7 +12,10 @@ export const MOVE_META = {
     "basePower": 195,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "aciddownpour": {
     "name": "Acid Downpour",
@@ -21,7 +24,10 @@ export const MOVE_META = {
     "basePower": 1,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "alloutpummeling": {
     "name": "All-Out Pummeling",
@@ -30,7 +36,10 @@ export const MOVE_META = {
     "basePower": 1,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "assist": {
     "name": "Assist",
@@ -39,7 +48,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "baddybad": {
     "name": "Baddy Bad",
@@ -71,6 +83,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -91,7 +106,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "bide": {
     "name": "Bide",
@@ -102,7 +120,8 @@ export const MOVE_META = {
     "utility": true,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "nevermiss": 1
     },
     "roles": [
       "priority"
@@ -115,7 +134,10 @@ export const MOVE_META = {
     "basePower": 1,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "bloomdoom": {
     "name": "Bloom Doom",
@@ -124,7 +146,10 @@ export const MOVE_META = {
     "basePower": 1,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "boneclub": {
     "name": "Bone Club",
@@ -157,7 +182,10 @@ export const MOVE_META = {
     "basePower": 1,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "bubble": {
     "name": "Bubble",
@@ -197,7 +225,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "captivate": {
     "name": "Captivate",
@@ -217,7 +248,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "nevermiss": 1
     }
   },
   "chatter": {
@@ -267,7 +299,8 @@ export const MOVE_META = {
     "accuracy": 100,
     "flags": {
       "sound": 1,
-      "secondary": 1
+      "secondary": 1,
+      "nevermiss": 1
     }
   },
   "cometpunch": {
@@ -310,7 +343,10 @@ export const MOVE_META = {
     "basePower": 1,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "corkscrewcrash": {
     "name": "Corkscrew Crash",
@@ -319,7 +355,10 @@ export const MOVE_META = {
     "basePower": 1,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "curse": {
     "name": "Curse",
@@ -328,7 +367,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "darkvoid": {
     "name": "Dark Void",
@@ -350,6 +392,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "hazard_remove"
     ]
@@ -361,7 +406,10 @@ export const MOVE_META = {
     "basePower": 1,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "dive": {
     "name": "Dive",
@@ -459,6 +507,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -480,6 +531,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -493,7 +547,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "nevermiss": 1
     }
   },
   "flameburst": {
@@ -521,7 +576,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "fly": {
     "name": "Fly",
@@ -543,7 +601,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "freezyfrost": {
     "name": "Freezy Frost",
@@ -575,7 +636,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "secondary": 1
+      "secondary": 1,
+      "nevermiss": 1
     }
   },
   "gigavolthavoc": {
@@ -585,7 +647,10 @@ export const MOVE_META = {
     "basePower": 1,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "glitzyglow": {
     "name": "Glitzy Glow",
@@ -631,6 +696,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -642,7 +710,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "healbell": {
     "name": "Heal Bell",
@@ -653,7 +724,8 @@ export const MOVE_META = {
     "utility": true,
     "accuracy": 100,
     "flags": {
-      "sound": 1
+      "sound": 1,
+      "nevermiss": 1
     }
   },
   "healblock": {
@@ -672,7 +744,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "healorder": {
     "name": "Heal Order",
@@ -682,6 +757,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "recovery"
     ]
@@ -695,7 +773,8 @@ export const MOVE_META = {
     "utility": true,
     "accuracy": 100,
     "flags": {
-      "pulse": 1
+      "pulse": 1,
+      "nevermiss": 1
     }
   },
   "heartstamp": {
@@ -718,7 +797,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "heatcrash": {
     "name": "Heat Crash",
@@ -761,6 +843,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -772,7 +857,10 @@ export const MOVE_META = {
     "basePower": 1,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "hyperfang": {
     "name": "Hyper Fang",
@@ -795,7 +883,10 @@ export const MOVE_META = {
     "basePower": 100,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "hyperspacehole": {
     "name": "Hyperspace Hole",
@@ -804,7 +895,10 @@ export const MOVE_META = {
     "basePower": 80,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "iceball": {
     "name": "Ice Ball",
@@ -838,7 +932,10 @@ export const MOVE_META = {
     "basePower": 1,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "iondeluge": {
     "name": "Ion Deluge",
@@ -848,6 +945,9 @@ export const MOVE_META = {
     "priority": 1,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "priority"
     ]
@@ -894,6 +994,9 @@ export const MOVE_META = {
     "priority": 4,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "priority"
     ]
@@ -907,7 +1010,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "nevermiss": 1
     }
   },
   "lightofruin": {
@@ -929,7 +1033,10 @@ export const MOVE_META = {
     "basePower": 200,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "lowkick": {
     "name": "Low Kick",
@@ -950,7 +1057,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "lunardance": {
     "name": "Lunar Dance",
@@ -959,7 +1069,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "magnetbomb": {
     "name": "Magnet Bomb",
@@ -968,7 +1081,10 @@ export const MOVE_META = {
     "basePower": 60,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "magnitude": {
     "name": "Magnitude",
@@ -988,7 +1104,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "nevermiss": 1
     }
   },
   "meditate": {
@@ -999,6 +1116,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -1010,7 +1130,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "menacingmoonrazemaelstrom": {
     "name": "Menacing Moonraze Maelstrom",
@@ -1019,7 +1142,10 @@ export const MOVE_META = {
     "basePower": 200,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "miracleeye": {
     "name": "Miracle Eye",
@@ -1028,7 +1154,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "mirrormove": {
     "name": "Mirror Move",
@@ -1037,7 +1166,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "mirrorshot": {
     "name": "Mirror Shot",
@@ -1067,7 +1199,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "morningsun": {
     "name": "Morning Sun",
@@ -1076,7 +1211,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "mudbomb": {
     "name": "Mud Bomb",
@@ -1097,7 +1235,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "multiattack": {
     "name": "Multi-Attack",
@@ -1149,7 +1290,10 @@ export const MOVE_META = {
     "basePower": 1,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "nightmare": {
     "name": "Nightmare",
@@ -1167,7 +1311,10 @@ export const MOVE_META = {
     "basePower": 195,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "odorsleuth": {
     "name": "Odor Sleuth",
@@ -1176,7 +1323,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "ominouswind": {
     "name": "Ominous Wind",
@@ -1228,6 +1378,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -1259,7 +1412,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "nevermiss": 1
     }
   },
   "punishment": {
@@ -1281,7 +1435,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "pursuit": {
     "name": "Pursuit",
@@ -1348,7 +1505,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "relicsong": {
     "name": "Relic Song",
@@ -1420,7 +1580,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "sappyseed": {
     "name": "Sappy Seed",
@@ -1438,7 +1601,10 @@ export const MOVE_META = {
     "basePower": 1,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "searingsunrazesmash": {
     "name": "Searing Sunraze Smash",
@@ -1449,7 +1615,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "nevermiss": 1
     }
   },
   "secretpower": {
@@ -1488,6 +1655,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -1499,7 +1669,10 @@ export const MOVE_META = {
     "basePower": 1,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "shoreup": {
     "name": "Shore Up",
@@ -1508,7 +1681,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "signalbeam": {
     "name": "Signal Beam",
@@ -1541,7 +1717,10 @@ export const MOVE_META = {
     "basePower": 180,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "sizzlyslide": {
     "name": "Sizzly Slide",
@@ -1566,7 +1745,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "skydrop": {
     "name": "Sky Drop",
@@ -1614,6 +1796,9 @@ export const MOVE_META = {
     "priority": 4,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "priority"
     ]
@@ -1636,7 +1821,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "nevermiss": 1
     }
   },
   "sparklyswirl": {
@@ -1655,7 +1841,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "spikecannon": {
     "name": "Spike Cannon",
@@ -1677,7 +1866,10 @@ export const MOVE_META = {
     "basePower": 190,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "spotlight": {
     "name": "Spotlight",
@@ -1687,6 +1879,9 @@ export const MOVE_META = {
     "priority": 3,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "priority"
     ]
@@ -1713,7 +1908,8 @@ export const MOVE_META = {
     "utility": true,
     "accuracy": 100,
     "flags": {
-      "secondary": 1
+      "secondary": 1,
+      "nevermiss": 1
     },
     "roles": [
       "status",
@@ -1727,7 +1923,10 @@ export const MOVE_META = {
     "basePower": 1,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "sunsteelstrike": {
     "name": "Sunsteel Strike",
@@ -1748,7 +1947,10 @@ export const MOVE_META = {
     "basePower": 1,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "swallow": {
     "name": "Swallow",
@@ -1757,7 +1959,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "switcheroo": {
     "name": "Switcheroo",
@@ -1784,7 +1989,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "tailglow": {
     "name": "Tail Glow",
@@ -1794,6 +2002,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -1805,7 +2016,10 @@ export const MOVE_META = {
     "basePower": 1,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "telekinesis": {
     "name": "Telekinesis",
@@ -1814,7 +2028,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "teleport": {
     "name": "Teleport",
@@ -1823,7 +2040,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "toxic": {
     "name": "Toxic",
@@ -1858,7 +2078,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "nevermiss": 1
     }
   },
   "twineedle": {
@@ -1884,7 +2105,10 @@ export const MOVE_META = {
     "basePower": 1,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "wakeupslap": {
     "name": "Wake-Up Slap",
@@ -1905,7 +2129,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "wringout": {
     "name": "Wring Out",
@@ -1955,6 +2182,9 @@ export const MOVE_META = {
     "priority": 4,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "priority"
     ]
@@ -1967,6 +2197,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "pivot"
     ]
@@ -1990,7 +2223,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "copycat": {
     "name": "Copycat",
@@ -1999,7 +2235,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "coreenforcer": {
     "name": "Core Enforcer",
@@ -2018,6 +2257,9 @@ export const MOVE_META = {
     "priority": 4,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "priority"
     ]
@@ -2054,6 +2296,9 @@ export const MOVE_META = {
     "priority": 4,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "priority"
     ]
@@ -2074,7 +2319,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "firespin": {
     "name": "Fire Spin",
@@ -2101,7 +2349,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "growth": {
     "name": "Growth",
@@ -2111,6 +2362,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -2135,6 +2389,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "disruption"
     ]
@@ -2158,7 +2415,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "instruct": {
     "name": "Instruct",
@@ -2167,7 +2427,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "knockoff": {
     "name": "Knock Off",
@@ -2197,7 +2460,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "metronome": {
     "name": "Metronome",
@@ -2206,7 +2472,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "mimic": {
     "name": "Mimic",
@@ -2215,7 +2484,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "protect": {
     "name": "Protect",
@@ -2225,6 +2497,9 @@ export const MOVE_META = {
     "priority": 4,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "priority"
     ]
@@ -2237,6 +2512,9 @@ export const MOVE_META = {
     "priority": 3,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "priority"
     ]
@@ -2248,7 +2526,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "roleplay": {
     "name": "Role Play",
@@ -2257,7 +2538,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "rollout": {
     "name": "Rollout",
@@ -2296,7 +2580,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "sleeptalk": {
     "name": "Sleep Talk",
@@ -2305,7 +2592,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "solarbeam": {
     "name": "Solar Beam",
@@ -2339,6 +2629,9 @@ export const MOVE_META = {
     "priority": 4,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "priority"
     ]
@@ -2422,6 +2715,9 @@ export const MOVE_META = {
     "priority": 3,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "priority"
     ]
@@ -2455,6 +2751,9 @@ export const MOVE_META = {
     "priority": 2,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "priority"
     ]
@@ -2466,7 +2765,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "auroraveil": {
     "name": "Aurora Veil",
@@ -2476,6 +2778,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "screen"
     ],
@@ -2493,6 +2798,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -2559,7 +2867,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "charge": {
     "name": "Charge",
@@ -2569,6 +2880,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -2590,6 +2904,9 @@ export const MOVE_META = {
     "priority": 3,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "priority"
     ]
@@ -2627,7 +2944,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "eternabeam": {
     "name": "Eternabeam",
@@ -2659,7 +2979,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "futuresight": {
     "name": "Future Sight",
@@ -2690,7 +3013,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "geomancy": {
     "name": "Geomancy",
@@ -2701,6 +3027,9 @@ export const MOVE_META = {
     "utility": true,
     "accuracy": 100,
     "charge": true,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -2733,7 +3062,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "hail": {
     "name": "Hail",
@@ -2743,6 +3075,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -2779,7 +3114,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "kinesis": {
     "name": "Kinesis",
@@ -2806,7 +3144,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "leaftornado": {
     "name": "Leaf Tornado",
@@ -2852,6 +3193,9 @@ export const MOVE_META = {
     "priority": 4,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "priority"
     ]
@@ -2863,7 +3207,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "maxairstream": {
     "name": "Max Airstream",
@@ -2872,7 +3219,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "maxdarkness": {
     "name": "Max Darkness",
@@ -2881,7 +3231,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "maxflare": {
     "name": "Max Flare",
@@ -2890,7 +3243,10 @@ export const MOVE_META = {
     "basePower": 100,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "maxflutterby": {
     "name": "Max Flutterby",
@@ -2899,7 +3255,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "maxgeyser": {
     "name": "Max Geyser",
@@ -2908,7 +3267,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "maxguard": {
     "name": "Max Guard",
@@ -2918,6 +3280,9 @@ export const MOVE_META = {
     "priority": 4,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "priority"
     ]
@@ -2929,7 +3294,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "maxknuckle": {
     "name": "Max Knuckle",
@@ -2938,7 +3306,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "maxlightning": {
     "name": "Max Lightning",
@@ -2947,7 +3318,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "maxmindstorm": {
     "name": "Max Mindstorm",
@@ -2956,7 +3330,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "maxooze": {
     "name": "Max Ooze",
@@ -2965,7 +3342,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "maxovergrowth": {
     "name": "Max Overgrowth",
@@ -2974,7 +3354,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "maxphantasm": {
     "name": "Max Phantasm",
@@ -2983,7 +3366,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "maxquake": {
     "name": "Max Quake",
@@ -2992,7 +3378,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "maxrockfall": {
     "name": "Max Rockfall",
@@ -3001,7 +3390,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "maxstarfall": {
     "name": "Max Starfall",
@@ -3010,7 +3402,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "maxsteelspike": {
     "name": "Max Steelspike",
@@ -3019,7 +3414,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "maxstrike": {
     "name": "Max Strike",
@@ -3028,7 +3426,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "maxwyrmwind": {
     "name": "Max Wyrmwind",
@@ -3037,7 +3438,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "meteorassault": {
     "name": "Meteor Assault",
@@ -3057,6 +3461,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "recovery"
     ]
@@ -3077,7 +3484,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "mirrorcoat": {
     "name": "Mirror Coat",
@@ -3107,7 +3517,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "oblivionwing": {
     "name": "Oblivion Wing",
@@ -3198,6 +3611,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "recovery"
     ]
@@ -3209,7 +3625,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "revenge": {
     "name": "Revenge",
@@ -3231,6 +3650,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "recovery"
     ]
@@ -3304,6 +3726,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "recovery"
     ]
@@ -3328,6 +3753,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "recovery"
     ]
@@ -3352,6 +3780,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "speed_control"
     ]
@@ -3438,7 +3869,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "nevermiss": 1
     }
   },
   "wickedblow": {
@@ -3601,6 +4033,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -3625,7 +4060,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "rockblast": {
     "name": "Rock Blast",
@@ -3657,6 +4095,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "hazard_set"
     ]
@@ -3669,6 +4110,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "hazard_set"
     ]
@@ -3680,7 +4124,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "tailslap": {
     "name": "Tail Slap",
@@ -3715,6 +4162,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "hazard_set"
     ]
@@ -3791,6 +4241,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -3826,7 +4279,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "aerialace": {
     "name": "Aerial Ace",
@@ -3838,7 +4294,8 @@ export const MOVE_META = {
     "accuracy": 100,
     "flags": {
       "contact": 1,
-      "slicing": 1
+      "slicing": 1,
+      "nevermiss": 1
     }
   },
   "aeroblast": {
@@ -3857,7 +4314,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "agility": {
     "name": "Agility",
@@ -3867,6 +4327,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -3917,6 +4380,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -3979,7 +4445,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "aquastep": {
     "name": "Aqua Step",
@@ -4023,6 +4492,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -4088,7 +4560,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "pulse": 1
+      "pulse": 1,
+      "nevermiss": 1
     }
   },
   "aurawheel": {
@@ -4184,7 +4657,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "bite": {
     "name": "Bite",
@@ -4503,6 +4979,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -4546,6 +5025,9 @@ export const MOVE_META = {
     "priority": 4,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "priority"
     ]
@@ -4570,6 +5052,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -4629,6 +5114,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup",
       "pivot"
@@ -4692,7 +5180,10 @@ export const MOVE_META = {
     "basePower": 50,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "closecombat": {
     "name": "Close Combat",
@@ -4714,6 +5205,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -4726,6 +5220,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -4779,7 +5276,8 @@ export const MOVE_META = {
     "utility": true,
     "accuracy": 100,
     "flags": {
-      "sound": 1
+      "sound": 1,
+      "nevermiss": 1
     }
   },
   "confuseray": {
@@ -4810,7 +5308,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "conversion2": {
     "name": "Conversion 2",
@@ -4819,7 +5320,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "cosmicpower": {
     "name": "Cosmic Power",
@@ -4829,6 +5333,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -4841,6 +5348,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -5012,6 +5522,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -5024,6 +5537,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -5036,6 +5552,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -5047,7 +5566,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "diamondstorm": {
     "name": "Diamond Storm",
@@ -5099,7 +5621,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "sound": 1
+      "sound": 1,
+      "nevermiss": 1
     }
   },
   "discharge": {
@@ -5195,6 +5718,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -5243,7 +5769,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "dragonclaw": {
     "name": "Dragon Claw",
@@ -5265,6 +5794,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -5521,7 +6053,10 @@ export const MOVE_META = {
     "priority": 0,
     "utility": false,
     "accuracy": 100,
-    "charge": true
+    "charge": true,
+    "flags": {
+      "secondary": 1
+    }
   },
   "electroweb": {
     "name": "Electroweb",
@@ -5698,7 +6233,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "nevermiss": 1
     }
   },
   "falseswipe": {
@@ -5787,6 +6323,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -6045,7 +6584,10 @@ export const MOVE_META = {
     "basePower": 70,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "flyingpress": {
     "name": "Flying Press",
@@ -6078,7 +6620,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "focuspunch": {
     "name": "Focus Punch",
@@ -6101,6 +6646,9 @@ export const MOVE_META = {
     "priority": 2,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "priority"
     ]
@@ -6321,7 +6869,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxcannonade": {
     "name": "G-Max Cannonade",
@@ -6330,7 +6881,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxcentiferno": {
     "name": "G-Max Centiferno",
@@ -6339,7 +6893,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxchistrike": {
     "name": "G-Max Chi Strike",
@@ -6348,7 +6905,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxcuddle": {
     "name": "G-Max Cuddle",
@@ -6357,7 +6917,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxdepletion": {
     "name": "G-Max Depletion",
@@ -6366,7 +6929,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxdrumsolo": {
     "name": "G-Max Drum Solo",
@@ -6375,7 +6941,10 @@ export const MOVE_META = {
     "basePower": 160,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxfinale": {
     "name": "G-Max Finale",
@@ -6384,7 +6953,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxfireball": {
     "name": "G-Max Fireball",
@@ -6393,7 +6965,10 @@ export const MOVE_META = {
     "basePower": 160,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxfoamburst": {
     "name": "G-Max Foam Burst",
@@ -6402,7 +6977,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxgoldrush": {
     "name": "G-Max Gold Rush",
@@ -6411,7 +6989,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxgravitas": {
     "name": "G-Max Gravitas",
@@ -6420,7 +7001,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxhydrosnipe": {
     "name": "G-Max Hydrosnipe",
@@ -6429,7 +7013,10 @@ export const MOVE_META = {
     "basePower": 160,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxmalodor": {
     "name": "G-Max Malodor",
@@ -6438,7 +7025,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxmeltdown": {
     "name": "G-Max Meltdown",
@@ -6447,7 +7037,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxoneblow": {
     "name": "G-Max One Blow",
@@ -6456,7 +7049,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxrapidflow": {
     "name": "G-Max Rapid Flow",
@@ -6465,7 +7061,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxreplenish": {
     "name": "G-Max Replenish",
@@ -6474,7 +7073,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxresonance": {
     "name": "G-Max Resonance",
@@ -6483,7 +7085,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxsandblast": {
     "name": "G-Max Sandblast",
@@ -6492,7 +7097,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxsmite": {
     "name": "G-Max Smite",
@@ -6501,7 +7109,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxsnooze": {
     "name": "G-Max Snooze",
@@ -6510,7 +7121,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxsteelsurge": {
     "name": "G-Max Steelsurge",
@@ -6519,7 +7133,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxstonesurge": {
     "name": "G-Max Stonesurge",
@@ -6528,7 +7145,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxstunshock": {
     "name": "G-Max Stun Shock",
@@ -6537,7 +7157,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxsweetness": {
     "name": "G-Max Sweetness",
@@ -6546,7 +7169,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxtartness": {
     "name": "G-Max Tartness",
@@ -6555,7 +7181,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxterror": {
     "name": "G-Max Terror",
@@ -6564,7 +7193,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxvinelash": {
     "name": "G-Max Vine Lash",
@@ -6573,7 +7205,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxvolcalith": {
     "name": "G-Max Volcalith",
@@ -6582,7 +7217,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxvoltcrash": {
     "name": "G-Max Volt Crash",
@@ -6591,7 +7229,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxwildfire": {
     "name": "G-Max Wildfire",
@@ -6600,7 +7241,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "gmaxwindrage": {
     "name": "G-Max Wind Rage",
@@ -6609,7 +7253,10 @@ export const MOVE_META = {
     "basePower": 10,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "grasspledge": {
     "name": "Grass Pledge",
@@ -6651,7 +7298,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "guardswap": {
     "name": "Guard Swap",
@@ -6660,7 +7310,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "guillotine": {
     "name": "Guillotine",
@@ -6730,7 +7383,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "harden": {
     "name": "Harden",
@@ -6740,6 +7396,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -6763,7 +7422,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "headbutt": {
     "name": "Headbutt",
@@ -6827,6 +7489,9 @@ export const MOVE_META = {
     "priority": 5,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "priority"
     ]
@@ -6873,6 +7538,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -7153,6 +7821,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -7228,7 +7899,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "kowtowcleave": {
     "name": "Kowtow Cleave",
@@ -7240,7 +7914,8 @@ export const MOVE_META = {
     "accuracy": 100,
     "flags": {
       "contact": 1,
-      "slicing": 1
+      "slicing": 1,
+      "nevermiss": 1
     }
   },
   "lashout": {
@@ -7371,6 +8046,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "recovery"
     ]
@@ -7383,6 +8061,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "screen"
     ],
@@ -7410,7 +8091,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "lowsweep": {
     "name": "Low Sweep",
@@ -7447,7 +8131,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "lunge": {
     "name": "Lunge",
@@ -7485,7 +8172,10 @@ export const MOVE_META = {
     "basePower": 60,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "magicaltorque": {
     "name": "Magical Torque",
@@ -7506,7 +8196,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "magneticflux": {
     "name": "Magnetic Flux",
@@ -7515,7 +8208,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "magnetrise": {
     "name": "Magnet Rise",
@@ -7524,7 +8220,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "makeitrain": {
     "name": "Make It Rain",
@@ -7702,7 +8401,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "mistyexplosion": {
     "name": "Misty Explosion",
@@ -7721,6 +8423,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -7836,6 +8541,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -7903,6 +8611,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -7946,7 +8657,10 @@ export const MOVE_META = {
     "basePower": 80,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "secondary": 1
+    }
   },
   "originpulse": {
     "name": "Origin Pulse",
@@ -8000,7 +8714,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "paraboliccharge": {
     "name": "Parabolic Charge",
@@ -8071,7 +8788,8 @@ export const MOVE_META = {
     "utility": true,
     "accuracy": 100,
     "flags": {
-      "sound": 1
+      "sound": 1,
+      "nevermiss": 1
     }
   },
   "petalblizzard": {
@@ -8124,7 +8842,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "playnice": {
     "name": "Play Nice",
@@ -8133,7 +8854,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "playrough": {
     "name": "Play Rough",
@@ -8330,7 +9054,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "powersplit": {
     "name": "Power Split",
@@ -8339,7 +9066,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "powerswap": {
     "name": "Power Swap",
@@ -8348,7 +9078,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "powertrick": {
     "name": "Power Trick",
@@ -8357,7 +9090,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "powertrip": {
     "name": "Power Trip",
@@ -8484,7 +9220,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "psyshieldbash": {
     "name": "Psyshield Bash",
@@ -8555,6 +9294,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -8580,6 +9322,9 @@ export const MOVE_META = {
     "priority": 2,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "priority"
     ]
@@ -8613,6 +9358,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -8651,6 +9399,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "screen"
     ],
@@ -8690,6 +9441,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "pivot"
     ]
@@ -8712,7 +9466,8 @@ export const MOVE_META = {
     "utility": true,
     "accuracy": 100,
     "flags": {
-      "sound": 1
+      "sound": 1,
+      "nevermiss": 1
     },
     "roles": [
       "phazing"
@@ -8736,6 +9491,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -8855,7 +9613,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "saltcure": {
     "name": "Salt Cure",
@@ -8901,6 +9662,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -9058,7 +9822,8 @@ export const MOVE_META = {
     "accuracy": 100,
     "flags": {
       "contact": 1,
-      "punch": 1
+      "punch": 1,
+      "nevermiss": 1
     }
   },
   "shadowsneak": {
@@ -9084,6 +9849,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "pivot"
     ]
@@ -9120,6 +9888,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -9132,6 +9903,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -9144,6 +9918,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -9155,7 +9932,10 @@ export const MOVE_META = {
     "basePower": 60,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "silktrap": {
     "name": "Silk Trap",
@@ -9165,6 +9945,9 @@ export const MOVE_META = {
     "priority": 4,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "priority"
     ]
@@ -9310,7 +10093,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "nevermiss": 1
     }
   },
   "smog": {
@@ -9380,6 +10164,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -9430,7 +10217,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "spicyextract": {
     "name": "Spicy Extract",
@@ -9440,6 +10230,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -9494,7 +10287,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "splishysplash": {
     "name": "Splishy Splash",
@@ -9592,7 +10388,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "stomp": {
     "name": "Stomp",
@@ -9702,7 +10501,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "nevermiss": 1
     }
   },
   "strugglebug": {
@@ -9724,7 +10524,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "stunspore": {
     "name": "Stun Spore",
@@ -9762,6 +10565,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -9875,7 +10681,10 @@ export const MOVE_META = {
     "basePower": 60,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "swordsdance": {
     "name": "Swords Dance",
@@ -9885,6 +10694,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -9911,7 +10723,8 @@ export const MOVE_META = {
     "accuracy": 100,
     "multihit": 2,
     "flags": {
-      "slicing": 1
+      "slicing": 1,
+      "nevermiss": 1
     }
   },
   "tackle": {
@@ -9942,7 +10755,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "takedown": {
     "name": "Take Down",
@@ -9964,7 +10780,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "tarshot": {
     "name": "Tar Shot",
@@ -9982,7 +10801,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "teatime": {
     "name": "Teatime",
@@ -9991,7 +10813,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "teeterdance": {
     "name": "Teeter Dance",
@@ -10190,7 +11015,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "topsyturvy": {
     "name": "Topsy-Turvy",
@@ -10199,7 +11027,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "torchsong": {
     "name": "Torch Song",
@@ -10243,7 +11074,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "triattack": {
     "name": "Tri Attack",
@@ -10274,6 +11108,9 @@ export const MOVE_META = {
     "priority": -7,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "speed_control"
     ]
@@ -10428,7 +11265,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "nevermiss": 1
     }
   },
   "venoshock": {
@@ -10448,6 +11286,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -10580,6 +11421,9 @@ export const MOVE_META = {
     "priority": -6,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "phazing"
     ]
@@ -10659,7 +11503,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "withdraw": {
     "name": "Withdraw",
@@ -10669,6 +11516,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -10680,7 +11530,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "woodhammer": {
     "name": "Wood Hammer",
@@ -10703,6 +11556,9 @@ export const MOVE_META = {
     "priority": 0,
     "utility": true,
     "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    },
     "roles": [
       "setup"
     ]
@@ -10727,7 +11583,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "nevermiss": 1
+    }
   },
   "zapcannon": {
     "name": "Zap Cannon",

@@ -96,6 +96,19 @@ a trainer fight keeps a mon in through one knockout and often two, so four
 turns sits between one knockout and a six-mon fight shared by four stints.
 That makes the orb 1.375×, and Slow Start's five turns outlast the stint, so
 it stays priced as always-on.
+
+The same stint prices every multi-turn move as output per turn on the field.
+A recharge move lands on the odd turns and a charge move on the even ones,
+half the stint each; what the opponent does on the other turn is
+survivability, which the damage model prices nowhere, so a semi-invulnerable
+charge earns no more than an exposed one, and a charge the user's own weather
+skips lands every turn. Truant acts on the odd turns like a recharge move,
+and the two do not stack. An escalating chain (Rollout, Ice Ball, Fury
+Cutter, Echoed Voice) is averaged over the stint with each later turn
+discounted by the chance the chain has held, so a five-turn Rollout never
+lands its last doubling. Moves that roll accuracy on every strike stop at the
+first miss. Focus Punch keeps its one-third judgement, which is about the
+opponent attacking first rather than about turns.
 Booster Energy with Protosynthesis or Quark Drive, weather or terrain the
 ability itself sets (with their accuracy effects on Thunder, Hurricane and
 Blizzard), and Orichalcum Pulse and Hadron Engine fire on entry and are priced

@@ -299,13 +299,18 @@ test('accuracy abilities, Truant, Libero and Transistor reach the estimate', asy
   assert.equal(getAccuracyFactor({ id: 'thunder', accuracy: 70 }, 'Victory Star'), 0.77);
   assert.equal(getAccuracyFactor({ id: 'stoneedge', accuracy: 80 }, 'Compound Eyes'), 1);
 
-  // Truant: every move loses a turn in two; a recharge move already has.
+  // Truant acts on the odd turns of the stint, as a recharge move does, and
+  // the two do not stack.
+  const { EXPECTED_STINT_TURNS: stint } = await import(
+    '../src/teamBuilder/damage-model.js',
+  );
+  const hitFirst = Math.ceil(stint / 2) / stint;
   const ret = { id: 'return', basePower: 102 };
   const hyperBeam = { id: 'hyperbeam', basePower: 150, recharge: true };
   const bulletSeed = { id: 'bulletseed', basePower: 25, multihit: [2, 5] };
-  assert.equal(getEffectiveHitMultiplier(ret, 'Truant'), 2 / 3);
-  assert.equal(getEffectiveHitMultiplier(hyperBeam, 'Truant'), 2 / 3);
-  assert.ok(Math.abs(getEffectiveHitMultiplier(bulletSeed, 'Truant') - 3.1 * (2 / 3)) < 1e-9);
+  assert.equal(getEffectiveHitMultiplier(ret, 'Truant'), hitFirst);
+  assert.equal(getEffectiveHitMultiplier(hyperBeam, 'Truant'), hitFirst);
+  assert.ok(Math.abs(getEffectiveHitMultiplier(bulletSeed, 'Truant') - 3.1 * hitFirst) < 1e-9);
   assert.equal(getEffectiveHitMultiplier(ret), 1);
 
   // Libero gives STAB on every move, like Protean, in both fangames.
@@ -384,4 +389,61 @@ test('conditions the set guarantees are priced; unguaranteed ones stay out', asy
   assert.equal(coverageDamageIntoType('return', 'Normal', 100, 'Ghost', 'Scrappy'), 100);
   assert.equal(coverageDamageIntoType('shadowball', 'Ghost', 100, 'Normal', 'Scrappy'), 0);
   assert.equal(coverageDamageIntoType('return', 'Normal', 100, 'Rock', 'Scrappy'), 50);
+});
+
+test('the audit\'s edge cases: Normalize by generation, type-locked moves, Hustle, weight abilities, Parental Bond, Technician', async () => {
+  const { getAbilityEffectiveMoveType, variableMovePower } = await import(
+    '../src/teamBuilder/damage-model.js',
+  );
+  const { setActiveGame, getActiveGame, loadGame } = await import(
+    '../src/games/registry.js',
+  );
+  const ret = { id: 'return', type: 'Normal', category: 'Physical', basePower: 102, flags: {} };
+  const hiddenPower = { id: 'hiddenpower', type: 'Normal', category: 'Special', basePower: 60, flags: {} };
+  const psychic = { id: 'psychic', type: 'Psychic', category: 'Special', basePower: 90, flags: {} };
+
+  // Normalize converts everywhere but boosts only from Gen 7.
+  assert.equal(getAbilityEffectiveMoveType('Normalize', psychic), 'Normal');
+  assert.equal(getAbilityDamageMultiplier('Normalize', psychic), 1.2);
+  await loadGame('hgss');
+  const previous = getActiveGame().id;
+  setActiveGame('hgss');
+  try {
+    assert.equal(getAbilityDamageMultiplier('Normalize', psychic), 1);
+  } finally {
+    setActiveGame(previous);
+  }
+
+  // Type-locked moves keep their type under the -ate abilities.
+  assert.equal(getAbilityEffectiveMoveType('Pixilate', ret), 'Fairy');
+  assert.equal(getAbilityDamageMultiplier('Pixilate', ret), 1.2);
+  assert.equal(getAbilityEffectiveMoveType('Pixilate', hiddenPower), 'Normal');
+  assert.equal(getAbilityDamageMultiplier('Pixilate', hiddenPower), 1);
+
+  // Hustle's accuracy haircut spares a move that cannot miss.
+  assert.ok(Math.abs(getAbilityDamageMultiplier('Hustle', ret) - 1.2) < 1e-9);
+  const aerialAce = { ...ret, id: 'aerialace', type: 'Flying', flags: { nevermiss: 1 } };
+  assert.ok(Math.abs(getAbilityDamageMultiplier('Hustle', aerialAce) - 1.5) < 1e-9);
+
+  // Heavy Metal doubles and Light Metal halves the user's weight.
+  const plain = variableMovePower('heavyslam', 50, 'scizor');
+  assert.ok(variableMovePower('heavyslam', 50, 'scizor', null, 'Heavy Metal') > plain);
+  assert.ok(variableMovePower('heavyslam', 50, 'scizor', null, 'Light Metal') < plain);
+
+  // Parental Bond skips charge moves, rollers and self-KO moves, and strikes
+  // fixed-damage moves twice.
+  assert.equal(getAbilityDamageMultiplier('Parental Bond', ret), 1.25);
+  assert.equal(getAbilityDamageMultiplier('Parental Bond', { ...ret, id: 'solarbeam', charge: true }), 1);
+  assert.equal(getAbilityDamageMultiplier('Parental Bond', { ...ret, id: 'rollout' }), 1);
+  assert.equal(getAbilityDamageMultiplier('Parental Bond', { ...ret, id: 'explosion' }), 1);
+  const toss = { moveId: 'seismictoss', basePower: 0, category: 'Physical', type: 'Fighting', attackerStats: attacker };
+  assert.equal(explainMoveDamage({ ...toss, ability: 'Parental Bond' }).damage, 100);
+  const fang = { ...toss, moveId: 'superfang', type: 'Normal' };
+  assert.equal(explainMoveDamage({ ...fang, ability: 'Parental Bond' }).damage, Math.round(explainMoveDamage(fang).damage * 1.5));
+
+  // Technician reads the power a variable-power move resolves to.
+  const lowKick = { moveId: 'lowkick', moveName: 'Low Kick', basePower: 0, category: 'Physical', type: 'Fighting', attackerStats: attacker, attackerId: 'scizor' };
+  const technician = explainMoveDamage({ ...lowKick, ability: 'Technician' });
+  assert.ok(technician.damage > explainMoveDamage(lowKick).damage);
+  assert.match(technician.steps.join('\n'), /× 1\.5 Technician/);
 });

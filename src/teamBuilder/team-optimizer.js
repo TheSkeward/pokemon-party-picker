@@ -260,10 +260,10 @@ const MAX_RESULT_CACHE = 400;
 // (reusable TMs); HGSS results with contested TMs differ.
 // v58: retain fallback move ranks when filling alternative builds.
 // v59: map canonical ability slots onto the current evolutionary form.
-// Bump whenever the same inputs must produce a different result: '63'
-// retires verdicts priced before the set-guaranteed conditions, Download,
-// Scrappy and the Gen 9 boosts entered the damage model.
-const RESULT_CACHE_VERSION = '63';
+// Bump whenever the same inputs must produce a different result: '64'
+// retires verdicts priced before multi-turn moves were rated over the
+// expected stint and the audit's remaining ability edge cases landed.
+const RESULT_CACHE_VERSION = '64';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.

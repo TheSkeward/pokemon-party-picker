@@ -18,6 +18,7 @@ import {
   analysisTypes,
 } from '../playthrough/type-chart.js';
 import {
+  EXPECTED_STINT_TURNS,
   coverageDamageIntoType,
   downloadAttackShare,
   explainMoveDamage,
@@ -1532,11 +1533,14 @@ function computeDamageEstimate(move, member, attackerStats) {
     // The held item the mon is recommended to carry boosts the damage it deals
     // (Life Orb, Choice Band, type items/Gems, ...). Applied to both the shown
     // estimate and the move ranking, so they stay consistent.
-    itemMultiplier: getItemDamageMultiplier(member.heldItem, {
-      type: effectiveType,
-      category: move.category,
-      pokemonId: member.id,
-    }),
+    // Klutz holds an item without its effect.
+    itemMultiplier: toId(member.ability) === 'klutz'
+      ? 1
+      : getItemDamageMultiplier(member.heldItem, {
+        type: effectiveType,
+        category: move.category,
+        pokemonId: member.id,
+      }),
     itemName,
     abilityMultiplier: getAbilityDamageMultiplier(member.ability, move, {
       heldItem: member.heldItem,
@@ -1622,22 +1626,47 @@ function getMovePower(move) {
 // factors cancel, so each REACHED turn contributes one base-power unit. A miss
 // ends the chain: conditional on turn 1 hitting (the ordinary accuracy factor
 // is applied later), turns 2–5 are reached with probability p, p², p³, p⁴.
-const ESCALATING_MOVE_IDS = new Set(['rollout', 'iceball']);
-const ESCALATING_TURNS = 5;
-const LATER_TURN_WEIGHT = 0.5;
+// Multi-turn moves are priced by what they land per turn over the expected
+// stint (EXPECTED_STINT_TURNS, damage-model.js): a two-turn move that hits
+// first (recharge) lands on the odd turns, one that hits second (charge) on
+// the even turns. What the opponent does on the other turn is
+// survivability, which the damage model prices nowhere, so a
+// semi-invulnerable charge and an exposed one take the same rate. Truant
+// acts on the odd turns like a recharge move, and the two do not stack.
+const STINT = EXPECTED_STINT_TURNS;
+const HIT_FIRST_RATE = Math.ceil(STINT / 2) / STINT;
+const HIT_SECOND_RATE = Math.floor(STINT / 2) / STINT;
 
-// Semi-invulnerable charge moves, split by punch-through:
-//   - No punch-through → full power. Phantom Force / Shadow Force vanish
-//     completely (no move hits through), and Sky Drop carries the target
-//     along, stealing its turn — the charge turn is genuinely offset.
-//   - Leaky dodge → 2/3. Fly/Bounce are hit through by Gust/Twister at 2x
-//     power and by Thunder outright; Dig by Earthquake/Magnitude at 2x;
-//     Dive by Surf/Whirlpool at 2x — and the telegraphed lock-in gifts the
-//     opponent a free switch/setup turn unless they were attacking anyway.
-//     Valuing the dodge turn at HALF a turn under the same double-weight-
-//     the-earlier-turn rule as recharge/exposed-charge: (2·½ + 1·1)/3 = 2/3.
-const UNTARGETABLE_CHARGE = new Set(['phantomforce', 'shadowforce', 'skydrop']);
-const LEAKY_DODGE_CHARGE = new Set(['fly', 'bounce', 'dig', 'dive']);
+// Escalating moves: base-power ratio on each consecutive turn, capped where
+// the games cap it. The chain is expected to run for the stint, each later
+// turn discounted by the chance every earlier hit landed, so the last turn
+// of a five-turn Rollout never comes in a four-turn stint.
+const ESCALATION = Object.freeze({
+  rollout: (turn) => 2 ** Math.min(turn, 4),
+  iceball: (turn) => 2 ** Math.min(turn, 4),
+  furycutter: (turn) => Math.min(2 ** turn, 4),
+  echoedvoice: (turn) => Math.min(turn + 1, 5),
+});
+
+// Moves that roll accuracy on every strike and stop at the first miss:
+// strike power as a ratio of base power, in order.
+const PER_STRIKE_ACCURACY = Object.freeze({
+  populationbomb: Array(10).fill(1),
+  tripleaxel: [1, 2, 3],
+  triplekick: [1, 2, 3],
+});
+
+// A charge turn the user's own weather skips: Solar Beam and Solar Blade
+// in its sun, Electro Shot in its rain.
+const SUN_SETTERS = ['drought', 'desolateland', 'orichalcumpulse'];
+const RAIN_SETTERS = ['drizzle', 'primordialsea'];
+function chargeSkipped(move, ability) {
+  const id = toId(ability);
+  if (move.id === 'solarbeam' || move.id === 'solarblade') {
+    return SUN_SETTERS.includes(id);
+  }
+  return move.id === 'electroshot' && RAIN_SETTERS.includes(id);
+}
 
 // Telegraph-then-fail-if-disrupted moves. The dex encodes their mechanic as a
 // custom condition, NOT flags.charge, so they must be listed here by hand.
@@ -1650,50 +1679,62 @@ const LEAKY_DODGE_CHARGE = new Set(['fly', 'bounce', 'dig', 'dive']);
 const FAILS_IF_DISRUPTED = new Set(['focuspunch', 'shelltrap']);
 
 /**
- * How many "hits' worth" of base power a move lands per commitment, used to
- * scale the damage estimate so multi-hit and multi-turn moves are ranked by
- * real output:
+ * How many "hits' worth" of base power a move lands per turn, used to scale
+ * the damage estimate so multi-hit and multi-turn moves are ranked by real
+ * output over the expected stint (EXPECTED_STINT_TURNS):
  *   - multi-hit: a fixed count (Double Kick → 2) or the EXPECTED count of its
  *     [min,max] range — 2–5-hit moves roll 35%/35%/15%/15% for 2/3/4/5 hits
  *     (Gen 5+), so Fury Swipes [2,5] → 3.1, not the naive midpoint 3.5;
- *   - recharge: hit, then a lost turn. Double-weighting the earlier (hit)
- *     turn gives (2·1 + 1·0)/3 = 2/3 of a single hit (Hyper Beam);
- *   - exposed charge: a lost turn, then hit. Same double-weight-the-earlier-
- *     turn rule, but now the dead turn is first: (2·0 + 1·1)/3 = 1/3 (Solar
- *     Beam);
- *   - leaky-dodge charge: the dodge turn is worth HALF a turn (punch-through
- *     at 2x, telegraphed lock-in): (2·½ + 1·1)/3 = 2/3 (Fly/Bounce/Dig/Dive);
- *   - fails-if-disrupted (Focus Punch/Shell Trap): exposed like Solar Beam's
- *     charge turn → 1/3;
- *   - escalating: a curated weighting (Rollout/Ice Ball).
- * Single-hit moves — and no-punch-through charge moves (Phantom Force/Shadow
- * Force vanish outright; Sky Drop steals the target's turn) — keep full
- * power.
+ *   - per-strike accuracy (Population Bomb, Triple Axel, Triple Kick): the
+ *     expected strikes before the first miss, all of them under Skill Link;
+ *   - recharge: lands on the odd turns of the stint (Hyper Beam);
+ *   - charge: lands on the even turns, whatever the charge turn looks like
+ *     to the opponent, and every turn when the user's own weather skips the
+ *     charge (Solar Beam under Drought);
+ *   - fails-if-disrupted (Focus Punch/Shell Trap): 1/3, a judgement about
+ *     how often the opponent's attack lands first, not a stint rate;
+ *   - escalating (Rollout, Ice Ball, Fury Cutter, Echoed Voice): the chain's
+ *     average over the stint, each later turn discounted by the chance the
+ *     chain has held.
+ * Single-hit moves keep full power.
  * @param {!Object} move
- * @param {?string=} ability Skill Link maxes out ranged multi-hit counts.
+ * @param {?string=} ability Skill Link, Truant, and the weather setters.
  * @return {number}
  */
 export function getEffectiveHitMultiplier(move, ability = null) {
   const hits = moveHitMultiplier(move, ability);
-  // Truant acts every other turn: the same amortization as a recharge
-  // move, whose recharge turn is the loafing turn, so it is not paid twice.
-  if (toId(ability) === 'truant' && !move.recharge) return hits * (2 / 3);
+  // Truant acts on the odd turns, as a recharge move does; the recharge
+  // turn is the loafing turn, so the two are not paid twice.
+  if (toId(ability) === 'truant' && !move.recharge) {
+    return hits * HIT_FIRST_RATE;
+  }
   return hits;
 }
 
 function moveHitMultiplier(move, ability) {
-  if (ESCALATING_MOVE_IDS.has(move.id)) {
+  const escalation = ESCALATION[move.id];
+  if (escalation) {
     const hitChance = getAccuracyFactor(move, ability);
-    let weightedPower = 0;
-    let totalWeight = 0;
-    for (let turn = 0; turn < ESCALATING_TURNS; turn += 1) {
-      const turnWeight = LATER_TURN_WEIGHT ** turn;
-      const turnPower = 2 ** turn;
-      const reachChance = hitChance ** turn;
-      weightedPower += turnWeight * turnPower * reachChance;
-      totalWeight += turnWeight;
+    let total = 0;
+    for (let turn = 0; turn < STINT; turn += 1) {
+      total += escalation(turn) * hitChance ** turn;
     }
-    return weightedPower / totalWeight;
+    return total / STINT;
+  }
+
+  const strikes = PER_STRIKE_ACCURACY[move.id];
+  if (strikes) {
+    // Skill Link lands every strike once the move connects.
+    if (toId(ability) === 'skilllink') {
+      return strikes.reduce((sum, power) => sum + power, 0);
+    }
+    // Each strike rolls accuracy and a miss ends the move. The estimate
+    // multiplies by the move's accuracy once more, so the first strike's
+    // chance is divided back out here.
+    const hitChance = getAccuracyFactor(move, ability);
+    const expected = strikes.reduce(
+      (sum, power, index) => sum + power * hitChance ** (index + 1), 0);
+    return hitChance > 0 ? expected / hitChance : 0;
   }
 
   const multihit = move.multihit;
@@ -1707,12 +1748,8 @@ function moveHitMultiplier(move, ability) {
     return (multihit[0] + multihit[1]) / 2;
   }
 
-  if (move.recharge) return 2 / 3;
-  if (move.charge) {
-    if (UNTARGETABLE_CHARGE.has(move.id)) return 1;
-    if (LEAKY_DODGE_CHARGE.has(move.id)) return 2 / 3;
-    return 1 / 3; // exposed charge (Solar Beam, Sky Attack, ...)
-  }
+  if (move.recharge) return HIT_FIRST_RATE;
+  if (move.charge) return chargeSkipped(move, ability) ? 1 : HIT_SECOND_RATE;
   if (FAILS_IF_DISRUPTED.has(move.id)) return 1 / 3;
 
   return 1;

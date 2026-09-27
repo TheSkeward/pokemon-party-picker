@@ -127,10 +127,23 @@ function baseMoveType(move) {
   return move.rawType ?? move.type;
 }
 
+// Moves whose type is decided by their own mechanic; the -ate abilities and
+// Normalize leave them alone.
+const TYPE_LOCKED_MOVES = new Set([
+  'hiddenpower', 'weatherball', 'judgment', 'multiattack', 'revelationdance',
+  'naturalgift', 'technoblast', 'terrainpulse', 'struggle',
+]);
+
+function typeConvertible(move) {
+  return !TYPE_LOCKED_MOVES.has(String(move.id || ''));
+}
+
 /**
  * The type a move actually deals damage as under the ability: -ate abilities
  * convert Normal moves, Liquid Voice makes sound moves Water (Primarina's
- * whole STAB plan), Normalize makes everything Normal. Unchanged otherwise.
+ * whole STAB plan), Normalize makes everything Normal. Unchanged otherwise,
+ * and never for a move whose type is its own mechanic (Hidden Power,
+ * Judgment, Weather Ball...).
  * @param {?string} ability
  * @param {!Object} move
  * @return {string}
@@ -138,11 +151,20 @@ function baseMoveType(move) {
 export function getAbilityEffectiveMoveType(ability, move) {
   const id = abilityId(ability);
   const type = baseMoveType(move);
+  if (!typeConvertible(move)) return type;
   if (ATE_CONVERSIONS[id] && type === 'Normal') return ATE_CONVERSIONS[id];
   if (id === 'liquidvoice' && move.flags?.sound) return 'Water';
   if (id === 'normalize') return 'Normal';
   return type;
 }
+
+// Moves Parental Bond does not strike twice (Gen 7): charge moves, the
+// escalating rollers, self-KO moves, and the handful the games list.
+const NO_SECOND_STRIKE = new Set([
+  'rollout', 'iceball', 'explosion', 'selfdestruct', 'finalgambit',
+  'endeavor', 'fling', 'uproar', 'skydrop', 'counter', 'mirrorcoat',
+  'metalburst', 'bide',
+]);
 
 // Terrain boosts were 1.5x in Gen 7 and 1.3x from Gen 8.
 const terrainBoost = () => (dex().gen >= 8 ? 1.3 : 1.5);
@@ -255,8 +277,11 @@ export function getAbilityDamageMultiplier(ability, move, context = {}) {
   if ((id === 'hugepower' || id === 'purepower') && physical) multiplier *= 2;
   // Hustle: +50% Atk at -20% physical accuracy. The accuracy factor applied
   // later reads move.accuracy and can't see the ability, so the expected-value
-  // haircut is folded in here: 1.5 × 0.8 = 1.2.
-  if (id === 'hustle' && physical) multiplier *= 1.5 * 0.8;
+  // haircut is folded in here: 1.5 × 0.8 = 1.2. A move that cannot miss
+  // keeps the whole 1.5.
+  if (id === 'hustle' && physical) {
+    multiplier *= 1.5 * (flags.nevermiss ? 1 : 0.8);
+  }
   // Slow Start halves Atk for the first five turns, longer than the
   // expected stint (EXPECTED_STINT_TURNS), so it is priced as always-on.
   if (id === 'slowstart' && physical) multiplier *= 0.5;
@@ -293,12 +318,25 @@ export function getAbilityDamageMultiplier(ability, move, context = {}) {
   }
   if (id === 'darkaura' && type === 'Dark') multiplier *= 4 / 3;
   if (id === 'fairyaura' && type === 'Fairy') multiplier *= 4 / 3;
-  if (ATE_CONVERSIONS[id] && type === 'Normal') multiplier *= 1.2;
-  if (id === 'normalize') multiplier *= 1.2;
+  if (ATE_CONVERSIONS[id] && type === 'Normal' && typeConvertible(move)) {
+    multiplier *= 1.2;
+  }
+  // Normalize's boost arrived in Gen 7; before that it only converted.
+  if (id === 'normalize' && typeConvertible(move) && dex().gen >= 7) {
+    multiplier *= 1.2;
+  }
 
   // Parental Bond: the second hit lands at 25% (Gen 7) → 1.25x on single-hit
-  // moves; genuinely multi-hit moves don't get a bonus hit in-game.
-  if (id === 'parentalbond' && !move.multihit) multiplier *= 1.25;
+  // moves; genuinely multi-hit moves, charge moves and the listed exceptions
+  // don't get a bonus hit in-game.
+  if (
+    id === 'parentalbond' &&
+    !move.multihit &&
+    !move.charge &&
+    !NO_SECOND_STRIKE.has(String(move.id || ''))
+  ) {
+    multiplier *= 1.25;
+  }
 
   return multiplier;
 }
@@ -451,12 +489,17 @@ function weightBucketPower(kg) {
  * @return {?number}
  */
 export function variableMovePower(
-  moveId, level, attackerId = null, attackerSpe = null) {
+  moveId, level, attackerId = null, attackerSpe = null, ability = null) {
   if (!VARIABLE_POWER_MOVE_IDS.has(moveId)) return null;
   const lvl = normalizeLevel(level);
   const id = attackerId ? toId(attackerId) : null;
   const baseSpe = (id && dex().baseStats[id]?.[4]) || referenceBases().speed;
-  const weight = (id && dex().weightsKg[id]) || referenceBases().weightKg;
+  // Heavy Metal doubles and Light Metal halves the user's own weight.
+  const weightScale =
+    abilityId(ability) === 'heavymetal' ? 2
+      : abilityId(ability) === 'lightmetal' ? 0.5 : 1;
+  const weight =
+    ((id && dex().weightsKg[id]) || referenceBases().weightKg) * weightScale;
   const referenceSpe = statValue(referenceBases().speed, 0, lvl, 1);
   const userSpe = Math.max(1, attackerSpe ?? statValue(baseSpe, 0, lvl, 1));
 
@@ -797,9 +840,19 @@ export function explainMoveDamage({
   const fixed = fixedMoveDamage(moveId, lvl);
   if (fixed != null) {
     steps.push(
-      `${label}: fixed damage, ${fixed} at level ${lvl}; stats, STAB, items and abilities do not apply.`,
+      `${label}: fixed damage, ${fixed} at level ${lvl}; stats, STAB and items do not apply.`,
     );
-    return { damage: fixed, steps };
+    // Parental Bond strikes fixed-damage moves twice at full value; the
+    // half-HP moves take half of what is left, three quarters in all.
+    const secondStrike = abilityId(ability) === 'parentalbond'
+      ? (['superfang', 'naturemadness'].includes(moveId) ? 1.5
+        : ['seismictoss', 'nightshade', 'psywave', 'sonicboom', 'dragonrage']
+          .includes(moveId) ? 2 : 1)
+      : 1;
+    if (secondStrike !== 1) {
+      steps.push(`× ${factorText(secondStrike)} Parental Bond second strike`);
+    }
+    return { damage: Math.round(fixed * secondStrike), steps };
   }
 
   // A type-conditional move lands only as often as the reference defender's
@@ -811,7 +864,8 @@ export function explainMoveDamage({
   // exact speed when the stat line carries it.
   const variablePower = basePower
     ? null
-    : variableMovePower(moveId, lvl, attackerId, attackerStats?.spe ?? null);
+    : variableMovePower(
+      moveId, lvl, attackerId, attackerStats?.spe ?? null, ability);
   const resolvedPower = basePower || variablePower || 0;
   steps.push(
     variablePower != null
@@ -824,14 +878,21 @@ export function explainMoveDamage({
     return { damage: 0, steps };
   }
 
+  // Technician reads the power a variable-power move resolves to; the
+  // caller's multiplier only saw the raw zero.
+  const technicianOnVariable =
+    abilityId(ability) === 'technician' && variablePower != null &&
+    variablePower <= 60;
+  const abilityFactor = abilityMultiplier * (technicianOnVariable ? 1.5 : 1);
+
   const factors = [];
   if (stab !== 1) {
     factors.push(
       `× ${factorText(stab)} STAB${abilityId(ability) === 'adaptability' ? ' (Adaptability)' : abilityId(ability) === 'protean' ? ' (Protean)' : ''}`,
     );
   }
-  if (abilityMultiplier !== 1) {
-    factors.push(`× ${factorText(abilityMultiplier)} ${ability || 'ability'}`);
+  if (abilityFactor !== 1) {
+    factors.push(`× ${factorText(abilityFactor)} ${ability || 'ability'}`);
   }
   if (itemMultiplier !== 1) {
     factors.push(`× ${factorText(itemMultiplier)} ${itemName || 'item'}`);
@@ -841,7 +902,7 @@ export function explainMoveDamage({
       `× ${factorText(typeCondition)} chance the defender shares one of the user's types`,
     );
   }
-  const multiplier = stab * itemMultiplier * abilityMultiplier * typeCondition;
+  const multiplier = stab * itemMultiplier * abilityFactor * typeCondition;
 
   if (!attackerStats) {
     const damage = Math.round(resolvedPower * multiplier);

@@ -191,9 +191,16 @@ function main() {
     if (move.flags?.sound) abilityFlags.sound = 1;
     if (move.flags?.slicing) abilityFlags.slicing = 1; // Sharpness
     if (move.recoil || move.hasCrashDamage) abilityFlags.recoil = 1;
-    if (move.secondary || (move.secondaries || []).length) {
+    // Sheer Force also strips the self-boosts the dex marks hasSheerForce
+    // (Electro Shot, Order Up) and boosts those moves.
+    if (
+      move.secondary || (move.secondaries || []).length || move.hasSheerForce
+    ) {
       abilityFlags.secondary = 1;
     }
+    // A move that cannot miss (accuracy true, stored above as 100) takes no
+    // accuracy penalty from Hustle.
+    if (move.accuracy === true) abilityFlags.nevermiss = 1;
     if (Object.keys(abilityFlags).length) entry.flags = abilityFlags;
     const roles = deriveRoles(move);
     if (roles.length) entry.roles = roles;
