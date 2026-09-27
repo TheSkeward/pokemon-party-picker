@@ -210,6 +210,32 @@ export const DONOR_BOX_TITLE =
   'when you remove it; donors supply egg moves, Sketch partners and move ' +
   'transfers, and only the pool is fielded.';
 
+/** The rail's section links, in page order, with the id each one targets. */
+export const TEAM_RAIL_SECTIONS = Object.freeze([
+  'pool',
+  'team',
+  'bench',
+  'reborn-team-analysis-root',
+  'progression',
+]);
+
+/**
+ * Which rail section is current for a scroll position: the last section
+ * whose top has passed the rail's bottom edge, or none when the page is
+ * still above the first.
+ * @param {!Array<{id: string, top: number}>} sections In page order, tops
+ *     measured in the same frame as `railBottom`.
+ * @param {number} railBottom
+ * @return {?string} The current section's id.
+ */
+export function currentRailSection(sections, railBottom) {
+  let current = null;
+  for (const section of sections) {
+    if (section.top <= railBottom + 1) current = section.id;
+  }
+  return current;
+}
+
 /**
  * The sticky rail under the tabs: the current team's six names as jumps to
  * their set cards, and links to the page's sections, so the team is always
@@ -305,7 +331,7 @@ function renderPoolControls({
         </label>
       </div>
 
-      <div class="pool-actions">
+      <div class="actions-row">
         <button class="view-tab primary-action" id="optimize-button"${usageTrustTooltip(state) ? ` title="${escapeAttr(usageTrustTooltip(state))}"` : ''}>${state.loading ? 'Optimizing...' : 'Normalize + optimize team'}</button>
         <button class="view-tab" id="copy-pool-button">Copy pool</button>
         <button class="view-tab" id="export-gamestate-button" title="Download pool + progression + inventory as a JSON backup file. Everything lives in this browser's local storage — one data clear loses it all without a backup.">Export gamestate</button>

@@ -8,6 +8,8 @@ import {
 import {
   getSortedTeam,
   renderGamestateStrip,
+  TEAM_RAIL_SECTIONS,
+  currentRailSection,
   donorBoxLabel,
   renderTeamBuilderPage,
 } from './teamBuilder/team-builder-view';
@@ -646,6 +648,8 @@ export function mountPoolOptimizer(container, options = {}) {
         card?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       });
     });
+
+    wireTeamRailSpy();
 
     app
       .querySelector('#family-input')
@@ -1489,6 +1493,44 @@ export function mountPoolOptimizer(container, options = {}) {
       pokemonName: selected.name,
       progression: state.progression,
     });
+  }
+
+  // The rail underlines the section under it. One scroll listener at a time
+  // (each render rewires it), measured once per frame.
+  let teardownRailSpy = null;
+  function wireTeamRailSpy() {
+    teardownRailSpy?.();
+    const rail = app.querySelector('.team-rail');
+    if (!rail) return;
+    let frame = 0;
+    const mark = () => {
+      frame = 0;
+      const railBottom = rail.getBoundingClientRect().bottom;
+      const sections = TEAM_RAIL_SECTIONS.flatMap((id) => {
+        const element = app.querySelector(`#${id}`);
+        return element
+          ? [{ id, top: element.getBoundingClientRect().top }]
+          : [];
+      });
+      const current = currentRailSection(sections, railBottom);
+      rail.querySelectorAll('a[href^="#"]').forEach((link) => {
+        if (link.getAttribute('href') === `#${current}`) {
+          link.setAttribute('aria-current', 'true');
+        } else {
+          link.removeAttribute('aria-current');
+        }
+      });
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(mark);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    mark();
+    teardownRailSpy = () => {
+      window.removeEventListener('scroll', onScroll);
+      if (frame) cancelAnimationFrame(frame);
+      teardownRailSpy = null;
+    };
   }
 
   // Every Pokémon in the pool joins the donor box, which only ever grows: the

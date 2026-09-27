@@ -534,21 +534,38 @@ button:hover {
   flex: 1;
 }
 /* One wrapping row of actions, the destructive one pushed to the far end,
-   the status line beneath: the same shape as the progression panel's
-   actions. */
-.pool-actions {
+   the status line beneath. Shared by the pool and the progression panel,
+   whose lone button used to sit in the toolbar grid's narrow first cell. */
+.actions-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-2);
   margin-bottom: var(--space-4);
 }
-.pool-actions .danger-button {
+.actions-row .danger-button {
   margin-left: auto;
 }
-.pool-actions [data-pool-status] {
+.actions-row [data-pool-status],
+.actions-row [data-progression-status] {
   flex-basis: 100%;
   font-size: var(--type-s);
+}
+
+/* The rail marks the section under it with the active tab's underline: the
+   one colour the rail takes, and the same one the tabs above it use. */
+.team-rail a[aria-current] {
+  color: var(--text);
+  box-shadow: inset 0 -2px 0 var(--fill-focus);
+}
+
+/* A pick's name and its two small buttons stay on one line; the notes
+   beneath them wrap as before. */
+.team-results-panel .usage-table td:nth-child(2) {
+  white-space: nowrap;
+}
+.team-results-panel .usage-table td:nth-child(2) > div {
+  white-space: normal;
 }
 
 /* The team rail: a quieter third row under the game and view tabs that

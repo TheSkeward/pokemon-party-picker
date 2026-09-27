@@ -135,7 +135,7 @@ export function renderProgressionPanel(
         </ul>
       </details>
 
-      <div class="toolbar">
+      <div class="actions-row">
         <button class="view-tab danger-button" id="clear-progression-button">Clear progression</button>
         <span class="muted" data-progression-status></span>
       </div>

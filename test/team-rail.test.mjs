@@ -53,3 +53,19 @@ test('a stale result dims the rail', () => {
   });
   assert.ok(html.includes('data-stale'));
 });
+
+test('the current section is the last one whose top has passed the rail', async () => {
+  const { currentRailSection, TEAM_RAIL_SECTIONS } = await import(
+    '../src/teamBuilder/team-builder-view.js',
+  );
+  const tops = [-900, -300, 40, 600, 1400];
+  const sections = TEAM_RAIL_SECTIONS.map((id, index) => ({
+    id,
+    top: tops[index],
+  }));
+  assert.equal(currentRailSection(sections, 38), 'team');
+  assert.equal(currentRailSection(sections, 41), 'bench');
+  assert.equal(currentRailSection(sections, 2000), 'progression');
+  const abovePool = sections.map((s) => ({ ...s, top: s.top + 1000 }));
+  assert.equal(currentRailSection(abovePool, 38), null);
+});
