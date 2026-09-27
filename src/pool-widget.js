@@ -645,7 +645,12 @@ export function mountPoolOptimizer(container, options = {}) {
           app.querySelector(
             `[data-set-card="${jumpButton.dataset.jumpSetCard}"]`,
           ) || app.querySelector('#reborn-team-analysis-root');
-        card?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (!card) return;
+        // Land the card under the rail and mark it for a moment: three
+        // cards share a row, so a centred scroll alone did not say which.
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        card.classList.add('is-jump-target');
+        setTimeout(() => card.classList.remove('is-jump-target'), 1800);
       });
     });
 

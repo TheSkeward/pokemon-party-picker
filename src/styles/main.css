@@ -1535,6 +1535,15 @@ html {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  /* A jump lands the card just under the sticky rail. */
+  scroll-margin-top: calc(var(--space-8) + var(--space-4));
+}
+/* The card a jump just landed on, marked for a moment in the fill that
+   marks the row an add just touched: three cards share a row, so the
+   scroll alone does not say which one was meant. */
+.team-set-card.is-jump-target {
+  outline: 2px solid var(--fill-mark);
+  outline-offset: 2px;
 }
 
 .team-set-card.warning {

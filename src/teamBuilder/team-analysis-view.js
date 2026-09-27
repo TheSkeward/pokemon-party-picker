@@ -515,7 +515,7 @@ function renderSetCard(profile) {
     profile.recommendedMoves?.length ? profile.recommendedMoves : [];
 
   return `
-    <div class="team-set-card ${profile.bestStabMove ? '' : 'warning'}" data-set-card="${escapeHtml(profile.currentId || '')}">
+    <div class="team-set-card ${profile.bestStabMove ? '' : 'warning'}" data-set-card="${escapeHtml(profile.fieldedId || profile.currentId || '')}">
       <div class="team-set-head">
         <strong>${escapeHtml(profile.currentName)}</strong>
         ${subParts.length ? `<small>${escapeHtml(subParts.join(' · '))}</small>` : ''}
