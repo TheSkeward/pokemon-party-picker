@@ -19,6 +19,7 @@ import {
 } from '../playthrough/type-chart.js';
 import {
   coverageDamageIntoType,
+  downloadAttackShare,
   explainMoveDamage,
   getAbilityDamageMultiplier,
   getAbilityEffectiveMoveType,
@@ -896,8 +897,8 @@ export function buildCandidateLegalityProfile({
   const coverageVector = analysisTypes().map((defenseType) => {
     let best = 0;
     for (const md of recommendedMoveDamage) {
-      const dealt =
-        coverageDamageIntoType(md.id, md.type, md.damage, defenseType);
+      const dealt = coverageDamageIntoType(
+        md.id, md.type, md.damage, defenseType, member.ability);
       if (dealt > best) best = dealt;
     }
     return Math.min(1, best / coverageRef);
@@ -1537,10 +1538,20 @@ function computeDamageEstimate(move, member, attackerStats) {
       pokemonId: member.id,
     }),
     itemName,
-    abilityMultiplier: getAbilityDamageMultiplier(member.ability, move),
+    abilityMultiplier: getAbilityDamageMultiplier(member.ability, move, {
+      heldItem: member.heldItem,
+      attackerTypes: member.types,
+      stats: attackerStats,
+    }),
     ability: member.ability,
     attackerId: member.id,
   });
+  if (toId(member.ability) === 'download') {
+    const share = Math.round(downloadAttackShare() * 100);
+    steps.push(
+      `Download: +1 Atk against the ${share}% of species whose Defense is lower, +1 SpA against the rest`,
+    );
+  }
   if (hitMultiplier !== 1 && move.basePower) {
     steps.splice(
       1, 0,
@@ -1585,6 +1596,14 @@ export function getAccuracyFactor(move, ability = null) {
   if (!accuracy || accuracy >= 100) return 1;
   const id = toId(ability);
   if (id === 'noguard') return 1;
+  // Weather the user's own ability sets: Thunder and Hurricane never miss in
+  // rain and drop to half in sun; Blizzard never misses in hail or snow.
+  const rainMove = move.id === 'thunder' || move.id === 'hurricane';
+  if (rainMove && (id === 'drizzle' || id === 'primordialsea')) return 1;
+  if (rainMove && ['drought', 'desolateland', 'orichalcumpulse'].includes(id)) {
+    return 0.5;
+  }
+  if (move.id === 'blizzard' && id === 'snowwarning') return 1;
   const boost = id === 'compoundeyes' ? 1.3 : id === 'victorystar' ? 1.1 : 1;
   // Accuracy is a whole percent in the games; rounding also keeps binary
   // noise (70 × 1.3) out of the figure.

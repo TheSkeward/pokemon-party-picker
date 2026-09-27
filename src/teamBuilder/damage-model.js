@@ -94,14 +94,19 @@ function abilityStab(ability, attackerTypes, moveType) {
 // ————————————————— Ability damage layer —————————————————
 // The current battle form's assumed ability (mapped from the canonical
 // target's evolutionary slot) scales damage when its condition is a property
-// of the MOVE — its type, flags, or base power — rather than of the battle
-// state. Battle-state-conditional abilities are deliberately NOT modeled,
-// because the estimate prices a typical unconditioned turn against a neutral
-// wall: Guts/Toxic Boost/Flare Boost (needs a status), Blaze/Torrent/Overgrow/
-// Swarm (needs <1/3 HP), Sand Force/Solar Power (needs weather), Analytic/
-// Stakeout/Tinted Lens/Sniper/Rivalry (needs a specific target or turn order),
-// Defeatist (assumed above half HP). Defender-side abilities never apply — the
-// reference wall is ability-less by construction.
+// of the MOVE — its type, flags, or base power — or one the SET guarantees
+// for itself: an orb in the item slot that activates the ability (Guts,
+// Toxic Boost, Flare Boost), Booster Energy for Protosynthesis and Quark
+// Drive, weather or terrain the ability itself sets (Drought, Drizzle, the
+// Surges, Orichalcum Pulse, Hadron Engine), and Download, priced by the
+// share of the game's species whose Defense is the lower stat. Conditions
+// the set cannot guarantee stay out, because the estimate prices a typical
+// unconditioned turn against a neutral wall: Blaze/Torrent/Overgrow/Swarm
+// (needs <1/3 HP), Sand Force/Solar Power (needs another mon's weather),
+// Analytic/Stakeout/Tinted Lens/Sniper/Rivalry (needs a specific target or
+// turn order), Defeatist (assumed above half HP), Hero form (needs a switch).
+// Defender-side abilities never apply — the reference wall is ability-less
+// by construction.
 
 // The -ate abilities convert the user's NORMAL moves and boost them 1.2x
 // (the Gen 7 value; it was 1.3x in Gen 6). Conversion changes everything
@@ -139,24 +144,112 @@ export function getAbilityEffectiveMoveType(ability, move) {
   return type;
 }
 
+// Terrain boosts were 1.5x in Gen 7 and 1.3x from Gen 8.
+const terrainBoost = () => (dex().gen >= 8 ? 1.3 : 1.5);
+
 /**
- * Move-property-conditional damage multiplier for the assumed ability. Only
- * one branch can fire per call in practice (a mon has one ability), but the
- * composition is written multiplicatively so a single ability with several
- * clauses (the -ate type gate + boost) stays readable. Fixed-damage moves
- * never see this — estimateMoveDamage resolves them before multipliers,
- * matching the games (Huge Power does not change Seismic Toss).
+ * How many turns a mon is expected to stay on the field in a playthrough
+ * fight. No dataset measures trainer fights, so this is set from what can
+ * be measured (scripts/measure-stints.mjs, September 2026, about 150
+ * recent replays per ladder): a Gen 7 OU battle runs a median 3 turns per
+ * knockout, and a switch-in stays a median 2 turns, mean 2.3 (Gen 9 OU:
+ * 3 and 2.8). Ladder players switch far more than a trainer fight allows,
+ * so the ladder stint is a floor; a playthrough mon usually stays through
+ * at least one knockout and often a second, which puts the stint between
+ * the 3 turns of one knockout and the 4.5 of a six-mon fight shared by four
+ * stints. Four turns splits that. A boost that starts a turn late (an orb
+ * that activates at the end of the first turn) covers the other three.
+ */
+export const EXPECTED_STINT_TURNS = 4;
+
+// The average multiplier over a stint for a boost that applies from the
+// second turn: (1 + boost × (N − 1)) / N.
+const lateBoost = (boost) =>
+  (1 + boost * (EXPECTED_STINT_TURNS - 1)) / EXPECTED_STINT_TURNS;
+
+// The stat Booster Energy, Protosynthesis and Quark Drive raise: the highest
+// of the six, ties going to the earlier of Atk, Def, SpA, SpD, Spe.
+function boostedStat(stats) {
+  if (!stats) return null;
+  const order = ['atk', 'def', 'spa', 'spd', 'spe'];
+  let best = null;
+  for (const key of order) {
+    const value = stats[key];
+    if (!Number.isFinite(value)) continue;
+    if (best == null || value > stats[best]) best = key;
+  }
+  return best;
+}
+
+/**
+ * Damage multiplier for the assumed ability: move-property conditions and
+ * the conditions the set guarantees for itself (see the layer comment).
+ * Only one branch can fire per call in practice (a mon has one ability),
+ * but the composition is written multiplicatively so a single ability with
+ * several clauses (the -ate type gate + boost) stays readable. Fixed-damage
+ * moves never see this — estimateMoveDamage resolves them before
+ * multipliers, matching the games (Huge Power does not change Seismic Toss).
  * @param {?string} ability
  * @param {!Object} move
+ * @param {{heldItem: (?string|undefined), attackerTypes:
+ *     (!Array<string>|undefined), stats: (?Object|undefined)}=} context
+ *     The set's held item, the user's types (a Flying type is not grounded
+ *     for terrain), and its stat line for the boosted-stat abilities.
  * @return {number}
  */
-export function getAbilityDamageMultiplier(ability, move) {
+export function getAbilityDamageMultiplier(ability, move, context = {}) {
   const id = abilityId(ability);
   if (!id) return 1;
   const type = baseMoveType(move);
   const flags = move.flags || {};
   const physical = move.category === 'Physical';
+  const special = move.category === 'Special';
+  const item = toId(context.heldItem || '');
+  const grounded = !(context.attackerTypes || []).includes('Flying');
   let multiplier = 1;
+
+  // Conditions the set guarantees for itself. An orb activates at the end
+  // of the first turn, so its boost is averaged over the stint.
+  const orb = item === 'flameorb' || item === 'toxicorb';
+  if (id === 'guts' && physical && orb) multiplier *= lateBoost(1.5);
+  if (id === 'toxicboost' && physical && item === 'toxicorb') {
+    multiplier *= lateBoost(1.5);
+  }
+  if (id === 'flareboost' && special && item === 'flameorb') {
+    multiplier *= lateBoost(1.5);
+  }
+  if ((id === 'protosynthesis' || id === 'quarkdrive') && item === 'boosterenergy') {
+    const boosted = boostedStat(context.stats);
+    if ((boosted === 'atk' && physical) || (boosted === 'spa' && special)) {
+      multiplier *= 1.3;
+    }
+  }
+  // Weather the ability sets: sun and rain scale Fire and Water; the primal
+  // weathers void the opposing type outright.
+  if (id === 'drought' || id === 'desolateland' || id === 'orichalcumpulse') {
+    if (type === 'Fire') multiplier *= 1.5;
+    if (type === 'Water') multiplier *= id === 'desolateland' ? 0 : 0.5;
+  }
+  if (id === 'drizzle' || id === 'primordialsea') {
+    if (type === 'Water') multiplier *= 1.5;
+    if (type === 'Fire') multiplier *= id === 'primordialsea' ? 0 : 0.5;
+  }
+  if (id === 'orichalcumpulse' && physical) multiplier *= 4 / 3;
+  // Terrain the ability sets boosts a grounded user's moves of its type.
+  if (grounded) {
+    if (id === 'electricsurge' && type === 'Electric') multiplier *= terrainBoost();
+    if (id === 'grassysurge' && type === 'Grass') multiplier *= terrainBoost();
+    if (id === 'psychicsurge' && type === 'Psychic') multiplier *= terrainBoost();
+    if (id === 'hadronengine' && type === 'Electric') multiplier *= terrainBoost();
+  }
+  if (id === 'hadronengine' && special) multiplier *= 4 / 3;
+  // Download: +1 to the attacking stat the target's lower defense invites,
+  // priced by how often that is each stat across the game's species.
+  if (id === 'download') {
+    const share = downloadAttackShare();
+    if (physical) multiplier *= 1 + 0.5 * share;
+    if (special) multiplier *= 1 + 0.5 * (1 - share);
+  }
 
   // Attack-stat rewrites (our damage is linear in the attacking stat).
   if ((id === 'hugepower' || id === 'purepower') && physical) multiplier *= 2;
@@ -164,8 +257,8 @@ export function getAbilityDamageMultiplier(ability, move) {
   // later reads move.accuracy and can't see the ability, so the expected-value
   // haircut is folded in here: 1.5 × 0.8 = 1.2.
   if (id === 'hustle' && physical) multiplier *= 1.5 * 0.8;
-  // Slow Start halves Atk for the first five turns — most of a real fight,
-  // so it's priced as always-on rather than ignored (Regigigas is bad).
+  // Slow Start halves Atk for the first five turns, longer than the
+  // expected stint (EXPECTED_STINT_TURNS), so it is priced as always-on.
   if (id === 'slowstart' && physical) multiplier *= 0.5;
 
   // Base-power boosts gated on move properties.
@@ -178,10 +271,20 @@ export function getAbilityDamageMultiplier(ability, move) {
   if (id === 'ironfist' && flags.punch) multiplier *= 1.2;
   if (id === 'reckless' && flags.recoil) multiplier *= 1.2;
   if (id === 'sheerforce' && flags.secondary) multiplier *= 1.3;
+  if (id === 'sharpness' && flags.slicing) multiplier *= 1.5;
+  if (id === 'punkrock' && flags.sound) multiplier *= 1.3;
+  if (id === 'gorillatactics' && physical) multiplier *= 1.5;
+  // The Ruin abilities cut every other Pokémon's defense or special
+  // defense by a quarter: 4/3 on the user's own attacks of that category.
+  if (id === 'swordofruin' && physical) multiplier *= 4 / 3;
+  if (id === 'beadsofruin' && special) multiplier *= 4 / 3;
 
   // Type-keyed boosts.
   if (id === 'waterbubble' && type === 'Water') multiplier *= 2;
   if (id === 'steelworker' && type === 'Steel') multiplier *= 1.5;
+  if (id === 'dragonsmaw' && type === 'Dragon') multiplier *= 1.5;
+  if (id === 'rockypayload' && type === 'Rock') multiplier *= 1.5;
+  if (id === 'steelyspirit' && type === 'Steel') multiplier *= 1.5;
   // Transistor was 1.5x in Gen 8 and 1.3x from Gen 9; Rejuvenation's engine
   // keys the same split on its generation constant. Its terrain bonus is a
   // field condition and stays out.
@@ -278,10 +381,25 @@ function referenceBases() {
       weightKg: medianOf(
         Object.values(bundle.weightsKg).filter((kg) => kg > 0),
       ),
+      // The share of species whose Defense is below their Special Defense:
+      // how often Download raises Attack rather than Special Attack (a tie
+      // raises Special Attack).
+      downloadAttackShare: stats.length
+        ? stats.filter((row) => row[1] < row[3]).length / stats.length
+        : 0.5,
     };
     REFERENCE_BASES.set(bundle, refs);
   }
   return refs;
+}
+
+/**
+ * @return {number} How often Download raises Attack against the reference
+ *     defender's fractional stats: the share of the game's species whose
+ *     Defense is the lower defensive stat.
+ */
+export function downloadAttackShare() {
+  return referenceBases().downloadAttackShare;
 }
 
 const VARIABLE_POWER_MOVE_IDS = new Set([
@@ -387,10 +505,18 @@ export function variableMovePower(
  * Fixed-damage moves ignore effectiveness multipliers but NOT immunities
  * (Gen 7 rules): Seismic Toss deals its flat damage to anything Fighting can
  * touch and zero to Ghosts — it is never "super effective" and never resisted.
+ * Scrappy and Mind's Eye let Normal and Fighting moves hit Ghosts at full
+ * damage.
  * @return {number}
  */
-export function coverageDamageIntoType(moveId, moveType, damage, defenseType) {
-  const multiplier = getTypeMultiplier(moveType, [defenseType]);
+export function coverageDamageIntoType(
+  moveId, moveType, damage, defenseType, ability = null) {
+  const id = abilityId(ability);
+  const ghostSeen =
+    (id === 'scrappy' || id === 'mindseye') &&
+    defenseType === 'Ghost' &&
+    (moveType === 'Normal' || moveType === 'Fighting');
+  const multiplier = ghostSeen ? 1 : getTypeMultiplier(moveType, [defenseType]);
   if (isFixedDamageMove(moveId)) return multiplier === 0 ? 0 : damage;
   return damage * multiplier;
 }
@@ -519,6 +645,9 @@ export function getAttackingStats({ pokemonId, levelCap, spread }) {
 
   const parsed = spread ? parseSpread(spread) : null;
 
+  const baseDef = stats[STAT_INDEX.def];
+  const baseSpd = stats[STAT_INDEX.spd];
+
   if (parsed) {
     const nature = NATURE_ATTACK_MULTIPLIERS[parsed.nature] || {};
     return {
@@ -527,6 +656,20 @@ export function getAttackingStats({ pokemonId, levelCap, spread }) {
       spreadLabel: `${formLabel}${parsed.natureLabel}, EVs ${parsed.evs.join('/')}`,
       atk: statValue(baseAtk, parsed.evs[EV_INDEX.atk], level, nature.atk ?? 1),
       spa: statValue(baseSpa, parsed.evs[EV_INDEX.spa], level, nature.spa ?? 1),
+      // The defenses matter only to the boosted-stat abilities (Booster
+      // Energy raises the highest stat of the six).
+      def: statValue(
+        baseDef,
+        parsed.evs[EV_INDEX.def],
+        level,
+        natureStatMultiplier(parsed.nature, 'def'),
+      ),
+      spd: statValue(
+        baseSpd,
+        parsed.evs[EV_INDEX.spd],
+        level,
+        natureStatMultiplier(parsed.nature, 'spd'),
+      ),
       // The spread's REAL speed (EVs + nature) — the same figure the stat
       // tooltip shows. Speed-scaled move power (Electro Ball, Gyro Ball)
       // reads it: the user's exact speed vs the median-speed reference
@@ -556,6 +699,8 @@ export function getAttackingStats({ pokemonId, levelCap, spread }) {
       level,
       physicalIsStronger ? 1 : 1.1,
     ),
+    def: statValue(baseDef, 0, level, 1),
+    spd: statValue(baseSpd, 0, level, 1),
     spe: statValue(baseSpe, 0, level, 1),
   };
 }

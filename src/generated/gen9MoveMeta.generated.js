@@ -116,7 +116,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "slicing": 1
     }
   },
   "aeroblast": {
@@ -156,7 +157,10 @@ export const MOVE_META = {
     "basePower": 60,
     "priority": 0,
     "utility": false,
-    "accuracy": 95
+    "accuracy": 95,
+    "flags": {
+      "slicing": 1
+    }
   },
   "airslash": {
     "name": "Air Slash",
@@ -167,6 +171,7 @@ export const MOVE_META = {
     "utility": true,
     "accuracy": 95,
     "flags": {
+      "slicing": 1,
       "secondary": 1
     }
   },
@@ -260,7 +265,10 @@ export const MOVE_META = {
     "basePower": 70,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "slicing": 1
+    }
   },
   "aquajet": {
     "name": "Aqua Jet",
@@ -624,7 +632,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "slicing": 1
     }
   },
   "belch": {
@@ -704,7 +713,8 @@ export const MOVE_META = {
     "utility": true,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "slicing": 1
     },
     "roles": [
       "recovery"
@@ -1219,6 +1229,7 @@ export const MOVE_META = {
     "accuracy": 90,
     "flags": {
       "contact": 1,
+      "slicing": 1,
       "secondary": 1
     }
   },
@@ -1694,6 +1705,7 @@ export const MOVE_META = {
     "accuracy": 100,
     "flags": {
       "contact": 1,
+      "slicing": 1,
       "secondary": 1
     },
     "roles": [
@@ -3364,7 +3376,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 95,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "slicing": 1
     }
   },
   "furyswipes": {
@@ -4646,7 +4659,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "slicing": 1
     }
   },
   "landswrath": {
@@ -4733,7 +4747,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "slicing": 1
     }
   },
   "leafstorm": {
@@ -5511,7 +5526,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "slicing": 1
     }
   },
   "milkdrink": {
@@ -5909,7 +5925,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "slicing": 1
     }
   },
   "nobleroar": {
@@ -6382,7 +6399,8 @@ export const MOVE_META = {
     "accuracy": 90,
     "multihit": 10,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "slicing": 1
     }
   },
   "pounce": {
@@ -6575,7 +6593,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "slicing": 1
     }
   },
   "psychic": {
@@ -6644,7 +6663,10 @@ export const MOVE_META = {
     "basePower": 70,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "slicing": 1
+    }
   },
   "psychoshift": {
     "name": "Psycho Shift",
@@ -6905,7 +6927,10 @@ export const MOVE_META = {
     "basePower": 55,
     "priority": 0,
     "utility": false,
-    "accuracy": 95
+    "accuracy": 95,
+    "flags": {
+      "slicing": 1
+    }
   },
   "razorshell": {
     "name": "Razor Shell",
@@ -6917,6 +6942,7 @@ export const MOVE_META = {
     "accuracy": 95,
     "flags": {
       "contact": 1,
+      "slicing": 1,
       "secondary": 1
     }
   },
@@ -7309,7 +7335,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "slicing": 1
     }
   },
   "safeguard": {
@@ -7513,7 +7540,10 @@ export const MOVE_META = {
     "basePower": 85,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "slicing": 1
+    }
   },
   "seedbomb": {
     "name": "Seed Bomb",
@@ -7939,7 +7969,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "slicing": 1
     }
   },
   "sleeppowder": {
@@ -8177,7 +8208,8 @@ export const MOVE_META = {
     "accuracy": 100,
     "charge": true,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "slicing": 1
     }
   },
   "sonicboom": {
@@ -8574,6 +8606,7 @@ export const MOVE_META = {
     "accuracy": 90,
     "flags": {
       "contact": 1,
+      "slicing": 1,
       "secondary": 1
     }
   },
@@ -8953,7 +8986,10 @@ export const MOVE_META = {
     "priority": 0,
     "utility": false,
     "accuracy": 100,
-    "multihit": 2
+    "multihit": 2,
+    "flags": {
+      "slicing": 1
+    }
   },
   "tackle": {
     "name": "Tackle",
@@ -10081,7 +10117,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "slicing": 1
     }
   },
   "yawn": {

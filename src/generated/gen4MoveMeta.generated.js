@@ -471,7 +471,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 95,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "slicing": 1
     }
   },
   "futuresight": {
@@ -2328,7 +2329,10 @@ export const MOVE_META = {
     "basePower": 55,
     "priority": 0,
     "utility": false,
-    "accuracy": 95
+    "accuracy": 95,
+    "flags": {
+      "slicing": 1
+    }
   },
   "airslash": {
     "name": "Air Slash",
@@ -2339,6 +2343,7 @@ export const MOVE_META = {
     "utility": true,
     "accuracy": 95,
     "flags": {
+      "slicing": 1,
       "secondary": 1
     }
   },
@@ -3526,7 +3531,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 95,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "slicing": 1
     }
   },
   "grudge": {
@@ -3637,7 +3643,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "slicing": 1
     }
   },
   "aeroblast": {
@@ -3938,6 +3945,7 @@ export const MOVE_META = {
     "accuracy": 100,
     "flags": {
       "contact": 1,
+      "slicing": 1,
       "secondary": 1
     },
     "roles": [
@@ -4545,7 +4553,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "slicing": 1
     }
   },
   "leer": {
@@ -4689,7 +4698,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "slicing": 1
     }
   },
   "painsplit": {
@@ -4848,7 +4858,10 @@ export const MOVE_META = {
     "basePower": 70,
     "priority": 0,
     "utility": false,
-    "accuracy": 100
+    "accuracy": 100,
+    "flags": {
+      "slicing": 1
+    }
   },
   "quickattack": {
     "name": "Quick Attack",
@@ -4884,7 +4897,10 @@ export const MOVE_META = {
     "basePower": 55,
     "priority": 0,
     "utility": false,
-    "accuracy": 95
+    "accuracy": 95,
+    "flags": {
+      "slicing": 1
+    }
   },
   "roaroftime": {
     "name": "Roar of Time",
@@ -5104,7 +5120,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "slicing": 1
     }
   },
   "sludge": {
@@ -5452,7 +5469,8 @@ export const MOVE_META = {
     "utility": false,
     "accuracy": 100,
     "flags": {
-      "contact": 1
+      "contact": 1,
+      "slicing": 1
     }
   },
   "zapcannon": {

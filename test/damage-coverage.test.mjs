@@ -327,3 +327,61 @@ test('accuracy abilities, Truant, Libero and Transistor reach the estimate', asy
     setActiveGame(previous);
   }
 });
+
+test('conditions the set guarantees are priced; unguaranteed ones stay out', async () => {
+  const { EXPECTED_STINT_TURNS, downloadAttackShare, coverageDamageIntoType } =
+    await import('../src/teamBuilder/damage-model.js');
+  const physical = { id: 'facade', type: 'Normal', category: 'Physical', basePower: 70, flags: {} };
+  const special = { id: 'psychic', type: 'Psychic', category: 'Special', basePower: 90, flags: {} };
+  const near = (a, b) => Math.abs(a - b) < 1e-9;
+  const late = (1 + 1.5 * (EXPECTED_STINT_TURNS - 1)) / EXPECTED_STINT_TURNS;
+
+  // An orb in the item slot activates Guts from turn two.
+  assert.ok(near(getAbilityDamageMultiplier('Guts', physical, { heldItem: 'Flame Orb' }), late));
+  assert.equal(getAbilityDamageMultiplier('Guts', physical, { heldItem: 'Leftovers' }), 1);
+  assert.equal(getAbilityDamageMultiplier('Guts', physical), 1);
+  assert.ok(near(getAbilityDamageMultiplier('Toxic Boost', physical, { heldItem: 'Toxic Orb' }), late));
+  assert.equal(getAbilityDamageMultiplier('Toxic Boost', physical, { heldItem: 'Flame Orb' }), 1);
+  assert.ok(near(getAbilityDamageMultiplier('Flare Boost', special, { heldItem: 'Flame Orb' }), late));
+
+  // Booster Energy raises the highest stat; only Atk or SpA reach damage.
+  const bulkyAtk = { atk: 300, def: 200, spa: 100, spd: 150, spe: 250 };
+  assert.equal(getAbilityDamageMultiplier('Protosynthesis', physical, { heldItem: 'Booster Energy', stats: bulkyAtk }), 1.3);
+  assert.equal(getAbilityDamageMultiplier('Quark Drive', special, { heldItem: 'Booster Energy', stats: bulkyAtk }), 1);
+  const fast = { atk: 200, def: 200, spa: 200, spd: 200, spe: 300 };
+  assert.equal(getAbilityDamageMultiplier('Protosynthesis', physical, { heldItem: 'Booster Energy', stats: fast }), 1);
+
+  // Weather and terrain the user sets itself.
+  const fire = { id: 'flamethrower', type: 'Fire', category: 'Special', basePower: 90, flags: {} };
+  const water = { id: 'surf', type: 'Water', category: 'Special', basePower: 90, flags: {} };
+  assert.equal(getAbilityDamageMultiplier('Drought', fire), 1.5);
+  assert.equal(getAbilityDamageMultiplier('Drought', water), 0.5);
+  assert.equal(getAbilityDamageMultiplier('Desolate Land', water), 0);
+  assert.equal(getAbilityDamageMultiplier('Drizzle', water), 1.5);
+  const electric = { id: 'thunderbolt', type: 'Electric', category: 'Special', basePower: 90, flags: {} };
+  assert.equal(getAbilityDamageMultiplier('Electric Surge', electric, { attackerTypes: ['Electric'] }), 1.5);
+  assert.equal(getAbilityDamageMultiplier('Electric Surge', electric, { attackerTypes: ['Electric', 'Flying'] }), 1);
+  assert.ok(near(getAbilityDamageMultiplier('Orichalcum Pulse', physical), 4 / 3));
+
+  // Download by the population's chance, not a median tie.
+  const share = downloadAttackShare();
+  assert.ok(share > 0.2 && share < 0.8, String(share));
+  assert.ok(near(getAbilityDamageMultiplier('Download', physical), 1 + 0.5 * share));
+  assert.ok(near(getAbilityDamageMultiplier('Download', special), 1 + 0.5 * (1 - share)));
+
+  // Gen 9 boosts.
+  const slash = { id: 'nightslash', type: 'Dark', category: 'Physical', basePower: 70, flags: { slicing: 1 } };
+  assert.equal(getAbilityDamageMultiplier('Sharpness', slash), 1.5);
+  assert.equal(getAbilityDamageMultiplier('Sharpness', physical), 1);
+  const boomburst = { id: 'boomburst', type: 'Normal', category: 'Special', basePower: 140, flags: { sound: 1 } };
+  assert.equal(getAbilityDamageMultiplier('Punk Rock', boomburst), 1.3);
+  assert.equal(getAbilityDamageMultiplier('Gorilla Tactics', physical), 1.5);
+  assert.ok(near(getAbilityDamageMultiplier('Sword of Ruin', physical), 4 / 3));
+  assert.equal(getAbilityDamageMultiplier('Sword of Ruin', special), 1);
+
+  // Scrappy reaches Ghosts with Normal and Fighting, nothing else.
+  assert.equal(coverageDamageIntoType('return', 'Normal', 100, 'Ghost'), 0);
+  assert.equal(coverageDamageIntoType('return', 'Normal', 100, 'Ghost', 'Scrappy'), 100);
+  assert.equal(coverageDamageIntoType('shadowball', 'Ghost', 100, 'Normal', 'Scrappy'), 0);
+  assert.equal(coverageDamageIntoType('return', 'Normal', 100, 'Rock', 'Scrappy'), 50);
+});

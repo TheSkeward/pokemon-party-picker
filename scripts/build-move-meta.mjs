@@ -189,6 +189,7 @@ function main() {
     if (move.flags?.bite) abilityFlags.bite = 1;
     if (move.flags?.pulse) abilityFlags.pulse = 1;
     if (move.flags?.sound) abilityFlags.sound = 1;
+    if (move.flags?.slicing) abilityFlags.slicing = 1; // Sharpness
     if (move.recoil || move.hasCrashDamage) abilityFlags.recoil = 1;
     if (move.secondary || (move.secondaries || []).length) {
       abilityFlags.secondary = 1;

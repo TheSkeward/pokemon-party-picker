@@ -84,6 +84,28 @@ Truant amortizes every non-recharge move like a recharge move, and Protean
 and Libero give STAB on every move because both fangames' engines apply them
 that way.
 
+Ability boosts that depend on battle state are excluded, with one class of
+exceptions: conditions the set guarantees for itself. An orb in the item slot
+that activates Guts, Toxic Boost or Flare Boost is priced, averaged over the
+expected stint since the orb fires at the end of the first turn. The stint is
+four turns, set from measurement rather than assumption: Showdown replay logs
+(`scripts/measure-stints.mjs`, September 2026, about 150 recent battles per
+ladder) show a median 3 turns per knockout and a median switch-in of 2 turns
+on the Gen 7 and Gen 9 OU ladders; ladder switching makes that stint a floor,
+a trainer fight keeps a mon in through one knockout and often two, so four
+turns sits between one knockout and a six-mon fight shared by four stints.
+That makes the orb 1.375×, and Slow Start's five turns outlast the stint, so
+it stays priced as always-on.
+Booster Energy with Protosynthesis or Quark Drive, weather or terrain the
+ability itself sets (with their accuracy effects on Thunder, Hurricane and
+Blizzard), and Orichalcum Pulse and Hadron Engine fire on entry and are priced
+in full. Download is priced by the share of the game's species whose Defense
+is the lower stat, the chance it raises Attack rather than Special Attack,
+rather than by comparing medians. Palafin's Hero form needs a switch and
+stays out. Scrappy and Mind's Eye let Normal and Fighting coverage reach
+Ghosts. Because no dataset measures playthrough fight length, the stint is an
+assumption, named in code so it can be revisited.
+
 The additive routes (specialist bulk, tempo, and the priority-utility
 saturation) can overshoot 1, so they saturate through `soft_ceiling` rather
 than a hard clamp: identity up to a knee (default `0.9`), then asymptotic to —
