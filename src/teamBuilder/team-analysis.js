@@ -19,7 +19,7 @@ import {
 } from '../playthrough/type-chart.js';
 import {
   coverageDamageIntoType,
-  estimateMoveDamage,
+  explainMoveDamage,
   getAbilityDamageMultiplier,
   getAbilityEffectiveMoveType,
   getAttackingStats,
@@ -1397,6 +1397,7 @@ function formatProfileMove(move, member, attackerStats) {
   return {
     adjustedPower: getAdjustedPower(move, member),
     estimatedDamage: getEstimatedDamage(move, member, attackerStats),
+    damageSteps: getDamageSteps(move, member, attackerStats),
     basePower: getMovePower(move),
     category: move.category || null,
     id: move.id,
@@ -1487,24 +1488,42 @@ const damageMemo = new Map();
 const DAMAGE_MEMO_LIMIT = 200_000;
 
 function getEstimatedDamage(move, member, attackerStats) {
+  return getDamageEstimate(move, member, attackerStats).damage;
+}
+
+/**
+ * The working behind a move's estimate, one line per quantity, shown on
+ * hover so the figure can be checked against the page.
+ * @return {!Array<string>}
+ */
+function getDamageSteps(move, member, attackerStats) {
+  return getDamageEstimate(move, member, attackerStats).steps;
+}
+
+function getDamageEstimate(move, member, attackerStats) {
   const key = `${move.id}|${member.id}|${member.ability || ''}|${member.heldItem || ''}|${attackerStats?.atk ?? ''}|${attackerStats?.spa ?? ''}|${attackerStats?.spe ?? ''}|${attackerStats?.level ?? ''}`;
   const cached = damageMemo.get(key);
   if (cached !== undefined) return cached;
-  const value = computeEstimatedDamage(move, member, attackerStats);
+  const value = computeDamageEstimate(move, member, attackerStats);
   if (damageMemo.size >= DAMAGE_MEMO_LIMIT) damageMemo.clear();
   damageMemo.set(key, value);
   return value;
 }
 
-function computeEstimatedDamage(move, member, attackerStats) {
+function computeDamageEstimate(move, member, attackerStats) {
   // A type Gem boosts the CONVERTED move, matching the games.
   const effectiveType = getAbilityEffectiveMoveType(member.ability, move);
-  const perHit = estimateMoveDamage({
+  const hitMultiplier = getEffectiveHitMultiplier(move, member.ability);
+  const itemName = member.heldItem
+    ? dex().heldItemsById[toId(member.heldItem)]?.name || member.heldItem
+    : '';
+  const { damage: perHit, steps } = explainMoveDamage({
     moveId: move.id,
+    moveName: move.name,
     // Scale base power by the move's effective-hit factor (multi-hit average,
     // recharge amortization, escalating-move weighting), so ranking and the
     // shown estimate reflect a turn's real output, not a single hit.
-    basePower: move.basePower * getEffectiveHitMultiplier(move, member.ability),
+    basePower: move.basePower * hitMultiplier,
     category: move.category,
     type: effectiveType,
     attackerTypes: member.types,
@@ -1517,15 +1536,30 @@ function computeEstimatedDamage(move, member, attackerStats) {
       category: move.category,
       pokemonId: member.id,
     }),
+    itemName,
     abilityMultiplier: getAbilityDamageMultiplier(member.ability, move),
     ability: member.ability,
     attackerId: member.id,
   });
+  if (hitMultiplier !== 1 && move.basePower) {
+    steps.splice(
+      1, 0,
+      `Base power ${move.basePower} × ${Math.round(hitMultiplier * 100) / 100} for a turn's hits (multi-hit average, recharge, or escalation)`,
+    );
+  }
+  if (effectiveType !== move.type) {
+    steps.splice(1, 0, `Dealt as ${effectiveType} under ${member.ability}`);
+  }
   // Expected damage weights a hit by how often it lands, so an inaccurate nuke
   // (Focus Blast: 120 BP @ 70%) ranks below a reliable lower-power move (e.g. a
   // 90 BP @ 100% move: 84 vs 90 expected). Applied after the per-hit estimate
   // so it also scales fixed-damage/OHKO moves (Fissure @ 30%).
-  return Math.round(perHit * getAccuracyFactor(move));
+  const accuracy = getAccuracyFactor(move);
+  const damage = Math.round(perHit * accuracy);
+  if (accuracy !== 1) {
+    steps.push(`× ${Math.round(accuracy * 100)}% accuracy = ${damage} expected`);
+  }
+  return { damage, steps };
 }
 
 // A move's hit rate as a 0–1 factor. Never-miss and perfect-accuracy moves

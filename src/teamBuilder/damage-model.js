@@ -484,6 +484,8 @@ export function getAttackingStats({ pokemonId, levelCap, spread }) {
     const nature = NATURE_ATTACK_MULTIPLIERS[parsed.nature] || {};
     return {
       level,
+      // Where the figures come from, for the damage working shown on hover.
+      spreadLabel: `${parsed.natureLabel}, EVs ${parsed.evs.join('/')}`,
       atk: statValue(baseAtk, parsed.evs[EV_INDEX.atk], level, nature.atk ?? 1),
       spa: statValue(baseSpa, parsed.evs[EV_INDEX.spa], level, nature.spa ?? 1),
       // The spread's REAL speed (EVs + nature) — the same figure the stat
@@ -502,6 +504,7 @@ export function getAttackingStats({ pokemonId, levelCap, spread }) {
   const physicalIsStronger = baseAtk >= baseSpa;
   return {
     level,
+    spreadLabel: `assumed 252 EVs and a boosting nature in ${physicalIsStronger ? 'Atk' : 'SpA'}`,
     atk: statValue(
       baseAtk,
       physicalIsStronger ? 252 : 0,
@@ -561,8 +564,30 @@ export function computeFinalStats({ pokemonId, level, nature, evs }) {
  * no stats, no STAB, no item boosts, exactly as the games compute them.
  * @return {number}
  */
-export function estimateMoveDamage({
+export function estimateMoveDamage(params) {
+  return explainMoveDamage(params).damage;
+}
+
+// Two decimals at most, no trailing zeros: 1.5, 1.3, 0.11.
+const factorText = (value) => `${Math.round(value * 100) / 100}`;
+
+/**
+ * The estimate with its working: every quantity the figure is built from,
+ * one line each, so a reader can check a Sheer Force Nidoking against the
+ * numbers on the page. Same arithmetic as the estimate; `damage` is the
+ * per-hit figure the estimate returns.
+ * @param {{moveId: ?string, moveName: (string|undefined), basePower: number,
+ *     category: string, type: string, attackerTypes: !Array<string>,
+ *     attackerStats: ?Object, level: (number|undefined),
+ *     itemMultiplier: number, itemName: (string|undefined),
+ *     abilityMultiplier: number, ability: ?string,
+ *     attackerId: ?string}} params The estimate's inputs, plus display
+ *     names for the item and, through `ability`, the ability.
+ * @return {{damage: number, steps: !Array<string>}}
+ */
+export function explainMoveDamage({
   moveId = null,
+  moveName = '',
   basePower,
   category,
   type,
@@ -570,6 +595,7 @@ export function estimateMoveDamage({
   attackerStats,
   level,
   itemMultiplier = 1,
+  itemName = '',
   // Move-property-conditional ability boost (getAbilityDamageMultiplier) —
   // computed by the caller from the RAW move so Technician's ≤60 BP gate sees
   // per-hit power, not the effective-hit-scaled figure passed as basePower.
@@ -579,11 +605,18 @@ export function estimateMoveDamage({
   // the user's own speed or weight (Electro Ball, Gyro Ball, Heavy Slam...).
   attackerId = null,
 }) {
+  const label = moveName || moveId || 'move';
   const stab = abilityStab(ability, attackerTypes, type);
   const lvl = normalizeLevel(level ?? attackerStats?.level);
+  const steps = [];
 
   const fixed = fixedMoveDamage(moveId, lvl);
-  if (fixed != null) return fixed;
+  if (fixed != null) {
+    steps.push(
+      `${label}: fixed damage, ${fixed} at level ${lvl}; stats, STAB, items and abilities do not apply.`,
+    );
+    return { damage: fixed, steps };
+  }
 
   // A type-conditional move lands only as often as the reference defender's
   // fractional types satisfy it.
@@ -592,36 +625,72 @@ export function estimateMoveDamage({
   // Variable-power moves arrive with base power 0; resolve their effective
   // power against the reference defender at this level, using the attacker's
   // exact speed when the stat line carries it.
-  const resolvedPower =
-    basePower ||
-    variableMovePower(moveId, lvl, attackerId, attackerStats?.spe ?? null) ||
-    0;
+  const variablePower = basePower
+    ? null
+    : variableMovePower(moveId, lvl, attackerId, attackerStats?.spe ?? null);
+  const resolvedPower = basePower || variablePower || 0;
+  steps.push(
+    variablePower != null
+      ? `${label} · ${category} · ${resolvedPower} effective power against the reference defender`
+      : `${label} · ${category} · ${factorText(resolvedPower)} base power`,
+  );
 
-  if (!resolvedPower) return 0;
+  if (!resolvedPower) {
+    steps.push('No base power: no damage.');
+    return { damage: 0, steps };
+  }
+
+  const factors = [];
+  if (stab !== 1) {
+    factors.push(
+      `× ${factorText(stab)} STAB${abilityId(ability) === 'adaptability' ? ' (Adaptability)' : abilityId(ability) === 'protean' ? ' (Protean)' : ''}`,
+    );
+  }
+  if (abilityMultiplier !== 1) {
+    factors.push(`× ${factorText(abilityMultiplier)} ${ability || 'ability'}`);
+  }
+  if (itemMultiplier !== 1) {
+    factors.push(`× ${factorText(itemMultiplier)} ${itemName || 'item'}`);
+  }
+  if (typeCondition !== 1) {
+    factors.push(
+      `× ${factorText(typeCondition)} chance the defender shares one of the user's types`,
+    );
+  }
+  const multiplier = stab * itemMultiplier * abilityMultiplier * typeCondition;
 
   if (!attackerStats) {
-    return Math.round(
-      resolvedPower * stab * itemMultiplier * abilityMultiplier *
-        typeCondition,
-    );
+    const damage = Math.round(resolvedPower * multiplier);
+    steps.push('No base stats for this species: power-only estimate.');
+    if (factors.length) steps.push(factors.join(' · '));
+    steps.push(`= ${damage} per hit`);
+    return { damage, steps };
   }
 
   // Foul Play deals damage with the TARGET's Attack stat, not the user's —
   // priced as the reference defender's median Atk, uninvested at level.
-  const attack =
-    moveId === 'foulplay'
-      ? statValue(referenceBases().attack, 0, lvl, 1)
-      : category === 'Physical'
-        ? attackerStats.atk
-        : attackerStats.spa;
+  const foulPlay = moveId === 'foulplay';
+  const attack = foulPlay
+    ? statValue(referenceBases().attack, 0, lvl, 1)
+    : category === 'Physical'
+      ? attackerStats.atk
+      : attackerStats.spa;
   const defense = statValue(REFERENCE_DEFENSE_BASE, 0, lvl, 1);
+  const attackLabel = foulPlay
+    ? `the reference defender's Atk ${attack} (Foul Play)`
+    : `${category === 'Physical' ? 'Atk' : 'SpA'} ${attack}${attackerStats.spreadLabel ? ` (${attackerStats.spreadLabel})` : ''}`;
+  steps.push(
+    `Level ${lvl}: ${attackLabel} against a base-70 defender's ${category === 'Physical' ? 'Def' : 'SpD'} ${defense}`,
+  );
 
   const baseDamage =
     Math.floor(
       (Math.floor(((2 * lvl) / 5 + 2) * resolvedPower * attack) / defense) / 50,
     ) + 2;
+  steps.push(`Base damage ${baseDamage}`);
+  if (factors.length) steps.push(factors.join(' · '));
 
-  return Math.round(
-    baseDamage * stab * itemMultiplier * abilityMultiplier * typeCondition,
-  );
+  const damage = Math.round(baseDamage * multiplier);
+  steps.push(`= ${damage} per hit`);
+  return { damage, steps };
 }

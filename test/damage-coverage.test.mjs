@@ -5,6 +5,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   estimateMoveDamage,
+  explainMoveDamage,
+  getAbilityDamageMultiplier,
   isTypeConditionalMove,
   typeConditionMultiplier,
 } from '../src/teamBuilder/damage-model.js';
@@ -213,4 +215,42 @@ test('Synchronoise is priced by the chance the fractional-type defender shares a
   const full = estimateMoveDamage({ ...move, moveId: 'psychic' });
   const conditioned = estimateMoveDamage(move);
   assert.ok(Math.abs(conditioned - full * psychic) <= 1, `${conditioned} vs ${full * psychic}`);
+});
+
+test('the damage working names every factor and lands on the estimate', () => {
+  // A Sheer Force Nidoking's Sludge Wave: the secondary effect earns 1.3×.
+  const sludgeWave = {
+    id: 'sludgewave', name: 'Sludge Wave', basePower: 95, category: 'Special',
+    type: 'Poison', flags: { secondary: 1 },
+  };
+  const params = {
+    moveId: sludgeWave.id,
+    moveName: sludgeWave.name,
+    basePower: sludgeWave.basePower,
+    category: sludgeWave.category,
+    type: sludgeWave.type,
+    attackerTypes: ['Poison', 'Ground'],
+    attackerStats: { ...attacker, spreadLabel: 'Modest, EVs 0/0/0/252/4/252' },
+    itemMultiplier: 1.3,
+    itemName: 'Life Orb',
+    abilityMultiplier: getAbilityDamageMultiplier('Sheer Force', sludgeWave),
+    ability: 'Sheer Force',
+  };
+  const { damage, steps } = explainMoveDamage(params);
+  assert.equal(damage, estimateMoveDamage(params));
+  const text = steps.join('\n');
+  assert.match(text, /Sludge Wave · Special · 95 base power/);
+  assert.match(text, /Level 50: SpA 120 \(Modest, EVs 0\/0\/0\/252\/4\/252\) against a base-70 defender's SpD/);
+  assert.match(text, /× 1\.5 STAB/);
+  assert.match(text, /× 1\.3 Sheer Force/);
+  assert.match(text, /× 1\.3 Life Orb/);
+  assert.match(text, new RegExp(`= ${damage} per hit$`));
+
+  // Fixed damage says so instead of pretending to have a formula.
+  const toss = explainMoveDamage({
+    moveId: 'seismictoss', moveName: 'Seismic Toss', basePower: 0,
+    category: 'Physical', type: 'Fighting', attackerStats: attacker,
+  });
+  assert.equal(toss.damage, 50);
+  assert.match(toss.steps[0], /fixed damage, 50 at level 50/);
 });

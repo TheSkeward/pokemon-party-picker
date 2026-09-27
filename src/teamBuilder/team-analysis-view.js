@@ -627,7 +627,7 @@ function renderSetMove(move) {
     <div class="team-set-move">
       ${renderTypeBadge(move.type)}
       <span class="team-set-move-name"${facts ? ` title="${escapeHtml(facts)}"` : ''}>${escapeHtml(move.name)}</span>
-      <span class="team-set-move-dmg">${escapeHtml(formatDamage(move))}</span>
+      <span class="team-set-move-dmg"${move.damageSteps?.length ? ` title="${escapeAttr(move.damageSteps.join('\n'))}"` : ''}>${escapeHtml(formatDamage(move))}</span>
       <span class="team-set-move-src" title="${escapeAttr(sourceTitle)}">${escapeHtml(move.sourceLabel || 'Legal')}</span>
     </div>
   `;
