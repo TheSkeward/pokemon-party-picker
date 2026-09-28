@@ -734,14 +734,16 @@ function mergeDonorRequests(requests) {
 
 /**
  * Per-member context the item recommender needs but can only get from the move
- * analysis: the types its *recommended* damaging moves cover, and whether its
- * top competitive set actually runs Unburden. Both gate gem recommendations —
- * a type Gem is useless without a move of its type, and the Unburden speed
- * payoff only applies if Unburden is the set's ability (not merely a legal one,
- * e.g. Liepard's top sets run Prankster). Uses the same pipeline as the
- * analysis panel so the gates match what the player sees.
+ * analysis: the types its *recommended* damaging moves cover, its recommended
+ * move ids, and the ability it battles with. They gate items on what the set
+ * can use — a type Gem is useless without a move of its type, a duration
+ * extender without a move or ability that starts its condition, and the
+ * Unburden speed payoff only applies if Unburden is the set's ability (not
+ * merely a legal one, e.g. Liepard's top sets run Prankster). Uses the same
+ * pipeline as the analysis panel so the gates match what the player sees.
  * @return {!Promise<!Map<string, {damageTypes: !Set<string>,
- *     unburden: boolean, fieldSetterShare: number}>>} Keyed by teamMemberKey.
+ *     moveIds: !Set<string>, ability: string, unburden: boolean,
+ *     fieldSetterShare: number}>>} Keyed by teamMemberKey.
  */
 export async function getTeamItemContext(
   team = [],
@@ -785,9 +787,13 @@ export async function getTeamItemContext(
         ...fieldMoves.map(
           (move) => (entry.topSet?.moveUsage?.get(move.id) || 0) / 100),
       );
+      const ability = toId(entry.topSet?.ability);
       byMember.set(teamMemberKey(row), {
         damageTypes,
-        unburden: toId(entry.topSet?.ability) === 'unburden',
+        moveIds: new Set(
+          (entry.profile.recommendedMoves || []).map((move) => move.id)),
+        ability,
+        unburden: ability === 'unburden',
         fieldSetterShare: fieldMoves.length
           ? Math.max(canonicalShare, 0.15)
           : 0,

@@ -3,6 +3,7 @@ import { fetchJsonCached } from '../utils/fetch-json-cached.js';
 import { toId } from '../utils/ids.js';
 import { dex } from '../games/dex.js';
 import { gameItems } from '../games/items.js';
+import { getActiveGame } from '../games/registry.js';
 import { getCurrentSpeciesForChoice } from '../playthrough/current-species.js';
 import { spentEvolutionItems } from '../playthrough/evolution-requirements.js';
 
@@ -38,20 +39,54 @@ function proxies() {
   return tables;
 }
 
-// A type Gem only fires on a move of its own type — useless otherwise — so an
-// item is eligible for a member if it isn't a gem, or it is a gem whose type is
-// among that member's recommended damaging-move types. Members with no known
-// move types (allowedTypes undefined) are not gated, preserving prior behavior.
-// The field extender (Amplifield Rock) is likewise useless without a field-
-// setting move in the member's recommended set.
-function itemEligibleForMember(itemId, allowedTypes, fieldSetterShare = null) {
+// A duration extender lengthens only a weather, screen, or terrain its holder
+// starts, so it is dead weight on a set that starts none. A species' usage
+// lists the item if any of its sets started the condition (Damp Rock from the
+// few rain Weezing), so the member's own recommended set must start it. Keyed
+// by item id: the moves and abilities that start what it extends.
+const EXTENDER_STARTERS = new Map(Object.entries({
+  damprock: { moves: ['raindance'], abilities: ['drizzle'] },
+  heatrock: {
+    moves: ['sunnyday'],
+    abilities: ['drought', 'orichalcumpulse'],
+  },
+  smoothrock: { moves: ['sandstorm'], abilities: ['sandstream', 'sandspit'] },
+  icyrock: { moves: ['hail', 'snowscape'], abilities: ['snowwarning'] },
+  lightclay: { moves: ['reflect', 'lightscreen', 'auroraveil'], abilities: [] },
+  terrainextender: {
+    moves: ['electricterrain', 'grassyterrain', 'mistyterrain',
+      'psychicterrain'],
+    abilities: ['electricsurge', 'grassysurge', 'mistysurge', 'psychicsurge',
+      'hadronengine', 'seedsower'],
+  },
+}));
+
+// Before Generation 6 a weather ability's weather lasted until replaced, so a
+// rock added nothing to it.
+const FIRST_GEN_ABILITY_WEATHER_ENDS = 6;
+
+function startsExtendedCondition(starters, context) {
+  if (!context?.moveIds) return true;
+  if (starters.moves.some((id) => context.moveIds.has(id))) return true;
+  return getActiveGame().dexGen >= FIRST_GEN_ABILITY_WEATHER_ENDS &&
+    starters.abilities.includes(context.ability);
+}
+
+// Whether an item can act for a member's set, from its item context (see
+// getTeamItemContext). A type Gem only fires on a move of its own type, and a
+// duration extender (the Amplifield Rock included) only on a condition the
+// set starts. A member without the relevant context is not gated.
+function itemEligibleForMember(itemId, context) {
   if (itemId === FIELD_EXTENDER_ITEM_ID) {
-    return fieldSetterShare == null || fieldSetterShare > 0;
+    const share = context?.fieldSetterShare;
+    return share == null || share > 0;
   }
+  const starters = EXTENDER_STARTERS.get(itemId);
+  if (starters) return startsExtendedCondition(starters, context);
   const gemType = proxies().gemTypeById.get(itemId);
   if (!gemType) return true;
-  if (!allowedTypes) return true;
-  return allowedTypes.has(gemType);
+  if (!context?.damageTypes) return true;
+  return context.damageTypes.has(gemType);
 }
 
 /** @const {string} */
@@ -177,20 +212,14 @@ export function assignTeamItems(
       }
     }
   }
-  const allowedGemTypesFor = (key) => itemContext?.get(key)?.damageTypes;
-  const fieldSetterShareFor = (key) =>
-    itemContext?.get(key)?.fieldSetterShare ?? null;
+  const contextFor = (key) => itemContext?.get(key);
 
   const pairs = [];
   for (const choice of members) {
     const key = teamMemberKey(choice);
-    const allowedGemTypes = allowedGemTypesFor(key);
     for (const item of usageByMember.get(key) || []) {
       if ((remaining[item.id] || 0) <= 0) continue;
-      if (!itemEligibleForMember(
-        item.id, allowedGemTypes, fieldSetterShareFor(key))) {
-        continue;
-      }
+      if (!itemEligibleForMember(item.id, contextFor(key))) continue;
       pairs.push({ key, item });
     }
   }
@@ -210,11 +239,8 @@ export function assignTeamItems(
     .sort((a, b) => (b.score || 0) - (a.score || 0));
 
   for (const choice of itemless) {
-    const itemId = bestRemainingItem(
-      remaining,
-      allowedGemTypesFor(teamMemberKey(choice)),
-      fieldSetterShareFor(teamMemberKey(choice)),
-    );
+    const itemId =
+      bestRemainingItem(remaining, contextFor(teamMemberKey(choice)));
     if (!itemId) break;
 
     assignments[teamMemberKey(choice)] = {
@@ -231,18 +257,15 @@ export function assignTeamItems(
   return assignments;
 }
 
-function bestRemainingItem(
-  remaining, allowedGemTypes, fieldSetterShare = null) {
+function bestRemainingItem(remaining, context) {
   let best = null;
   let bestRank = Infinity;
 
   for (const [itemId, count] of Object.entries(remaining)) {
     if (count <= 0) continue;
-    // Don't dump a leftover type Gem on a member that can't use it — a gem with
-    // no matching move never triggers, so it's no better than no item.
-    if (!itemEligibleForMember(itemId, allowedGemTypes, fieldSetterShare)) {
-      continue;
-    }
+    // A leftover that can never act for this member is no better than no
+    // item, so it is not dumped on it.
+    if (!itemEligibleForMember(itemId, context)) continue;
     const rank = ITEM_QUALITY_RANK.get(itemId) ?? Number.MAX_SAFE_INTEGER;
     if (rank < bestRank) {
       bestRank = rank;
