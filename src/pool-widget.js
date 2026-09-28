@@ -578,11 +578,14 @@ export function mountPoolOptimizer(container, options = {}) {
     state.resultProgressionStale = markResultProgressionStale();
 
     // A render rebuilds the whole page DOM, which resets the viewport to
-    // wherever the shrunk/grown layout lands. Renders triggered
-    // mid-interaction (status lines appearing, the progress bar mounting)
-    // restore the scroll the user actually had.
+    // wherever the shrunk/grown layout lands and drops the focused control.
+    // Renders the user did not ask for (the post-optimize analysis landing,
+    // a debounced re-optimize) restore the scroll they had and hand back the
+    // text box they were working in, selection included, so a name they
+    // dragged over in the pool stays selected.
     const scrollX = window.scrollX;
     const scrollY = window.scrollY;
+    const focused = captureTextFocus();
 
     const handle = renderTeamBuilderPage({
       app,
@@ -600,8 +603,54 @@ export function mountPoolOptimizer(container, options = {}) {
     });
 
     bindEvents();
+    restoreTextFocus(focused);
     window.scrollTo(scrollX, scrollY);
     return handle;
+  }
+
+  // The focused text control inside the widget, by id, with the selection
+  // and scroll a rebuild would lose. Null when focus is elsewhere.
+  function captureTextFocus() {
+    const active = document.activeElement;
+    if (!active || !active.id || !app.contains(active)) return null;
+    if (active.tagName !== 'TEXTAREA' && active.tagName !== 'INPUT') {
+      return null;
+    }
+    return {
+      id: active.id,
+      value: active.value,
+      start: active.selectionStart,
+      end: active.selectionEnd,
+      direction: active.selectionDirection,
+      scrollTop: active.scrollTop,
+    };
+  }
+
+  function restoreTextFocus(focused) {
+    if (!focused) return;
+    const element = app.querySelector(`#${CSS.escape(focused.id)}`);
+    if (!element) return;
+    element.focus({ preventScroll: true });
+    if (focused.start == null || typeof element.setSelectionRange !== 'function') {
+      return;
+    }
+    // The rebuilt control usually carries the same text. When the render
+    // changed it (a normalize rewrites the pool), keep the selected words
+    // where they now sit, or give up the selection rather than guess.
+    let { start, end } = focused;
+    if (element.value !== focused.value) {
+      const selected = focused.value.slice(focused.start, focused.end);
+      const at = selected ? element.value.indexOf(selected) : -1;
+      if (at < 0) return;
+      start = at;
+      end = at + selected.length;
+    }
+    try {
+      element.setSelectionRange(start, end, focused.direction || 'none');
+    } catch {
+      // Some input types carry no selection; focus alone is enough there.
+    }
+    element.scrollTop = focused.scrollTop;
   }
 
   function bindEvents() {
