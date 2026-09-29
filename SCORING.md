@@ -176,6 +176,17 @@ Forretress without Rapid Spin and Spikes is not a Forretress build, and
 before this rule its four-attack coverage set outscored the real one on
 standalone value with no coverage gain for the team.
 
+A fresh attacking type fills an open slot only where it raises the set's
+best damage into at least one defense type, judged exactly as the coverage
+vector is. A 75-power move without STAB lands under a 102-power STAB move
+even into a type it hits super effectively, so Thunder Punch on Lopunny
+covers nothing the scoring can see; a 4x dual type is invisible to the
+per-type vector by design and earns no slot either. When no fresh type
+qualifies, the slot goes to utility the mon's real sets run or that does a
+credited support job, then to a priority attack, then to any attack for
+breadth, and only then to a notable status move without a role, such as
+Substitute, which the scoring does not see at all.
+
 Utility is currently derived from accuracy-weighted move roles such as
 recovery, hazards, removal, speed control, setup, pivoting, phazing, screens,
 disruption, status, and priority. The utility roles are gated by the Pokemon's

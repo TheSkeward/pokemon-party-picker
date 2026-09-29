@@ -1774,9 +1774,11 @@ function moveHitMultiplier(move, ability) {
 // 3. Guarantee one utility move — but a damaging move that ALSO has utility (a
 //      burn/flinch attack) satisfies this, so a pure attacker isn't handed a
 //      junk status move; utility is ranked by usage.
-//   4. Fill the rest by damage, skipping attacking types already covered (a
-// second same-type attack adds nothing); fall back to more utility, then to
-//      a duplicate-type attack only as a last resort.
+//   4. Fill the rest with fresh attacking types that raise the set's best
+//      damage into some defense type (a second same-type attack adds
+//      nothing, and neither does a weak off-type one); then utility that
+//      real sets run or that does a support job; then any attack, priority
+//      first; then role-less notable status moves (Substitute).
 //   5. Slots STILL empty with legal moves remaining: fill by the stitched
 //      competitive priority order — descending usage within the canonical
 //      tier, then each fallback tier in order. That order lives in moveRank
@@ -1898,7 +1900,30 @@ function recommendCurrentMoves(
     add(bestUtility(usableUtility, selected));
   }
 
-  // 4. Fill by damage with type diversity, then bonus utility, then any attack.
+  // 4. Fill by damage with type diversity, then bonus utility, then any
+  // attack. A fresh attacking type earns a slot only where it raises the
+  // set's best damage into at least one defense type, judged the way the
+  // coverage vector is: a 75-power Thunder Punch without STAB lands under a
+  // 102-power Return with it even into Water, so it covers nothing the
+  // scoring can see, and the slot is better spent on utility or a priority
+  // attack. A 4x dual type is invisible to the per-type vector by design,
+  // so it cannot earn a slot either.
+  // Utility worth a slot on its own: real sets run it, or it performs a
+  // support job the scoring credits. Priority alone is not such a job
+  // (Protect), and Substitute carries no role at all.
+  const runsOrSupports = (move) =>
+    move.usage > 0 ||
+    (move.roles || []).some((role) => role !== 'priority');
+  const raisesCoverage = (move) => {
+    const carried = selected.filter((entry) => usableInSet(entry));
+    const into = (entry, defenseType) => coverageDamageIntoType(
+      entry.id, entry.type, entry.estimatedDamage, defenseType, member.ability);
+    return analysisTypes().some((defenseType) => {
+      const best = Math.max(
+        0, ...carried.map((entry) => into(entry, defenseType)));
+      return into(move, defenseType) > best + 1e-9;
+    });
+  };
   while (selected.length < 4) {
     const freshType = usableDamaging()
       .filter(
@@ -1907,13 +1932,25 @@ function recommendCurrentMoves(
           !isFixedDamageMove(move.id) &&
           !isSelected(move, selected),
       )
-      .sort(compareByDamage)[0];
+      .sort(compareByDamage)
+      .find(raisesCoverage);
     if (add(freshType)) continue;
-    if (add(bestUtility(usableUtility, selected))) continue;
+    // Utility the mon's real sets run, or a notable move with a support
+    // role the scoring credits (recovery, setup, status...), beats an attack
+    // the set already out-hits everywhere.
+    if (add(bestUtility(usableUtility.filter(runsOrSupports), selected))) {
+      continue;
+    }
+    // Every attack left is out-hit by the set into every type; one with
+    // priority still moves first, so it goes ahead of pure filler, and any
+    // filler still adds breadth.
     const anyAttack = usableDamaging()
       .filter((move) => !isSelected(move, selected))
-      .sort(compareByDamage)[0];
+      .sort(comparePriorityThenDamage)[0];
     if (add(anyAttack)) continue;
+    // Notable status moves without a support role (Substitute) are the last
+    // filler before the competitive ladder: the scoring sees nothing in them.
+    if (add(bestUtility(usableUtility, selected))) continue;
     // Step 5: the damage-led fill is dry — take the best-ranked remaining
     // move on the stitched competitive ladder (canonical tier first, then
     // the fallback tiers in order). Only moves that appear SOMEWHERE in the
@@ -2049,6 +2086,12 @@ function compareByDamage(a, b) {
     a.sourcePriority - b.sourcePriority ||
     a.name.localeCompare(b.name)
   );
+}
+
+// Among attacks the set already out-hits everywhere, moving first is the one
+// thing left to prefer.
+function comparePriorityThenDamage(a, b) {
+  return (b.priority || 0) - (a.priority || 0) || compareByDamage(a, b);
 }
 
 function compareUtilityByUsage(a, b) {
