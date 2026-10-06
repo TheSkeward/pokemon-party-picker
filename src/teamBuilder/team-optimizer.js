@@ -260,10 +260,10 @@ const MAX_RESULT_CACHE = 400;
 // (reusable TMs); HGSS results with contested TMs differ.
 // v58: retain fallback move ranks when filling alternative builds.
 // v59: map canonical ability slots onto the current evolutionary form.
-// Bump whenever the same inputs must produce a different result: '66'
-// retires verdicts whose open slots were filled by fresh attacking types
-// that out-hit nothing in the set.
-const RESULT_CACHE_VERSION = '66';
+// Bump whenever the same inputs must produce a different result: '67'
+// retires verdicts that invested in the mon's higher base stat rather than
+// the side of its strongest obtainable attack.
+const RESULT_CACHE_VERSION = '67';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.
@@ -1334,9 +1334,10 @@ function formatLegalityNote(profile) {
 // scoring stays item-blind
 // (items are inventory-dependent and priced by the owned-item system;
 // folding the top competitive item into scored damage would double-count),
-// and scoring uses ideal offensive investment rather than the displayed
-// competitive spread (see the NOTE at makeProfile — real spreads are often
-// defensive and collapsed PvE attacker offense).
+// and scoring prices the set under full investment on the side of its
+// strongest obtainable attack rather than the displayed competitive spread
+// (see the NOTE at makeProfile — real spreads are often defensive and
+// collapsed PvE attacker offense).
 async function resolveCandidateBuilds({
   breedingContext,
   sketchContext,
@@ -1459,8 +1460,9 @@ async function resolveCandidateBuilds({
   });
 
   // NOTE — scoring deliberately does NOT use the top spread's real EVs/nature
-  // (attackerStats stays the generic strongest-side investment computed
-  // inside buildCandidateLegalityProfile): competitive singles spreads are
+  // (attackerStats stays the assumed full investment on the side of the
+  // strongest obtainable attack, computed inside
+  // buildCandidateLegalityProfile): competitive singles spreads are
   // often defensive, which collapses PvE attacker offense pool-wide and lets
   // zero-offense walls displace real attackers. A playthrough mon's
   // investment is the player's choice, so scoring prices the attacking

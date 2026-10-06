@@ -839,9 +839,7 @@ export function buildCandidateLegalityProfile({
         ...(ability ? { ability } : {}),
       }
       : rawMember;
-  const stats =
-    attackerStats ||
-    getAttackingStats({ pokemonId: member.id, levelCap });
+  const stats = attackerStats || assumedInvestment(member, moves, levelCap);
   const damagingMoves = moves.filter((move) =>
     isUsableDamagingMove(move, moves, member.heldItem),
   );
@@ -952,6 +950,29 @@ export function buildCandidateLegalityProfile({
     sourceCounts: countMoveSources(moves),
     superEffectiveTargetCount: superEffectiveTargetTypes.size,
   };
+}
+
+// The assumed investment goes to the side of the mon's strongest obtainable
+// attack among its legal moves, not its higher base stat, and the whole set
+// is priced under it: a player builds one side. Swellow's Attack is higher,
+// but once Boomburst is legal its best attack is special and every move is
+// priced as the special build it would be; at a cap where Facade is its
+// best attack it stays physical. Ties go to the physical side.
+function assumedInvestment(member, moves, levelCap) {
+  const physical = getAttackingStats({
+    pokemonId: member.id, levelCap, side: 'physical',
+  });
+  if (!physical) return null;
+  const special = getAttackingStats({
+    pokemonId: member.id, levelCap, side: 'special',
+  });
+  const peak = (stats) => Math.max(
+    0,
+    ...moves
+      .filter((move) => move.category !== 'Status')
+      .map((move) => getEstimatedDamage(move, member, stats)),
+  );
+  return peak(special) > peak(physical) ? special : physical;
 }
 
 function buildRecommendedSet(

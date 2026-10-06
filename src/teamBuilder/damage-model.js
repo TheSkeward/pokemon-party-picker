@@ -669,14 +669,16 @@ export function battleFormFor(pokemonId, level) {
 
 /**
  * Computes a member's effective Atk and SpA at the given level. With a real top
- * spread we honour its EVs + nature; without one we assume the Pokémon invests
- * in its naturally stronger attacking side (252 EVs + a boosting nature), which
- * is how it would actually be built and is enough to settle the physical vs
- * special question for the recommender.
+ * spread we honour its EVs + nature. Without one we assume full investment
+ * (252 EVs + a boosting nature) on one attacking side: the `side` the caller
+ * names, else the naturally stronger one. The recommender names the side of
+ * the mon's strongest obtainable attack (team-analysis assumedInvestment), so
+ * a Swellow whose Attack is higher is still priced as the special build it
+ * becomes once Boomburst is legal.
  * @return {?{level: number, atk: number, spa: number, spe: number}} Null when
  *     the species has no base-stat row.
  */
-export function getAttackingStats({ pokemonId, levelCap, spread }) {
+export function getAttackingStats({ pokemonId, levelCap, spread, side }) {
   const level = normalizeLevel(levelCap);
   const battleForm = battleFormEntry(toId(pokemonId), level);
   const stats = dex().baseStats[battleForm?.form || toId(pokemonId)];
@@ -726,22 +728,12 @@ export function getAttackingStats({ pokemonId, levelCap, spread }) {
     };
   }
 
-  const physicalIsStronger = baseAtk >= baseSpa;
+  const physical = side ? side === 'physical' : baseAtk >= baseSpa;
   return {
     level,
-    spreadLabel: `${formLabel}assumed 252 EVs and a boosting nature in ${physicalIsStronger ? 'Atk' : 'SpA'}`,
-    atk: statValue(
-      baseAtk,
-      physicalIsStronger ? 252 : 0,
-      level,
-      physicalIsStronger ? 1.1 : 1,
-    ),
-    spa: statValue(
-      baseSpa,
-      physicalIsStronger ? 0 : 252,
-      level,
-      physicalIsStronger ? 1 : 1.1,
-    ),
+    spreadLabel: `${formLabel}assumed 252 EVs and a boosting nature in ${physical ? 'Atk' : 'SpA'}`,
+    atk: statValue(baseAtk, physical ? 252 : 0, level, physical ? 1.1 : 1),
+    spa: statValue(baseSpa, physical ? 0 : 252, level, physical ? 1 : 1.1),
     def: statValue(baseDef, 0, level, 1),
     spd: statValue(baseSpd, 0, level, 1),
     spe: statValue(baseSpe, 0, level, 1),

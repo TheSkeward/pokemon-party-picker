@@ -68,7 +68,13 @@ screen_support = non_passive
 
 Geometric means require every axis of a role to be credible. Speed and bulk are
 percentiles blended between the full dex and forms reachable at the current
-cap. Damage is measured against a stage-reference hit. The reference defender
+cap. Damage is measured against a stage-reference hit, under full investment
+(252 EVs and a boosting nature) on the side of the mon's strongest obtainable
+attack among its legal moves rather than its higher base stat: a player
+builds one side, so Swellow is priced as a special attacker once Boomburst is
+legal and as a physical one while Facade is its best move, and an off-side
+move is priced off the empty stat it would really have. The pane still
+displays the competitive spread. The reference defender
 is a median-stat wall with no single typing: ordinary effectiveness stays out
 of the estimate (the coverage vector applies it per defending type), but the
 defender carries fractional types, each type combination in the share of the
