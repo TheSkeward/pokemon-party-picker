@@ -631,6 +631,28 @@ export function parseSpread(spreadName) {
   return { nature: toId(naturePart), natureLabel: naturePart, evs };
 }
 
+/**
+ * The attacking side a competitive spread builds toward: the stat its EVs
+ * favour, else the one its nature boosts or spares (a -Atk nature means a
+ * special build). A player builds one side and natures and EVs are costly to
+ * change, so the recommender prices the set as that build. Null when the
+ * spread shows no side (a wall spread with a neutral nature) or does not
+ * parse.
+ * @param {*} spreadName
+ * @return {?string} 'physical', 'special' or null.
+ */
+export function investmentSideOfSpread(spreadName) {
+  const parsed = parseSpread(spreadName);
+  if (!parsed) return null;
+  const atkEvs = parsed.evs[EV_INDEX.atk];
+  const spaEvs = parsed.evs[EV_INDEX.spa];
+  if (atkEvs !== spaEvs) return atkEvs > spaEvs ? 'physical' : 'special';
+  const nature = NATURE_ATTACK_MULTIPLIERS[parsed.nature] || {};
+  if ((nature.atk ?? 1) > 1 || (nature.spa ?? 1) < 1) return 'physical';
+  if ((nature.spa ?? 1) > 1 || (nature.atk ?? 1) < 1) return 'special';
+  return null;
+}
+
 function statValue(base, ev, level, natureMultiplier) {
   const inner =
     Math.floor(((2 * base + 31 + Math.floor(ev / 4)) * level) / 100);

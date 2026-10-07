@@ -1,4 +1,5 @@
 import { getActiveGame } from '../games/registry.js';
+import { investmentSideOfSpread } from './damage-model.js';
 import {
   applyBreedingContextToProgression,
 } from '../playthrough/breeding.js';
@@ -260,10 +261,10 @@ const MAX_RESULT_CACHE = 400;
 // (reusable TMs); HGSS results with contested TMs differ.
 // v58: retain fallback move ranks when filling alternative builds.
 // v59: map canonical ability slots onto the current evolutionary form.
-// Bump whenever the same inputs must produce a different result: '67'
-// retires verdicts that invested in the mon's higher base stat rather than
-// the side of its strongest obtainable attack.
-const RESULT_CACHE_VERSION = '67';
+// Bump whenever the same inputs must produce a different result: '68'
+// retires verdicts that invested in a side other than the one the
+// competitive spread builds toward.
+const RESULT_CACHE_VERSION = '68';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.
@@ -1334,9 +1335,9 @@ function formatLegalityNote(profile) {
 // scoring stays item-blind
 // (items are inventory-dependent and priced by the owned-item system;
 // folding the top competitive item into scored damage would double-count),
-// and scoring prices the set under full investment on the side of its
-// strongest obtainable attack rather than the displayed competitive spread
-// (see the NOTE at makeProfile — real spreads are often defensive and
+// and scoring prices the set under full investment on the attacking side
+// the competitive spread builds toward rather than under the spread's own
+// EVs (see the NOTE at makeProfile — real spreads are often defensive and
 // collapsed PvE attacker offense).
 async function resolveCandidateBuilds({
   breedingContext,
@@ -1460,9 +1461,10 @@ async function resolveCandidateBuilds({
   });
 
   // NOTE — scoring deliberately does NOT use the top spread's real EVs/nature
-  // (attackerStats stays the assumed full investment on the side of the
-  // strongest obtainable attack, computed inside
-  // buildCandidateLegalityProfile): competitive singles spreads are
+  // (attackerStats stays the assumed full investment on the attacking side
+  // the spread builds toward, computed inside buildCandidateLegalityProfile;
+  // the strongest obtainable attack decides only when the spread shows no
+  // side): competitive singles spreads are
   // often defensive, which collapses PvE attacker offense pool-wide and lets
   // zero-offense walls displace real attackers. A playthrough mon's
   // investment is the player's choice, so scoring prices the attacking
@@ -1492,6 +1494,8 @@ async function resolveCandidateBuilds({
       // recommendCurrentMoves spends the slots the canonical moves leave.
       moveRank: topSet.moveRank,
       moveUsage: topSet.moveUsage,
+      // ...and on the attacking side the top spread builds toward.
+      investmentSide: investmentSideOfSpread(topSet.spread),
     });
     profile.fieldedId = currentSpecies?.id || member.id;
     profile.fieldedName = currentSpecies?.name || member.name;

@@ -827,6 +827,9 @@ export function buildCandidateLegalityProfile({
   // The player owns a field-extender item (Amplifield Rock) — scoring gives
   // this build's field-setting move the borrowed-prior utility bonus.
   fieldExtenderOwned = false,
+  // The attacking side the competitive spread builds toward ('physical' or
+  // 'special'); null lets the strongest obtainable attack decide.
+  investmentSide = null,
 }) {
   // Carry the recommended held item AND the mon's competitive ability on the
   // member, so every damage estimate (display, ranking, bias, team scoring)
@@ -839,7 +842,8 @@ export function buildCandidateLegalityProfile({
         ...(ability ? { ability } : {}),
       }
       : rawMember;
-  const stats = attackerStats || assumedInvestment(member, moves, levelCap);
+  const stats = attackerStats ||
+    assumedInvestment(member, moves, levelCap, investmentSide);
   const damagingMoves = moves.filter((move) =>
     isUsableDamagingMove(move, moves, member.heldItem),
   );
@@ -952,13 +956,20 @@ export function buildCandidateLegalityProfile({
   };
 }
 
-// The assumed investment goes to the side of the mon's strongest obtainable
-// attack among its legal moves, not its higher base stat, and the whole set
-// is priced under it: a player builds one side. Swellow's Attack is higher,
-// but once Boomburst is legal its best attack is special and every move is
-// priced as the special build it would be; at a cap where Facade is its
-// best attack it stays physical. Ties go to the physical side.
-function assumedInvestment(member, moves, levelCap) {
+// The assumed investment goes to the side the competitive spread builds
+// toward, and the whole set is priced under it: a player builds one side,
+// natures and EVs are costly to change, and moves are cheap. A Swellow
+// whose top spread is Timid with 252 SpA is priced as that special build
+// even while a physical Facade is its best legal attack, so the physical
+// moves it fields meanwhile are priced as the stopgaps they are. When the
+// spread shows no side (a wall spread), the side of the strongest
+// obtainable attack among the legal moves decides, ties to physical.
+function assumedInvestment(member, moves, levelCap, investmentSide) {
+  if (investmentSide) {
+    return getAttackingStats({
+      pokemonId: member.id, levelCap, side: investmentSide,
+    });
+  }
   const physical = getAttackingStats({
     pokemonId: member.id, levelCap, side: 'physical',
   });
