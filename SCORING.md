@@ -76,8 +76,12 @@ whose top spread is Timid with 252 SpA is priced as that special build even
 while a physical Facade is its best legal attack, and the physical moves it
 fields meanwhile are priced as the stopgaps they are. When the spread shows
 no side, a wall spread with a neutral nature, the side of the strongest
-obtainable attack decides. The pane still displays the competitive spread
-itself. The reference defender
+obtainable attack decides. The same fallback applies to an interim
+individual: when a canonical move is egg-only and no egg can be made yet,
+the fielded mon can never complete the set, the competitive spread describes
+the future hatch rather than this mon, and this mon is priced on its own
+best attacks while the card says so. The pane still displays the competitive
+spread itself. The reference defender
 is a median-stat wall with no single typing: ordinary effectiveness stays out
 of the estimate (the coverage vector applies it per defending type), but the
 defender carries fractional types, each type combination in the share of the

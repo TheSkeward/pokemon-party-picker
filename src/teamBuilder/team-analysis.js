@@ -347,6 +347,14 @@ async function buildMemberLegalMoveEntry({
     ? await loadTopSet({ family, pokemonId: megaBaseId, selection })
     : topSet;
   const canonicalTopSet = topSet;
+  // Computed before the attacker stats: an interim individual (the final
+  // set needs a re-bred one) is not priced with the competitive spread.
+  const setReadiness = computeSetReadiness({
+    legalMoveData,
+    availableMoves: moves,
+    topSet: canonicalTopSet,
+    progression: memberProgression,
+  });
   const previousProfile = row.legalityProfile;
   const {
     assumedAbility, preMegaAbility, targetAbility, inputAbility,
@@ -378,11 +386,16 @@ async function buildMemberLegalMoveEntry({
       candidateIds: [member.representativeId, member.id, megaBaseId],
     })
     : null;
-  const attackerStats = getAttackingStats({
-    pokemonId: member.id,
-    levelCap: progression.levelCap,
-    spread: topSet.spread,
-  });
+  // The real competitive spread prices the displayed set, except for an
+  // interim individual, whose spread belongs to the future hatch: it is
+  // priced on the side of its own strongest obtainable attack instead.
+  const attackerStats = setReadiness?.needsRebreed
+    ? null
+    : getAttackingStats({
+      pokemonId: member.id,
+      levelCap: progression.levelCap,
+      spread: topSet.spread,
+    });
 
   // The item the mon is recommended to hold (owned-item assignment, else its
   // top competitive item) factors into its damage. Only when this entry feeds
@@ -445,12 +458,7 @@ async function buildMemberLegalMoveEntry({
     profile.legalityProof.battleForm = profile.currentId;
   }
 
-  profile.setReadiness = computeSetReadiness({
-    legalMoveData,
-    availableMoves: moves,
-    topSet: canonicalTopSet,
-    progression: memberProgression,
-  });
+  profile.setReadiness = setReadiness;
   // Labeled context, not a recommendation: the most-run real set regardless
   // of current legality, for the panel/export layers to surface.
   profile.observedSet = observedSet;

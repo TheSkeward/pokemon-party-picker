@@ -95,7 +95,9 @@ export function canonicalMoveIds(moveUsage, size = CANONICAL_SET_SIZE) {
  * completes.
  * @return {?Object} Null when there is no canonical set (no usage data).
  *     `fullAtCap` is null when the set is complete now; `pendingPickups` marks
- *     sets gated only on pickups already reachable at the current cap.
+ *     sets gated only on pickups already reachable at the current cap;
+ *     `needsRebreed` marks a set the fielded individual can never complete
+ *     (an egg-only canonical move with no egg possible yet).
  */
 export function computeSetReadiness({
   legalMoveData,
@@ -181,10 +183,14 @@ export function computeSetReadiness({
       }
     }
     if (!candidates.length && raw.sources?.egg) {
+      // An egg is the only route and none can be made yet: the fielded
+      // individual can never carry this move, so the final set is a
+      // re-bred one.
       return {
         id,
         label,
         status: 'later',
+        eggOnly: true,
         detail: progression.daycareUnlocked
           ? 'egg move — needs a chain parent in your pool'
           : 'egg move — needs the daycare',
@@ -253,5 +259,9 @@ export function computeSetReadiness({
     scaling,
     // null = the set is complete right now (and nothing scales with level).
     fullAtCap,
+    // The fielded individual is interim: a canonical move is egg-only and
+    // no egg can be made yet, so the final set belongs to a re-bred one.
+    // Its competitive spread describes that future hatch, not this mon.
+    needsRebreed: moves.some((move) => move.eggOnly),
   };
 }

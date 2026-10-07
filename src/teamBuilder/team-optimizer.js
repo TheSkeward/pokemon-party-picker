@@ -261,10 +261,10 @@ const MAX_RESULT_CACHE = 400;
 // (reusable TMs); HGSS results with contested TMs differ.
 // v58: retain fallback move ranks when filling alternative builds.
 // v59: map canonical ability slots onto the current evolutionary form.
-// Bump whenever the same inputs must produce a different result: '68'
-// retires verdicts that invested in a side other than the one the
-// competitive spread builds toward.
-const RESULT_CACHE_VERSION = '68';
+// Bump whenever the same inputs must produce a different result: '69'
+// retires verdicts that priced an interim individual with the competitive
+// spread of the re-bred one that completes its set.
+const RESULT_CACHE_VERSION = '69';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.
@@ -1494,8 +1494,12 @@ async function resolveCandidateBuilds({
       // recommendCurrentMoves spends the slots the canonical moves leave.
       moveRank: topSet.moveRank,
       moveUsage: topSet.moveUsage,
-      // ...and on the attacking side the top spread builds toward.
-      investmentSide: investmentSideOfSpread(topSet.spread),
+      // ...and on the attacking side the top spread builds toward — unless
+      // the final set belongs to a re-bred individual, in which case this
+      // one is interim and is priced on its own strongest obtainable attack.
+      investmentSide: setReadiness?.needsRebreed
+        ? null
+        : investmentSideOfSpread(topSet.spread),
     });
     profile.fieldedId = currentSpecies?.id || member.id;
     profile.fieldedName = currentSpecies?.name || member.name;

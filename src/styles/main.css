@@ -1652,6 +1652,17 @@ html {
   font-size: inherit;
 }
 
+/* The interim note under the readiness line: informational, so muted. */
+.team-set-interim {
+  font-size: var(--type-s);
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+.team-set-interim small {
+  font-size: inherit;
+}
+
 /* Interim-donor panel: the set above needs this egg or Sketch donor, so the
    player fields it for a while — collapsed by default, expands to the donor's
    own recommended moves at the current progression. */

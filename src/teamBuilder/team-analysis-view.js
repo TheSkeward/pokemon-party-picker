@@ -532,7 +532,7 @@ function renderSetCard(profile) {
             : `<small class="muted">No legal damaging moves available yet.</small>`
         }
       </div>
-      ${renderSetReadiness(profile.setReadiness)}
+      ${renderSetReadiness(profile.setReadiness, profile)}
       ${renderDonorInterimGuides(profile.donorInterimGuides)}
       <div class="team-set-foot">
         <small>${profile.superEffectiveTargetCount}/${analysisTypes().length} types hit super effectively</small>
@@ -565,9 +565,20 @@ function renderBuildLabel(profile) {
 }
 
 // One line of truth about the competitive set: how much of it exists yet and
-// when it completes. Details per element live in the tooltip.
-function renderSetReadiness(readiness) {
+// when it completes. Details per element live in the tooltip. An interim
+// individual gets a second line: the final set is a re-bred one, so the
+// spread above is that future hatch's and this mon is priced on its own
+// best attacks.
+function renderSetReadiness(readiness, profile = null) {
   if (!readiness) return '';
+  const eggOnly = readiness.moves
+    .filter((move) => move.eggOnly)
+    .map((move) => move.label);
+  const interim = readiness.needsRebreed
+    ? `<div class="team-set-interim"><small>${escapeHtml(
+      `Interim: the final set is a re-bred ${profile?.inputName || profile?.currentName || 'one'} hatched with ${eggOnly.join(' and ')}; this one is priced on its own best attacks.`,
+    )}</small></div>`
+    : '';
 
   const parts = [`${readiness.readyMoveCount}/${readiness.moves.length} moves`];
   if (readiness.item?.name) {
@@ -604,6 +615,7 @@ function renderSetReadiness(readiness) {
     <div class="team-set-readiness" title="${escapeHtml(tooltip)}">
       <small>Competitive set: ${escapeHtml(parts.join(' · '))}</small>
     </div>
+    ${interim}
   `;
 }
 
