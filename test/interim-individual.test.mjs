@@ -6,6 +6,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { renderTeamAnalysisPanel } from '../src/teamBuilder/team-analysis-view.js';
+import { buildTeamAnalysis } from '../src/teamBuilder/team-analysis.js';
 import { bestChoice, progressionAt, runPool } from './helpers/harness.mjs';
 
 // The reporting gamestate's progression at badge 2, cap 35, daycare open:
@@ -35,7 +36,18 @@ test('Swellow is interim while Boomburst needs a re-bred Taillow', async () => {
   const facade = profile.recommendedMoves.find((move) => move.id === 'facade');
   assert.ok(facade, profile.recommendedMoves.map((move) => move.id));
   assert.match(facade.damageSteps.join('\n'), /nature in Atk/);
+  assert.equal(profile.investmentSide, 'physical');
   assert.notEqual(choice.buildKey, 'utility');
+});
+
+test('the card shows the physical build the interim Swellow was priced as', async () => {
+  const result = await runPool({ pool: ['Taillow'], progression });
+  const analysis = await buildTeamAnalysis(
+    result.team, progression, { family: 'singles', selection: 'all' });
+  const set = analysis.profiles[0].recommendedSet;
+  // Timid 0/0/0/252/4/252 mirrored: Jolly with the attacking EVs swapped.
+  assert.equal(set.nature, 'Jolly');
+  assert.deepEqual(set.evs, [0, 252, 0, 0, 4, 252]);
 });
 
 test('a donor that supplies the egg move makes the hatch the plan, not interim', async () => {

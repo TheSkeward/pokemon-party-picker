@@ -653,6 +653,37 @@ export function investmentSideOfSpread(spreadName) {
   return null;
 }
 
+// Each attacking-sided nature and its counterpart on the other side, same
+// secondary stat: Timid (+Spe -Atk) mirrors to Jolly (+Spe -SpA).
+const MIRROR_NATURES = Object.freeze({
+  timid: 'jolly', jolly: 'timid',
+  modest: 'adamant', adamant: 'modest',
+  bold: 'impish', impish: 'bold',
+  calm: 'careful', careful: 'calm',
+  quiet: 'brave', brave: 'quiet',
+  mild: 'lonely', lonely: 'mild',
+  rash: 'naughty', naughty: 'rash',
+});
+
+/**
+ * The same spread built on the other attacking side: Atk and SpA EVs
+ * swapped and the nature mirrored, speed and bulk untouched. The card shows
+ * this when the scoring priced a mon on the side its competitive spread
+ * does not build, so the card describes the build the score describes.
+ * @param {*} spreadName
+ * @return {?string} Null when the spread does not parse.
+ */
+export function mirrorSpreadSide(spreadName) {
+  const parsed = parseSpread(spreadName);
+  if (!parsed) return null;
+  const evs = [...parsed.evs];
+  const { atk, spa } = EV_INDEX;
+  [evs[atk], evs[spa]] = [evs[spa], evs[atk]];
+  const nature = MIRROR_NATURES[parsed.nature] || parsed.nature;
+  const label = nature.charAt(0).toUpperCase() + nature.slice(1);
+  return `${label}:${evs.join('/')}`;
+}
+
 function statValue(base, ev, level, natureMultiplier) {
   const inner =
     Math.floor(((2 * base + 31 + Math.floor(ev / 4)) * level) / 100);

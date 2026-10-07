@@ -25,8 +25,10 @@ import {
   getAbilityDamageMultiplier,
   getAbilityEffectiveMoveType,
   getAttackingStats,
+  investmentSideOfSpread,
   isFixedDamageMove,
   isVariablePowerMove,
+  mirrorSpreadSide,
   normalizeLevel,
   parseSpread,
 } from './damage-model.js';
@@ -850,8 +852,10 @@ export function buildCandidateLegalityProfile({
         ...(ability ? { ability } : {}),
       }
       : rawMember;
-  const stats = attackerStats ||
-    assumedInvestment(member, moves, levelCap, investmentSide);
+  const assumed = attackerStats
+    ? null
+    : assumedInvestment(member, moves, levelCap, investmentSide);
+  const stats = attackerStats || assumed?.stats || null;
   const damagingMoves = moves.filter((move) =>
     isUsableDamagingMove(move, moves, member.heldItem),
   );
@@ -931,6 +935,9 @@ export function buildCandidateLegalityProfile({
     // visible — the actual caught mon's ability isn't known here, so this is
     // "best obtainable, noted", not a claim about legality.
     assumedAbility: ability || null,
+    // The attacking side the scoring assumed when it did not price a real
+    // spread ('physical' or 'special'), so the card can show that build.
+    investmentSide: assumed?.side || null,
     fieldExtenderOwned: Boolean(fieldExtenderOwned),
     movePreference,
     // K for having reached this fielded form (evolution requirements) plus any
@@ -972,11 +979,14 @@ export function buildCandidateLegalityProfile({
 // moves it fields meanwhile are priced as the stopgaps they are. When the
 // spread shows no side (a wall spread), the side of the strongest
 // obtainable attack among the legal moves decides, ties to physical.
+// Returns the stats and the side they invest, so the profile can say which
+// side it was priced on.
 function assumedInvestment(member, moves, levelCap, investmentSide) {
   if (investmentSide) {
-    return getAttackingStats({
+    const stats = getAttackingStats({
       pokemonId: member.id, levelCap, side: investmentSide,
     });
+    return stats ? { stats, side: investmentSide } : null;
   }
   const physical = getAttackingStats({
     pokemonId: member.id, levelCap, side: 'physical',
@@ -991,12 +1001,24 @@ function assumedInvestment(member, moves, levelCap, investmentSide) {
       .filter((move) => move.category !== 'Status')
       .map((move) => getEstimatedDamage(move, member, stats)),
   );
-  return peak(special) > peak(physical) ? special : physical;
+  return peak(special) > peak(physical)
+    ? { stats: special, side: 'special' }
+    : { stats: physical, side: 'physical' };
 }
 
 function buildRecommendedSet(
   { member, profile, topSet, assignedItem, levelCap }) {
-  const parsed = topSet.spread ? parseSpread(topSet.spread) : null;
+  // The card shows the build the scoring priced: the competitive spread when
+  // the set follows it, and that spread mirrored to the other attacking side
+  // when the mon was priced there (an interim mon fielding stopgaps).
+  const spreadSide = investmentSideOfSpread(topSet.spread);
+  const pricedElsewhere =
+    profile.investmentSide && spreadSide &&
+    profile.investmentSide !== spreadSide;
+  const spread = pricedElsewhere
+    ? mirrorSpreadSide(topSet.spread)
+    : topSet.spread;
+  const parsed = spread ? parseSpread(spread) : null;
 
   return {
     species: member.name,

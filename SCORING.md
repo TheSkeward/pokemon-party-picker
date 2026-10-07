@@ -80,8 +80,11 @@ obtainable attack decides. The same fallback applies to an interim
 individual: when a canonical move is egg-only and no egg can be made yet,
 the fielded mon can never complete the set, the competitive spread describes
 the future hatch rather than this mon, and this mon is priced on its own
-best attacks while the card says so. The pane still displays the competitive
-spread itself. The reference defender
+best attacks while the card says so. The card shows the build the scoring
+priced: the competitive spread when the set follows it, and that spread
+mirrored to the other attacking side (Atk and SpA EVs swapped, Timid to
+Jolly) when the mon was priced there, so a physical interim Swellow is not
+shown with Special Attack EVs. The reference defender
 is a median-stat wall with no single typing: ordinary effectiveness stays out
 of the estimate (the coverage vector applies it per defending type), but the
 defender carries fractional types, each type combination in the share of the

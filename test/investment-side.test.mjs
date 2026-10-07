@@ -16,7 +16,17 @@ import {
 import {
   getAttackingStats,
   investmentSideOfSpread,
+  mirrorSpreadSide,
 } from '../src/teamBuilder/damage-model.js';
+
+test('a spread mirrors to the other attacking side with its shape kept', () => {
+  assert.equal(mirrorSpreadSide('Timid:0/0/0/252/4/252'), 'Jolly:0/252/0/0/4/252');
+  assert.equal(mirrorSpreadSide('Adamant:4/252/0/0/0/252'), 'Modest:4/0/0/252/0/252');
+  assert.equal(mirrorSpreadSide('Bold:252/0/252/0/4/0'), 'Impish:252/0/252/0/4/0');
+  // A neutral nature has no counterpart and keeps its name.
+  assert.equal(mirrorSpreadSide('Hardy:252/4/252/0/0/0'), 'Hardy:252/0/252/4/0/0');
+  assert.equal(mirrorSpreadSide(null), null);
+});
 
 const swellow = { id: 'swellow', name: 'Swellow', types: ['Normal', 'Flying'] };
 const legal = (id) => hydrateLegalMove({ id, sources: ['level'] });
