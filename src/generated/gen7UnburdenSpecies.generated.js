@@ -3,15 +3,21 @@
 
 export const GEN7_UNBURDEN_SPECIES = {
   "accelgor": true,
+  "breezi": true,
   "drifblim": true,
   "drifloon": true,
+  "grafaiai": true,
   "grovyle": true,
   "hawlucha": true,
+  "hawluchamega": true,
   "hitmonlee": true,
   "liepard": true,
+  "nickit": true,
   "purrloin": true,
   "sceptile": true,
+  "shroodle": true,
   "slurpuff": true,
   "swirlix": true,
+  "thievul": true,
   "treecko": true
 };

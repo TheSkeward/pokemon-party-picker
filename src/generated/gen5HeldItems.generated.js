@@ -115,12 +115,12 @@ export const GEN5_HELD_ITEMS = [
     "name": "Red Card"
   },
   {
-    "id": "toxicorb",
-    "name": "Toxic Orb"
-  },
-  {
     "id": "scopelens",
     "name": "Scope Lens"
+  },
+  {
+    "id": "toxicorb",
+    "name": "Toxic Orb"
   },
   {
     "id": "custapberry",
@@ -303,12 +303,12 @@ export const GEN5_HELD_ITEMS = [
     "name": "Master Ball"
   },
   {
-    "id": "hardstone",
-    "name": "Hard Stone"
-  },
-  {
     "id": "darkgem",
     "name": "Dark Gem"
+  },
+  {
+    "id": "hardstone",
+    "name": "Hard Stone"
   },
   {
     "id": "starfberry",
@@ -379,16 +379,16 @@ export const GEN5_HELD_ITEMS = [
     "name": "Grip Claw"
   },
   {
+    "id": "pechaberry",
+    "name": "Pecha Berry"
+  },
+  {
     "id": "wacanberry",
     "name": "Wacan Berry"
   },
   {
     "id": "miracleseed",
     "name": "Miracle Seed"
-  },
-  {
-    "id": "pechaberry",
-    "name": "Pecha Berry"
   },
   {
     "id": "pokeball",
@@ -475,6 +475,10 @@ export const GEN5_HELD_ITEMS = [
     "name": "Rock Gem"
   },
   {
+    "id": "shedshell",
+    "name": "Shed Shell"
+  },
+  {
     "id": "dragongem",
     "name": "Dragon Gem"
   },
@@ -485,10 +489,6 @@ export const GEN5_HELD_ITEMS = [
   {
     "id": "rindoberry",
     "name": "Rindo Berry"
-  },
-  {
-    "id": "shedshell",
-    "name": "Shed Shell"
   },
   {
     "id": "ultraball",
@@ -651,16 +651,16 @@ export const GEN5_HELD_ITEMS = [
     "name": "Float Stone"
   },
   {
+    "id": "watmelberry",
+    "name": "Watmel Berry"
+  },
+  {
     "id": "belueberry",
     "name": "Belue Berry"
   },
   {
     "id": "blukberry",
     "name": "Bluk Berry"
-  },
-  {
-    "id": "watmelberry",
-    "name": "Watmel Berry"
   },
   {
     "id": "parkball",
@@ -859,6 +859,10 @@ export const GEN5_HELD_ITEMS = [
     "name": "Premier Ball"
   },
   {
+    "id": "pomegberry",
+    "name": "Pomeg Berry"
+  },
+  {
     "id": "rabutaberry",
     "name": "Rabuta Berry"
   },
@@ -893,10 +897,6 @@ export const GEN5_HELD_ITEMS = [
   {
     "id": "plumefossil",
     "name": "Plume Fossil"
-  },
-  {
-    "id": "pomegberry",
-    "name": "Pomeg Berry"
   },
   {
     "id": "razzberry",

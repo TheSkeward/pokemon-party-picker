@@ -215,12 +215,12 @@ export const GEN7_HELD_ITEMS = [
     "name": "Black Glasses"
   },
   {
-    "id": "blackbelt",
-    "name": "Black Belt"
-  },
-  {
     "id": "groundiumz",
     "name": "Groundium Z"
+  },
+  {
+    "id": "blackbelt",
+    "name": "Black Belt"
   },
   {
     "id": "damprock",
@@ -315,12 +315,12 @@ export const GEN7_HELD_ITEMS = [
     "name": "Pecha Berry"
   },
   {
-    "id": "lansatberry",
-    "name": "Lansat Berry"
-  },
-  {
     "id": "steeliumz",
     "name": "Steelium Z"
+  },
+  {
+    "id": "lansatberry",
+    "name": "Lansat Berry"
   },
   {
     "id": "cellbattery",
@@ -507,12 +507,12 @@ export const GEN7_HELD_ITEMS = [
     "name": "Rawst Berry"
   },
   {
-    "id": "meadowplate",
-    "name": "Meadow Plate"
-  },
-  {
     "id": "miracleseed",
     "name": "Miracle Seed"
+  },
+  {
+    "id": "meadowplate",
+    "name": "Meadow Plate"
   },
   {
     "id": "bindingband",
@@ -711,12 +711,12 @@ export const GEN7_HELD_ITEMS = [
     "name": "Fire Memory"
   },
   {
-    "id": "adamantorb",
-    "name": "Adamant Orb"
-  },
-  {
     "id": "rowapberry",
     "name": "Rowap Berry"
+  },
+  {
+    "id": "adamantorb",
+    "name": "Adamant Orb"
   },
   {
     "id": "eeviumz",
@@ -931,6 +931,10 @@ export const GEN7_HELD_ITEMS = [
     "name": "Fast Ball"
   },
   {
+    "id": "heavyball",
+    "name": "Heavy Ball"
+  },
+  {
     "id": "levelball",
     "name": "Level Ball"
   },
@@ -941,10 +945,6 @@ export const GEN7_HELD_ITEMS = [
   {
     "id": "diveball",
     "name": "Dive Ball"
-  },
-  {
-    "id": "heavyball",
-    "name": "Heavy Ball"
   },
   {
     "id": "electirizer",
