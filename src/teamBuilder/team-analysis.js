@@ -1840,7 +1840,8 @@ function moveHitMultiplier(move, ability) {
 //      damage into some defense type (a second same-type attack adds
 //      nothing, and neither does a weak off-type one); then utility that
 //      real sets run or that does a support job; then any attack, priority
-//      first; then role-less notable status moves (Substitute).
+//      first, then a type the set lacks, then damage; then role-less
+//      notable status moves (Substitute).
 //   5. Slots STILL empty with legal moves remaining: fill by the stitched
 //      competitive priority order — descending usage within the canonical
 //      tier, then each fallback tier in order. That order lives in moveRank
@@ -2003,12 +2004,23 @@ function recommendCurrentMoves(
     if (add(bestUtility(usableUtility.filter(runsOrSupports), selected))) {
       continue;
     }
-    // Every attack left is out-hit by the set into every type; one with
-    // priority still moves first, so it goes ahead of pure filler, and any
-    // filler still adds breadth.
+    // Every attack left is out-hit by the set into every type. One with
+    // priority still moves first, so it goes ahead of pure filler. Among the
+    // rest, a type the set does not carry beats a stronger move of a type it
+    // does: the stronger one is never the right click while a better move of
+    // its type sits beside it, but the fresh one is the right click the
+    // moment the better moves are blocked (a Ghost against Normal, Water
+    // Absorb against Water), and it is the one whose type counts at all
+    // under Protean. Lick over Pound on a Frogadier. Any filler still adds
+    // breadth.
     const anyAttack = usableDamaging()
       .filter((move) => !isSelected(move, selected))
-      .sort(comparePriorityThenDamage)[0];
+      .sort(
+        (a, b) =>
+          (b.priority || 0) - (a.priority || 0) ||
+          Number(coveredTypes.has(a.type)) - Number(coveredTypes.has(b.type)) ||
+          compareByDamage(a, b),
+      )[0];
     if (add(anyAttack)) continue;
     // Notable status moves without a support role (Substitute) are the last
     // filler before the competitive ladder: the scoring sees nothing in them.
@@ -2148,12 +2160,6 @@ function compareByDamage(a, b) {
     a.sourcePriority - b.sourcePriority ||
     a.name.localeCompare(b.name)
   );
-}
-
-// Among attacks the set already out-hits everywhere, moving first is the one
-// thing left to prefer.
-function comparePriorityThenDamage(a, b) {
-  return (b.priority || 0) - (a.priority || 0) || compareByDamage(a, b);
 }
 
 function compareUtilityByUsage(a, b) {

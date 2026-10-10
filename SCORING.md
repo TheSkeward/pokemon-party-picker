@@ -200,8 +200,12 @@ covers nothing the scoring can see; a 4x dual type is invisible to the
 per-type vector by design and earns no slot either. When no fresh type
 qualifies, the slot goes to utility the mon's real sets run or that does a
 credited support job, then to a priority attack, then to any attack for
-breadth, and only then to a notable status move without a role, such as
-Substitute, which the scoring does not see at all.
+breadth, where a move of a type the set lacks beats a stronger move of a
+type it carries (the stronger one is never the right click beside a better
+move of its type; the fresh one is, once an immunity blocks the better
+moves, and under Protean its type is the point), and only then to a notable
+status move without a role, such as Substitute, which the scoring does not
+see at all.
 
 Utility is currently derived from accuracy-weighted move roles such as
 recovery, hazards, removal, speed control, setup, pivoting, phazing, screens,

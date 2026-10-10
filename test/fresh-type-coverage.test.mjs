@@ -64,6 +64,22 @@ test('a fresh type that out-hits the set into some type still seats', () => {
   assert.ok(punches.length <= 1, ids);
 });
 
+test('among dominated filler, a type the set lacks beats a stronger covered one', () => {
+  // A fresh-file Frogadier at cap 20: Water Pulse is the attack, Quick
+  // Attack the priority filler, and the last two slots are dead moves. Lick
+  // (Ghost, 30 power off an empty Attack) beats Pound (Normal, 40), because
+  // Pound is never clicked beside Quick Attack while Lick is the button
+  // against a Ghost and the type Protean turns Frogadier into.
+  const frogadier = { id: 'frogadier', name: 'Frogadier', types: ['Water'] };
+  const ids = idsOf(buildCandidateLegalityProfile({
+    member: frogadier,
+    moves: ['waterpulse', 'bubble', 'pound', 'quickattack', 'lick'].map(legal),
+    levelCap: 20, ability: 'Protean', investmentSide: 'special',
+  }));
+  assert.ok(ids.includes('lick') && !ids.includes('pound'), ids);
+  assert.ok(ids.includes('quickattack') && ids.includes('waterpulse'), ids);
+});
+
 test('a dominated priority attack seats ahead of dominated filler', () => {
   // Three punches compete with Quick Attack for the last two slots; the
   // priority attack takes one and a single punch is left as filler. (The
