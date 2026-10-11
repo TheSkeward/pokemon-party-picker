@@ -161,7 +161,8 @@ export const MOVE_META = {
     "accuracy": 85,
     "flags": {
       "secondary": 1
-    }
+    },
+    "flinch": 10
   },
   "bouncybubble": {
     "name": "Bouncy Bubble",
@@ -451,7 +452,8 @@ export const MOVE_META = {
       "contact": 1,
       "punch": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "doubleslap": {
     "name": "Double Slap",
@@ -788,7 +790,8 @@ export const MOVE_META = {
     "flags": {
       "contact": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "heartswap": {
     "name": "Heart Swap",
@@ -874,7 +877,8 @@ export const MOVE_META = {
       "contact": 1,
       "bite": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 10
   },
   "hyperspacefury": {
     "name": "Hyperspace Fury",
@@ -1281,7 +1285,8 @@ export const MOVE_META = {
     "flags": {
       "contact": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "neverendingnightmare": {
     "name": "Never-Ending Nightmare",
@@ -1571,7 +1576,8 @@ export const MOVE_META = {
     "flags": {
       "contact": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "rototiller": {
     "name": "Rototiller",
@@ -1897,7 +1903,8 @@ export const MOVE_META = {
     "flags": {
       "contact": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "stokedsparksurfer": {
     "name": "Stoked Sparksurfer",
@@ -4357,7 +4364,8 @@ export const MOVE_META = {
     "flags": {
       "slicing": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "alluringvoice": {
     "name": "Alluring Voice",
@@ -4522,7 +4530,8 @@ export const MOVE_META = {
     "flags": {
       "contact": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "astralbarrage": {
     "name": "Astral Barrage",
@@ -4674,7 +4683,8 @@ export const MOVE_META = {
       "contact": 1,
       "bite": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "bitterblade": {
     "name": "Bitter Blade",
@@ -5503,7 +5513,8 @@ export const MOVE_META = {
     "flags": {
       "pulse": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 20
   },
   "dazzlinggleam": {
     "name": "Dazzling Gleam",
@@ -5843,7 +5854,8 @@ export const MOVE_META = {
     "flags": {
       "contact": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 20
   },
   "dragontail": {
     "name": "Dragon Tail",
@@ -6161,7 +6173,8 @@ export const MOVE_META = {
     "accuracy": 100,
     "flags": {
       "secondary": 1
-    }
+    },
+    "flinch": 10
   },
   "extremespeed": {
     "name": "Extreme Speed",
@@ -6313,7 +6326,8 @@ export const MOVE_META = {
     "accuracy": 100,
     "flags": {
       "secondary": 1
-    }
+    },
+    "flinch": 20
   },
   "filletaway": {
     "name": "Fillet Away",
@@ -6369,7 +6383,8 @@ export const MOVE_META = {
     },
     "roles": [
       "status"
-    ]
+    ],
+    "flinch": 10
   },
   "firelash": {
     "name": "Fire Lash",
@@ -6575,7 +6590,8 @@ export const MOVE_META = {
     "flags": {
       "contact": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "flowertrick": {
     "name": "Flower Trick",
@@ -7438,7 +7454,8 @@ export const MOVE_META = {
     "flags": {
       "contact": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "headlongrush": {
     "name": "Headlong Rush",
@@ -7704,7 +7721,8 @@ export const MOVE_META = {
     },
     "roles": [
       "status"
-    ]
+    ],
+    "flinch": 10
   },
   "icepunch": {
     "name": "Ice Punch",
@@ -7757,7 +7775,8 @@ export const MOVE_META = {
     "accuracy": 90,
     "flags": {
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "icywind": {
     "name": "Icy Wind",
@@ -7839,7 +7858,8 @@ export const MOVE_META = {
     "flags": {
       "contact": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "irontail": {
     "name": "Iron Tail",
@@ -8468,7 +8488,8 @@ export const MOVE_META = {
     "accuracy": 85,
     "flags": {
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "muddywater": {
     "name": "Muddy Water",
@@ -9508,7 +9529,8 @@ export const MOVE_META = {
     "accuracy": 90,
     "flags": {
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "rocksmash": {
     "name": "Rock Smash",
@@ -9991,7 +10013,8 @@ export const MOVE_META = {
     "charge": true,
     "flags": {
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "slam": {
     "name": "Slam",
@@ -10154,7 +10177,8 @@ export const MOVE_META = {
     "flags": {
       "sound": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "snowscape": {
     "name": "Snowscape",
@@ -10404,7 +10428,8 @@ export const MOVE_META = {
     "flags": {
       "contact": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "stompingtantrum": {
     "name": "Stomping Tantrum",
@@ -10937,7 +10962,8 @@ export const MOVE_META = {
     "roles": [
       "status",
       "speed_control"
-    ]
+    ],
+    "flinch": 10
   },
   "thunderouskick": {
     "name": "Thunderous Kick",
@@ -11125,7 +11151,8 @@ export const MOVE_META = {
     "accuracy": 100,
     "flags": {
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "tripleaxel": {
     "name": "Triple Axel",
@@ -11199,7 +11226,8 @@ export const MOVE_META = {
     "accuracy": 100,
     "flags": {
       "secondary": 1
-    }
+    },
+    "flinch": 20
   },
   "upperhand": {
     "name": "Upper Hand",
@@ -11215,7 +11243,8 @@ export const MOVE_META = {
     },
     "roles": [
       "priority"
-    ]
+    ],
+    "flinch": 100
   },
   "uproar": {
     "name": "Uproar",
@@ -11358,7 +11387,8 @@ export const MOVE_META = {
     "flags": {
       "contact": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 20
   },
   "watergun": {
     "name": "Water Gun",
@@ -11615,7 +11645,8 @@ export const MOVE_META = {
     "flags": {
       "contact": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 20
   },
   "zingzap": {
     "name": "Zing Zap",
@@ -11628,7 +11659,8 @@ export const MOVE_META = {
     "flags": {
       "contact": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "paleowave": {
     "name": "Paleo Wave",

@@ -204,6 +204,13 @@ function main() {
     if (Object.keys(abilityFlags).length) entry.flags = abilityFlags;
     const roles = deriveRoles(move);
     if (roles.length) entry.roles = roles;
+    // The flinch chance a move carries (Bite 30, Air Slash 30, Zen Headbutt
+    // 20), priced as an action denied by a faster user. Fake Out's certain
+    // flinch is first-turn only and is priced as priority instead.
+    const flinch = (
+      move.secondaries || (move.secondary ? [move.secondary] : [])
+    ).find((s) => s?.volatileStatus === 'flinch')?.chance;
+    if (flinch && move.id !== 'fakeout') entry.flinch = flinch;
     const screen = screenFacts(move);
     if (screen) Object.assign(entry, screen);
     meta[move.id] = entry;

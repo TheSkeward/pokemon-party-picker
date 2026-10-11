@@ -114,6 +114,8 @@ export function hydrateLegalMove(rawMove) {
     // secondary) — which abilities boost or convert this move is decided by
     // these move properties (damageModel.getAbilityDamageMultiplier).
     flags: meta?.flags ?? {},
+    // Flinch chance (0–100), priced as a denied action by a faster user.
+    flinch: meta?.flinch ?? 0,
     sources: rawMove.sources,
   };
 }

@@ -164,6 +164,19 @@ function stagePercentile(value, globalRef, capRef) {
   );
 }
 
+/**
+ * The chance a species moves first at a stage: its Speed percentile among the
+ * dex blended with the forms reachable at the cap, the same figure the fast
+ * roles use.
+ * @param {string} pokemonId
+ * @param {number} levelCap
+ * @return {number} 0..1
+ */
+export function speedPercentile(pokemonId, levelCap) {
+  return stagePercentile(
+    speedOf(pokemonId), statRefs().speed, capRefs(levelCap).speed);
+}
+
 // Fraction of the dex with a value <= this one (0..1).
 function percentile(value, sorted) {
   if (value == null || !sorted.length) return 0;

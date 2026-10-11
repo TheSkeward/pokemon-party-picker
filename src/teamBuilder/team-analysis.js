@@ -46,6 +46,7 @@ import { MAX_OPPONENT_TYPE_BIAS } from '../playthrough/progression.js';
 import { getItemDamageMultiplier } from './item-damage.js';
 import {
   FIELD_SETTING_MOVE_IDS,
+  speedPercentile,
   stageReferenceDamage,
 } from './current-form-value.js';
 import { dex } from '../games/dex.js';
@@ -887,8 +888,11 @@ export function buildCandidateLegalityProfile({
       .slice(0, 4)
       .map(([id], index) => [id, index]),
   );
+  const peakDamage = Math.max(
+    0, ...damagingMoves.map((move) => getEstimatedDamage(move, member, stats)),
+  );
   const formattedRecommendedMoves = recommendedMoves
-    .map((move) => formatRecommendedMove(move, member, stats))
+    .map((move) => formatRecommendedMove(move, member, stats, peakDamage))
     .sort((a, b) => compareDisplayOrder(a, b, canonicalRankById));
   const attackingTypes = summarizeAttackTypes(
     member,
@@ -1466,11 +1470,23 @@ function summarizeAttackTypes(member, damagingMoves, attackerStats) {
   );
 }
 
-function formatProfileMove(move, member, attackerStats) {
+function formatProfileMove(move, member, attackerStats, peakDamage = 0) {
+  const estimatedDamage = getEstimatedDamage(move, member, attackerStats);
+  const flinch = flinchValue(move, member, attackerStats?.level, peakDamage);
+  const steps = getDamageSteps(move, member, attackerStats);
   return {
     adjustedPower: getAdjustedPower(move, member),
-    estimatedDamage: getEstimatedDamage(move, member, attackerStats),
-    damageSteps: getDamageSteps(move, member, attackerStats),
+    estimatedDamage,
+    // What clicking it is worth: the damage plus the action its flinch
+    // chance denies. Orders the card; the shown figure stays the damage.
+    flinchValue: flinch,
+    clickValue: estimatedDamage + flinch,
+    damageSteps: flinch
+      ? [
+        ...steps,
+        `+ ${Math.round(flinch)} for its ${move.flinch}% flinch: the chance this mon moves first, times the free hit a denied action is worth`,
+      ]
+      : steps,
     basePower: getMovePower(move),
     category: move.category || null,
     id: move.id,
@@ -1486,9 +1502,9 @@ function formatProfileMove(move, member, attackerStats) {
   };
 }
 
-function formatRecommendedMove(move, member, attackerStats) {
+function formatRecommendedMove(move, member, attackerStats, peakDamage = 0) {
   return {
-    ...formatProfileMove(move, member, attackerStats),
+    ...formatProfileMove(move, member, attackerStats, peakDamage),
     availableSources: move.availableSources || [],
     category: move.category,
     sourceLabel: formatBestSource(move),
@@ -1869,6 +1885,16 @@ function recommendCurrentMoves(
   const decorated = moves.map((move) =>
     decorateMove(move, member, attackerStats, moveUsage, opponentTypeBias),
   );
+  // A flinch chance ranks as the action it denies, on top of the damage
+  // that fills slots; the displayed damage stays the damage.
+  const peakDamage = Math.max(
+    0, ...decorated.filter(isDamagingMove).map((move) => move.estimatedDamage),
+  );
+  for (const move of decorated) {
+    move.flinchValue =
+      flinchValue(move, member, attackerStats?.level, peakDamage);
+    move.rankingDamage += move.flinchValue;
+  }
   const byId = new Map(decorated.map((move) => [move.id, move]));
   const selected = [];
   // Set-conditional usability: the sleep context for Snore/Dream Eater is the
@@ -2181,7 +2207,33 @@ function compareDisplayOrder(a, b, canonicalRankById) {
   if (rankA !== rankB) return rankA - rankB;
   // both canonical: already in usage-rank order
   if (rankA !== Infinity) return 0;
-  return compareProfileMove(a, b); // both non-canonical: by damage
+  return compareClickValue(a, b); // both non-canonical: best click first
+}
+
+// Card order among non-canonical moves: what clicking the move is worth,
+// damage plus the action a flinch chance denies, so a Bite that gives up two
+// points of damage for a 30% flinch from a fast mon lists above Scratch.
+function compareClickValue(a, b) {
+  return (
+    (b.clickValue ?? b.estimatedDamage) - (a.clickValue ?? a.estimatedDamage) ||
+    compareProfileMove(a, b)
+  );
+}
+
+// A flinch denies the opponent's action, which is worth the action it
+// denies: the chance, times the chance the user moves first (its Speed
+// percentile at the stage), times the best hit it would get for free.
+// Serene Grace doubles the chance. Fake Out carries no flinch chance in the
+// meta; its certain first-turn flinch is priced as priority.
+function flinchValue(move, member, level, peakDamage) {
+  const chance = (move.flinch || 0) / 100;
+  if (!chance || !peakDamage) return 0;
+  const grace = toId(member.ability) === 'serenegrace' ? 2 : 1;
+  return (
+    Math.min(1, chance * grace) *
+    speedPercentile(member.id, normalizeLevel(level)) *
+    peakDamage
+  );
 }
 
 function countSuperEffectiveTargets(attackType) {

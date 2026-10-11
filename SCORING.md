@@ -205,7 +205,11 @@ type it carries (the stronger one is never the right click beside a better
 move of its type; the fresh one is, once an immunity blocks the better
 moves, and under Protean its type is the point), and only then to a notable
 status move without a role, such as Substitute, which the scoring does not
-see at all.
+see at all. A flinch chance is priced as the action it denies, the chance
+times the user's chance to move first times its best hit, for slot filling
+and card order only: a fast Meowth's Bite lists above a Scratch that does two
+more damage. The score itself sees damage alone until secondary effects are
+priced by chance.
 
 Utility is currently derived from accuracy-weighted move roles such as
 recovery, hazards, removal, speed control, setup, pivoting, phazing, screens,

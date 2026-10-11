@@ -261,10 +261,9 @@ const MAX_RESULT_CACHE = 400;
 // (reusable TMs); HGSS results with contested TMs differ.
 // v58: retain fallback move ranks when filling alternative builds.
 // v59: map canonical ability slots onto the current evolutionary form.
-// Bump whenever the same inputs must produce a different result: '70'
-// retires verdicts whose last filler slot took a stronger move of a type
-// the set already carried over a weaker move of a type it lacked.
-const RESULT_CACHE_VERSION = '70';
+// Bump whenever the same inputs must produce a different result: '71'
+// retires verdicts filled and ordered without a flinch chance's value.
+const RESULT_CACHE_VERSION = '71';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.

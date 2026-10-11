@@ -1287,7 +1287,8 @@ export const MOVE_META = {
     "flags": {
       "sound": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "spikes": {
     "name": "Spikes",
@@ -1958,7 +1959,8 @@ export const MOVE_META = {
     },
     "roles": [
       "status"
-    ]
+    ],
+    "flinch": 10
   },
   "fly": {
     "name": "Fly",
@@ -2406,7 +2408,8 @@ export const MOVE_META = {
     "flags": {
       "contact": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "submission": {
     "name": "Submission",
@@ -2510,7 +2513,8 @@ export const MOVE_META = {
     "accuracy": 100,
     "flags": {
       "secondary": 1
-    }
+    },
+    "flinch": 20
   },
   "uturn": {
     "name": "U-turn",
@@ -2577,7 +2581,8 @@ export const MOVE_META = {
     "flags": {
       "slicing": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "aurasphere": {
     "name": "Aura Sphere",
@@ -2702,7 +2707,8 @@ export const MOVE_META = {
     "accuracy": 100,
     "flags": {
       "secondary": 1
-    }
+    },
+    "flinch": 10
   },
   "fireblast": {
     "name": "Fire Blast",
@@ -3219,7 +3225,8 @@ export const MOVE_META = {
     "flags": {
       "contact": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 20
   },
   "facade": {
     "name": "Facade",
@@ -3355,7 +3362,8 @@ export const MOVE_META = {
     "accuracy": 85,
     "flags": {
       "secondary": 1
-    }
+    },
+    "flinch": 10
   },
   "captivate": {
     "name": "Captivate",
@@ -3499,7 +3507,8 @@ export const MOVE_META = {
       "contact": 1,
       "bite": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 10
   },
   "judgment": {
     "name": "Judgment",
@@ -3596,7 +3605,8 @@ export const MOVE_META = {
     "flags": {
       "contact": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "ominouswind": {
     "name": "Ominous Wind",
@@ -3691,7 +3701,8 @@ export const MOVE_META = {
     "flags": {
       "contact": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "seedflare": {
     "name": "Seed Flare",
@@ -4015,7 +4026,8 @@ export const MOVE_META = {
     "flags": {
       "contact": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "attackorder": {
     "name": "Attack Order",
@@ -4062,7 +4074,8 @@ export const MOVE_META = {
       "contact": 1,
       "bite": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "blastburn": {
     "name": "Blast Burn",
@@ -4287,7 +4300,8 @@ export const MOVE_META = {
     "flags": {
       "pulse": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 20
   },
   "defendorder": {
     "name": "Defend Order",
@@ -4678,7 +4692,8 @@ export const MOVE_META = {
     "flags": {
       "contact": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "helpinghand": {
     "name": "Helping Hand",
@@ -4766,7 +4781,8 @@ export const MOVE_META = {
     },
     "roles": [
       "status"
-    ]
+    ],
+    "flinch": 10
   },
   "icepunch": {
     "name": "Ice Punch",
@@ -4838,7 +4854,8 @@ export const MOVE_META = {
     "flags": {
       "contact": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "irontail": {
     "name": "Iron Tail",
@@ -5276,7 +5293,8 @@ export const MOVE_META = {
     "accuracy": 90,
     "flags": {
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "rocksmash": {
     "name": "Rock Smash",
@@ -5443,7 +5461,8 @@ export const MOVE_META = {
     "charge": true,
     "flags": {
       "secondary": 1
-    }
+    },
+    "flinch": 30
   },
   "slam": {
     "name": "Slam",
@@ -5666,7 +5685,8 @@ export const MOVE_META = {
     "roles": [
       "status",
       "speed_control"
-    ]
+    ],
+    "flinch": 10
   },
   "thunderpunch": {
     "name": "Thunder Punch",
@@ -5758,7 +5778,8 @@ export const MOVE_META = {
     "flags": {
       "contact": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 20
   },
   "watergun": {
     "name": "Water Gun",
@@ -5858,6 +5879,7 @@ export const MOVE_META = {
     "flags": {
       "contact": 1,
       "secondary": 1
-    }
+    },
+    "flinch": 20
   }
 };
