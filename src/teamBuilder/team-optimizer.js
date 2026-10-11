@@ -261,9 +261,10 @@ const MAX_RESULT_CACHE = 400;
 // (reusable TMs); HGSS results with contested TMs differ.
 // v58: retain fallback move ranks when filling alternative builds.
 // v59: map canonical ability slots onto the current evolutionary form.
-// Bump whenever the same inputs must produce a different result: '71'
-// retires verdicts filled and ordered without a flinch chance's value.
-const RESULT_CACHE_VERSION = '71';
+// Bump whenever the same inputs must produce a different result: '72'
+// retires verdicts priced under an assumed investment rather than the
+// competitive spread the card shows.
+const RESULT_CACHE_VERSION = '72';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.
@@ -1334,10 +1335,8 @@ function formatLegalityNote(profile) {
 // scoring stays item-blind
 // (items are inventory-dependent and priced by the owned-item system;
 // folding the top competitive item into scored damage would double-count),
-// and scoring prices the set under full investment on the attacking side
-// the competitive spread builds toward rather than under the spread's own
-// EVs (see the NOTE at makeProfile — real spreads are often defensive and
-// collapsed PvE attacker offense).
+// and scoring prices the set under the competitive spread itself, mirrored
+// to the priced side for an interim mon (see the NOTE at makeProfile).
 async function resolveCandidateBuilds({
   breedingContext,
   sketchContext,
@@ -1459,16 +1458,14 @@ async function resolveCandidateBuilds({
     progression: memberProgression,
   });
 
-  // NOTE — scoring deliberately does NOT use the top spread's real EVs/nature
-  // (attackerStats stays the assumed full investment on the attacking side
-  // the spread builds toward, computed inside buildCandidateLegalityProfile;
-  // the strongest obtainable attack decides only when the spread shows no
-  // side): competitive singles spreads are
-  // often defensive, which collapses PvE attacker offense pool-wide and lets
-  // zero-offense walls displace real attackers. A playthrough mon's
-  // investment is the player's choice, so scoring prices the attacking
-  // potential — "best obtainable", the same philosophy as the assumed
-  // ability — while the pane displays the competitive spread it recommends.
+  // NOTE — scoring prices the top spread's real EVs/nature (resolved inside
+  // buildCandidateLegalityProfile; mirrored to the priced side for an
+  // interim mon, and the assumed full investment only when there is no
+  // spread). The card is the build the player makes, so the score describes
+  // it. Scoring a counterfactual full investment used to inflate attacks by
+  // about a tenth against utility and made cards and scores disagree; the
+  // fast-utility role grew a bulk axis in the same change so honest attack
+  // figures do not hand frail attackers a Roost set.
   const makeProfile = ({
     movePreference,
     buildMoves,
@@ -1499,6 +1496,8 @@ async function resolveCandidateBuilds({
       investmentSide: setReadiness?.needsRebreed
         ? null
         : investmentSideOfSpread(topSet.spread),
+      // ...and is priced from that spread itself: the card is the build.
+      spread: topSet.spread,
     });
     profile.fieldedId = currentSpecies?.id || member.id;
     profile.fieldedName = currentSpecies?.name || member.name;

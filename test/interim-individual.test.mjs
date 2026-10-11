@@ -35,7 +35,8 @@ test('Swellow is interim while Boomburst needs a re-bred Taillow', async () => {
   // not the Timid 252 SpA spread of the Swellow it is not.
   const facade = profile.recommendedMoves.find((move) => move.id === 'facade');
   assert.ok(facade, profile.recommendedMoves.map((move) => move.id));
-  assert.match(facade.damageSteps.join('\n'), /nature in Atk/);
+  // Priced from the Timid spread mirrored to the physical side.
+  assert.match(facade.damageSteps.join('\n'), /Jolly, EVs 0\/252\/0\/0\/4\/252/);
   assert.equal(profile.investmentSide, 'physical');
   assert.notEqual(choice.buildKey, 'utility');
 });

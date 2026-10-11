@@ -439,6 +439,9 @@ async function buildMemberLegalMoveEntry({
     ability: topSet.ability,
     opponentTypeBias: progression.opponentTypeBias,
     movePreference: realized.movePreference,
+    // An interim mon prices the spread mirrored to its own side, as its
+    // card shows it.
+    spread: topSet.spread,
     fieldExtenderOwned:
       ((progression.ownedItems || {}).amplifieldrock || 0) > 0,
   });
@@ -841,6 +844,9 @@ export function buildCandidateLegalityProfile({
   // The attacking side the competitive spread builds toward ('physical' or
   // 'special'); null lets the strongest obtainable attack decide.
   investmentSide = null,
+  // The competitive spread string, so the build is priced as the card shows
+  // it.
+  spread = null,
 }) {
   // Carry the recommended held item AND the mon's competitive ability on the
   // member, so every damage estimate (display, ranking, bias, team scoring)
@@ -856,7 +862,24 @@ export function buildCandidateLegalityProfile({
   const assumed = attackerStats
     ? null
     : assumedInvestment(member, moves, levelCap, investmentSide);
-  const stats = attackerStats || assumed?.stats || null;
+  let stats = attackerStats || assumed?.stats || null;
+  // Price the build the card shows. The competitive spread's own nature and
+  // EVs are the build the player makes, so damage is scored from them; when
+  // the spread builds the other attacking side from the one priced (an
+  // interim mon fielding stopgaps), it is mirrored to that side, as the
+  // card mirrors it. The assumed full investment stands in only when there
+  // is no spread at all. Scoring a counterfactual investment instead had
+  // inflated attacks by about a tenth against utility and made cards and
+  // scores disagree.
+  if (!attackerStats && assumed && spread) {
+    const spreadSide = investmentSideOfSpread(spread);
+    const cardSpread = spreadSide && spreadSide !== assumed.side
+      ? mirrorSpreadSide(spread)
+      : spread;
+    stats = getAttackingStats({
+      pokemonId: member.id, levelCap, spread: cardSpread,
+    }) || stats;
+  }
   const damagingMoves = moves.filter((move) =>
     isUsableDamagingMove(move, moves, member.heldItem),
   );

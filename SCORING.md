@@ -59,7 +59,8 @@ tempo_attacker = soft_ceiling(
   geomean(damageQ, tempoSpeedQ)
   + tempo_reliability_bonus * tempoReliabilityQ
 )
-fast_utility   = utility_weight * non_passive * geomean(speedQ, utilityQ)
+fast_utility   = utility_weight * non_passive
+  * geomean(speedQ, utilityQ, effectiveBulkQ)
 bulky_utility  = utility_weight * non_passive * geomean(effectiveBulkQ, utilityQ)
 priority_utility = priority_utility_weight * non_passive * priorityUtilityQ
 screen_support = non_passive
@@ -68,23 +69,23 @@ screen_support = non_passive
 
 Geometric means require every axis of a role to be credible. Speed and bulk are
 percentiles blended between the full dex and forms reachable at the current
-cap. Damage is measured against a stage-reference hit, under full investment
-(252 EVs and a boosting nature) on the attacking side the competitive spread
-builds toward, read from its EVs or else its nature. A player builds one
-side, natures and EVs are costly to change, and moves are cheap: a Swellow
-whose top spread is Timid with 252 SpA is priced as that special build even
-while a physical Facade is its best legal attack, and the physical moves it
-fields meanwhile are priced as the stopgaps they are. When the spread shows
-no side, a wall spread with a neutral nature, the side of the strongest
-obtainable attack decides. The same fallback applies to an interim
-individual: when a canonical move is egg-only and no egg can be made yet,
-the fielded mon can never complete the set, the competitive spread describes
-the future hatch rather than this mon, and this mon is priced on its own
-best attacks while the card says so. The card shows the build the scoring
-priced: the competitive spread when the set follows it, and that spread
-mirrored to the other attacking side (Atk and SpA EVs swapped, Timid to
-Jolly) when the mon was priced there, so a physical interim Swellow is not
-shown with Special Attack EVs. The reference defender
+cap. Damage is measured against a stage-reference hit, from the competitive
+spread's own nature and EVs: the card is the build the player makes, so the
+score describes it. A player builds one side, natures and EVs are costly to
+change, and moves are cheap: a Swellow whose top spread is Timid with 252
+SpA is priced as that special build even while a physical Facade is its best
+legal attack, and the physical moves it fields meanwhile are priced as the
+stopgaps they are. An interim individual is the exception: when a canonical
+move is egg-only and no egg can be made yet, the fielded mon can never
+complete the set and the spread describes the future hatch, so the mon is
+priced on the side of its own strongest obtainable attack, from the spread
+mirrored to that side (Atk and SpA EVs swapped, Timid to Jolly), and the
+card shows that mirrored spread and says why. The assumed full investment
+(252 EVs and a boosting nature) stands in only for a mon with no competitive
+spread. Scoring a counterfactual full investment instead inflated attacks by
+about a tenth against utility and made cards and scores disagree; honest
+figures made the fast-utility role hand frail attackers a Roost set, which
+is why that role now requires bulk. The reference defender
 is a median-stat wall with no single typing: ordinary effectiveness stays out
 of the estimate (the coverage vector applies it per defending type), but the
 defender carries fractional types, each type combination in the share of the

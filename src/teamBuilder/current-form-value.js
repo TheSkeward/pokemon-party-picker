@@ -690,7 +690,10 @@ export function currentFormValue(profile, levelCap) {
       utilityWeight *
       nonPassive *
       geomean([f.effectiveBulkQ, f.utilityQ]),
-    fast_utility: utilityWeight * nonPassive * geomean([f.speedQ, f.utilityQ]),
+    // A fast utility mon also needs the bulk to use its speed more than
+    // once; a frail bird with Roost and Protect is not a utility mon.
+    fast_utility: utilityWeight * nonPassive *
+      geomean([f.speedQ, f.utilityQ, f.effectiveBulkQ]),
     // May share, never exceed, the perfect-attacker ceiling (rationale at
     // priorityUtilityQ).
     priority_utility:
