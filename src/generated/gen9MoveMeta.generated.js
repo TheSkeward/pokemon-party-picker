@@ -576,6 +576,9 @@ export const MOVE_META = {
     "accuracy": 100,
     "roles": [
       "priority"
+    ],
+    "lowers": [
+      "atk"
     ]
   },
   "banefulbunker": {
@@ -1296,7 +1299,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "spa"
+    ]
   },
   "catastropika": {
     "name": "Catastropika",
@@ -1371,7 +1377,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "atk"
+    ]
   },
   "chatter": {
     "name": "Chatter",
@@ -1609,7 +1618,10 @@ export const MOVE_META = {
     "flags": {
       "sound": 1,
       "nevermiss": 1
-    }
+    },
+    "lowers": [
+      "spa"
+    ]
   },
   "confuseray": {
     "name": "Confuse Ray",
@@ -1754,7 +1766,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "spe"
+    ]
   },
   "counter": {
     "name": "Counter",
@@ -2598,7 +2613,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "spa"
+    ]
   },
   "eeriespell": {
     "name": "Eerie Spell",
@@ -2930,7 +2948,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "spd"
+    ]
   },
   "falsesurrender": {
     "name": "False Surrender",
@@ -2964,7 +2985,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "atk"
+    ]
   },
   "feint": {
     "name": "Feint",
@@ -3268,7 +3292,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "accuracy"
+    ]
   },
   "flashcannon": {
     "name": "Flash Cannon",
@@ -3895,7 +3922,10 @@ export const MOVE_META = {
     "accuracy": 100,
     "flags": {
       "sound": 1
-    }
+    },
+    "lowers": [
+      "atk"
+    ]
   },
   "growth": {
     "name": "Growth",
@@ -4938,7 +4968,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 80
+    "accuracy": 80,
+    "lowers": [
+      "accuracy"
+    ]
   },
   "kingsshield": {
     "name": "King's Shield",
@@ -5124,7 +5157,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "def"
+    ]
   },
   "letssnuggleforever": {
     "name": "Let's Snuggle Forever",
@@ -5860,7 +5896,11 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "atk",
+      "spa"
+    ]
   },
   "menacingmoonrazemaelstrom": {
     "name": "Menacing Moonraze Maelstrom",
@@ -5906,7 +5946,10 @@ export const MOVE_META = {
     "accuracy": 85,
     "flags": {
       "sound": 1
-    }
+    },
+    "lowers": [
+      "spd"
+    ]
   },
   "meteorassault": {
     "name": "Meteor Assault",
@@ -6420,7 +6463,11 @@ export const MOVE_META = {
     "accuracy": 100,
     "flags": {
       "sound": 1
-    }
+    },
+    "lowers": [
+      "atk",
+      "spa"
+    ]
   },
   "noretreat": {
     "name": "No Retreat",
@@ -6756,7 +6803,10 @@ export const MOVE_META = {
     "accuracy": 100,
     "flags": {
       "nevermiss": 1
-    }
+    },
+    "lowers": [
+      "atk"
+    ]
   },
   "playrough": {
     "name": "Play Rough",
@@ -7940,7 +7990,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "accuracy"
+    ]
   },
   "sandsearstorm": {
     "name": "Sandsear Storm",
@@ -8028,7 +8081,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "spe"
+    ]
   },
   "scorchingsands": {
     "name": "Scorching Sands",
@@ -8067,7 +8123,10 @@ export const MOVE_META = {
     "accuracy": 85,
     "flags": {
       "sound": 1
-    }
+    },
+    "lowers": [
+      "def"
+    ]
   },
   "searingshot": {
     "name": "Searing Shot",
@@ -8719,7 +8778,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "accuracy"
+    ]
   },
   "snaptrap": {
     "name": "Snap Trap",
@@ -8945,6 +9007,9 @@ export const MOVE_META = {
     },
     "roles": [
       "setup"
+    ],
+    "lowers": [
+      "def"
     ]
   },
   "spiderweb": {
@@ -9352,7 +9417,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 95
+    "accuracy": 95,
+    "lowers": [
+      "spe"
+    ]
   },
   "struggle": {
     "name": "Struggle",
@@ -9607,7 +9675,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "evasion"
+    ]
   },
   "swift": {
     "name": "Swift",
@@ -9742,7 +9813,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "def"
+    ]
   },
   "tailwind": {
     "name": "Tailwind",
@@ -9788,7 +9862,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "spe"
+    ]
   },
   "taunt": {
     "name": "Taunt",
@@ -9812,7 +9889,11 @@ export const MOVE_META = {
     "accuracy": 100,
     "flags": {
       "nevermiss": 1
-    }
+    },
+    "lowers": [
+      "atk",
+      "spa"
+    ]
   },
   "teatime": {
     "name": "Teatime",
@@ -10119,7 +10200,11 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "atk",
+      "def"
+    ]
   },
   "tidyup": {
     "name": "Tidy Up",
@@ -10204,6 +10289,9 @@ export const MOVE_META = {
     "accuracy": 100,
     "roles": [
       "status"
+    ],
+    "lowers": [
+      "spe"
     ]
   },
   "trailblaze": {

@@ -1878,9 +1878,11 @@ function moveHitMultiplier(move, ability) {
 //   4. Fill the rest with fresh attacking types that raise the set's best
 //      damage into some defense type (a second same-type attack adds
 //      nothing, and neither does a weak off-type one); then utility that
-//      real sets run or that does a support job; then any attack, priority
-//      first, then a type the set lacks, then damage; then role-less
-//      notable status moves (Substitute).
+//      real sets run or that does a support job; then an attack that is
+//      still a click (priority, or a type the set lacks); then any status
+//      move with an effect; then a dead same-type attack for its PP. What
+//      a route costs to obtain is never charged: the player pays for the
+//      best set knowingly.
 //   5. Slots STILL empty with legal moves remaining: fill by the stitched
 //      competitive priority order — descending usage within the canonical
 //      tier, then each fallback tier in order. That order lives in moveRank
@@ -2053,27 +2055,42 @@ function recommendCurrentMoves(
     if (add(bestUtility(usableUtility.filter(runsOrSupports), selected))) {
       continue;
     }
-    // Every attack left is out-hit by the set into every type. One with
-    // priority still moves first, so it goes ahead of pure filler. Among the
-    // rest, a type the set does not carry beats a stronger move of a type it
-    // does: the stronger one is never the right click while a better move of
-    // its type sits beside it, but the fresh one is the right click the
-    // moment the better moves are blocked (a Ghost against Normal, Water
-    // Absorb against Water), and it is the one whose type counts at all
-    // under Protean. Lick over Pound on a Frogadier. Any filler still adds
-    // breadth.
-    const anyAttack = usableDamaging()
-      .filter((move) => !isSelected(move, selected))
+    // Every attack left is out-hit by the set into every type. Some are
+    // still a click: one with priority moves first, and a type the set does
+    // not carry is the right click the moment an immunity blocks the better
+    // moves (a Ghost against Normal, Water Absorb against Water) and is the
+    // type that counts under Protean. Lick over Pound on a Frogadier. What a
+    // route costs to obtain (a candy-down, a held evolution) is never
+    // charged here: the builder builds the best set, and paying for it is
+    // the player's call.
+    const liveAttack = usableDamaging()
+      .filter(
+        (move) =>
+          !isSelected(move, selected) &&
+          ((move.priority || 0) > 0 || !coveredTypes.has(move.type)),
+      )
       .sort(
         (a, b) =>
           (b.priority || 0) - (a.priority || 0) ||
           Number(coveredTypes.has(a.type)) - Number(coveredTypes.has(b.type)) ||
           compareByDamage(a, b),
       )[0];
-    if (add(anyAttack)) continue;
-    // Notable status moves without a support role (Substitute) are the last
-    // filler before the competitive ladder: the scoring sees nothing in them.
-    if (add(bestUtility(usableUtility, selected))) continue;
+    if (add(liveAttack)) continue;
+    // A status move with an effect beats an attack the set already out-hits
+    // with a better move of its type: that attack is never clicked, the
+    // status move is. Baby-Doll Eyes and Sand Attack over Tackle on a
+    // Linoone that already carries Headbutt.
+    const statusFiller = usableUtility
+      .filter(
+        (move) => move.category === 'Status' && !isSelected(move, selected),
+      )
+      .sort(compareStatusFiller)[0];
+    if (add(statusFiller)) continue;
+    // Last, a dead same-type attack, for its PP, by damage.
+    const deadAttack = usableDamaging()
+      .filter((move) => !isSelected(move, selected))
+      .sort(compareByDamage)[0];
+    if (add(deadAttack)) continue;
     // Step 5: the damage-led fill is dry — take the best-ranked remaining
     // move on the stitched competitive ladder (canonical tier first, then
     // the fallback tiers in order). Only moves that appear SOMEWHERE in the
@@ -2209,6 +2226,29 @@ function compareByDamage(a, b) {
     a.sourcePriority - b.sourcePriority ||
     a.name.localeCompare(b.name)
   );
+}
+
+// A status filler for a slot no attack earns: what real sets run first, then
+// the notable table, then priority, then a drop to the foe's accuracy or
+// offense (it blunts what hits you) over one to its defenses, then the
+// cheaper source, then name.
+function compareStatusFiller(a, b) {
+  return (
+    b.usage - a.usage ||
+    b.utilityWeight - a.utilityWeight ||
+    (b.priority || 0) - (a.priority || 0) ||
+    bluntRank(b) - bluntRank(a) ||
+    a.sourcePriority - b.sourcePriority ||
+    a.name.localeCompare(b.name)
+  );
+}
+
+// 2: lowers the foe's accuracy; 1: its Attack or Special Attack; 0: other.
+function bluntRank(move) {
+  const lowers = move.lowers || [];
+  if (lowers.includes('accuracy')) return 2;
+  if (lowers.includes('atk') || lowers.includes('spa')) return 1;
+  return 0;
 }
 
 function compareUtilityByUsage(a, b) {

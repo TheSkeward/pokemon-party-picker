@@ -238,7 +238,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "spa"
+    ]
   },
   "catastropika": {
     "name": "Catastropika",
@@ -569,7 +572,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "accuracy"
+    ]
   },
   "floralhealing": {
     "name": "Floral Healing",
@@ -2074,6 +2080,9 @@ export const MOVE_META = {
     "accuracy": 100,
     "roles": [
       "status"
+    ],
+    "lowers": [
+      "spe"
     ]
   },
   "trumpcard": {
@@ -3133,7 +3142,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 80
+    "accuracy": 80,
+    "lowers": [
+      "accuracy"
+    ]
   },
   "landswrath": {
     "name": "Land's Wrath",
@@ -4633,6 +4645,9 @@ export const MOVE_META = {
     "accuracy": 100,
     "roles": [
       "priority"
+    ],
+    "lowers": [
+      "atk"
     ]
   },
   "barbbarrage": {
@@ -5102,7 +5117,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "atk"
+    ]
   },
   "chillingwater": {
     "name": "Chilling Water",
@@ -5288,7 +5306,10 @@ export const MOVE_META = {
     "flags": {
       "sound": 1,
       "nevermiss": 1
-    }
+    },
+    "lowers": [
+      "spa"
+    ]
   },
   "confuseray": {
     "name": "Confuse Ray",
@@ -5372,7 +5393,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "spe"
+    ]
   },
   "counter": {
     "name": "Counter",
@@ -6021,7 +6045,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "spa"
+    ]
   },
   "eeriespell": {
     "name": "Eerie Spell",
@@ -6235,7 +6262,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "spd"
+    ]
   },
   "falsesurrender": {
     "name": "False Surrender",
@@ -6269,7 +6299,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "atk"
+    ]
   },
   "feint": {
     "name": "Feint",
@@ -7305,7 +7338,10 @@ export const MOVE_META = {
     "accuracy": 100,
     "flags": {
       "sound": 1
-    }
+    },
+    "lowers": [
+      "atk"
+    ]
   },
   "guardsplit": {
     "name": "Guard Split",
@@ -8039,7 +8075,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "def"
+    ]
   },
   "lick": {
     "name": "Lick",
@@ -8341,7 +8380,11 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "atk",
+      "spa"
+    ]
   },
   "metalburst": {
     "name": "Metal Burst",
@@ -8375,7 +8418,10 @@ export const MOVE_META = {
     "accuracy": 85,
     "flags": {
       "sound": 1
-    }
+    },
+    "lowers": [
+      "spd"
+    ]
   },
   "meteorbeam": {
     "name": "Meteor Beam",
@@ -8622,7 +8668,11 @@ export const MOVE_META = {
     "accuracy": 100,
     "flags": {
       "sound": 1
-    }
+    },
+    "lowers": [
+      "atk",
+      "spa"
+    ]
   },
   "noretreat": {
     "name": "No Retreat",
@@ -8878,7 +8928,10 @@ export const MOVE_META = {
     "accuracy": 100,
     "flags": {
       "nevermiss": 1
-    }
+    },
+    "lowers": [
+      "atk"
+    ]
   },
   "playrough": {
     "name": "Play Rough",
@@ -9659,7 +9712,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "accuracy"
+    ]
   },
   "sandsearstorm": {
     "name": "Sandsear Storm",
@@ -9726,7 +9782,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "spe"
+    ]
   },
   "scorchingsands": {
     "name": "Scorching Sands",
@@ -9765,7 +9824,10 @@ export const MOVE_META = {
     "accuracy": 85,
     "flags": {
       "sound": 1
-    }
+    },
+    "lowers": [
+      "def"
+    ]
   },
   "seedbomb": {
     "name": "Seed Bomb",
@@ -10142,7 +10204,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "accuracy"
+    ]
   },
   "snarl": {
     "name": "Snarl",
@@ -10259,6 +10324,9 @@ export const MOVE_META = {
     },
     "roles": [
       "setup"
+    ],
+    "lowers": [
+      "def"
     ]
   },
   "spinout": {
@@ -10515,7 +10583,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 95
+    "accuracy": 95,
+    "lowers": [
+      "spe"
+    ]
   },
   "struggle": {
     "name": "Struggle",
@@ -10697,7 +10768,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "evasion"
+    ]
   },
   "swift": {
     "name": "Swift",
@@ -10771,7 +10845,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "def"
+    ]
   },
   "tailwind": {
     "name": "Tailwind",
@@ -10817,7 +10894,10 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "spe"
+    ]
   },
   "tearfullook": {
     "name": "Tearful Look",
@@ -10829,7 +10909,11 @@ export const MOVE_META = {
     "accuracy": 100,
     "flags": {
       "nevermiss": 1
-    }
+    },
+    "lowers": [
+      "atk",
+      "spa"
+    ]
   },
   "teatime": {
     "name": "Teatime",
@@ -11032,7 +11116,11 @@ export const MOVE_META = {
     "basePower": 0,
     "priority": 0,
     "utility": true,
-    "accuracy": 100
+    "accuracy": 100,
+    "lowers": [
+      "atk",
+      "def"
+    ]
   },
   "tidyup": {
     "name": "Tidy Up",

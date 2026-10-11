@@ -211,6 +211,15 @@ function main() {
       move.secondaries || (move.secondary ? [move.secondary] : [])
     ).find((s) => s?.volatileStatus === 'flinch')?.chance;
     if (flinch && move.id !== 'fakeout') entry.flinch = flinch;
+    // The foe's stats a status move lowers (Growl: atk; Sand Attack:
+    // accuracy), so a dead slot can prefer a drop to what hits you over a
+    // drop to what you hit.
+    if (move.category === 'Status' && move.boosts && move.target !== 'self') {
+      const lowers = Object.entries(move.boosts)
+        .filter(([, value]) => value < 0)
+        .map(([stat]) => stat);
+      if (lowers.length) entry.lowers = lowers;
+    }
     const screen = screenFacts(move);
     if (screen) Object.assign(entry, screen);
     meta[move.id] = entry;

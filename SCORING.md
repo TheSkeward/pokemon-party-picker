@@ -200,13 +200,14 @@ even into a type it hits super effectively, so Thunder Punch on Lopunny
 covers nothing the scoring can see; a 4x dual type is invisible to the
 per-type vector by design and earns no slot either. When no fresh type
 qualifies, the slot goes to utility the mon's real sets run or that does a
-credited support job, then to a priority attack, then to any attack for
-breadth, where a move of a type the set lacks beats a stronger move of a
-type it carries (the stronger one is never the right click beside a better
-move of its type; the fresh one is, once an immunity blocks the better
-moves, and under Protean its type is the point), and only then to a notable
-status move without a role, such as Substitute, which the scoring does not
-see at all. A flinch chance is priced as the action it denies, the chance
+credited support job, then to an attack that is still a click, a priority
+move or a type the set lacks (the right click once an immunity blocks the
+better moves, and under Protean the type is the point), then to any status
+move with an effect, since a same-type attack the set already out-hits is
+never clicked while Baby-Doll Eyes or Sand Attack is, and only last to such
+a dead attack for its PP. What a move costs to obtain, a candy-down or a
+held evolution, is never charged against it: the builder builds the best
+set, and paying for it is the player's call. A flinch chance is priced as the action it denies, the chance
 times the user's chance to move first times its best hit, for slot filling
 and card order only: a fast Meowth's Bite lists above a Scratch that does two
 more damage. The score itself sees damage alone until secondary effects are

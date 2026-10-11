@@ -73,12 +73,38 @@ test('among dominated filler, a type the set lacks beats a stronger covered one'
   const frogadier = { id: 'frogadier', name: 'Frogadier', types: ['Water'] };
   const ids = idsOf(buildCandidateLegalityProfile({
     member: frogadier,
-    moves: ['waterpulse', 'bubble', 'pound', 'quickattack', 'lick'].map(legal),
+    moves: [
+      'waterpulse', 'bubble', 'pound', 'quickattack', 'lick', 'smokescreen',
+    ].map(legal),
     levelCap: 20, ability: 'Protean', investmentSide: 'special',
   }));
   assert.ok(ids.includes('lick') && !ids.includes('pound'), ids);
   assert.ok(ids.includes('quickattack') && ids.includes('waterpulse'), ids);
+  // Bubble is a dead same-type attack too: a status move with an effect,
+  // Smokescreen, takes the last slot over it.
+  assert.ok(!ids.includes('bubble'), ids);
 });
+
+test('a dead slot takes a status move with an effect over a dead attack', () => {
+  // A fresh-file Linoone at cap 20: Headbutt and Pin Missile are the set;
+  // the other two slots go to Baby-Doll Eyes (priority) and Sand Attack
+  // (accuracy drop), not to Tackle and Fury Swipes, which Headbutt out-hits.
+  const linoone = { id: 'linoone', name: 'Linoone', types: ['Normal'] };
+  const ids = idsOf(buildCandidateLegalityProfile({
+    member: linoone,
+    moves: [
+      'headbutt', 'pinmissile', 'furyswipes', 'tackle', 'babydolleyes',
+      'sandattack', 'growl', 'tailwhip', 'mudsport', 'odorsleuth',
+    ].map(legal),
+    levelCap: 20, ability: 'Gluttony',
+  }));
+  assert.deepEqual(
+    new Set(ids),
+    new Set(['headbutt', 'pinmissile', 'babydolleyes', 'sandattack']),
+    ids,
+  );
+});
+
 
 test('a dominated priority attack seats ahead of dominated filler', () => {
   // Three punches compete with Quick Attack for the last two slots; the

@@ -116,6 +116,8 @@ export function hydrateLegalMove(rawMove) {
     flags: meta?.flags ?? {},
     // Flinch chance (0–100), priced as a denied action by a faster user.
     flinch: meta?.flinch ?? 0,
+    // The foe's stats a status move lowers ('atk', 'accuracy', ...).
+    lowers: meta?.lowers ?? [],
     sources: rawMove.sources,
   };
 }
