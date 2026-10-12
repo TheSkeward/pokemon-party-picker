@@ -264,7 +264,10 @@ name either. When several of the current form's slots reach the target's
 ability, the first is assumed and the others are probed for sensitivity, since
 which one the player caught is theirs to pin; a pin that leaves the target
 ambiguous (Shed Skin on a Metapod) pins the current ability only. With no
-usage at all, the first ability slot stands in. A game that hands out no hidden abilities (Black 2 and White 2,
+usage at all, the first ability slot stands in. A form that has already
+evolved shows only its own ability; when it was caught as a pre-evolution and
+nothing is pinned, its origin line names the pre-evolution ability to catch,
+since the catch is the only moment that choice exists. A game that hands out no hidden abilities (Black 2 and White 2,
 whose only source is the Hidden Grottoes, all late and each a grind) never
 assumes one: the set's best normal ability stands in unless the pool pins the
 hidden one. The owner chose this over modelling the grottoes species by

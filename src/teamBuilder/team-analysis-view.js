@@ -478,15 +478,28 @@ function renderSetCard(profile) {
     profile.representativeName !== profile.currentName
       ? profile.representativeName
       : null;
+  const caught =
+    Boolean(profile.inputName) && profile.inputName !== profile.currentName;
+  // An evolved form shows only its own ability, so the catch that leads to
+  // it is named here: a Surskit becomes an Intimidate Masquerain only when
+  // caught with Swift Swim. Omitted once the pool pins the ability, and for
+  // Megas, whose base ability is a separate, pre-Mega fact.
+  const catchAbility =
+    caught && !profile.abilityKnown && !profile.megaReady &&
+    profile.inputAbility && set.ability &&
+    toId(profile.inputAbility) !== toId(set.ability)
+      ? `, ${profile.inputAbility}`
+      : '';
+  // "from Burmy@20 (Female, in buildings), Shed Skin": what the input mon
+  // needs to become this form, and which of it to catch.
+  const origin = caught
+    ? `from ${profile.inputName}${describeEvolutionPath(
+      toId(profile.inputName),
+      profile.currentId,
+    )}${catchAbility}`
+    : null;
   const subParts = [
-    profile.inputName && profile.inputName !== profile.currentName
-      ? // "from Burmy@20 (Female, in buildings)" — what the input mon needs to
-    // become this form; empty when the input isn't its pre-evolution.
-      `from ${profile.inputName}${describeEvolutionPath(
-        toId(profile.inputName),
-        profile.currentId,
-      )}`
-      : null,
+    origin,
     eventual ? `→ ${eventual} later` : null,
   ].filter(Boolean);
   const natureTip = set.nature ? describeNature(set.nature) : '';

@@ -176,6 +176,30 @@ test('optimizer, analysis, display, and export agree on current / eventual abili
   assert.ok(!root.innerHTML.includes('Simple / Solid Rock'));
 });
 
+test('an evolved form caught as a pre-evolution names the ability to catch', async () => {
+  const progression = progressionAt({ badge: 1, levelCap: 25 });
+  const root = {
+    innerHTML: '', isConnected: true,
+    ownerDocument: { querySelectorAll: () => [] },
+  };
+  const render = async (pool) => {
+    const result = await runPool({ pool, progression });
+    await renderTeamAnalysisPanel(root, {
+      family: 'singles', selection: 'all', progression,
+      team: result.team, lines: result.lines,
+    });
+    return root.innerHTML;
+  };
+  // Surskit's Swift Swim slot is Masquerain's Intimidate. The evolved card
+  // shows Intimidate alone, so the origin line carries the catch.
+  const open = await render(['Surskit']);
+  assert.ok(open.includes('from Surskit@22, Swift Swim'), open);
+  // A pinned catch needs no reminder.
+  const pinned = await render(['Surskit (Swift Swim)']);
+  assert.ok(pinned.includes('from Surskit@22'));
+  assert.ok(!pinned.includes('from Surskit@22, Swift Swim'));
+});
+
 test('once evolved, the active ability is shown only once', async () => {
   const progression = progressionAt({ badge: 5, levelCap: 45 });
   const result = await runPool({ pool: ['Numel (Simple)'], progression });
