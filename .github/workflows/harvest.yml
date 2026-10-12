@@ -1,0 +1,120 @@
+name: Harvest Smogon data
+
+# The daily data refresh, split from the deploy so a code push never waits
+# behind a six-hour scrape: this workflow and the deploy hold separate
+# concurrency groups. It appends to the team archives, rewrites the generated
+# data trees, commits the result, and then dispatches the deploy itself. A
+# push made with the workflow token raises no push event, so the dispatch is
+# the only way the refreshed data reaches the site.
+
+on:
+  schedule:
+    # Daily at 10:17 UTC. GitHub starts scheduled workflows late, often by
+    # hours; nothing waits on this run, so the lateness costs only freshness.
+    - cron: '17 10 * * *'
+  workflow_dispatch:
+    inputs:
+      harvest_only:
+        description:
+          "Harvest only these scrapers (comma-separated: pkmn, replays,
+          samples, rmt, tournament, forums; empty = all)."
+        required: false
+        default: ""
+        type: string
+      refresh_data:
+        description: "Rebuild the generated data after the harvest"
+        required: false
+        default: "true"
+        type: choice
+        options:
+          - "true"
+          - "false"
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: harvest
+  cancel-in-progress: false
+
+jobs:
+  harvest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Restore Smogon raw cache
+        uses: actions/cache@v4
+        with:
+          # Covers cache/stats (USUM) and cache/gen5 (immutable old-gen moveset
+          # files), so Gen 5 history isn't re-fetched on every refresh.
+          path: cache
+          key: smogon-stats-${{ runner.os }}-${{ hashFiles('scripts/config.mjs', 'scripts/build-data.mjs', 'scripts/build-gen5-items.mjs') }}
+          restore-keys: |
+            smogon-stats-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Set up Chrome for forum harvest
+        id: setup-chrome
+        continue-on-error: true
+        uses: browser-actions/setup-chrome@v2
+
+      # Appends to the committed team archives (scripts/teamscrape/archive)
+      # before refresh:data so build:observed-sets / build:core-index see the
+      # new teams. Scrape failures must not block the data refresh: the
+      # ladders can be quiet and the hosts can be down.
+      - name: Harvest competitive teams
+        continue-on-error: true
+        env:
+          SMOGON_FETCH_MODE: browser
+          SMOGON_CHROME_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
+          SMOGON_REQUEST_GAP_MS: 2000
+        run: npm run scrape:teams -- --only="${{ github.event.inputs.harvest_only }}"
+
+      # refresh:data rewrites BOTH trees (site-data/data JSON and the
+      # src/generated/*.js modules); build:manifest must run after it so the
+      # committed manifest's hashes/dataSignature describe the refreshed data.
+      - name: Refresh data
+        id: refresh
+        if: github.event_name == 'schedule' || github.event.inputs.refresh_data == 'true'
+        run: npm run refresh:data && npm run build:manifest
+
+      # The scrape runs for hours while main moves on, so the data commit is
+      # rebased onto whatever landed meanwhile, the generated files taking the
+      # harvest's side of any conflict. A failed push fails the run: a harvest
+      # that quietly never landed is the worst outcome, and it has happened.
+      - name: Commit refreshed generated data
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site-data/data src/generated scripts/teamscrape/archive
+          if git diff --cached --quiet; then
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m "Refresh generated Smogon data"
+          git pull --rebase --autostash -X theirs origin main
+          git push origin HEAD:main
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+
+      # Only a data refresh changes the site; an archive-only harvest does
+      # not need a deploy.
+      - name: Deploy the refreshed data
+        if: steps.commit.outputs.pushed == 'true' && steps.refresh.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yml --ref main
