@@ -34,6 +34,7 @@ import {
 } from './damage-model.js';
 import { loadTopSet } from './top-spread.js';
 import { formatAbilityPath, resolveBuildAbilities } from './ability-path.js';
+import { withMetLevels } from './input-groups';
 import { computeSetReadiness } from '../playthrough/set-readiness.js';
 import { teamMemberKey } from './item-recommendations.js';
 import { selectObservedSet } from './observed-sets.js';
@@ -68,6 +69,12 @@ export async function buildTeamAnalysis(
   progression = {},
   breedingOptions = {},
 ) {
+  // Met levels ("Munna@14") ride the progression here as in the optimizer.
+  progression = withMetLevels(
+    progression,
+    breedingOptions.poolQuery,
+    breedingOptions.pokemonIndex,
+  );
   const { breedingContext, sketchContext: baseSketchContext } =
     await buildMoveTransferContexts({
       ...breedingOptions,

@@ -85,6 +85,25 @@ export function parseKeptNames(query, pokemonIndex) {
 }
 
 /**
+ * Met levels: a pool entry written as "Munna@14" arrived at level 14, so it
+ * never had the level-1 moves the game's starting window at 14 leaves out.
+ * Anything from level 2 up is reachable by candying down, so the level
+ * decides nothing else. First annotation of a name wins.
+ * @param {string} query
+ * @param {Array<Object>} pokemonIndex
+ * @return {Map<string, number>} Normalized name -> level.
+ */
+export function parseMetLevels(query, pokemonIndex) {
+  const levels = new Map();
+  for (const entry of poolEntries(query, pokemonIndex).values()) {
+    if (entry.metLevel != null) {
+      levels.set(normalizeName(entry.canonical), entry.metLevel);
+    }
+  }
+  return levels;
+}
+
+/**
  * Rewrites the pool text in canonical form with one entry locked or
  * unlocked. Same output shape as normalizePoolText.
  * @param {string} query
@@ -137,18 +156,32 @@ function poolEntries(query, pokemonIndex) {
         ability: annotations.get(key) || null,
         locked: false,
         kept: false,
+        metLevel: null,
       };
       if (hasLockMarker(part)) entry.locked = true;
       if (hasKeepMarker(part)) entry.kept = true;
+      if (entry.metLevel == null) entry.metLevel = metLevelOf(part);
       entries.set(key, entry);
     }
   }
   return entries;
 }
 
-// The token without its trailing ability annotation, where the markers live.
+// "Munna@14": the level the mon arrived at, which decides which of its
+// level-1 moves it ever had (legal-moves.js, receivedForm).
+const MET_LEVEL = /@\s*(\d{1,3})(?!\d)/;
+
+function metLevelOf(token) {
+  const match = MET_LEVEL.exec(String(token || ''));
+  const level = match ? Number(match[1]) : NaN;
+  return level >= 1 && level <= 100 ? level : null;
+}
+
+// The token without its trailing ability annotation or met level, where the
+// markers live.
 function bareToken(token) {
   return String(token || '')
+    .replace(MET_LEVEL, ' ')
     .trim()
     .replace(/\s*[([][^)\]]*[)\]]\s*$/, '');
 }
@@ -171,9 +204,9 @@ function hasKeepMarker(token) {
 function formatPoolEntries(entries) {
   return [...entries.values()]
     .map(
-      ({ canonical, ability, locked, kept }) =>
-        canonical + (locked ? '!' : '') + (kept ? '*' : '') +
-        (ability ? ` (${ability})` : ''),
+      ({ canonical, ability, locked, kept, metLevel }) =>
+        canonical + (metLevel ? `@${metLevel}` : '') + (locked ? '!' : '') +
+        (kept ? '*' : '') + (ability ? ` (${ability})` : ''),
     )
     .sort((a, b) => a.localeCompare(b))
     .join(', ');
@@ -226,7 +259,9 @@ function extractNameFromPoolToken(value, pokemonIndex) {
 }
 
 function findPokemonNameInText(value, pokemonIndex) {
-  const text = String(value || '').trim();
+  // A met level's digits would otherwise fuse with the name: "Porygon@2"
+  // must not read as Porygon2.
+  const text = String(value || '').replace(MET_LEVEL, ' ').trim();
   const key = normalizeName(text);
   if (!key) return null;
 

@@ -24,7 +24,7 @@ import { buildCandidateLegalityProfile } from './team-analysis';
 import { loadTopSet } from './top-spread.js';
 import { resolveBuildAbilities } from './ability-path.js';
 import { computeSetReadiness } from '../playthrough/set-readiness.js';
-import { buildInputGroups } from './input-groups';
+import { buildInputGroups, withMetLevels } from './input-groups';
 import {
   parseAbilityAnnotations,
   parseLockedNames,
@@ -337,6 +337,9 @@ export async function optimizeTeamFromPool({
 
   await ensureHydrated();
 
+  // Met levels ("Munna@14") gate a line's level-1 moves, so they ride the
+  // progression into every legality pass below and into its signature.
+  progression = withMetLevels(progression, query, pokemonIndex);
   const { breedingContext, sketchContext } =
     await buildMoveTransferContexts({
       pokemonIndex,

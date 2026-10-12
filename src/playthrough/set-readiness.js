@@ -19,7 +19,12 @@
  * This annotates the analysis display; it feeds no scoring input.
  */
 
-import { getCheckpoint, getItemUnlockBadge } from '../games/schedule.js';
+import {
+  getCheckpoint,
+  getItemUnlockBadge,
+  getUnlockBadge,
+} from '../games/schedule.js';
+import { receivedForm } from './legal-moves.js';
 import { mechanics, moveSources } from '../games/legality.js';
 import { fixedMoveDamage } from '../teamBuilder/damage-model.js';
 import { getMoveMetaById } from '../move-meta.js';
@@ -123,6 +128,7 @@ export function computeSetReadiness({
   const speciesIsEvolved = Boolean(
     dex().progressionSpecies[legalMoveData?.pokemonId]?.prevoId,
   );
+  const received = receivedForm(legalMoveData, progression);
   const capNeeds = []; // cap-equivalents of everything not ready yet
   let scaling = false;
 
@@ -157,12 +163,23 @@ export function computeSetReadiness({
     // evolved form are NOT a leveling route (they're relearner-gated — you
     // never level up to 1), so they can't set the cap-equivalent.
     const candidates = [];
-    const levels = [
-      ...(raw.sources?.levelUp || []),
+    const levelEntries = [
+      ...(raw.sources?.levelUp || []).map((level) => ({
+        level,
+        from: legalMoveData?.pokemonId,
+      })),
       ...(raw.sources?.preEvolutionLevelUp || []).map((entry) =>
-        typeof entry === 'number' ? entry : entry.level,
+        typeof entry === 'number' ? { level: entry, from: null } : entry,
       ),
-    ].filter((level) => !(speciesIsEvolved && level === 1));
+    ];
+    // A level-1 entry the individual arrived without (receivedForm) is no
+    // leveling route either.
+    const neverHeld = (entry) =>
+      Boolean(received?.neverHeld(entry.level, entry.from));
+    const levels = levelEntries
+      .filter((entry) => !(speciesIsEvolved && entry.level === 1))
+      .filter((entry) => !neverHeld(entry))
+      .map((entry) => entry.level);
     if (levels.length) {
       const level = Math.min(...levels);
       candidates.push({ cap: level, detail: `level-up @${level}` });
@@ -181,6 +198,23 @@ export function computeSetReadiness({
           detail: `TM/tutor ${badgePhrase(badge)}`,
         });
       }
+    }
+    if (!candidates.length && levelEntries.some(neverHeld)) {
+      // The relearner restores it to this individual; with the daycare on,
+      // a hatchling would already have made it available.
+      const badge = getUnlockBadge('moveRelearnerUnlocked');
+      if (badge == null) {
+        return {
+          id,
+          label,
+          status: 'later',
+          detail: 'level 1 move it arrived without — needs the relearner or the daycare',
+        };
+      }
+      candidates.push({
+        cap: capOfBadge(badge) ?? 100,
+        detail: `level 1 move it arrived without — relearner ${badgePhrase(badge)}`,
+      });
     }
     if (!candidates.length && raw.sources?.egg) {
       // An egg is the only route and none can be made yet: the fielded

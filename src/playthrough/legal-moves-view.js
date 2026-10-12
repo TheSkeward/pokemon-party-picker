@@ -12,6 +12,7 @@ import {
   applySketchContextToProgression,
   buildMoveTransferContexts,
 } from './sketch.js';
+import { withMetLevels } from '../teamBuilder/input-groups';
 import { getActiveGame } from '../games/registry.js';
 import { mechanics } from '../games/legality.js';
 
@@ -39,8 +40,13 @@ const SOURCE_TONE = {
  *     poolQuery: ?string}} options
  */
 export function renderLegalMovesPanel(container, options) {
-  const { currentSpecies, movesetEntry, pokemonId, pokemonName, progression } =
-    options;
+  const { currentSpecies, movesetEntry, pokemonId, pokemonName } = options;
+  // Met levels ("Munna@14") ride the progression here as in the optimizer.
+  const progression = withMetLevels(
+    options.progression,
+    options.poolQuery,
+    options.pokemonIndex,
+  );
   const legalityPokemonId = currentSpecies?.id || pokemonId;
   const legalityPokemonName = currentSpecies?.name || pokemonName;
   const renderKey = JSON.stringify({

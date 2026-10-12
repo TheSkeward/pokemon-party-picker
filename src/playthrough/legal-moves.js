@@ -196,6 +196,12 @@ export function getAvailableMoves(legalMoveData, progression = {}) {
   // path — it's a candy-down route at level 2+, relearner-only at level 1.
   const ancestorName = (fromId) =>
     dex().progressionSpecies[fromId]?.name || 'its pre-evolution';
+  // "Munna@14" in the pool: the line arrived as Munna at level 14. Forms
+  // below the received one were never held, and its own level-1 moves are
+  // known only while the game's four-move starting window at that level
+  // still reaches level 1. Candy-down reaches every level 2+ entry, so the
+  // met level decides nothing else.
+  const received = receivedForm(legalMoveData, progression);
   const moves = [];
 
   for (const move of legalMoveData?.moves || []) {
@@ -236,7 +242,9 @@ export function getAvailableMoves(legalMoveData, progression = {}) {
           learnerId: entry.from,
           learnerName: ancestorName(entry.from),
         })),
-    ];
+    ].filter(
+      (source) => !received?.neverHeld(source.level, source.learnerId),
+    );
     const delayedEntries = preEvolutionEntries
       .filter(
         (entry) =>
@@ -280,6 +288,18 @@ export function getAvailableMoves(legalMoveData, progression = {}) {
     const hasOwnBelowArrival = allLevelUpLevels.some(
       (level) => level < ownArrival,
     );
+    // The forms whose level-1 entry the received individual arrived without.
+    const neverHeldLearners = received
+      ? [
+        ...allLevelUpLevels
+          .filter((level) => received.neverHeld(level, pokemonId))
+          .map(() => pokemonId),
+        ...preEvolutionEntries
+          .filter((entry) => received.neverHeld(entry.level, entry.from))
+          .map((entry) => entry.from),
+      ]
+      : [];
+    const neverHeldLevelOne = neverHeldLearners.length > 0;
     const levelSources = naturalLevelUpSources
       .filter((source) => source.level <= levelCap)
       .sort(
@@ -371,7 +391,7 @@ export function getAvailableMoves(legalMoveData, progression = {}) {
     // relearner option.
     if (
       (hasRelearnerOnlyLevelOne || hasLevelOnePreEvoOnly ||
-        hasOwnBelowArrival) &&
+        hasOwnBelowArrival || neverHeldLevelOne) &&
       moveRelearnerUnlocked &&
       !sources.some((source) => source.kind === 'relearner')
     ) {
@@ -477,6 +497,28 @@ export function getAvailableMoves(legalMoveData, progression = {}) {
       });
     }
 
+    // A hatchling knows its base form's level-1 moves, so the daycare
+    // restores what a late-met mon arrived without, in a new individual.
+    const hatchLearner = neverHeldLearners.find(
+      (learnerId) =>
+        learnerId && !dex().progressionSpecies[learnerId]?.prevoId,
+    );
+    if (
+      hatchLearner &&
+      daycareUnlocked &&
+      !sources.some((source) => source.kind === 'egg')
+    ) {
+      sources.push({
+        kind: 'egg',
+        label: 'Hatch',
+        detail: 'level 1 move of a re-bred hatchling',
+        sourceTitle: `A ${ancestorName(hatchLearner)} hatched from an egg knows ${move.name} at level 1.`,
+        level: null,
+        learnerId: null,
+        hatchLevelOne: true,
+      });
+    }
+
     if (sources.length > 0) {
       moves.push({
         ...move,
@@ -529,6 +571,63 @@ function expandHiddenPower(moves, progression) {
 
 function isEvolvedLevelOneMove(level, evolvedSpecies) {
   return evolvedSpecies && level === 1;
+}
+
+// The game starts a received mon on the last four entries of its learnset at
+// its level, so four later moves push every level-1 move out.
+const STARTING_MOVE_WINDOW = 4;
+
+/**
+ * The form the pool says this line was received as, with its met level
+ * ("Munna@14"), read from progression.metLevelByPokemon by walking the
+ * fielded form's ancestry; null when nothing on the line is annotated.
+ * `neverHeld(level, learnerId)` is true for a level-1 entry the received
+ * individual arrived without: forms below the received one were never held
+ * at all, and the received form's own level-1 moves fall outside the game's
+ * starting window once it has learned four later moves by its met level.
+ * Anything from level 2 up is reachable by candying down, so nothing else
+ * depends on the met level.
+ * @param {?Object} legalMoveData
+ * @param {!Object=} progression
+ * @return {?{id: string, metLevel: number,
+ *     neverHeld: function(number, ?string): boolean}}
+ */
+export function receivedForm(legalMoveData, progression = {}) {
+  const metLevels = progression.metLevelByPokemon;
+  const pokemonId = legalMoveData?.pokemonId;
+  if (!metLevels || !pokemonId) return null;
+  const species = dex().progressionSpecies;
+  const chain = [];
+  const walked = new Set();
+  for (let id = pokemonId; id && !walked.has(id); id = species[id]?.prevoId) {
+    walked.add(id);
+    chain.push(id);
+  }
+  const index = chain.findIndex((id) => Number.isFinite(Number(metLevels[id])));
+  if (index < 0) return null;
+  const id = chain[index];
+  const metLevel = Number(metLevels[id]);
+  const belowOrAt = new Set(chain.slice(index));
+  let laterMoves = 0;
+  for (const move of legalMoveData.moves || []) {
+    const levels = id === pokemonId
+      ? move.sources?.levelUp || []
+      : (move.sources?.preEvolutionLevelUp || [])
+        .filter((entry) => typeof entry === 'object' && entry.from === id)
+        .map((entry) => entry.level);
+    if (levels.some((level) => level >= 2 && level <= metLevel)) {
+      laterMoves += 1;
+    }
+  }
+  const levelOneKnown = laterMoves < STARTING_MOVE_WINDOW;
+  return {
+    id,
+    metLevel,
+    neverHeld: (level, learnerId) =>
+      level === 1 &&
+      belowOrAt.has(learnerId) &&
+      !(learnerId === id && levelOneKnown),
+  };
 }
 
 /**

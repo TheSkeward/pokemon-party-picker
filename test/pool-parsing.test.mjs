@@ -65,3 +65,21 @@ test('a keep marker survives normalization beside a lock and an annotation', asy
   );
   assert.equal(absorbPoolIntoDonors('', 'Larvesta*', pokemonIndex), 'Larvesta');
 });
+
+test('a met level rides the entry and never fuses with the name', async () => {
+  const { parseMetLevels } = await import(
+    '../src/teamBuilder/pool-parsing.js',
+  );
+  const normalized = normalizePoolText(
+    'Munna@14!* (Synchronize), porygon@2, *Rockruff @ 7',
+    pokemonIndex,
+  );
+  assert.equal(
+    normalized,
+    'Munna@14!* (Synchronize), Porygon@2, Rockruff@7*',
+  );
+  assert.deepEqual(
+    [...parseMetLevels(normalized, pokemonIndex)].sort(),
+    [['munna', 14], ['porygon', 2], ['rockruff', 7]],
+  );
+});
