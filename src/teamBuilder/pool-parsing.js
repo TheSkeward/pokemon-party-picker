@@ -86,12 +86,14 @@ export function parseKeptNames(query, pokemonIndex) {
 
 /**
  * Met levels: a pool entry written as "Munna@14" arrived at level 14, so it
- * never had the level-1 moves the game's starting window at 14 leaves out.
- * Anything from level 2 up is reachable by candying down, so the level
- * decides nothing else. First annotation of a name wins.
+ * never had the level-1 moves the game's starting window at 14 leaves out;
+ * a bare "Munna@" arrived too late to have any of them. Anything from level
+ * 2 up is reachable by candying down, so the level decides nothing else.
+ * First annotation of a name wins.
  * @param {string} query
  * @param {Array<Object>} pokemonIndex
- * @return {Map<string, number>} Normalized name -> level.
+ * @return {Map<string, (number|true)>} Normalized name -> level, or true
+ *     for a bare mark.
  */
 export function parseMetLevels(query, pokemonIndex) {
   const levels = new Map();
@@ -168,22 +170,34 @@ function poolEntries(query, pokemonIndex) {
 }
 
 // "Munna@14": the level the mon arrived at, which decides which of its
-// level-1 moves it ever had (legal-moves.js, receivedForm).
-const MET_LEVEL = /@\s*(\d{1,3})(?!\d)/;
+// level-1 moves it ever had (legal-moves.js, receivedForm). A bare "Munna@"
+// says only that it arrived too late to have them. The mark sits after the
+// name with nothing but markers behind it, so "Gengar @ Life Orb" from a
+// pasted Showdown set is a plain entry.
+const MET_MARK = /@\s*(\d{1,3})?(?=[\s!*]*$)/;
+// A met level's digits anywhere in a token, for name resolution: "Porygon@2"
+// must not read as Porygon2.
+const MET_DIGITS = /@\s*\d{1,3}(?!\d)/;
 
+function stripAnnotation(token) {
+  return String(token || '')
+    .trim()
+    .replace(/\s*[([][^)\]]*[)\]]\s*$/, '');
+}
+
+// The level for "@14", true for a bare "@", null when absent or out of range.
 function metLevelOf(token) {
-  const match = MET_LEVEL.exec(String(token || ''));
-  const level = match ? Number(match[1]) : NaN;
+  const match = MET_MARK.exec(stripAnnotation(token));
+  if (!match) return null;
+  if (match[1] == null) return true;
+  const level = Number(match[1]);
   return level >= 1 && level <= 100 ? level : null;
 }
 
-// The token without its trailing ability annotation or met level, where the
+// The token without its trailing ability annotation or met mark, where the
 // markers live.
 function bareToken(token) {
-  return String(token || '')
-    .replace(MET_LEVEL, ' ')
-    .trim()
-    .replace(/\s*[([][^)\]]*[)\]]\s*$/, '');
+  return stripAnnotation(token).replace(MET_MARK, ' ').trim();
 }
 
 // "Gengar!", "! Gengar", "Gengar!*": a bang among the leading or trailing
@@ -205,8 +219,9 @@ function formatPoolEntries(entries) {
   return [...entries.values()]
     .map(
       ({ canonical, ability, locked, kept, metLevel }) =>
-        canonical + (metLevel ? `@${metLevel}` : '') + (locked ? '!' : '') +
-        (kept ? '*' : '') + (ability ? ` (${ability})` : ''),
+        canonical + (metLevel === true ? '@' : metLevel ? `@${metLevel}` : '') +
+        (locked ? '!' : '') + (kept ? '*' : '') +
+        (ability ? ` (${ability})` : ''),
     )
     .sort((a, b) => a.localeCompare(b))
     .join(', ');
@@ -259,9 +274,7 @@ function extractNameFromPoolToken(value, pokemonIndex) {
 }
 
 function findPokemonNameInText(value, pokemonIndex) {
-  // A met level's digits would otherwise fuse with the name: "Porygon@2"
-  // must not read as Porygon2.
-  const text = String(value || '').replace(MET_LEVEL, ' ').trim();
+  const text = String(value || '').replace(MET_DIGITS, ' ').trim();
   const key = normalizeName(text);
   if (!key) return null;
 

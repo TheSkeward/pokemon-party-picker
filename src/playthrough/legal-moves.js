@@ -584,9 +584,11 @@ const STARTING_MOVE_WINDOW = 4;
  * `neverHeld(level, learnerId)` is true for a level-1 entry the received
  * individual arrived without: forms below the received one were never held
  * at all, and the received form's own level-1 moves fall outside the game's
- * starting window once it has learned four later moves by its met level.
- * Anything from level 2 up is reachable by candying down, so nothing else
- * depends on the met level.
+ * starting window once it has learned four later moves by its met level. A
+ * bare mark ("Munna@", stored as true) says only that it arrived too late
+ * for them, so the whole learnset counts as learned by then. Anything from
+ * level 2 up is reachable by candying down, so nothing else depends on the
+ * met level.
  * @param {?Object} legalMoveData
  * @param {!Object=} progression
  * @return {?{id: string, metLevel: number,
@@ -603,10 +605,12 @@ export function receivedForm(legalMoveData, progression = {}) {
     walked.add(id);
     chain.push(id);
   }
-  const index = chain.findIndex((id) => Number.isFinite(Number(metLevels[id])));
+  const index = chain.findIndex(
+    (id) => metLevels[id] === true || typeof metLevels[id] === 'number',
+  );
   if (index < 0) return null;
   const id = chain[index];
-  const metLevel = Number(metLevels[id]);
+  const metLevel = metLevels[id] === true ? Infinity : metLevels[id];
   const belowOrAt = new Set(chain.slice(index));
   let laterMoves = 0;
   for (const move of legalMoveData.moves || []) {

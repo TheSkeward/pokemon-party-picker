@@ -102,3 +102,19 @@ test('the pool annotation reaches the optimizer', async () => {
   // difference.
   assert.equal(plain.legalMoveCount - met.legalMoveCount, 2);
 });
+
+test('a bare mark says only that the starting moves are gone', async () => {
+  const met = sourcesOf(musharna, {
+    levelCap: '25', metLevelByPokemon: { munna: true },
+  });
+  assert.ok(!met.has('psywave'));
+  assert.ok(!met.has('defensecurl'));
+  assert.equal(met.get('yawn')?.[0]?.level, 7);
+  // A learnset with fewer than four later moves never pushes level 1 out,
+  // however late the mon arrived.
+  const beldum = await loadLegalMoveData('beldum');
+  const late = sourcesOf(beldum, {
+    levelCap: '25', metLevelByPokemon: { beldum: true },
+  });
+  assert.equal(late.get('takedown')?.[0]?.label, 'Level 1');
+});

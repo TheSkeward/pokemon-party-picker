@@ -298,7 +298,7 @@ function renderPoolControls({
       <div class="panel-header">
         <div>
           <h2>Owned Pokémon Pool</h2>
-          <p>${poolStats.uniqueCount} unique entries${poolStats.duplicateCount ? ` · ${poolStats.duplicateCount} duplicates ignored` : ''}. Autosaved in this browser. Suffix <code>!</code> to lock an entry into the team (<code>Gengar!</code>), <code>*</code> to keep one whatever the bench says (<code>Larvesta*</code>), <code>@</code> and a level to record the level it arrived at (<code>Munna@14</code>), which decides its level 1 moves; a parenthetical declares a caught ability (<code>Eevee (Adaptability)</code>).</p>
+          <p>${poolStats.uniqueCount} unique entries${poolStats.duplicateCount ? ` · ${poolStats.duplicateCount} duplicates ignored` : ''}. Autosaved in this browser. Suffix <code>!</code> to lock an entry into the team (<code>Gengar!</code>), <code>*</code> to keep one whatever the bench says (<code>Larvesta*</code>), <code>@</code> and a level to record the level it arrived at (<code>Munna@14</code>), which decides its level 1 moves, or a bare <code>@</code> for one that arrived too late to have them (<code>Munna@</code>); a parenthetical declares a caught ability (<code>Eevee (Adaptability)</code>).</p>
         </div>
       </div>
 

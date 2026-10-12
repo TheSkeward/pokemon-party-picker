@@ -25,9 +25,10 @@ https://theskeward.github.io/pokemon-party-picker/
 - Record the level a Pokemon arrived at with `@` (`Munna@14`). A traded or
   late-caught Pokemon knows only the four most recent level-up moves at that
   level, so its level 1 moves count only if that window still reaches them;
-  otherwise they wait for the Move Relearner or a re-bred hatchling.
-  Everything learned at level 2 or above is reachable by candying down, so
-  the level decides nothing else.
+  otherwise they wait for the Move Relearner or a re-bred hatchling. A bare
+  `@` (`Munna@`) means it arrived too late to have them at all. Everything
+  learned at level 2 or above is reachable by candying down, so the level
+  decides nothing else.
 - The donor box is your whole box: everything you add to the pool lands
   there and stays when you remove it from the pool. Donors supply egg moves,
   Sketch partners, and move transfers; only the pool is fielded.

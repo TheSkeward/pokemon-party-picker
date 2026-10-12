@@ -83,3 +83,21 @@ test('a met level rides the entry and never fuses with the name', async () => {
     [['munna', 14], ['porygon', 2], ['rockruff', 7]],
   );
 });
+
+test('a bare @ marks a late arrival; a pasted Showdown item line does not', async () => {
+  const { parseMetLevels } = await import(
+    '../src/teamBuilder/pool-parsing.js',
+  );
+  const normalized = normalizePoolText(
+    'Munna@ (Synchronize), Gengar @ Life Orb, Eevee @, *Rockruff@!',
+    pokemonIndex,
+  );
+  assert.equal(
+    normalized,
+    'Eevee@, Gengar, Munna@ (Synchronize), Rockruff@!*',
+  );
+  assert.deepEqual(
+    [...parseMetLevels(normalized, pokemonIndex)].sort(),
+    [['eevee', true], ['munna', true], ['rockruff', true]],
+  );
+});
