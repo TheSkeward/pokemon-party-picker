@@ -18,7 +18,8 @@ import { renderTeamAnalysisPanel } from './team-analysis-view';
 import { getCurrentSpeciesForChoice } from '../playthrough/current-species.js';
 import { describeEvolutionPath } from '../playthrough/evolution-requirements.js';
 import { teamMemberKey } from './item-recommendations';
-import { withDonors } from './pool-parsing';
+import { parseKeptNames, withDonors } from './pool-parsing';
+import { normalizeName } from './name-utils';
 import {
   getLineCeilingRanking,
   getLineTraceRanking,
@@ -63,7 +64,7 @@ export function renderTeamBuilderPage({
 
     ${state.loading ? renderLoading(state) : ''}
 
-    ${state.result ? renderResult({ familyLabel, formatsIndex, setDetails, state }) : renderEmpty(state)}
+    ${state.result ? renderResult({ familyLabel, formatsIndex, keptNames: parseKeptNames(state.query, pokemonIndex), setDetails, state }) : renderEmpty(state)}
 
     <details class="progression-collapse" id="progression" ${detailsStateAttrs('progression-panel', false)}>
       <summary>${getActiveGame().shortLabel} Progression <span class="muted">(level cap, TMs, evolution access, items — the save-file settings)</span></summary>
@@ -297,7 +298,7 @@ function renderPoolControls({
       <div class="panel-header">
         <div>
           <h2>Owned Pokémon Pool</h2>
-          <p>${poolStats.uniqueCount} unique entries${poolStats.duplicateCount ? ` · ${poolStats.duplicateCount} duplicates ignored` : ''}. Autosaved in this browser. Suffix <code>!</code> to lock an entry into the team (<code>Gengar!</code>); a parenthetical declares a caught ability (<code>Eevee (Adaptability)</code>).</p>
+          <p>${poolStats.uniqueCount} unique entries${poolStats.duplicateCount ? ` · ${poolStats.duplicateCount} duplicates ignored` : ''}. Autosaved in this browser. Suffix <code>!</code> to lock an entry into the team (<code>Gengar!</code>), <code>*</code> to keep one whatever the bench says (<code>Larvesta*</code>); a parenthetical declares a caught ability (<code>Eevee (Adaptability)</code>).</p>
         </div>
       </div>
 
@@ -398,7 +399,9 @@ function renderEmpty(state) {
   `;
 }
 
-function renderResult({ familyLabel, formatsIndex, setDetails, state }) {
+function renderResult({
+  familyLabel, formatsIndex, keptNames, setDetails, state,
+}) {
   const result = state.result;
 
   if (!result.team.length) {
@@ -473,7 +476,7 @@ function renderResult({ familyLabel, formatsIndex, setDetails, state }) {
 
   // The bench is its own panel: a full panel break bounds the team table, so
   // scrolling up from the set cards never reads chips as more team.
-  const benchLine = renderBenchLine(result);
+  const benchLine = renderBenchLine(result, keptNames);
   const scoringPoolNote = renderScoringPoolNote(result);
   const benchPanel = benchLine || scoringPoolNote
     ? `
@@ -905,12 +908,14 @@ const SHORT_FORMAT = {
  * One compact line under the team table listing the resolved input lines
  * that did NOT make the team, grouped by the tier where each line's best
  * form first reaches real usage. So a wall of identical 0.0% headline scores
- * becomes a readable "AG 1500 — Ekans 0.1%, … · AG 0 — Patrat 0.1%", and the
- * weakest (deepest-tier, or no-signal-anywhere) lines are flagged.
+ * becomes a readable "AG 1500 — Ekans 0.1%, … · AG 0 — Patrat 0.1%". Kept
+ * entries (Larvesta* in the pool) carry the owner's mark; nothing here says
+ * what to cut, since the owner once read a worst-fit flag as exactly that.
  * @param {!Object} result An optimizer result carrying team and lines.
+ * @param {!Set<string>=} keptNames Normalized input names marked kept.
  * @return {string} The bench line's HTML.
  */
-export function renderBenchLine(result) {
+export function renderBenchLine(result, keptNames = new Set()) {
   const selectedInputIds = new Set(
     result.team.map((choice) => choice.inputPokemonId),
   );
@@ -976,20 +981,6 @@ export function renderBenchLine(result) {
   }
   const bench = [...benchByDisplayKey.values()];
   if (!bench.length) return '';
-
-  // Worst = worst fit RIGHT NOW: the bottom 10% (rounded up) by best
-  // swap-onto-the-team score at the current cap/gamestate. Deliberately NOT a
-  // "cut from pool" verdict — a gamestate-blocked future monster (Happiny at
-  // cap 25 with Chansey behind the stones gate: worst swap-in, highest
-  // ceiling) ranks at the bottom here and that's correct for THIS signal, so
-  // the label must claim nothing about eventual value. Prefers the
-  // coverage-aware swap signal (a unique-coverage mon — your only Water
-  // answer — isn't flagged just for low usage); falls back to the usage-tier
-  // ranking when there's no optimal team to swap against.
-  const worstInputIds = pickWorstBench(
-    bench.filter((entry) => entry.scored),
-    result.benchSwapScores,
-  );
 
   // The chip names the form that EARNED the group's tier and usage — the
   // line's best-ranked form — not the representative you'd field (a Rattata
@@ -1085,7 +1076,9 @@ export function renderBenchLine(result) {
             entry.scored && numberedBenchPosition <= MAX_BENCH_INDEX
               ? `<span class="bench-index bench-index--box${Math.floor((numberedBenchPosition - 1) / BOX_SIZE)}">${numberedBenchPosition}.</span> `
               : '';
-          const isWorst = worstInputIds.has(representative.inputPokemonId);
+          const isKept = keptNames.has(
+            normalizeName(representative.inputName),
+          );
           const formName = chipFormName(entry);
           const fieldsAs =
             representative.name !== formName
@@ -1094,7 +1087,7 @@ export function renderBenchLine(result) {
           const usage = ceiling
             ? ` <em>${truncatePercent(ceiling.value)}</em>`
             : '';
-          const classes = `bench-chip${isWorst ? ' worst' : ''}`;
+          const classes = `bench-chip${isKept ? ' kept' : ''}`;
           const collides =
             (nameCounts.get(formName) || 0) > 1 &&
             representative.inputName &&
@@ -1102,13 +1095,15 @@ export function renderBenchLine(result) {
           const chipName = collides
             ? `${formName} (${representative.inputName})`
             : formName;
-          const worstNote = isWorst
-            ? ' · flagged: worst fit for the current team right now (bottom 10% by best swap-in score at this level cap — not a judgement of eventual value)'
+          // The star reads without colour; the underline is the mark fill.
+          const keptMark = isKept ? ' ★' : '';
+          const keptNote = isKept
+            ? ' · kept: marked * in the pool, yours to hold onto whatever the bench says'
             : '';
           const unscoredNote = entry.scored
             ? ''
             : ' · outside the 126-line scored working set; still available for donors and usage-team matching';
-          return `<span class="${classes}" data-lock-input="${escapeAttr(representative.inputName)}" title="from input ${escapeHtml(representative.inputName)}${escapeHtml(fieldsAs)}${escapeHtml(worstNote)}${escapeHtml(unscoredNote)} · click to lock into the team">${boxIndex}${escapeHtml(chipName)}${usage}</span>`;
+          return `<span class="${classes}" data-lock-input="${escapeAttr(representative.inputName)}" title="from input ${escapeHtml(representative.inputName)}${escapeHtml(fieldsAs)}${escapeHtml(keptNote)}${escapeHtml(unscoredNote)} · click to lock into the team">${boxIndex}${escapeHtml(chipName)}${keptMark}${usage}</span>`;
         })
         .join('');
 
@@ -1146,59 +1141,6 @@ function preferBenchEntry(candidate, current) {
 // the underlying usage.
 function truncatePercent(value) {
   return `${(Math.floor((value || 0) * 10) / 10).toFixed(1)}%`;
-}
-
-// The set of bench inputPokemonIds to flag as "worst FIT RIGHT NOW": the
-// BOTTOM 10% of the bench (rounded up, always at least one) by present-tense
-// swap-in value — a snapshot the player exercises judgement over, not a
-// pool-culling verdict (a blocked future monster legitimately bottoms this
-// ranking while carrying the pool's highest ceiling). Prefers the swap-score
-// signal: recomputed on every optimize from the current team and scoring, the
-// lowest best-swap-onto-the-team score is the weakest swap-in today (coverage
-// and tier already folded in by the team scorer). Falls back to the
-// usage-tier ranking when no swap scores exist (no optimal team to swap onto).
-function pickWorstBench(bench, swapScores) {
-  const flagCount = Math.max(1, Math.ceil(bench.length * 0.1));
-  const scored = swapScores
-    ? bench.filter(
-      (entry) =>
-        typeof swapScores.get(entry.representative.inputPokemonId) === 'number',
-    )
-    : [];
-
-  if (scored.length) {
-    const ordered = [...scored].sort(
-      (a, b) =>
-        swapScores.get(a.representative.inputPokemonId) -
-          swapScores.get(b.representative.inputPokemonId) ||
-        a.representative.name.localeCompare(b.representative.name),
-    );
-    return new Set(
-      ordered
-        .slice(0, Math.min(flagCount, ordered.length))
-        .map((entry) => entry.representative.inputPokemonId),
-    );
-  }
-
-  const ordered = [...bench].sort(
-    (a, b) =>
-      compareRankWorseFirst(a.ceiling, b.ceiling) ||
-      a.representative.name.localeCompare(b.representative.name),
-  );
-  return new Set(
-    ordered
-      .slice(0, flagCount)
-      .map((entry) => entry.representative.inputPokemonId),
-  );
-}
-
-// Worse-first ordering on usage-tier ceilings: deeper tier first, then lower
-// usage within the tier; no signal at all is the worst of all.
-function compareRankWorseFirst(a, b) {
-  const ta = a ? a.tierRank : Infinity;
-  const tb = b ? b.tierRank : Infinity;
-  if (ta !== tb) return tb - ta;
-  return (a?.value ?? -Infinity) - (b?.value ?? -Infinity);
 }
 
 function renderItemRec(item) {

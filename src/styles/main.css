@@ -761,7 +761,7 @@ html {
 /* Box-position number on the first 120 bench chips (four PC boxes' worth, in
    display order), so sorting a box by descending usage tier is copy-down work.
    One relic-gem colour per box (30 chips each) so a box boundary reads at a
-   glance and none is confused with the muted tier labels or the "worst" flag. */
+   glance and none is confused with the muted tier labels or the keep mark. */
 .bench-index {
   font-size: 0.85em;
   font-variant-numeric: tabular-nums;
@@ -772,14 +772,11 @@ html {
 .bench-index--box2 { color: var(--accent-3); } /* box 3 · 61–90 */
 .bench-index--box3 { color: var(--accent-4); } /* box 4 · 91–120 */
 
-/* The weakest line(s) in the pool — judged by the best form's usage. */
-.bench-chip.worst {
-  color: var(--state-blocked);
-  border-bottom: 1px dashed var(--state-blocked);
-}
-
-.bench-chip.worst em {
-  color: var(--state-blocked);
+/* A kept entry (Larvesta* in the pool): the owner's own mark that this line
+   stays whatever the bench says. The mark fill is an outline here, never
+   text, as it is too pale for text on the shell. */
+.bench-chip.kept {
+  border-bottom: 2px solid var(--fill-mark);
 }
 
 /* Bench chips lock their line into the team on click. */

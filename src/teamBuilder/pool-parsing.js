@@ -69,6 +69,22 @@ export function parseLockedNames(query, pokemonIndex) {
 }
 
 /**
+ * Keep markers: a pool entry written as "Larvesta*" (or "*Larvesta") is one
+ * the owner means to hold onto whatever the bench says of it. The optimizer
+ * ignores the mark; the bench shows it, so the entry is never read as a cut.
+ * @param {string} query
+ * @param {Array<Object>} pokemonIndex
+ * @return {Set<string>} Normalized names of kept entries.
+ */
+export function parseKeptNames(query, pokemonIndex) {
+  const kept = new Set();
+  for (const entry of poolEntries(query, pokemonIndex).values()) {
+    if (entry.kept) kept.add(normalizeName(entry.canonical));
+  }
+  return kept;
+}
+
+/**
  * Rewrites the pool text in canonical form with one entry locked or
  * unlocked. Same output shape as normalizePoolText.
  * @param {string} query
@@ -89,7 +105,8 @@ export function setPoolEntryLock(query, name, locked, pokemonIndex) {
  * @param {string} query
  * @param {Array<Object>} pokemonIndex
  * @return {string} Deduplicated canonical names, alphabetized and
- *     comma-joined, each keeping its lock marker and ability annotation.
+ *     comma-joined, each keeping its lock and keep markers and ability
+ *     annotation.
  *     Annotations must survive normalization: the widget normalizes the pool
  *     text before every optimize, so anything dropped here never reaches
  *     the optimizer.
@@ -100,8 +117,9 @@ export function normalizePoolText(query, pokemonIndex) {
 
 /**
  * @return {Map<string, {canonical: string, ability: ?string,
- *     locked: boolean}>} Normalized name -> entry, deduplicated; a name
- *     locked or annotated on any of its occurrences keeps that fact.
+ *     locked: boolean, kept: boolean}>} Normalized name -> entry,
+ *     deduplicated; a name locked, kept or annotated on any of its
+ *     occurrences keeps that fact.
  */
 function poolEntries(query, pokemonIndex) {
   const annotations = parseAbilityAnnotations(query, pokemonIndex);
@@ -118,26 +136,44 @@ function poolEntries(query, pokemonIndex) {
         canonical,
         ability: annotations.get(key) || null,
         locked: false,
+        kept: false,
       };
       if (hasLockMarker(part)) entry.locked = true;
+      if (hasKeepMarker(part)) entry.kept = true;
       entries.set(key, entry);
     }
   }
   return entries;
 }
 
-function hasLockMarker(token) {
-  const bare = String(token || '')
+// The token without its trailing ability annotation, where the markers live.
+function bareToken(token) {
+  return String(token || '')
     .trim()
     .replace(/\s*[([][^)\]]*[)\]]\s*$/, '');
-  return /^!\s*\S/.test(bare) || /\S\s*!$/.test(bare);
+}
+
+// "Gengar!", "! Gengar", "Gengar!*": a bang among the leading or trailing
+// marker characters.
+function hasLockMarker(token) {
+  const bare = bareToken(token);
+  return /^[!*]*!\s*\S/.test(bare) || /\S\s*![!*]*$/.test(bare);
+}
+
+// "Larvesta*", "*Larvesta", "Larvesta!*": a star among the markers. The
+// prefix form must touch the name, so a pasted "* Larvesta" bullet is a
+// plain entry, not a keep.
+function hasKeepMarker(token) {
+  const bare = bareToken(token);
+  return /^[!*]*\*\S/.test(bare) || /\S\s*\*[!*]*$/.test(bare);
 }
 
 function formatPoolEntries(entries) {
   return [...entries.values()]
     .map(
-      ({ canonical, ability, locked }) =>
-        canonical + (locked ? '!' : '') + (ability ? ` (${ability})` : ''),
+      ({ canonical, ability, locked, kept }) =>
+        canonical + (locked ? '!' : '') + (kept ? '*' : '') +
+        (ability ? ` (${ability})` : ''),
     )
     .sort((a, b) => a.localeCompare(b))
     .join(', ');
@@ -228,11 +264,11 @@ export function withDonors(query, donorQuery = '') {
 
 /**
  * The donor box after the pool's entries join it: every Pokémon named in the
- * pool, as a plain name (no lock marker or ability annotation), merged with
- * the donors already listed, deduplicated and alphabetized. The widget calls
- * this whenever the pool is committed, never when something leaves the pool,
- * so the donor box only grows: the box is everything the player has listed,
- * and the pool is its fieldable subset.
+ * pool, as a plain name (no lock or keep marker, no ability annotation),
+ * merged with the donors already listed, deduplicated and alphabetized. The
+ * widget calls this whenever the pool is committed, never when something
+ * leaves the pool, so the donor box only grows: the box is everything the
+ * player has listed, and the pool is its fieldable subset.
  * @param {string} donorQuery
  * @param {string} query
  * @param {Array<Object>} pokemonIndex

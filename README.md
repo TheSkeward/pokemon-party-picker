@@ -19,6 +19,9 @@ https://theskeward.github.io/pokemon-party-picker/
 - Paste an owned Pokemon pool and get a recommended team.
 - Lock a Pokemon into the team by suffixing it with `!` (`Gengar!`);
   the optimizer fills the remaining slots around it.
+- Keep a Pokemon by suffixing it with `*` (`Larvesta*`): the bench marks
+  it as one you mean to hold onto, so it never reads as a cut. Scoring
+  ignores the mark.
 - The donor box is your whole box: everything you add to the pool lands
   there and stays when you remove it from the pool. Donors supply egg moves,
   Sketch partners, and move transfers; only the pool is fielded.

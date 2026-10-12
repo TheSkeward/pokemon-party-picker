@@ -81,3 +81,21 @@ test('bench deduplicates routes and renders the unscored tail unnumbered', () =>
   assert.match(html, />Lurantis <em>4\.0%<\/em>/);
   assert.match(html, /outside the 126-line scored working set/);
 });
+
+test('a kept entry wears the mark and nothing on the bench is flagged worst', () => {
+  const html = renderBenchLine(
+    {
+      team: [],
+      lines: [
+        scoredLine('larvesta', 'Larvesta', 'volcarona', 'Volcarona', 0.4),
+        scoredLine('patrat', 'Patrat', 'patrat', 'Patrat', 0.1),
+      ],
+      benchSwapScores: new Map([['larvesta', 10], ['patrat', 1]]),
+    },
+    new Set(['larvesta']),
+  );
+  assert.match(html, /class="bench-chip kept"[^>]*kept: marked \* in the pool/);
+  assert.match(html, /<\/span> Volcarona ★ <em>0\.4%<\/em>/);
+  assert.match(html, /class="bench-chip"[^>]*>(<span[^>]*>\d+\.<\/span> )?Patrat/);
+  assert.doesNotMatch(html, /worst/);
+});

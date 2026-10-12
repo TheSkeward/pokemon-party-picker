@@ -41,3 +41,27 @@ test('the pool joins the donor box as plain names, and the box only grows', asyn
   // An empty pool changes nothing, not even the box's formatting.
   assert.equal(absorbPoolIntoDonors('Smeargle, Ditto', '', pokemonIndex), 'Smeargle, Ditto');
 });
+
+test('a keep marker survives normalization beside a lock and an annotation', async () => {
+  const { parseKeptNames, parseLockedNames } = await import(
+    '../src/teamBuilder/pool-parsing.js',
+  );
+  const query = 'Larvesta*, *Rockruff, Gengar!* (Cursed Body), Eevee';
+  const normalized = normalizePoolText(query, pokemonIndex);
+  assert.equal(
+    normalized,
+    'Eevee, Gengar!* (Cursed Body), Larvesta*, Rockruff*',
+  );
+  assert.deepEqual(
+    [...parseKeptNames(normalized, pokemonIndex)].sort(),
+    ['gengar', 'larvesta', 'rockruff'],
+  );
+  assert.deepEqual([...parseLockedNames(normalized, pokemonIndex)], ['gengar']);
+  // A pasted bullet is not a keep: the prefix form must touch the name.
+  assert.equal(normalizePoolText('* Larvesta', pokemonIndex), 'Larvesta');
+  // The donor box keeps plain names only.
+  const { absorbPoolIntoDonors } = await import(
+    '../src/teamBuilder/pool-parsing.js',
+  );
+  assert.equal(absorbPoolIntoDonors('', 'Larvesta*', pokemonIndex), 'Larvesta');
+});
