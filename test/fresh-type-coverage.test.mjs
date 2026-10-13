@@ -116,3 +116,43 @@ test('a dominated priority attack seats ahead of dominated filler', () => {
   assert.ok(ids.includes('quickattack'), ids);
   assert.equal(ids.filter((id) => /punch$/.test(id)).length, 1, ids);
 });
+
+test('a stronger same-type attack earns a slot: STAB has no standing of its own', () => {
+  // A Poison type whose canonical attack is Clear Smog: Sludge out-hits it
+  // into every type, so it seats although Poison is already carried.
+  const koffing = { id: 'koffing', name: 'Koffing', types: ['Poison'] };
+  const ids = idsOf(buildCandidateLegalityProfile({
+    member: koffing,
+    moves: ['clearsmog', 'sludge', 'smokescreen', 'selfdestruct', 'tackle']
+      .map(legal),
+    moveUsage: new Map([['clearsmog', 60], ['smokescreen', 50]]),
+    levelCap: 25, ability: 'Levitate',
+  }));
+  assert.ok(ids.includes('sludge'), ids);
+});
+
+test('a type the set lacks is a click only when the user becomes that type', () => {
+  // Klink's Vise Grip hits nothing Gear Grind cannot and out-hits it
+  // nowhere. Without Protean it is not a click and the slot goes to Charge;
+  // under Protean the uncovered type is also the defensive type, so it is.
+  const klink = { id: 'klink', name: 'Klink', types: ['Steel'] };
+  const moves = [
+    'geargrind', 'visegrip', 'charge', 'thundershock', 'irondefense',
+    'magnetrise',
+  ].map(legal);
+  const moveUsage = new Map([
+    ['geargrind', 99], ['magnetrise', 31], ['irondefense', 0.3],
+  ]);
+  const plain = idsOf(buildCandidateLegalityProfile({
+    member: klink, moves, moveUsage, levelCap: 25, ability: 'Clear Body',
+  }));
+  assert.deepEqual(
+    new Set(plain),
+    new Set(['geargrind', 'magnetrise', 'irondefense', 'charge']),
+    plain,
+  );
+  const protean = idsOf(buildCandidateLegalityProfile({
+    member: klink, moves, moveUsage, levelCap: 25, ability: 'Protean',
+  }));
+  assert.ok(protean.includes('visegrip'), protean);
+});

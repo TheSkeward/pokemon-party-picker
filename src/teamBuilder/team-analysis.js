@@ -2024,14 +2024,14 @@ function recommendCurrentMoves(
     add(bestUtility(usableUtility, selected));
   }
 
-  // 4. Fill by damage with type diversity, then bonus utility, then any
-  // attack. A fresh attacking type earns a slot only where it raises the
-  // set's best damage into at least one defense type, judged the way the
-  // coverage vector is: a 75-power Thunder Punch without STAB lands under a
-  // 102-power Return with it even into Water, so it covers nothing the
-  // scoring can see, and the slot is better spent on utility or a priority
-  // attack. A 4x dual type is invisible to the per-type vector by design,
-  // so it cannot earn a slot either.
+  // 4. Fill by damage, then bonus utility, then any attack. An attack earns
+  // a slot only where it raises the set's best damage into at least one
+  // defense type, judged the way the coverage vector is, whatever its type:
+  // a 75-power Thunder Punch without STAB lands under a 102-power Return
+  // with it even into Water, so it covers nothing the scoring can see, and
+  // the slot is better spent on utility or a priority attack. A 4x dual type
+  // is invisible to the per-type vector by design, so it cannot earn a slot
+  // either.
   // Utility worth a slot on its own: real sets run it, or it performs a
   // support job the scoring credits. Priority alone is not such a job
   // (Protect), and Substitute carries no role at all.
@@ -2048,36 +2048,44 @@ function recommendCurrentMoves(
       return into(move, defenseType) > best + 1e-9;
     });
   };
+  // Protean and Libero make an attack's type the user's defensive type for
+  // the turn, so a type the set lacks is a click of its own under them.
+  const typeShifts = /^(protean|libero)$/.test(
+    String(member.ability || '').toLowerCase().replace(/[^a-z]/g, ''),
+  );
   while (selected.length < 4) {
-    const freshType = usableDamaging()
+    // An attack earns a slot where it raises the set's best damage into at
+    // least one defense type, whatever its type: a stronger same-type move
+    // raises it everywhere (Sludge over Clear Smog), a different type where
+    // it is super effective or fills an immunity gap. STAB has no standing
+    // of its own; the damage estimate already carries it.
+    const upgrade = usableDamaging()
       .filter(
-        (move) =>
-          !coveredTypes.has(move.type) &&
-          !isFixedDamageMove(move.id) &&
-          !isSelected(move, selected),
+        (move) => !isFixedDamageMove(move.id) && !isSelected(move, selected),
       )
       .sort(compareByDamage)
       .find(raisesCoverage);
-    if (add(freshType)) continue;
+    if (add(upgrade)) continue;
     // Utility the mon's real sets run, or a notable move with a support
     // role the scoring credits (recovery, setup, status...), beats an attack
     // the set already out-hits everywhere.
     if (add(bestUtility(usableUtility.filter(runsOrSupports), selected))) {
       continue;
     }
-    // Every attack left is out-hit by the set into every type. Some are
-    // still a click: one with priority moves first, and a type the set does
-    // not carry is the right click the moment an immunity blocks the better
-    // moves (a Ghost against Normal, Water Absorb against Water) and is the
-    // type that counts under Protean. Lick over Pound on a Frogadier. What a
-    // route costs to obtain (a candy-down, a held evolution) is never
-    // charged here: the builder builds the best set, and paying for it is
-    // the player's call.
+    // Every attack left is out-hit by the set into every type (an immunity
+    // gap would have seated it above). Two are still a click: one with
+    // priority moves first, and under Protean or Libero a type the set does
+    // not carry is also the type the user becomes, so Lick over Pound on a
+    // Frogadier. A Vise Grip on a Steel attacker is neither. What a route
+    // costs to obtain (a candy-down, a held evolution) is never charged
+    // here: the builder builds the best set, and paying for it is the
+    // player's call.
     const liveAttack = usableDamaging()
       .filter(
         (move) =>
           !isSelected(move, selected) &&
-          ((move.priority || 0) > 0 || !coveredTypes.has(move.type)),
+          ((move.priority || 0) > 0 ||
+            (typeShifts && !coveredTypes.has(move.type))),
       )
       .sort(
         (a, b) =>

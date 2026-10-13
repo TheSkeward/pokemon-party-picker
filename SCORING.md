@@ -193,16 +193,20 @@ Forretress without Rapid Spin and Spikes is not a Forretress build, and
 before this rule its four-attack coverage set outscored the real one on
 standalone value with no coverage gain for the team.
 
-A fresh attacking type fills an open slot only where it raises the set's
-best damage into at least one defense type, judged exactly as the coverage
-vector is. A 75-power move without STAB lands under a 102-power STAB move
-even into a type it hits super effectively, so Thunder Punch on Lopunny
-covers nothing the scoring can see; a 4x dual type is invisible to the
-per-type vector by design and earns no slot either. When no fresh type
-qualifies, the slot goes to utility the mon's real sets run or that does a
-credited support job, then to an attack that is still a click, a priority
-move or a type the set lacks (the right click once an immunity blocks the
-better moves, and under Protean the type is the point), then to any status
+An attack fills an open slot only where it raises the set's best damage
+into at least one defense type, judged exactly as the coverage vector is,
+whatever its type: a stronger same-type move raises it everywhere (Sludge
+over Clear Smog), a different type where it is super effective or where
+the set has an immunity gap. STAB has no standing of its own; the damage
+estimate already carries it. A 75-power move without STAB lands under a
+102-power STAB move even into a type it hits super effectively, so Thunder
+Punch on Lopunny covers nothing the scoring can see; a 4x dual type is
+invisible to the per-type vector by design and earns no slot either. When
+no attack qualifies, the slot goes to utility the mon's real sets run or
+that does a credited support job, then to an attack that is still a click:
+a priority move, or under Protean or Libero a type the set lacks, since the
+attack's type is also the user's type for the turn (Lick over Pound on a
+Frogadier; a Vise Grip on a Steel attacker is neither). Then to any status
 move with an effect, since a same-type attack the set already out-hits is
 never clicked while Baby-Doll Eyes or Sand Attack is, and only last to such
 a dead attack for its PP. What a move costs to obtain, a candy-down or a

@@ -267,7 +267,9 @@ const MAX_RESULT_CACHE = 400;
 // move with an effect.
 // v74: elective evolutions never depart early (their pre-evolution moves
 // are ordinary); partner-only moves are inert in singles families.
-const RESULT_CACHE_VERSION = '74';
+// v75: a stronger same-type attack earns a fill slot; a type the set
+// lacks is a click only under Protean or Libero.
+const RESULT_CACHE_VERSION = '75';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.

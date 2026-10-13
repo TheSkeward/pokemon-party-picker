@@ -20,7 +20,10 @@ test('Pachirisu fills its alternative set without changing its coverage prioriti
   const result = await runPool({ pool: ['Pachirisu'], progression });
   const selected = result.team[0];
 
-  assert.equal(selected.buildKey, 'coverage');
+  // The standard set finds Spark and Quick Attack on its own (an attack
+  // earns a slot wherever it raises the set's best damage), so no
+  // alternative build has anything left to win.
+  assert.equal(selected.buildKey, 'default');
   assert.deepEqual(moveIds(selected.legalityProfile), expectedMoves);
 
   const analysis = await buildTeamAnalysis(
@@ -33,11 +36,12 @@ test('Pachirisu fills its alternative set without changing its coverage prioriti
 
 test('analysis retains fallback ranks when assembling coverage and utility sets', async () => {
   const result = await runPool({ pool: ['Pachirisu'], progression });
-  // The utility set seats its utility moves by usage and, for Pachirisu,
-  // coincides with the standard set; Endure comes from the fallback rank.
+  // The utility set seats its utility moves by usage, then the one attack
+  // that raises the set's damage most, Spark over the priority Quick
+  // Attack; Endure comes from the fallback rank.
   const expectedByBuild = {
     coverage: expectedMoves,
-    utility: ['nuzzle', 'quickattack', 'charm', 'endure'],
+    utility: ['nuzzle', 'spark', 'charm', 'endure'],
   };
 
   for (const [buildKey, expected] of Object.entries(expectedByBuild)) {
