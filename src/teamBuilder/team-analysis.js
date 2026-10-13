@@ -35,6 +35,7 @@ import {
 import { loadTopSet } from './top-spread.js';
 import { formatAbilityPath, resolveBuildAbilities } from './ability-path.js';
 import { withMetLevels } from './input-groups';
+import { isInertInFamily } from '../move-meta.js';
 import { computeSetReadiness } from '../playthrough/set-readiness.js';
 import { teamMemberKey } from './item-recommendations.js';
 import { selectObservedSet } from './observed-sets.js';
@@ -334,7 +335,9 @@ async function buildMemberLegalMoveEntry({
       : '',
     types: legalMoveData?.types || [],
   };
-  const moves = getAvailableMoves(legalMoveData, memberProgression);
+  // A singles family never recommends or scores a partner-only move.
+  const moves = getAvailableMoves(legalMoveData, memberProgression)
+    .filter((move) => !isInertInFamily(move.id, family));
 
   // Pull the most-used competitive set (top spread / ability / item / move
   // usage) from the line's usage REPRESENTATIVE — the same source the

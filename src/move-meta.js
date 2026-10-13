@@ -30,6 +30,33 @@ const CATEGORY_COLORS = {
 
 const VALID_TYPES = new Set(Object.keys(TYPE_COLORS));
 
+// Moves that act on or through a partner and so do nothing with no ally on
+// the field: a singles family never recommends or scores them. The dex has
+// no flag for this, and their priority values would otherwise rank them
+// among the best status fillers.
+const PARTNER_ONLY_MOVES = new Set([
+  'helpinghand',
+  'allyswitch',
+  'followme',
+  'ragepowder',
+  'spotlight',
+  'wideguard',
+  'quickguard',
+  'afteryou',
+  'instruct',
+  'healpulse',
+  'aromaticmist',
+]);
+
+/**
+ * @param {string} id Move id.
+ * @param {string} family Battle family id ("singles", "gen5doubles", ...).
+ * @return {boolean} True when the move needs a partner the family never has.
+ */
+export function isInertInFamily(id, family) {
+  return PARTNER_ONLY_MOVES.has(toId(id)) && !/doubles/i.test(String(family));
+}
+
 /** @return {!Array<string>} Every type name the palette covers. */
 export function listTypeNames() {
   return [...VALID_TYPES];

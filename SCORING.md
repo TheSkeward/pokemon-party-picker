@@ -354,8 +354,12 @@ form cannot carry a body that cannot act at the current cap.
 
 Evolution requirements are access gates and displayed information. Acquisition
 grind defaults to zero score cost: the app recommends the strongest satisfiable
-team and lets the player decide whether the grind is worthwhile. Delaying an
-evolution to learn a move remains an in-run strength cost.
+team and lets the player decide whether the grind is worthwhile. Holding a
+level evolution past its level to learn a move remains an in-run strength
+cost. An elective evolution (a stone, a trade, a held item, a place, a
+friendship bar) fires when the player chooses, so its pre-evolution's moves
+under the cap are ordinary moves: using the Moon Stone after Munna learns
+Moonlight is play, not a delay.
 
 `V` chooses among lines and among a form's builds; there, usage and
 presentation metadata only break exact ties. Within a line, usage alone
@@ -456,8 +460,8 @@ a genuine core near 63% of the bound and incidental same-tier pair mass near
    factual constraints rather than verdict-fitting switches.
 6. Near-future value is explanatory and must not select the current team.
 7. Coverage is damage-aware and saturating.
-8. Acquisition friction is informational by default; delayed-evolution strength
-   costs remain priced.
+8. Acquisition friction is informational by default; holding a level
+   evolution past its level remains priced.
 
 ## Where things live
 

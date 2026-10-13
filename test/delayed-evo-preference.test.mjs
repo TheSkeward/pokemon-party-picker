@@ -54,3 +54,22 @@ test("cap 150: Judgment (level 100, the data's highest learn level) is available
   );
   assert.equal(judgment?.availableSources?.[0]?.label, 'Level 100');
 });
+
+test('an elective evolution never departs early: its pre-evolution moves are ordinary', async () => {
+  // Munna evolves by Moon Stone whenever the player chooses, so Moonlight at
+  // 17 is a plain level-up move for a cap-25 Musharna, not a delayed route.
+  const musharna = await loadLegalMoveData('musharna');
+  const moonlight = getAvailableMoves(musharna, { levelCap: '25' }).find(
+    (move) => move.id === 'moonlight',
+  );
+  assert.equal(moonlight?.availableSources?.[0]?.label, 'Level 17');
+  assert.ok(!moonlight.delayedEvolution);
+  // A trade evolution likewise: Kadabra's Psybeam at 21 is ordinary for a
+  // cap-25 Alakazam.
+  const alakazam = await loadLegalMoveData('alakazam');
+  const psybeam = getAvailableMoves(alakazam, { levelCap: '25' }).find(
+    (move) => move.id === 'psybeam',
+  );
+  assert.equal(psybeam?.availableSources?.[0]?.label, 'Level 21');
+  assert.ok(!psybeam.delayedEvolution);
+});

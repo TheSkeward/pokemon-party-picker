@@ -83,25 +83,20 @@ export function arrivalLevelOf(formId) {
 }
 
 // The level at which the pre-evolution normally leaves play on the path
-// into `child`.
+// into `child`. Only a level gate fixes that moment; every other trigger (a
+// stone, a trade, a held item, a place, a friendship bar) fires when the
+// player decides, so nothing the pre-evolution learns on the way is a delay.
 function evolutionDepartureLevel(child) {
   const evoType = child?.evoType || '';
   if (evoType === '') {
     return Number.isFinite(child?.evoLevel) ? child.evoLevel : Infinity;
-  }
-  if (evoType === 'levelFriendship') return Infinity;
-  if (
-    evoType === 'levelExtra' &&
-    /affection/i.test(child?.evoCondition || '')
-  ) {
-    return Infinity;
   }
   if (evoType === 'levelMove') {
     return Number.isFinite(child?.evoMoveLevel)
       ? child.evoMoveLevel
       : Infinity;
   }
-  return arrivalLevelOf(child?.prevoId);
+  return Infinity;
 }
 
 /**
@@ -159,21 +154,17 @@ export function getAvailableMoves(legalMoveData, progression = {}) {
   const pokemonId = legalMoveData?.pokemonId;
   const speciesRecord = dex().progressionSpecies[pokemonId];
   const evolvedSpecies = Boolean(speciesRecord?.prevoId);
-  // Each ancestor's NATURAL departure level (evolve-as-soon-as-possible path):
-  // the level at which it evolves toward this form. A pre-evo level-up move
-  // above ITS OWN form's departure is only obtainable by deliberately keeping
-  // that form unevolved — legal, but a real cost, so it's split out and
-  // labelled (Slaking's Play Rough is Slakoth@38, keep Slakoth to 38).
-  // Departure depends on the HOP's evolution type:
-  //   - level:      the recorded evolution level (Slakoth departs at 18).
-  //   - friendship / affection: Infinity — the grind builds gradually while
-  //     training, so the pre-evo naturally spans levels; nothing is delayed.
-  //   - item / trade / location / party (elective triggers): the departing
-  //     form's arrival level — the default path takes them as soon as
-  //     available, so moves the form knows at arrival carry over free and
-  //     any later entry means deliberately keeping it unevolved (Munna's
-  //     Calm Mind@35).
-  //   - level-while-knowing-a-move: the move's own learn level.
+  // Each ancestor's NATURAL departure level: the level at which it evolves
+  // toward this form. A pre-evo level-up move above ITS OWN form's departure
+  // is only obtainable by deliberately keeping that form unevolved — legal,
+  // but a real strength cost in the run, so it's split out and labelled
+  // (Slaking's Play Rough is Slakoth@38, keep Slakoth to 38). Only a level
+  // gate sets a departure: a level evolution departs at its level, a
+  // level-while-knowing-a-move one at the move's learn level. A stone, a
+  // trade, a held item, a place or a friendship bar fires when the player
+  // chooses, so those pre-evolutions never depart early and nothing they
+  // learn under the cap is delayed: using the Moon Stone after Munna's
+  // Moonlight at 17 is ordinary play, not a cost.
   const departureByAncestor = new Map();
   {
     let current = speciesRecord;

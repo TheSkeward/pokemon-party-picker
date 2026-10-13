@@ -25,6 +25,7 @@ import { loadTopSet } from './top-spread.js';
 import { resolveBuildAbilities } from './ability-path.js';
 import { computeSetReadiness } from '../playthrough/set-readiness.js';
 import { buildInputGroups, withMetLevels } from './input-groups';
+import { isInertInFamily } from '../move-meta.js';
 import {
   parseAbilityAnnotations,
   parseLockedNames,
@@ -264,7 +265,9 @@ const MAX_RESULT_CACHE = 400;
 // Bump whenever the same inputs must produce a different result: '73'
 // retires verdicts whose dead slots held a same-type attack over a status
 // move with an effect.
-const RESULT_CACHE_VERSION = '73';
+// v74: elective evolutions never depart early (their pre-evolution moves
+// are ordinary); partner-only moves are inert in singles families.
+const RESULT_CACHE_VERSION = '74';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.
@@ -1404,7 +1407,9 @@ async function resolveCandidateBuilds({
       : '',
     types: legalMoveData?.types || [],
   };
-  const moves = getAvailableMoves(legalMoveData, memberProgression);
+  // A singles family never recommends or scores a partner-only move.
+  const moves = getAvailableMoves(legalMoveData, memberProgression)
+    .filter((move) => !isInertInFamily(move.id, family));
   const naturalMoves = moves.filter((move) => !move.delayedEvolution);
   const delayedMoves = moves.filter((move) => move.delayedEvolution);
 
