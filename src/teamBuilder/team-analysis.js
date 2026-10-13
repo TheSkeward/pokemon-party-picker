@@ -1904,10 +1904,11 @@ function moveHitMultiplier(move, ability) {
 // damage-led set. There is deliberately no "must have an attack" guarantee: a
 // mon whose pros run four status moves keeps four status moves.
 // The alternative builds share these steps and differ at step 1: the coverage
-// build keeps only the canonical UTILITY moves and opens with the best STAB
-// attack, so it may trade a canonical attack for breadth but never a
-// canonical utility move; the utility build seats its three highest-usage
-// utility moves, which are the canonical ones whenever the set runs them.
+// build keeps only the canonical UTILITY moves and opens with the strongest
+// attack of any type, so it may trade a canonical attack for damage but
+// never a canonical utility move; the utility build seats its three
+// highest-usage utility moves, which are the canonical ones whenever the set
+// runs them.
 function recommendCurrentMoves(
   member,
   moves,
@@ -1981,18 +1982,18 @@ function recommendCurrentMoves(
 
   if (movePreference === 'coverage') {
     // Coverage build: the canonical utility moves available now stay (a
-    // Forretress keeps Rapid Spin and Spikes in every build), then the best
-    // STAB nuke, then fresh attacking types by damage (the shared fill loop
-    // below keeps extending coverage). A build the team optimizer can pick
-    // when it needs THIS mon's off-type answers rather than its canonical
-    // attacks.
+    // Forretress keeps Rapid Spin and Spikes in every build), the canonical
+    // attacks are set aside, and the attacks are rebuilt from damage alone:
+    // the strongest attack of any type first (STAB has no standing of its
+    // own; the estimate already carries it, and an own-type filter here once
+    // dropped Onix's Gyro Ball for Harden), then the shared fill below. It
+    // is the hedge against a canonical attack the ladder runs but damage
+    // says is dominated, and the team sees it only when it out-scores the
+    // standard set.
     addCanonical((move) => move.utility);
     add(
       usableDamaging()
-        .filter(
-          (move) =>
-            member.types.includes(move.type) && !isFixedDamageMove(move.id),
-        )
+        .filter((move) => !isFixedDamageMove(move.id))
         .sort(compareByDamage)[0],
     );
   } else if (movePreference === 'utility') {

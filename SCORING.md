@@ -185,8 +185,10 @@ This distinguishes a coverage build from a support build without inflating the
 top of the score distribution.
 
 Every build keeps the canonical moves the player can use now. The standard
-set locks all of them; the coverage set keeps the canonical utility moves and
-spends the remaining slots on attacking-type breadth; the utility set ranks
+set locks all of them; the coverage set keeps the canonical utility moves,
+sets the canonical attacks aside and rebuilds the attacks from damage alone,
+strongest of any type first, as the hedge against a canonical attack the
+ladder runs but damage says is dominated; the utility set ranks
 its utility moves by usage, so the canonical ones seat first. A build may
 trade a canonical attack for coverage, never a canonical utility move: a
 Forretress without Rapid Spin and Spikes is not a Forretress build, and
