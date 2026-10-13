@@ -1,5 +1,5 @@
 {
-  "finishedAt": "2026-10-13T03:52:50.465Z",
+  "finishedAt": "2026-10-13T23:07:30.144Z",
   "results": [
     {
       "script": "scrape-pkmn-teams.mjs",
@@ -41,19 +41,15 @@
       "script": "scrape-tournament-teams.mjs",
       "exitCode": 0,
       "outputTail": [
-        "  thread 3769063: 502 https://www.smogon.com/forums/threads/dpp-ou-summer-seasonal-7-round-1.3769063/page-2",
-        "  thread 3768660: 502 https://www.smogon.com/forums/threads/dpp-ou-summer-seasonal-7-signups.3768660/page-2",
-        "  thread 3767934: 502 https://www.smogon.com/forums/threads/dpp-ou-global-championship-2025-round-7.3767934/",
-        "  thread 3767397: 502 https://www.smogon.com/forums/threads/dpp-ou-global-championship-2025-round-6.3767397/",
-        "tournament: +0 teams, +38 replays"
+        "tournament: +0 teams, +375 replays"
       ]
     },
     {
       "script": "scrape-forum-teams.mjs",
       "exitCode": 0,
       "outputTail": [
-        "forum gen4ou: archive 209",
-        "forums: page budget — 2 listing, 1 new-thread, 9 resume, 0 bumped, 0 recheck (21 deferred to next run, thread cap 100)",
+        "forum gen4ou: archive 291",
+        "forums: page budget — 2 listing, 0 new-thread, 10 resume, 0 bumped, 0 recheck (21 deferred to next run, thread cap 100)",
         "forums: +82 teams this run"
       ]
     },
@@ -61,36 +57,36 @@
       "script": "scrape-replay-teams.mjs",
       "exitCode": 0,
       "outputTail": [
-        "gen4uu: +600 (archive 2700; tours 600, elite 0, fresh 0, rest 0)",
-        "gen4nu: +412 (archive 2512; tours 2, elite 0, fresh 3, rest 407)",
-        "gen4lc: +600 (archive 2700; tours 0, elite 0, fresh 0, rest 600)",
-        "gen4doublesou: +1 (archive 1262; tours 0, elite 0, fresh 1, rest 0)",
-        "gen4vgc2010: +0 (archive 779; tours 0, elite 0, fresh 0, rest 0)",
-        "gen4vgc2009: +0 (archive 512; tours 0, elite 0, fresh 0, rest 0)",
-        "gen5ubers: +600 (archive 2707; tours 600, elite 0, fresh 0, rest 0)",
-        "gen5ou: +600 (archive 2702; tours 600, elite 0, fresh 0, rest 0)",
-        "gen5uu: +600 (archive 2700; tours 600, elite 0, fresh 0, rest 0)",
-        "gen5ru: +600 (archive 2700; tours 18, elite 0, fresh 243, rest 339)",
-        "gen5nu: +600 (archive 2700; tours 5, elite 0, fresh 3, rest 592)",
-        "gen5pu: +46 (archive 2146; tours 2, elite 0, fresh 1, rest 43)",
-        "gen5lc: +600 (archive 2700; tours 2, elite 0, fresh 1, rest 597)",
-        "gen5doublesou: +600 (archive 2700; tours 0, elite 0, fresh 62, rest 538)",
-        "gen5smogondoubles: +600 (archive 2700; tours 0, elite 0, fresh 0, rest 600)",
+        "gen5ou: +600 (archive 3302; tours 600, elite 0, fresh 0, rest 0)",
+        "  skip smogtours-gen5uu-143003: fetch failed",
+        "gen5uu: +600 (archive 3300; tours 600, elite 0, fresh 0, rest 0)",
+        "gen5ru: +600 (archive 3300; tours 0, elite 0, fresh 0, rest 600)",
+        "gen5nu: +600 (archive 3300; tours 0, elite 0, fresh 0, rest 600)",
+        "gen5pu: +0 (archive 2146; tours 0, elite 0, fresh 0, rest 0)",
+        "gen5lc: +600 (archive 3300; tours 0, elite 0, fresh 0, rest 600)",
+        "  skip gen5doublesou-630458605: fetch failed",
+        "gen5doublesou: +600 (archive 3300; tours 0, elite 0, fresh 0, rest 600)",
+        "gen5smogondoubles: +600 (archive 3300; tours 0, elite 0, fresh 0, rest 600)",
         "gen5gbudoubles: +0 (archive 1192; tours 0, elite 0, fresh 0, rest 0)",
-        "gen5vgc2013: +600 (archive 2700; tours 0, elite 0, fresh 8, rest 592)",
-        "gen5vgc2011: +2 (archive 304; tours 0, elite 0, fresh 2, rest 0)",
-        "gen9nationaldexubers: +600 (archive 2400; tours 20, elite 0, fresh 374, rest 206)",
-        "gen9nationaldex: +600 (archive 2400; tours 154, elite 446, fresh 0, rest 0)",
-        "gen9nationaldexuu: +600 (archive 2400; tours 8, elite 0, fresh 10, rest 582)",
-        "gen9ru: +600 (archive 2400; tours 38, elite 0, fresh 283, rest 279)",
-        "gen9nu: +600 (archive 2400; tours 157, elite 0, fresh 111, rest 332)",
-        "gen9pu: +600 (archive 2400; tours 100, elite 0, fresh 145, rest 355)",
-        "gen9lc: +600 (archive 2400; tours 157, elite 0, fresh 52, rest 391)",
-        "  skip gen9nationaldexdoubles-2696169227: 404 https://replay.pokemonshowdown.com/gen9nationaldexdoubles-2696169227.json",
-        "gen9nationaldexdoubles: +600 (archive 2400; tours 14, elite 0, fresh 417, rest 169)",
-        "gen9doublesubers: +600 (archive 2400; tours 2, elite 0, fresh 64, rest 534)",
-        "gen9doublesou: +600 (archive 2400; tours 59, elite 541, fresh 0, rest 0)",
-        "gen9doublesuu: +600 (archive 2400; tours 120, elite 0, fresh 31, rest 449)"
+        "gen5vgc2013: +600 (archive 3300; tours 0, elite 0, fresh 0, rest 600)",
+        "gen5vgc2011: +0 (archive 304; tours 0, elite 0, fresh 0, rest 0)",
+        "gen9nationaldexubers: +600 (archive 3000; tours 47, elite 0, fresh 115, rest 438)",
+        "gen9nationaldex: +600 (archive 3000; tours 121, elite 479, fresh 0, rest 0)",
+        "gen9nationaldexuu: +600 (archive 3000; tours 0, elite 0, fresh 2, rest 598)",
+        "gen9ru: +600 (archive 3000; tours 63, elite 0, fresh 88, rest 449)",
+        "gen9nu: +600 (archive 3000; tours 116, elite 0, fresh 36, rest 448)",
+        "gen9pu: +600 (archive 3000; tours 102, elite 0, fresh 45, rest 453)",
+        "  skip smogtours-gen9lc-887675: fetch failed",
+        "  skip gen9lc-2697653813: fetch failed",
+        "  skip gen9lc-2671353436: fetch failed",
+        "gen9lc: +600 (archive 3000; tours 226, elite 0, fresh 17, rest 357)",
+        "  skip gen9nationaldexdoubles-2689149316: fetch failed",
+        "  skip gen9nationaldexdoubles-2689143644: fetch failed",
+        "gen9nationaldexdoubles: +600 (archive 3000; tours 5, elite 0, fresh 128, rest 467)",
+        "gen9doublesubers: +600 (archive 3000; tours 101, elite 0, fresh 26, rest 473)",
+        "gen9doublesou: +600 (archive 3000; tours 47, elite 553, fresh 0, rest 0)",
+        "  skip gen9doublesuu-2613702445: fetch failed",
+        "gen9doublesuu: +600 (archive 3000; tours 0, elite 0, fresh 7, rest 593)"
       ]
     }
   ]
