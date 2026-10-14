@@ -50,9 +50,12 @@ function machineBadgeByMove() {
   let map = MACHINE_BADGES.get(sources);
   if (map) return map;
   map = new Map();
-  const note = (moveId, badge) => {
+  // The earliest machine or tutor route per move, with the label the card
+  // names it by ("TM04", "TMX7", "Tutor").
+  const note = (moveId, badge, label) => {
     if (badge == null) return;
-    if (!map.has(moveId) || badge < map.get(moveId)) map.set(moveId, badge);
+    const current = map.get(moveId);
+    if (!current || badge < current.badge) map.set(moveId, { badge, label });
   };
   const badgeOf = (text) => {
     if (/^From the start/i.test(String(text || ''))) return 0;
@@ -60,11 +63,11 @@ function machineBadgeByMove() {
     return match ? Number.parseInt(match[1], 10) : null;
   };
   for (const option of [...sources.tmOptions, ...sources.tmxOptions]) {
-    note(toId(option.move), badgeOf(option.available));
+    note(toId(option.move), badgeOf(option.available), option.code);
   }
   for (const group of sources.tutorGroups) {
     for (const option of group.options || []) {
-      note(option.id, badgeOf(option.available || group.available));
+      note(option.id, badgeOf(option.available || group.available), 'Tutor');
     }
   }
   MACHINE_BADGES.set(sources, map);
@@ -182,7 +185,19 @@ export function computeSetReadiness({
       .map((entry) => entry.level);
     if (levels.length) {
       const level = Math.min(...levels);
-      candidates.push({ cap: level, detail: `level-up @${level}` });
+      // Name the learner when it is a pre-evolution: an elective evolution
+      // closes that route, so the owner sees what evolving first forfeits.
+      const learnerId = levelEntries.find(
+        (entry) => entry.level === level && !neverHeld(entry),
+      )?.from;
+      const learner =
+        learnerId && learnerId !== legalMoveData?.pokemonId
+          ? dex().progressionSpecies[learnerId]?.name
+          : null;
+      candidates.push({
+        cap: level,
+        detail: `level-up @${level}${learner ? ` as ${learner}` : ''}`,
+      });
     }
     const hasLevelOneRelist =
       (speciesIsEvolved && (raw.sources?.levelUp || []).includes(1)) ||
@@ -191,11 +206,11 @@ export function computeSetReadiness({
       // moves of its ≤1 learnset, never the relist catalog above them.
       Boolean(raw.sources?.levelOneRelist);
     if (raw.sources?.tm || raw.sources?.tmx || raw.sources?.tutor) {
-      const badge = machineBadgeByMove().get(id);
-      if (badge != null) {
+      const route = machineBadgeByMove().get(id);
+      if (route) {
         candidates.push({
-          cap: capOfBadge(badge) ?? 100,
-          detail: `TM/tutor ${badgePhrase(badge)}`,
+          cap: capOfBadge(route.badge) ?? 100,
+          detail: `${route.label} ${badgePhrase(route.badge)}`,
         });
       }
     }
@@ -241,7 +256,12 @@ export function computeSetReadiness({
 
     candidates.sort((a, b) => a.cap - b.cap);
     capNeeds.push(candidates[0].cap);
-    return { id, label, status: 'later', detail: candidates[0].detail };
+    // Every route is worth knowing: a pre-evolution's level-up closes when
+    // the stone is used, and the TM is the way back.
+    const detail = candidates
+      .map((candidate) => candidate.detail)
+      .join(' · or ');
+    return { id, label, status: 'later', detail };
   });
 
   const itemName = topSet?.item || null;

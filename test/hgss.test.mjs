@@ -216,7 +216,7 @@ test('set readiness prices HGSS machines against its own caps', () => {
       topSet: { moveUsage: new Map([['roost', 50]]) },
       progression: {},
     });
-    assert.match(readiness.moves[0].detail, /TM\/tutor @1 badge/);
+    assert.match(readiness.moves[0].detail, /^TM\d+ @1 badge/);
     assert.equal(readiness.fullAtCap, 20);
   });
 });
