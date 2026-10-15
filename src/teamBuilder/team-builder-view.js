@@ -10,6 +10,10 @@ import {
   renderProgressionPanel,
   renderOpponentTypeBias,
 } from '../playthrough/progression-view';
+import {
+  MAX_TEAM_SLOTS,
+  teamSlotsOf,
+} from '../playthrough/progression.js';
 import { detailsStateAttrs } from '../utils/details-state.js';
 import { accessFields } from '../games/evolution.js';
 import { moveSources } from '../games/legality.js';
@@ -174,6 +178,8 @@ export function renderGamestateStrip(progression = {}) {
   );
 
   chip(`Items ${Object.keys(progression.ownedItems || {}).length}`, 'items');
+  const slots = teamSlotsOf(progression.teamSlots);
+  if (slots < MAX_TEAM_SLOTS) chip(`Slots ${slots}`, '');
 
   const bias = Object.entries(progression.opponentTypeBias || {}).filter(
     ([, level]) => level > 0,
@@ -333,6 +339,12 @@ function renderPoolControls({
       </div>
 
       <div class="actions-row">
+        <label class="team-slots" title="How many of the six party slots the optimizer fills. Set 5 while an egg rides along.">
+          <span>Team slots</span>
+          <select data-progression-field="teamSlots">
+            ${[6, 5, 4, 3, 2, 1].map((slots) => `<option value="${slots}" ${teamSlotsOf(state.progression?.teamSlots) === slots ? 'selected' : ''}>${slots}</option>`).join('')}
+          </select>
+        </label>
         <button class="view-tab primary-action" id="optimize-button"${usageTrustTooltip(state) ? ` title="${escapeAttr(usageTrustTooltip(state))}"` : ''}>${state.loading ? 'Optimizing...' : 'Normalize + optimize team'}</button>
         <button class="view-tab" id="copy-pool-button">Copy pool</button>
         <button class="view-tab" id="export-gamestate-button" title="Copy pool + progression + inventory to the clipboard as JSON. Everything lives in this browser's local storage — one data clear loses it all unless the copy is pasted somewhere safe.">Export gamestate</button>

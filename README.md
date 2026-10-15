@@ -19,6 +19,9 @@ https://theskeward.github.io/pokemon-party-picker/
 - Paste an owned Pokemon pool and get a recommended team.
 - Lock a Pokemon into the team by suffixing it with `!` (`Gengar!`);
   the optimizer fills the remaining slots around it.
+- Set how many party slots the team may fill (Team slots, next to
+  Optimize) when an egg or anything else rides along; the setting is part
+  of the saved progression.
 - Keep a Pokemon by suffixing it with `*` (`Larvesta*`): the bench marks
   it as one you mean to hold onto, so it never reads as a cut. Scoring
   ignores the mark.

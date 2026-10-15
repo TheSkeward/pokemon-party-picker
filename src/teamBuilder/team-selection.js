@@ -42,6 +42,8 @@ export async function choosePoolTeam(
     hint = false,
     onSearchProgress = null,
     onSearchStage = null,
+    // How many party slots the team may fill; an egg in the party takes one.
+    teamSize = 6,
   } = {},
 ) {
   // The kernel scores with explicit type state; workers receive it per range.
@@ -56,6 +58,7 @@ export async function choosePoolTeam(
     hint,
     onSearchProgress,
     onSearchStage,
+    teamSize,
   });
   const evaluated = bestTeam.evaluated;
   const lockedInputIds = new Set(
@@ -493,9 +496,10 @@ async function selectTeamByFit(
     hint = false,
     onSearchProgress = null,
     onSearchStage = null,
+    teamSize = 6,
   } = {},
 ) {
-  const fullSize = Math.min(6, lines.length);
+  const fullSize = Math.min(teamSize, lines.length);
   // Locked lines are fixed members: the search enumerates only the free
   // slots (the kernel scores every combination as fixed ∪ combination). More
   // locks than slots means the team is chosen among the locks alone.

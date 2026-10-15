@@ -15,7 +15,10 @@ import {
 import {
   contestedEvolutionItems,
 } from '../playthrough/evolution-requirements.js';
-import { withoutOwnedItems } from '../playthrough/progression.js';
+import {
+  teamSlotsOf,
+  withoutOwnedItems,
+} from '../playthrough/progression.js';
 import {
   getAvailableMoves,
   loadLegalMoveData,
@@ -521,6 +524,7 @@ export async function optimizeTeamFromPool({
   onProgress?.({ phase: 'search' });
   const result = await choosePoolTeam(lines, progression.opponentTypeBias, {
     exhaustive: exhaustive && !fastMode,
+    teamSize: teamSlotsOf(progression.teamSlots),
     incremental,
     // The team store is keyed on the same context as the incremental cache, so
     // a deletion to an unvisited subset is answered from the last full search.

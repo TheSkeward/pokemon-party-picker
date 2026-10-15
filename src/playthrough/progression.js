@@ -130,7 +130,28 @@ export function normalizeProgression(progression = {}) {
     // stored — absent means accessible, so old saved progressions keep their
     // exact behavior and cache signatures.
     ...normalizeEvolutionAccess(progression),
+    // Team slots: how many of the six the optimizer may fill (an egg in the
+    // party takes one). Stored only when fewer than six, for the same reason.
+    ...normalizeTeamSlots(progression.teamSlots),
   };
+}
+
+/** The most team members a party can field. */
+export const MAX_TEAM_SLOTS = 6;
+
+/**
+ * @param {*} value A saved or edited slot count.
+ * @return {number} The slots the optimizer fills, 1 to 6; 6 when unset.
+ */
+export function teamSlotsOf(value) {
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed)) return MAX_TEAM_SLOTS;
+  return Math.min(MAX_TEAM_SLOTS, Math.max(1, parsed));
+}
+
+function normalizeTeamSlots(value) {
+  const slots = teamSlotsOf(value);
+  return slots === MAX_TEAM_SLOTS ? {} : { teamSlots: slots };
 }
 
 function normalizeEvolutionAccess(progression) {

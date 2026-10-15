@@ -546,6 +546,14 @@ button:hover {
 .actions-row .danger-button {
   margin-left: auto;
 }
+/* The slot count sits with the optimize button: it is set per fight, like
+   the opponent bias, not per badge. */
+.actions-row .team-slots {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--type-s);
+}
 .actions-row [data-pool-status],
 .actions-row [data-progression-status] {
   flex-basis: 100%;
