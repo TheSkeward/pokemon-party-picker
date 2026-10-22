@@ -463,14 +463,31 @@ export function isVariablePowerMove(moveId) {
   return VARIABLE_POWER_MOVE_IDS.has(moveId);
 }
 
-// Weight-bucket power shared by Grass Knot and Low Kick (Gen 3+ table).
-function weightBucketPower(kg) {
+/**
+ * Power of Grass Knot and Low Kick from the target's weight (Gen 3+ table).
+ * @param {number} kg
+ * @return {number}
+ */
+export function weightBucketPower(kg) {
   if (kg >= 200) return 120;
   if (kg >= 100) return 100;
   if (kg >= 50) return 80;
   if (kg >= 25) return 60;
   if (kg >= 10) return 40;
   return 20;
+}
+
+/**
+ * Power of Heavy Slam and Heat Crash from the user-to-target weight ratio.
+ * @param {number} ratio
+ * @return {number}
+ */
+export function weightRatioPower(ratio) {
+  if (ratio >= 5) return 120;
+  if (ratio >= 4) return 100;
+  if (ratio >= 3) return 80;
+  if (ratio >= 2) return 60;
+  return 40;
 }
 
 /**
@@ -519,14 +536,9 @@ export function variableMovePower(
     case 'lowkick':
       return weightBucketPower(referenceBases().weightKg);
     case 'heavyslam':
-    case 'heatcrash': {
-      const ratio = weight / Math.max(0.1, referenceBases().weightKg);
-      if (ratio >= 5) return 120;
-      if (ratio >= 4) return 100;
-      if (ratio >= 3) return 80;
-      if (ratio >= 2) return 60;
-      return 40;
-    }
+    case 'heatcrash':
+      return weightRatioPower(
+        weight / Math.max(0.1, referenceBases().weightKg));
     case 'punishment':
       return 60; // unboosted reference target — the move's floor
     case 'crushgrip':

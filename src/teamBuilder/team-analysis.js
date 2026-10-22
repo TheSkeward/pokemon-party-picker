@@ -36,7 +36,7 @@ import {
 import { loadTopSet } from './top-spread.js';
 import { formatAbilityPath, resolveBuildAbilities } from './ability-path.js';
 import { withMetLevels } from './input-groups';
-import { isInertInFamily } from '../move-meta.js';
+import { hydrateLegalMove, isInertInFamily } from '../move-meta.js';
 import { computeSetReadiness } from '../playthrough/set-readiness.js';
 import { teamMemberKey } from './item-recommendations.js';
 import { selectObservedSet } from './observed-sets.js';
@@ -59,6 +59,7 @@ import {
   loadMovePrior,
   movePriorOf,
 } from './move-prior.js';
+import { statusSideValue } from './move-side-value.js';
 
 export { analysisTypes };
 
@@ -448,6 +449,7 @@ async function buildMemberLegalMoveEntry({
   const profile = buildCandidateLegalityProfile({
     member,
     moves: buildPool,
+    learnableMoveIds: new Set((legalMoveData?.moves || []).map((m) => m.id)),
     representativeName: row.name,
     attackerStats,
     levelCap: progression.levelCap,
@@ -867,6 +869,10 @@ export function buildCandidateLegalityProfile({
   // The competitive spread string, so the build is priced as the card shows
   // it.
   spread = null,
+  // Every move the game can ever teach this mon, so a canonical move that is
+  // missing now reads as blocked (a stand-in may answer for it) rather than
+  // absent. Null trusts the record: a move the ladder runs is learnable.
+  learnableMoveIds = null,
 }) {
   // Carry the recommended held item AND the mon's competitive ability on the
   // member, so every damage estimate (display, ranking, bias, team scoring)
@@ -911,6 +917,7 @@ export function buildCandidateLegalityProfile({
     opponentTypeBias,
     movePreference,
     moveRank,
+    learnableMoveIds,
   );
   const recommendedDamagingMoves = recommendedMoves.filter(isDamagingMove);
   const stabMoves = damagingMoves
@@ -931,6 +938,13 @@ export function buildCandidateLegalityProfile({
       .slice(0, 4)
       .map(([id], index) => [id, index]),
   );
+  // A stand-in reads in the place of the canonical move it answers for.
+  for (const move of recommendedMoves) {
+    const blockedId = move.standsInFor?.id;
+    if (blockedId && canonicalRankById.has(blockedId)) {
+      canonicalRankById.set(move.id, canonicalRankById.get(blockedId));
+    }
+  }
   const peakDamage = Math.max(
     0, ...damagingMoves.map((move) => getEstimatedDamage(move, member, stats)),
   );
@@ -1542,6 +1556,8 @@ function formatProfileMove(move, member, attackerStats, peakDamage = 0) {
     screenAxes: move.screenAxes || [],
     requiresWeather: move.requiresWeather,
     accuracy: typeof move.accuracy === 'number' ? move.accuracy : 100,
+    // The blocked canonical move this one answers for ({id, name}), if any.
+    standsInFor: move.standsInFor || null,
   };
 }
 
@@ -1927,6 +1943,7 @@ function recommendCurrentMoves(
   opponentTypeBias = {},
   movePreference = 'default',
   moveRank = new Map(),
+  learnableMoveIds = null,
 ) {
   const decorated = moves.map((move) =>
     decorateMove(move, member, attackerStats, moveUsage, opponentTypeBias),
@@ -1989,6 +2006,31 @@ function recommendCurrentMoves(
       }
     }
   };
+  // A canonical status move the cap still blocks (Shift Gear at level 48 on
+  // a cap-35 Klink) is stood in for by the legal move that does the same
+  // job: the same role, and for setup the same primary stat, so Autotomize
+  // and Rock Polish answer for Shift Gear while Charge and Iron Defense do
+  // not. The stand-in takes the blocked move's seat. Among several, priced
+  // side effects decide (Autotomize sheds weight, Rock Polish does not),
+  // then the measured prior. A move the game never teaches this mon is
+  // absent, not blocked, and gets no stand-in.
+  const addStandIns = () => {
+    for (const id of canonicalIds) {
+      if (byId.has(id)) continue;
+      if (learnableMoveIds && !learnableMoveIds.has(id)) continue;
+      const blocked = hydrateLegalMove({ id, sources: [] });
+      if (blocked.category !== 'Status') continue;
+      const standIn = usableUtility
+        .filter(
+          (move) =>
+            !isSelected(move, selected) && canStandInFor(move, blocked),
+        )
+        .sort((a, b) => compareStandIns(a, b, member))[0];
+      if (standIn && add(standIn)) {
+        standIn.standsInFor = { id, name: blocked.name };
+      }
+    }
+  };
 
   if (movePreference === 'coverage') {
     // Coverage build: the canonical utility moves available now stay (a
@@ -2001,6 +2043,7 @@ function recommendCurrentMoves(
     // says is dominated, and the team sees it only when it out-scores the
     // standard set.
     addCanonical((move) => move.utility);
+    addStandIns();
     add(
       usableDamaging()
         .filter((move) => !isFixedDamageMove(move.id))
@@ -2018,8 +2061,10 @@ function recommendCurrentMoves(
       .sort(compareUtilityByUsage);
     for (const move of rankedUtility.slice(0, 3)) add(move);
   } else {
-    // 1. Canonical moves, each kept if available now.
+    // 1. Canonical moves, each kept if available now, and a stand-in for
+    // each blocked canonical status move.
     addCanonical(() => true);
+    addStandIns();
   }
 
   // 2. Guarantee at least one attack — but only if none was picked yet. A mon
@@ -2146,6 +2191,39 @@ function recommendCurrentMoves(
 
 function isSelected(move, selected) {
   return selected.some((entry) => entry.id === move.id);
+}
+
+// A legal Status move does a blocked canonical move's job when it shares a
+// role and, for setup, raises the same primary stat (Autotomize for Shift
+// Gear, not Iron Defense) or, for status, inflicts the same condition (Stun
+// Spore for Thunder Wave, not Toxic).
+function canStandInFor(candidate, blocked) {
+  if (candidate.category !== 'Status') return false;
+  const roles = new Set(blocked.roles || []);
+  if (!(candidate.roles || []).some((role) => roles.has(role))) return false;
+  if (roles.has('setup')) {
+    const primary = primaryRaisedStats(candidate.raises);
+    return primaryRaisedStats(blocked.raises).some((s) => primary.includes(s));
+  }
+  if (roles.has('status')) return candidate.inflicts === blocked.inflicts;
+  return true;
+}
+
+// The stats a move raises by its largest number of stages.
+function primaryRaisedStats(raises = {}) {
+  const top = Math.max(0, ...Object.values(raises));
+  return top ? Object.keys(raises).filter((stat) => raises[stat] === top) : [];
+}
+
+// Stand-ins for one blocked move: priced side effects first, then the
+// measured prior, then source, then name.
+function compareStandIns(a, b, member) {
+  return (
+    statusSideValue(b, member) - statusSideValue(a, member) ||
+    b.utilityWeight - a.utilityWeight ||
+    a.sourcePriority - b.sourcePriority ||
+    a.name.localeCompare(b.name)
+  );
 }
 
 // A move is selectable if it's a usable damaging move, or any non-damaging

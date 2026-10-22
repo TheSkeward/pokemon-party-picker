@@ -74,7 +74,13 @@ async function main() {
     const sets = await readSets(family);
     const learnsets = await readLearnsets(
       learnsetDir, sets.map((set) => set.pokemonId));
-    const { pokemon, moves } = computeMovePrior(sets, learnsets);
+    // The generation's weights, for the carrier weight behind Heavy Slam and
+    // Heat Crash; a generation without a dex module prices those at 0.
+    const dexModule = await import(
+      `../src/generated/gen${config.gen}BaseStats.generated.js`,
+    ).catch(() => ({}));
+    const weightsKg = dexModule[`GEN${config.gen}_WEIGHTS_KG`] || {};
+    const { pokemon, moves } = computeMovePrior(sets, learnsets, weightsKg);
     await writeJson(path.join(outRoot, `${family}.json`), {
       family,
       learnsets: learnsetDir,

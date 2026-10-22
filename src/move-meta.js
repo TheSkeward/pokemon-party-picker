@@ -145,6 +145,15 @@ export function hydrateLegalMove(rawMove) {
     flinch: meta?.flinch ?? 0,
     // The foe's stats a status move lowers ('atk', 'accuracy', ...).
     lowers: meta?.lowers ?? [],
+    // The user's own stats a move raises and drops (stat -> stages), the
+    // status it inflicts, its PP, the share of HP it spends and the weight
+    // it sheds: what a stand-in comparison and side-effect pricing read.
+    raises: meta?.raises ?? {},
+    selfDrops: meta?.selfDrops ?? {},
+    inflicts: meta?.inflicts ?? null,
+    pp: meta?.pp ?? 0,
+    hpCost: meta?.hpCost ?? 0,
+    weightChangeKg: meta?.weightChangeKg ?? 0,
     sources: rawMove.sources,
   };
 }

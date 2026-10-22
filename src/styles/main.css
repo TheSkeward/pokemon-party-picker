@@ -1638,6 +1638,13 @@ html {
   color: var(--text-muted);
 }
 
+/* A stand-in names the blocked canonical move it answers for. */
+.team-set-move-standin {
+  font-size: var(--type-s);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
 .team-set-foot {
   color: var(--text-muted);
   font-size: var(--type-s);

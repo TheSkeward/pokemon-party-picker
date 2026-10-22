@@ -9,6 +9,8 @@ import { computeMovePrior } from '../scripts/move-prior/compute.mjs';
 import {
   UTILITY_PRIOR_FLOOR,
   loadMovePrior,
+  moveCarrierWeightOf,
+  moveCarryOf,
   movePriorOf,
   setMovePrior,
 } from '../src/teamBuilder/move-prior.js';
@@ -27,12 +29,20 @@ test('the prior is the equal-weight mean over learners, to one decimal', () => {
     ['a', new Set(['recover', 'toxic', 'protect'])],
     ['b', new Set(['recover', 'protect'])],
   ]);
-  const { pokemon, moves } = computeMovePrior(sets, learnsets);
+  const { pokemon, moves } = computeMovePrior(
+    sets, learnsets, { a: 100, b: 20 },
+  );
   assert.equal(pokemon, 2);
-  assert.deepEqual(moves.recover, { prior: 60, learners: 2 });
-  assert.deepEqual(moves.toxic, { prior: 10, learners: 1 });
-  // Learnable, never run: a real zero, not an absence.
-  assert.deepEqual(moves.protect, { prior: 0, learners: 2 });
+  // Carry is the mean over every Pokémon counted; the carrier weight is the
+  // usage-weighted mean weight of the Pokémon that run the move.
+  assert.deepEqual(
+    moves.recover, { prior: 60, learners: 2, carry: 60, carrierWeightKg: 80 },
+  );
+  assert.deepEqual(
+    moves.toxic, { prior: 10, learners: 1, carry: 5, carrierWeightKg: 100 },
+  );
+  // Learnable, never run: a real zero, not an absence, and no carrier.
+  assert.deepEqual(moves.protect, { prior: 0, learners: 2, carry: 0 });
   assert.equal(moves.spore, undefined);
   assert.deepEqual(Object.keys(moves), ['protect', 'recover', 'toxic']);
 });
@@ -49,6 +59,10 @@ test('the committed singles table reads as the ladder plays', async () => {
   assert.ok(movePriorOf('rapidspin') > 30, movePriorOf('rapidspin'));
   assert.ok(movePriorOf('confide') < UTILITY_PRIOR_FLOOR);
   assert.equal(movePriorOf('notamove'), 0);
+  // Carry rates and the weight behind Heavy Slam's carriers ride along.
+  assert.ok(moveCarryOf('protect') > 1, moveCarryOf('protect'));
+  assert.ok(moveCarryOf('lowkick') > 0 && moveCarryOf('lowkick') < 2);
+  assert.ok(moveCarrierWeightOf('heavyslam') > 100);
 });
 
 test('an unrecorded utility move seats on the prior, under a floor', () => {

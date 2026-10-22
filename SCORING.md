@@ -235,6 +235,22 @@ replaced a hand-written table of thirty weights that rated Thunder Wave at
 85 where the ladder runs it on 5% of learners' sets, and that left Rapid
 Spin, Stealth Rock and Knock Off unrated.
 
+A canonical status move the cap still blocks is stood in for by the legal
+move that does the same job: the same role, and for a setup move the same
+primary stat, so on a cap-35 Klink Autotomize answers for Shift Gear (level
+48) while Charge and Iron Defense do not, and Comfey's Growth answers for
+Calm Mind. The stand-in takes the blocked move's seat, and the card names
+what it stands in for. Among several, priced side effects decide before the
+prior. A weight change is worth, over the weight-scaled attacks, how often
+the ladder's sets carry the attack times its effectiveness into the mon
+times the power change, as a share of a reference hit per opposing set:
+Autotomize's shed weight is a small, strictly positive gain on a
+Fighting-weak Klink, so it edges Rock Polish, which offers nothing but PP.
+PP is priced as the share of a long fight's clicks a move cannot cover,
+nothing for a setup move's PP and real for a five-PP recovery move. A move
+the game never teaches the mon is absent, not blocked, and gets no
+stand-in.
+
 Utility is currently derived from accuracy-weighted move roles such as
 recovery, hazards, removal, speed control, setup, pivoting, phazing, screens,
 disruption, status, and priority. The utility roles are gated by the Pokemon's

@@ -677,7 +677,7 @@ function renderSetMove(move) {
   return `
     <div class="team-set-move">
       ${renderTypeBadge(move.type)}
-      <span class="team-set-move-name"${facts ? ` title="${escapeHtml(facts)}"` : ''}>${escapeHtml(move.name)}</span>
+      <span class="team-set-move-name"${facts ? ` title="${escapeHtml(facts)}"` : ''}>${escapeHtml(move.name)}${move.standsInFor ? ` <small class="team-set-move-standin" title="${escapeAttr(`Stands in for ${move.standsInFor.name}, a move of this set that cannot be learned yet`)}">for ${escapeHtml(move.standsInFor.name)}</small>` : ''}</span>
       <span class="team-set-move-dmg"${move.damageSteps?.length ? ` title="${escapeAttr(move.damageSteps.join('\n'))}"` : ''}>${escapeHtml(formatDamage(move))}</span>
       <span class="team-set-move-src" title="${escapeAttr(sourceTitle)}">${escapeHtml(move.sourceLabel || 'Legal')}</span>
     </div>

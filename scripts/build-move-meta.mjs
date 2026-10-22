@@ -24,6 +24,11 @@ const OUT_PATH = path.resolve(
 // 60; a bred or well-caught user runs it at 70.
 const ASSUMED_BASE_POWER = { return: 102 };
 if (GEN <= 5) ASSUMED_BASE_POWER.hiddenpower = 70;
+// Costs the dex expresses only in code: the share of its HP a move spends
+// (Belly Drum half, Substitute a quarter) and the weight Autotomize sheds
+// (100 kg, to the 0.1 kg floor).
+const HP_COST = { bellydrum: 0.5, substitute: 0.25 };
+const WEIGHT_CHANGE_KG = { autotomize: -100 };
 
 // Coded-effect moves whose utility value isn't expressed by any dex field (a
 // Knock Off looks identical to a Tackle in the data), so they have to be listed
@@ -219,6 +224,28 @@ function main() {
         .filter(([, value]) => value < 0)
         .map(([stat]) => stat);
       if (lowers.length) entry.lowers = lowers;
+    }
+    // What a stand-in comparison and side-effect pricing read: the user's
+    // own stats a move raises (Shift Gear: spe 2, atk 1) and drops (Shell
+    // Smash: def 1, spd 1), the status it inflicts, its PP, the HP it spends
+    // and the weight it sheds. Guaranteed effects only; a chance-gated boost
+    // rider does not make a setup move.
+    const own = move.target === 'self' ? move.boosts : move.self?.boosts;
+    if (own) {
+      const raises = {};
+      const selfDrops = {};
+      for (const [stat, value] of Object.entries(own)) {
+        if (value > 0) raises[stat] = value;
+        if (value < 0) selfDrops[stat] = -value;
+      }
+      if (Object.keys(raises).length) entry.raises = raises;
+      if (Object.keys(selfDrops).length) entry.selfDrops = selfDrops;
+    }
+    if (move.status) entry.inflicts = move.status;
+    if (move.pp) entry.pp = move.pp;
+    if (HP_COST[move.id]) entry.hpCost = HP_COST[move.id];
+    if (WEIGHT_CHANGE_KG[move.id]) {
+      entry.weightChangeKg = WEIGHT_CHANGE_KG[move.id];
     }
     const screen = screenFacts(move);
     if (screen) Object.assign(entry, screen);

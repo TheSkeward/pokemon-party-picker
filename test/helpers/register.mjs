@@ -11,6 +11,4 @@ const table = JSON.parse(readFileSync(
   new URL('../../site-data/data/move-prior/singles.json', import.meta.url),
   'utf8',
 ));
-setMovePrior(
-  new Map(Object.entries(table.moves).map(([id, e]) => [id, e.prior])),
-);
+setMovePrior(new Map(Object.entries(table.moves)));
