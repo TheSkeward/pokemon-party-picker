@@ -52,6 +52,7 @@ import {
   stageReferenceDamage,
 } from './current-form-value.js';
 import { dex } from '../games/dex.js';
+import { isMegaRingOpen } from '../games/evolution.js';
 
 export { analysisTypes };
 
@@ -307,7 +308,9 @@ async function buildMemberLegalMoveEntry({
     ? representativeRecord.baseSpeciesId || null
     : null;
   const megaReady = Boolean(
-    megaBaseId && currentSpecies?.id === megaBaseId,
+    megaBaseId &&
+      currentSpecies?.id === megaBaseId &&
+      isMegaRingOpen(progression),
   );
   const battleSpeciesId = megaReady
     ? row.pokemonId

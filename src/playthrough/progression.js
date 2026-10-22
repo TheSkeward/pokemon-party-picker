@@ -170,6 +170,9 @@ function normalizeEvolutionAccess(progression) {
           ? false
           : undefined;
     if (value === false) access[field.key] = false;
+    // A gate that defaults from its unlock keeps an explicit true too: that
+    // is the owner overriding the schedule (a ring before its badge).
+    if (value === true && field.defaultFromUnlock) access[field.key] = true;
   }
   return access;
 }

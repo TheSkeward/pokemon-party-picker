@@ -70,6 +70,7 @@ import {
   getReachableAssetKey,
 } from './line-reachability.js';
 import { dex } from '../games/dex.js';
+import { isMegaRingOpen } from '../games/evolution.js';
 
 // --- Incremental caches ----------------------------------------------------
 // In a playthrough you mostly grow the pool one mon at a time at a fixed game
@@ -1284,7 +1285,9 @@ function makeChoice(input, result, note) {
     inputName: input.name,
     pokemonId: result.candidate.id,
     name: result.candidate.name,
-    isMega: Boolean(result.candidate.isMega),
+    // The one Mega slot is spent only by a Mega the player can actually
+    // trigger: a Mega candidate fielding its base form takes no slot.
+    isMega: Boolean(result.legalityProfile?.megaReady),
     score: result.score,
     teamScore: result.teamScore,
     meaningfulUsage: result.meaningfulUsage,
@@ -1380,13 +1383,17 @@ async function resolveCandidateBuilds({
     ? candidateRecord.baseSpeciesId || null
     : null;
   // A mega's usage representative is reachable only once its base species is
-  // the form the player can field. Before then, the pre-evolution keeps its
-  // own battle stats/typing/ability; once ready, combat uses the mega form
-  // while evolution/readiness still tracks the fielded base.
+  // the form the player can field AND the game's Mega ring is in hand.
+  // Before then, the fielded form keeps its own battle stats/typing/ability
+  // while the Mega's usage still speaks for the line (a plain Speed Boost
+  // Sharpedo is the Pokémon the ladder runs as Mega Sharpedo); once ready,
+  // combat uses the mega form while evolution/readiness still tracks the
+  // fielded base.
   const megaReady = Boolean(
     candidate.isMega &&
       megaBaseId &&
-      currentSpecies?.id === megaBaseId,
+      currentSpecies?.id === megaBaseId &&
+      isMegaRingOpen(progression),
   );
   const battleSpeciesId = megaReady
     ? candidate.id

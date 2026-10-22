@@ -103,7 +103,12 @@ export const REBORN_PROGRESSION_CHECKPOINTS = [
     id: 'badge-14', badges: 14, label: 'Amaranth Badge (Adrienn)', levelCap: 85,
     unlocks: { items: ['choiceband', 'choicespecs', 'assaultvest'] },
   },
-  { id: 'badge-15', badges: 15, label: 'Alloy Badge (Titania)', levelCap: 90, unlocks: {} },
+  {
+    id: 'badge-15', badges: 15, label: 'Alloy Badge (Titania)', levelCap: 90,
+    // DJ Arclight's Mega-Z Ring quest opens after Titania (and needs every
+    // stolen Pokémon bought from 7th Street).
+    unlocks: { access: ['evoAccessMegaRing'] },
+  },
   {
     id: 'badge-16', badges: 16, label: 'Torrent Badge (Amaria)', levelCap: 90,
     unlocks: { items: ['lifeorb', 'muscleband'] },

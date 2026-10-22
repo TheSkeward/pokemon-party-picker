@@ -31,6 +31,23 @@ export function getCheckpoints() {
 }
 
 /**
+ * The badge count a progression stands at: its checkpoint's when one is
+ * saved, else the first checkpoint whose level cap reaches the saved cap
+ * (saves from before the badge picker, and the test harness, carry only a
+ * cap). Null when neither is known.
+ * @param {?Object} progression
+ * @return {?number}
+ */
+export function badgesHeldOf(progression) {
+  const checkpoint = getCheckpoint(progression?.checkpoint);
+  if (checkpoint) return checkpoint.badges;
+  const cap = Number.parseInt(progression?.levelCap, 10);
+  if (!Number.isFinite(cap)) return null;
+  const reached = getCheckpoints().find((entry) => entry.levelCap >= cap);
+  return reached ? reached.badges : null;
+}
+
+/**
  * @param {?string} id
  * @return {?Object} Null for unknown ids.
  */

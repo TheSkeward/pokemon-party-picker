@@ -256,7 +256,16 @@ Speed Boost without protection still earns its observed post-turn speed but
 not that bonus; protection without Speed Boost earns neither. The role remains
 capped at the common 2000-point ceiling.
 
-A reachable Mega is modeled as two explicit states. Evolution/readiness tracks
+A Mega is fielded only once the game's Mega ring is in hand: in Reborn the
+Mega-Z Ring follows DJ Arclight's quest after Titania, so before badge 15 the
+player fields the base form, with its own stats, typing and caught ability,
+and spends no Mega slot; the progression's gate overrides the schedule either
+way. The Mega remains the line's usage representative throughout, because
+the ladder's Mega Sharpedo is evidence about the Pokémon the player is
+raising: a plain Speed Boost Sharpedo at cap 50 is judged by that record and
+its own body, not by the near-zero usage of a form nobody runs once they can
+Mega. Each Mega's stone is not yet modeled. A reachable Mega is modeled as
+two explicit states. Evolution/readiness tracks
 the base species the player fields, while damage, typing, stats, and legal moves
 use the Mega battle form. The caught base ability remains a pre-Mega fact: a
 Sharpedo can gain Speed Boost before becoming Mega Sharpedo with Strong Jaw.

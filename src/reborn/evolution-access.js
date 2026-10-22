@@ -47,4 +47,13 @@ export const EVOLUTION_ACCESS_FIELDS = Object.freeze([
   { key: 'evoAccessIcyRock', label: 'Ice Rock (Glaceon)' },
   { key: 'evoAccessOtherLocations', label: 'Other special locations (Crabominable)' },
   { key: 'evoAccessApophyll', label: 'Apophyll area (Alolan evolutions: Raichu-A, Exeggutor-A)' },
+  // The Mega-Z Ring comes from DJ Arclight's sidequest after Titania, so
+  // this gate follows the badge count by default: closed before badge 15,
+  // open after, with the checkbox overriding either way (an early ring from
+  // a password, or the badge without the quest).
+  {
+    key: 'evoAccessMegaRing',
+    label: 'Mega Evolution (Mega-Z Ring, Arclight\'s quest after Titania)',
+    defaultFromUnlock: true,
+  },
 ]);

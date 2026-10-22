@@ -35,7 +35,10 @@ https://theskeward.github.io/pokemon-party-picker/
 - The donor box is your whole box: everything you add to the pool lands
   there and stays when you remove it from the pool. Donors supply egg moves,
   Sketch partners, and move transfers; only the pool is fielded.
-- Track each game's progression locally in your browser.
+- Track each game's progression locally in your browser. Mega Evolution
+  follows the game's Mega ring: in Reborn the Mega-Z Ring quest opens after
+  Titania, so Megas appear only from badge 15, with the evolution-access
+  checkbox overriding the schedule either way.
 - Inspect legal current moves, recommended sets, breeding chains, item picks,
   coverage, defensive profile, confidence, and level-cap investment.
 - Look up observed set details for a Pokemon or evolutionary line.

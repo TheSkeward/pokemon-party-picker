@@ -2,7 +2,7 @@ import { escapeHtml, escapeAttr } from '../utils/html.js';
 import { detailsStateAttrs } from '../utils/details-state.js';
 import { getMoveMeta, describeMoveMeta } from '../move-meta';
 import { legalityRules, mechanics, moveSources } from '../games/legality.js';
-import { accessFields } from '../games/evolution.js';
+import { accessFields, isAccessOpen } from '../games/evolution.js';
 import {
   getCheckpoint,
   getCheckpoints,
@@ -81,7 +81,7 @@ export function renderProgressionPanel(
                   <input
                     data-progression-field="${escapeAttr(field.key)}"
                     type="checkbox"
-                    ${progression[field.key] === false ? '' : 'checked'}
+                    ${isAccessOpen(progression, field) ? 'checked' : ''}
                   />
                   <span>${escapeHtml(field.label)}${badge != null ? ` <small class="muted">(~${badge} badge${badge === 1 ? '' : 's'})</small>` : ''}</span>
                 </label>`;

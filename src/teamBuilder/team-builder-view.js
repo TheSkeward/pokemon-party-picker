@@ -15,7 +15,7 @@ import {
   teamSlotsOf,
 } from '../playthrough/progression.js';
 import { detailsStateAttrs } from '../utils/details-state.js';
-import { accessFields } from '../games/evolution.js';
+import { accessFields, isAccessOpen } from '../games/evolution.js';
 import { moveSources } from '../games/legality.js';
 import { checkpointShortLabel, getCheckpoint } from '../games/schedule.js';
 import { renderTeamAnalysisPanel } from './team-analysis-view';
@@ -168,7 +168,7 @@ export function renderGamestateStrip(progression = {}) {
   chip(`Tutors ${(progression.availableTutorMoveIds || []).length}`, 'tutors');
 
   const blocked = accessFields().filter(
-    (field) => progression[field.key] === false,
+    (field) => !isAccessOpen(progression, field),
   );
   chip(
     blocked.length
