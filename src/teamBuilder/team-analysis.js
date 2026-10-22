@@ -16,6 +16,7 @@ import {
 import {
   getTypeMultiplier,
   analysisTypes,
+  defensiveTypings,
 } from '../playthrough/type-chart.js';
 import {
   EXPECTED_STINT_TURNS,
@@ -2030,12 +2031,15 @@ function recommendCurrentMoves(
 
   // 4. Fill by damage, then bonus utility, then any attack. An attack earns
   // a slot only where it raises the set's best damage into at least one
-  // defense type, judged the way the coverage vector is, whatever its type:
-  // a 75-power Thunder Punch without STAB lands under a 102-power Return
-  // with it even into Water, so it covers nothing the scoring can see, and
-  // the slot is better spent on utility or a priority attack. A 4x dual type
-  // is invisible to the per-type vector by design, so it cannot earn a slot
-  // either.
+  // defensive typing the game's dex contains, whatever its type: a 75-power
+  // Thunder Punch without STAB lands under a 102-power Return with it even
+  // into Water, so it covers nothing, and the slot is better spent on
+  // utility or a priority attack. The pairs are what a second attacking
+  // type is usually for: Skuntank's Flamethrower, off its uninvested
+  // special side, rounds under Night Slash into pure Steel but doubles it
+  // into Steel/Fairy and quadruples it into Bug/Steel. The team coverage
+  // vector still indexes single types, so a move seated for a pair alone
+  // earns the set its slot and no team credit.
   // Utility worth a slot on its own: real sets run it, or it performs a
   // support job the scoring credits. Priority alone is not such a job
   // (Protect), and Substitute carries no role at all.
@@ -2044,12 +2048,12 @@ function recommendCurrentMoves(
     (move.roles || []).some((role) => role !== 'priority');
   const raisesCoverage = (move) => {
     const carried = selected.filter((entry) => usableInSet(entry));
-    const into = (entry, defenseType) => coverageDamageIntoType(
-      entry.id, entry.type, entry.estimatedDamage, defenseType, member.ability);
-    return analysisTypes().some((defenseType) => {
+    const into = (entry, typing) => coverageDamageIntoType(
+      entry.id, entry.type, entry.estimatedDamage, typing, member.ability);
+    return defensiveTypings().some((typing) => {
       const best = Math.max(
-        0, ...carried.map((entry) => into(entry, defenseType)));
-      return into(move, defenseType) > best + 1e-9;
+        0, ...carried.map((entry) => into(entry, typing)));
+      return into(move, typing) > best + 1e-9;
     });
   };
   // Protean and Libero make an attack's type the user's defensive type for
@@ -2059,10 +2063,10 @@ function recommendCurrentMoves(
   );
   while (selected.length < 4) {
     // An attack earns a slot where it raises the set's best damage into at
-    // least one defense type, whatever its type: a stronger same-type move
-    // raises it everywhere (Sludge over Clear Smog), a different type where
-    // it is super effective or fills an immunity gap. STAB has no standing
-    // of its own; the damage estimate already carries it.
+    // least one defensive typing, whatever its type: a stronger same-type
+    // move raises it everywhere (Sludge over Clear Smog), a different type
+    // where it is super effective or fills an immunity gap. STAB has no
+    // standing of its own; the damage estimate already carries it.
     const upgrade = usableDamaging()
       .filter(
         (move) => !isFixedDamageMove(move.id) && !isSelected(move, selected),

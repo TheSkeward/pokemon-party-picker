@@ -196,14 +196,18 @@ before this rule its four-attack coverage set outscored the real one on
 standalone value with no coverage gain for the team.
 
 An attack fills an open slot only where it raises the set's best damage
-into at least one defense type, judged exactly as the coverage vector is,
-whatever its type: a stronger same-type move raises it everywhere (Sludge
-over Clear Smog), a different type where it is super effective or where
-the set has an immunity gap. STAB has no standing of its own; the damage
-estimate already carries it. A 75-power move without STAB lands under a
-102-power STAB move even into a type it hits super effectively, so Thunder
-Punch on Lopunny covers nothing the scoring can see; a 4x dual type is
-invisible to the per-type vector by design and earns no slot either. When
+into at least one defensive typing the game's dex contains, the single
+types and the pairs alike, whatever its type: a stronger same-type move
+raises it everywhere (Sludge over Clear Smog), a different type where it is
+super effective or where the set has an immunity gap. STAB has no standing
+of its own; the damage estimate already carries it. A 75-power move without
+STAB lands under a 102-power STAB move even into a type it hits super
+effectively, so Thunder Punch on Lopunny covers nothing. The pairs are what
+a second attacking type is usually for: Skuntank's Flamethrower, off its
+uninvested special side, rounds under Night Slash into pure Steel but
+doubles it into Steel/Fairy and quadruples it into Bug/Steel, so it earns a
+slot. The team coverage vector still indexes single types, so a move seated
+for a pair alone earns the set its slot and no team credit. When
 no attack qualifies, the slot goes to utility the mon's real sets run or
 that does a credited support job, then to an attack that is still a click:
 a priority move, or under Protean or Libero a type the set lacks, since the

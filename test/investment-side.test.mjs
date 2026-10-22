@@ -92,7 +92,11 @@ test('Swellow is special once Boomburst is legal', () => {
     (byId.get('aerialace')?.estimatedDamage ?? 0));
 });
 
-test('a special attacker does not take a physical filler priced as built', () => {
+test('a physical filler on a special attacker is priced off the empty side', () => {
+  // Meowstic's attacks are special, so Facade is priced off its uninvested
+  // Attack, a fraction of Psyshock. It still earns the last slot, but only
+  // because Psyshock and Charge Beam both do nothing into Dark/Ground, not
+  // on price.
   const meowstic = { id: 'meowstic', name: 'Meowstic', types: ['Psychic'] };
   const profile = buildCandidateLegalityProfile({
     member: meowstic,
@@ -100,6 +104,12 @@ test('a special attacker does not take a physical filler priced as built', () =>
       .map(legal),
     levelCap: 35,
   });
-  const ids = profile.recommendedMoves.map((move) => move.id);
-  assert.ok(ids.includes('chargebeam') && !ids.includes('facade'), ids);
+  const byId = new Map(profile.recommendedMoves.map((m) => [m.id, m]));
+  assert.equal(profile.investmentSide, 'special');
+  assert.ok(byId.has('chargebeam') && byId.has('facade'), [...byId.keys()]);
+  assert.ok(
+    byId.get('facade').estimatedDamage <
+      byId.get('psyshock').estimatedDamage / 2,
+    `${byId.get('facade').estimatedDamage} vs ${byId.get('psyshock').estimatedDamage}`,
+  );
 });

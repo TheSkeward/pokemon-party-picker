@@ -274,7 +274,7 @@ const MAX_RESULT_CACHE = 400;
 // v75: a stronger same-type attack earns a fill slot; a type the set
 // lacks is a click only under Protean or Libero.
 // v76: the coverage set opens with the strongest attack of any type.
-const RESULT_CACHE_VERSION = '76';
+const RESULT_CACHE_VERSION = '77';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.

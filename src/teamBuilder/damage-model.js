@@ -544,22 +544,29 @@ export function variableMovePower(
 }
 
 /**
- * Damage a move actually lands into a defensive type, for coverage purposes.
- * Fixed-damage moves ignore effectiveness multipliers but NOT immunities
- * (Gen 7 rules): Seismic Toss deals its flat damage to anything Fighting can
- * touch and zero to Ghosts — it is never "super effective" and never resisted.
- * Scrappy and Mind's Eye let Normal and Fighting moves hit Ghosts at full
- * damage.
+ * Damage a move actually lands into a defensive typing (one type or a pair),
+ * for coverage purposes. Fixed-damage moves ignore effectiveness multipliers
+ * but NOT immunities (Gen 7 rules): Seismic Toss deals its flat damage to
+ * anything Fighting can touch and zero to Ghosts — it is never "super
+ * effective" and never resisted. Scrappy and Mind's Eye let Normal and
+ * Fighting moves hit the Ghost half of a typing at full damage; the other
+ * half still applies.
+ * @param {string} moveId
+ * @param {string} moveType
+ * @param {number} damage
+ * @param {(string|!Array<string>)} defenseTypes
+ * @param {?string=} ability
  * @return {number}
  */
 export function coverageDamageIntoType(
-  moveId, moveType, damage, defenseType, ability = null) {
+  moveId, moveType, damage, defenseTypes, ability = null) {
+  const typing = Array.isArray(defenseTypes) ? defenseTypes : [defenseTypes];
   const id = abilityId(ability);
   const ghostSeen =
     (id === 'scrappy' || id === 'mindseye') &&
-    defenseType === 'Ghost' &&
     (moveType === 'Normal' || moveType === 'Fighting');
-  const multiplier = ghostSeen ? 1 : getTypeMultiplier(moveType, [defenseType]);
+  const multiplier = getTypeMultiplier(
+    moveType, ghostSeen ? typing.filter((type) => type !== 'Ghost') : typing);
   if (isFixedDamageMove(moveId)) return multiplier === 0 ? 0 : damage;
   return damage * multiplier;
 }
