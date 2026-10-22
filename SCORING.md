@@ -208,8 +208,9 @@ uninvested special side, rounds under Night Slash into pure Steel but
 doubles it into Steel/Fairy and quadruples it into Bug/Steel, so it earns a
 slot. The team coverage vector still indexes single types, so a move seated
 for a pair alone earns the set its slot and no team credit. When
-no attack qualifies, the slot goes to utility the mon's real sets run or
-that does a credited support job, then to an attack that is still a click:
+no attack qualifies, the slot goes to utility the mon's real sets run, or
+that does a credited support job and clears the measured prior below, then
+to an attack that is still a click:
 a priority move, or under Protean or Libero a type the set lacks, since the
 attack's type is also the user's type for the turn (Lick over Pound on a
 Frogadier; a Vise Grip on a Steel attacker is neither). Then to any status
@@ -222,6 +223,17 @@ times the user's chance to move first times its best hit, for slot filling
 and card order only: a fast Meowth's Bite lists above a Scratch that does two
 more damage. The score itself sees damage alone until secondary effects are
 priced by chance.
+
+A utility move with no record on the mon itself is admitted, and ties among
+such moves are broken, by the measured prior: for each move, the share of a
+learner's ladder sets that run it, averaged with equal weight over every
+Pokémon in the usage family that can learn it (`build-move-prior.mjs`, one
+table per family under `site-data/data/move-prior`). A move under 1% earns
+no seat on the prior alone, so a mon with nothing credited seats nothing
+rather than Confide. The mon's own record always outranks the prior. This
+replaced a hand-written table of thirty weights that rated Thunder Wave at
+85 where the ladder runs it on 5% of learners' sets, and that left Rapid
+Spin, Stealth Rock and Knock Off unrated.
 
 Utility is currently derived from accuracy-weighted move roles such as
 recovery, hazards, removal, speed control, setup, pivoting, phazing, screens,

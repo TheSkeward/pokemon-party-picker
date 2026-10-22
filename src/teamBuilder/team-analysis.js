@@ -54,6 +54,11 @@ import {
 } from './current-form-value.js';
 import { dex } from '../games/dex.js';
 import { isMegaRingOpen } from '../games/evolution.js';
+import {
+  UTILITY_PRIOR_FLOOR,
+  loadMovePrior,
+  movePriorOf,
+} from './move-prior.js';
 
 export { analysisTypes };
 
@@ -86,6 +91,7 @@ export async function buildTeamAnalysis(
     });
   let sketchContext = baseSketchContext;
   const { family, selection, itemAssignments } = breedingOptions;
+  await loadMovePrior(family);
   let legalMoveEntries = await Promise.all(
     team.map(async (row) => {
       const assignedItem = itemAssignments?.[teamMemberKey(row)];
@@ -2002,11 +2008,13 @@ function recommendCurrentMoves(
     );
   } else if (movePreference === 'utility') {
     // Utility build: the strongest role moves by usage, so the canonical
-    // utility moves seat first (recovery/hazards/speed control rank above
-    // chip status via utilityWeight when usage is silent), plus the
-    // guaranteed attack from the shared steps so it can't go fully passive.
+    // utility moves seat first (the measured prior ranks the unrecorded
+    // ones), plus the guaranteed attack from the shared steps so it can't
+    // go fully passive.
     const rankedUtility = usableUtility
-      .filter((move) => move.usage > 0 || move.utilityWeight > 0)
+      .filter(
+        (move) => move.usage > 0 || move.utilityWeight >= UTILITY_PRIOR_FLOOR,
+      )
       .sort(compareUtilityByUsage);
     for (const move of rankedUtility.slice(0, 3)) add(move);
   } else {
@@ -2152,13 +2160,15 @@ function isSelectableMove(move, sleepContext, heldItem = null) {
     : true;
 }
 
-// Highest-usage utility move not already chosen. Falls back to the static
-// utility-quality table when there's no usage data, and never returns a move
-// that is neither used nor notable, so a pure attacker isn't handed filler.
+// Highest-usage utility move not already chosen. Where this mon's record is
+// silent, the measured prior ranks the candidates, and a move under its
+// floor never seats here, so a pure attacker isn't handed filler.
 function bestUtility(utilityMoves, selected) {
   return utilityMoves
     .filter((move) => !isSelected(move, selected))
-    .filter((move) => move.usage > 0 || move.utilityWeight > 0)
+    .filter(
+      (move) => move.usage > 0 || move.utilityWeight >= UTILITY_PRIOR_FLOOR,
+    )
     .sort(compareUtilityByUsage)[0];
 }
 
@@ -2204,7 +2214,9 @@ function decorateMove(
     superEffectiveTargetCount: isFixedDamageMove(typed.id)
       ? 0
       : countSuperEffectiveTargets(effectiveType),
-    utilityWeight: UTILITY_MOVE_WEIGHTS[typed.id] || 0,
+    // How often learners of the move run it across the ladder; speaks only
+    // where this mon's own usage is silent (move-prior.js).
+    utilityWeight: movePriorOf(typed.id),
     usage: moveUsage.get(typed.id) || 0,
   };
 }
@@ -2349,35 +2361,3 @@ function formatBestSourceTitle(move) {
   if (!source) return '';
   return source.sourceTitle || source.detail || source.label || '';
 }
-
-const UTILITY_MOVE_WEIGHTS = {
-  recover: 100,
-  roost: 100,
-  moonlight: 95,
-  morningsun: 95,
-  synthesis: 95,
-  softboiled: 100,
-  slackoff: 100,
-  swordsdance: 90,
-  nastyplot: 90,
-  dragondance: 95,
-  quiverdance: 100,
-  calmmind: 85,
-  bulkup: 85,
-  coil: 85,
-  curse: 75,
-  honeclaws: 70,
-  workup: 65,
-  willowisp: 85,
-  thunderwave: 85,
-  toxic: 80,
-  sleeppowder: 85,
-  spore: 100,
-  stunspore: 70,
-  glare: 85,
-  leechseed: 80,
-  substitute: 75,
-  protect: 55,
-  reflect: 65,
-  lightscreen: 65,
-};
