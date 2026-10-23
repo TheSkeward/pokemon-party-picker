@@ -226,7 +226,11 @@ set, and paying for it is the player's call. A flinch chance is priced as the ac
 times the user's chance to move first times its best hit, for slot filling
 and card order only: a fast Meowth's Bite lists above a Scratch that does two
 more damage. The score itself sees damage alone until secondary effects are
-priced by chance.
+priced by chance. Payback, Avalanche and Revenge carry their doubling in the
+damage estimate itself, one plus the chance the user acts after the target,
+read against the dex's uninvested speeds at the cap (certain for the two
+that go last by priority), so a slow Forretress's Payback is nearly a
+100-power move while a Ninjask's stays near 50.
 
 A utility move with no record on the mon itself is admitted, and ties among
 such moves are broken, by the measured prior: for each move, the share of a

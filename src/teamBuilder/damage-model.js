@@ -490,6 +490,73 @@ export function weightRatioPower(ratio) {
   return 40;
 }
 
+/** Moves whose power doubles once the target has acted this turn. */
+const LAST_MOVER_MOVE_IDS = new Set(['payback', 'avalanche', 'revenge']);
+
+// Uninvested speed of every species at a level, sorted, memoized per dex
+// bundle and level: the field a user's exact speed is ranked against.
+const SPEED_TABLES = new WeakMap();
+function uninvestedSpeedsAt(lvl) {
+  const bundle = dex();
+  let byLevel = SPEED_TABLES.get(bundle);
+  if (!byLevel) {
+    byLevel = new Map();
+    SPEED_TABLES.set(bundle, byLevel);
+  }
+  if (!byLevel.has(lvl)) {
+    byLevel.set(
+      lvl,
+      Object.values(bundle.baseStats)
+        .map((row) => statValue(row[4], 0, lvl, 1))
+        .sort((a, b) => a - b),
+    );
+  }
+  return byLevel.get(lvl);
+}
+
+/**
+ * The chance the user acts after the target: the share of the dex whose
+ * uninvested speed at this level meets or beats the user's exact speed, or
+ * certainty for a move that goes last by its own negative priority
+ * (Avalanche, Revenge). Payback's doubling needs only that the target moved
+ * first; Avalanche's and Revenge's also need the hit to have landed, which
+ * is not discounted, as flinch value does not discount a switch.
+ * @param {string} moveId
+ * @param {number} lvl
+ * @param {?string} attackerId
+ * @param {?number} attackerSpe
+ * @return {number} 0..1
+ */
+function lastMoverChance(moveId, lvl, attackerId, attackerSpe) {
+  if ((dex().moveMeta?.[moveId]?.priority || 0) < 0) return 1;
+  const id = attackerId ? toId(attackerId) : null;
+  const baseSpe = (id && dex().baseStats[id]?.[4]) || referenceBases().speed;
+  const userSpe = Math.max(1, attackerSpe ?? statValue(baseSpe, 0, lvl, 1));
+  const speeds = uninvestedSpeedsAt(lvl);
+  if (!speeds.length) return 0.5;
+  const notSlower = speeds.filter((speed) => speed >= userSpe).length;
+  return notSlower / speeds.length;
+}
+
+/**
+ * Power multiplier for a move that doubles once the target has acted
+ * (Payback, Avalanche, Revenge): one plus the chance this user moves
+ * second, so a 38-Speed Forretress's Payback prices near 100 power and a
+ * Ninjask's near 50. 1 for every other move.
+ * @param {string} moveId
+ * @param {number} level
+ * @param {?string} attackerId
+ * @param {?number} attackerSpe The user's exact speed when known.
+ * @return {number}
+ */
+export function lastMoverPowerMultiplier(
+  moveId, level, attackerId = null, attackerSpe = null) {
+  if (!LAST_MOVER_MOVE_IDS.has(moveId)) return 1;
+  return (
+    1 + lastMoverChance(moveId, normalizeLevel(level), attackerId, attackerSpe)
+  );
+}
+
 /**
  * Effective base power of a variable-power move at the attacker's level, vs
  * the reference defender. Returns null for moves outside the family.
@@ -930,7 +997,7 @@ export function explainMoveDamage({
     ? null
     : variableMovePower(
       moveId, lvl, attackerId, attackerStats?.spe ?? null, ability);
-  const resolvedPower = basePower || variablePower || 0;
+  let resolvedPower = basePower || variablePower || 0;
   steps.push(
     variablePower != null
       ? `${label} · ${category} · ${resolvedPower} effective power against the reference defender`
@@ -940,6 +1007,19 @@ export function explainMoveDamage({
   if (!resolvedPower) {
     steps.push('No base power: no damage.');
     return { damage: 0, steps };
+  }
+
+  // Payback, Avalanche and Revenge double once the target has acted: priced
+  // by the chance this user moves second against the dex at this level.
+  const lastMover = lastMoverPowerMultiplier(
+    moveId, lvl, attackerId, attackerStats?.spe ?? null);
+  if (lastMover > 1) {
+    resolvedPower *= lastMover;
+    steps.push(
+      `× ${factorText(lastMover)} ${label} doubles after the target acts: ` +
+      `a ${Math.round((lastMover - 1) * 100)}% chance this user moves ` +
+      `second at level ${lvl}`,
+    );
   }
 
   // Technician reads the power a variable-power move resolves to; the
