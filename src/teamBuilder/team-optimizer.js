@@ -166,7 +166,8 @@ const MAX_RESULT_CACHE = 400;
 // grind is worth it is the player's call, made with the receipts in view.
 // Evolution requirements still render as receipts and access gates still block,
 // but friendship/item/ trade/time K no longer moves scores.
-// DELAYED_EVO_FRICTION kept (an in-run strength cost, not out-of-game grind).
+// Delayed-evolution friction kept, per level held (a short hold is a short
+// grind; a long one is gyms fought with the weaker body).
 // v27: scoring V0 retired (Rejuvenation prep; V1 was by then the thoroughly
 // exercised model) — the usage-convergence blend is the only model; the UI
 // toggle, the scoringModel option, and the per-model cache signature suffix are
@@ -275,7 +276,7 @@ const MAX_RESULT_CACHE = 400;
 // v75: a stronger same-type attack earns a fill slot; a type the set
 // lacks is a click only under Protean or Libero.
 // v76: the coverage set opens with the strongest attack of any type.
-const RESULT_CACHE_VERSION = '80';
+const RESULT_CACHE_VERSION = '81';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.
@@ -1339,7 +1340,7 @@ function formatLegalityNote(profile) {
 //   coverage  — maximizes distinct real attacking coverage
 //   utility   — leads with role moves (recovery/hazards/speed control)
 //   delayed   — the default set allowed to use delayed-evolution moves, paying
-//               DELAYED_EVO_FRICTION and labelled
+//               DELAYED_EVO_FRICTION_PER_LEVEL per level held, and labelled
 // plus, when the caught mon's ability is UNKNOWN, a secondary-ability probe
 // used only to measure ability sensitivity (the optimizer must never "choose"
 // an ability the player doesn't control; a user annotation pins it instead).
@@ -1661,15 +1662,38 @@ async function resolveCandidateBuilds({
         (move) => delayedIds.has(move.id),
       );
       if (usedDelayed.length) {
-        delayedProfile.frictionCost += tunable('DELAYED_EVO_FRICTION');
-        delayedProfile.legalityProof.buildFriction = tunable('DELAYED_EVO_FRICTION');
+        // The hold lasts until the latest delayed move is learned; its cost
+        // is per level held (scoring-constants.js).
+        const delayedSourceOf = (move) =>
+          (move.availableSources || []).find((s) => s.delayedEvolution) ||
+          move.availableSources?.[0] || {};
+        const heldLevels = Math.max(
+          1,
+          ...usedDelayed.map((move) => delayedSourceOf(move).heldLevels || 1),
+        );
+        // The k-th level held costs k units: the unevolved body falls further
+        // behind its evolved form for every level the hold lasts, so a long
+        // hold costs far more than a short one.
+        const friction =
+          tunable('DELAYED_EVO_FRICTION_PER_LEVEL') *
+          heldLevels * (heldLevels + 1) / 2;
+        delayedProfile.frictionCost += friction;
+        delayedProfile.legalityProof.buildFriction = friction;
+        delayedProfile.legalityProof.heldLevels = heldLevels;
         delayedProfile.legalityProof.delayedMoves = usedDelayed.map((move) => ({
           name: move.name,
-          source: move.availableSources?.[0]?.label || 'delayed evolution',
+          source: delayedSourceOf(move).label || 'delayed evolution',
+          heldLevels: delayedSourceOf(move).heldLevels || 1,
         }));
+        const longest = usedDelayed
+          .map(delayedSourceOf)
+          .sort((a, b) => (b.heldLevels || 0) - (a.heldLevels || 0))[0];
+        const hold = longest?.learnerName && longest?.level
+          ? `; ${longest.learnerName} to ${longest.level}`
+          : '';
         variants.push({
           key: 'delayed',
-          label: `Delayed-evolution set (${usedDelayed.map((m) => m.name).join(', ')})`,
+          label: `Delayed-evolution set (${usedDelayed.map((m) => m.name).join(', ')}${hold})`,
           profile: delayedProfile,
         });
       }

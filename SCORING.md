@@ -406,8 +406,14 @@ form cannot carry a body that cannot act at the current cap.
 Evolution requirements are access gates and displayed information. Acquisition
 grind defaults to zero score cost: the app recommends the strongest satisfiable
 team and lets the player decide whether the grind is worthwhile. Holding a
-level evolution past its level to learn a move remains an in-run strength
-cost. An elective evolution (a stone, a trade, a held item, a place, a
+level evolution past its level to learn a pre-evolution's move is priced by
+the levels held, each dearer than the last, not as a flat sum: the unevolved
+body falls further behind its evolved form for every level the hold lasts.
+Three levels of Pineco for Explosion are a short grind in the grass and go
+through on a modest gain; seventeen levels of Mareep for Discharge are a
+long stretch fought with the weaker body and need a large one. The card
+labels the hold either way. An elective
+evolution (a stone, a trade, a held item, a place, a
 friendship bar) fires when the player chooses, so its pre-evolution's moves
 under the cap are ordinary moves: using the Moon Stone after Munna learns
 Moonlight is play, not a delay.
@@ -512,7 +518,8 @@ a genuine core near 63% of the bound and incidental same-tier pair mass near
 6. Near-future value is explanatory and must not select the current team.
 7. Coverage is damage-aware and saturating.
 8. Acquisition friction is informational by default; holding a level
-   evolution past its level remains priced.
+   evolution past its level is priced by the levels held, each dearer than
+   the last.
 
 ## Where things live
 

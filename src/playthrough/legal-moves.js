@@ -354,18 +354,24 @@ export function getAvailableMoves(legalMoveData, progression = {}) {
     } else if (delayedEntries.length > 0) {
       // Only reachable by delaying a SPECIFIC evolution past its natural level
       // (a cap-60 Greninja running Hydro Pump means keeping Frogadier to 56).
-      // Legal, but flagged with the form being delayed: the default build
-      // avoids it, and a build that uses it pays DELAYED_EVO_FRICTION.
+      // Legal, but flagged with the form being delayed and how many levels
+      // the hold lasts: the default build avoids it, and a build that uses
+      // it pays DELAYED_EVO_FRICTION_PER_LEVEL for each level held.
       const best = delayedEntries[0];
       const learner = best.from ? ancestorName(best.from) : 'pre-evolution';
+      const heldLevels = Math.max(1, best.level - departureOf(best.from));
       sources.push({
         kind: 'level-up',
         label: `Level ${best.level} (${learner})`,
         level: best.level,
         learnerId: best.from || null,
         learnerName: learner,
-        sourceTitle: `${learner} learns ${move.name} at level ${best.level} before evolving.`,
+        sourceTitle:
+          `${learner} learns ${move.name} at level ${best.level}, ` +
+          `${heldLevels} level${heldLevels === 1 ? '' : 's'} past its ` +
+          'evolution.',
         delayedEvolution: true,
+        heldLevels,
       });
     } else if (isEvolutionMove) {
       sources.push({

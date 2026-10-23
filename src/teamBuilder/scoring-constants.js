@@ -105,9 +105,14 @@ export const SCORING_DEFAULTS = Object.freeze({
   ITEM_FRICTION: 0, // held-item / use-item evolution (farmable item)
   TRADE_FRICTION: 0, // Reborn trades via Link Stone — item-like
   TIME_FRICTION: 0, // day/night or minor special condition
-  // Build friction is NOT a tiebreaker — delaying evolution to learn a move
-  // is a real in-run cost the access model doesn't express.
-  DELAYED_EVO_FRICTION: 200,
+  // Holding a level evolution to learn a pre-evolution's move costs the
+  // levels held, each dearer than the last (the k-th level held costs k of
+  // these), not a flat sum: three levels of Pineco for Explosion are a
+  // short grind in the grass and cost 12, seventeen of Mareep for Discharge
+  // are a long stretch fought with the weaker body and cost 306. A short
+  // hold goes through on a modest gain; a long one needs a large gain. The
+  // card labels the hold either way.
+  DELAYED_EVO_FRICTION_PER_LEVEL: 2,
   FRICTION_SCALE: 1, // sweep multiplier over all K components
 
   // --- Opponent-type bias ----------------------------------------------------
