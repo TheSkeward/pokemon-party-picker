@@ -2083,16 +2083,19 @@ function recommendCurrentMoves(
   }
 
   // 4. Fill by damage, then bonus utility, then any attack. An attack earns
-  // a slot only where it raises the set's best damage into at least one
-  // defensive typing the game's dex contains, whatever its type: a 75-power
-  // Thunder Punch without STAB lands under a 102-power Return with it even
-  // into Water, so it covers nothing, and the slot is better spent on
-  // utility or a priority attack. The pairs are what a second attacking
-  // type is usually for: Skuntank's Flamethrower, off its uninvested
-  // special side, rounds under Night Slash into pure Steel but doubles it
-  // into Steel/Fairy and quadruples it into Bug/Steel. The team coverage
-  // vector still indexes single types, so a move seated for a pair alone
-  // earns the set its slot and no team credit.
+  // a slot in one of two ways. As a straight upgrade: it out-hits a carried
+  // attack of its own type everywhere (Night Slash over Bite, Sludge over
+  // Clear Smog); STAB has no standing of its own, the estimate carries it.
+  // Or as a coverage click: it is the set's best click by a quarter against
+  // one Pokémon in fifty, every typing the dex contains counted by how
+  // common it is. Skuntank's Slash is that into Fighting, Dark and Fairy
+  // types (15% of the dex) and its Flamethrower into Bug/Steel and
+  // Steel/Fairy (5%); Klink's Facade edges a resisted Gear Grind on a
+  // quarter of the dex but by a quarter on almost none, and its Charge Beam
+  // is the better click only into Water/Flying, under one in fifty, so the
+  // slots go to the utility Klink's record runs. The team coverage vector
+  // still indexes single types, so a move seated for a pair alone earns the
+  // set its slot and no team credit.
   // Utility worth a slot on its own: real sets run it, or it performs a
   // support job the scoring credits. Priority alone is not such a job
   // (Protect), and Substitute carries no role at all.
@@ -2101,13 +2104,32 @@ function recommendCurrentMoves(
     (move.roles || []).some((role) => role !== 'priority');
   const raisesCoverage = (move) => {
     const carried = selected.filter((entry) => usableInSet(entry));
+    // A straight upgrade: more damage than every carried attack of its own
+    // type, which, sharing their multipliers, is more everywhere. Fixed
+    // damage shares no multipliers.
+    const ownType = carried.filter(
+      (entry) => entry.type === move.type && !isFixedDamageMove(entry.id),
+    );
+    if (
+      ownType.length && !isFixedDamageMove(move.id) &&
+      ownType.every((entry) => move.estimatedDamage > entry.estimatedDamage)
+    ) {
+      return true;
+    }
+    // A coverage click: the best click by the margin against enough of the
+    // dex. An immunity gap counts wherever the move lands anything.
     const into = (entry, typing) => coverageDamageIntoType(
       entry.id, entry.type, entry.estimatedDamage, typing, member.ability);
-    return defensiveTypings().some((typing) => {
+    const shares = dex().typeCombinationShares || {};
+    let share = 0;
+    for (const typing of defensiveTypings()) {
       const best = Math.max(
         0, ...carried.map((entry) => into(entry, typing)));
-      return into(move, typing) > best + 1e-9;
-    });
+      if (into(move, typing) > best * COVERAGE_CLICK_MARGIN + 1e-9) {
+        share += shares[typing.join('/')] || 0;
+      }
+    }
+    return share >= COVERAGE_CLICK_SHARE;
   };
   // Protean and Libero make an attack's type the user's defensive type for
   // the turn, so a type the set lacks is a click of its own under them.
@@ -2115,11 +2137,8 @@ function recommendCurrentMoves(
     String(member.ability || '').toLowerCase().replace(/[^a-z]/g, ''),
   );
   while (selected.length < 4) {
-    // An attack earns a slot where it raises the set's best damage into at
-    // least one defensive typing, whatever its type: a stronger same-type
-    // move raises it everywhere (Sludge over Clear Smog), a different type
-    // where it is super effective or fills an immunity gap. STAB has no
-    // standing of its own; the damage estimate already carries it.
+    // An attack earns a slot as a straight upgrade of a carried move of its
+    // own type, or as a coverage click worth carrying (raisesCoverage).
     const upgrade = usableDamaging()
       .filter(
         (move) => !isFixedDamageMove(move.id) && !isSelected(move, selected),
@@ -2188,6 +2207,20 @@ function recommendCurrentMoves(
 
   return selected.slice(0, 4);
 }
+
+/**
+ * A coverage attack earns a fill slot when it is the set's best click by this
+ * factor against COVERAGE_CLICK_SHARE of the dex, by typing frequency. A
+ * quarter more damage is the smallest gap a player switches moves for; one
+ * Pokémon in fifty is the rarest opponent a slot is worth carrying for.
+ * Klink's Facade edges a resisted Gear Grind on a quarter of the dex but by
+ * a quarter on almost none, and its Charge Beam is the better click only
+ * into Water/Flying, under one in fifty: neither is a slot.
+ * @type {number}
+ */
+const COVERAGE_CLICK_MARGIN = 1.25;
+/** @type {number} */
+const COVERAGE_CLICK_SHARE = 0.02;
 
 function isSelected(move, selected) {
   return selected.some((entry) => entry.id === move.id);

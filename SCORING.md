@@ -195,19 +195,23 @@ Forretress without Rapid Spin and Spikes is not a Forretress build, and
 before this rule its four-attack coverage set outscored the real one on
 standalone value with no coverage gain for the team.
 
-An attack fills an open slot only where it raises the set's best damage
-into at least one defensive typing the game's dex contains, the single
-types and the pairs alike, whatever its type: a stronger same-type move
-raises it everywhere (Sludge over Clear Smog), a different type where it is
-super effective or where the set has an immunity gap. STAB has no standing
-of its own; the damage estimate already carries it. A 75-power move without
-STAB lands under a 102-power STAB move even into a type it hits super
-effectively, so Thunder Punch on Lopunny covers nothing. The pairs are what
-a second attacking type is usually for: Skuntank's Flamethrower, off its
-uninvested special side, rounds under Night Slash into pure Steel but
-doubles it into Steel/Fairy and quadruples it into Bug/Steel, so it earns a
-slot. The team coverage vector still indexes single types, so a move seated
-for a pair alone earns the set its slot and no team credit. When
+An attack fills an open slot in one of two ways. As a straight upgrade: it
+out-hits a carried attack of its own type into every typing (Night Slash
+over Bite, Sludge over Clear Smog), with no margin required; STAB has no
+standing of its own, the damage estimate already carries it. Or as a
+coverage click: it is the set's best click by at least a quarter more
+damage against at least one Pokémon in fifty, counting every typing the
+game's dex contains, single types and pairs alike, by how common it is. A
+quarter more is the smallest gap a player switches moves for; one in fifty
+is the rarest opponent a slot is worth carrying for. Skuntank's Slash is
+the clearly better click into Fighting, Dark and Fairy types, 15% of the
+dex, and its Flamethrower into Bug/Steel, Steel/Fairy and the like, 5%, so
+both seat. Klink's Facade edges a resisted Gear Grind on a quarter of the
+dex but by a quarter on almost none, and its Charge Beam is the better
+click only into Water/Flying, under one in fifty, so neither does, and the
+slots go to Substitute and Magnet Rise, which Klink's record runs. The
+team coverage vector still indexes single types, so a move seated for a
+pair alone earns the set its slot and no team credit. When
 no attack qualifies, the slot goes to utility the mon's real sets run, or
 that does a credited support job and clears the measured prior below, then
 to an attack that is still a click:

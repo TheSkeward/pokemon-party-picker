@@ -1,11 +1,12 @@
-// A fresh attacking type fills a slot only where it raises the set's best
-// damage into at least one defensive typing the game's dex contains, pairs
-// included. A 75-power move without STAB lands under a 102-power STAB move
-// into every single type it hits super effectively, so Thunder Punch on
-// Lopunny earns nothing from pure Water; it earns its slot from Water/Flying,
-// where the 4x hit doubles Return. An attack that out-hits the set nowhere,
-// pairs included, is dominated: the slot goes to a priority attack or a
-// utility move instead.
+// An attack fills a slot as a straight upgrade of a carried move of its own
+// type, or as a coverage click worth carrying: the set's best click by at
+// least a quarter against at least one Pokémon in fifty, every typing the
+// dex contains counted by how common it is. A 75-power Thunder Punch without
+// STAB lands under a 102-power Return into every single type it hits super
+// effectively, and the Water/Flying pair where it doubles Return is under
+// one in fifty, so it is not a slot. An attack that is nowhere the clearly
+// better click is dominated: the slot goes to a priority attack or a utility
+// move instead.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { hydrateLegalMove } from '../src/move-meta.js';
@@ -27,22 +28,19 @@ const lopunnyMoves = [
   'fakeout', 'return', 'jumpkick', 'thunderpunch', 'quickattack', 'encore',
 ].map(legal);
 
-test('Thunder Punch seats only where a pair doubles it over Return', () => {
-  // The standard set is full of canonical moves and Jump Kick before the
-  // fill reaches Thunder Punch. The coverage build rebuilds the attacks from
-  // damage, and there Thunder Punch earns a slot for Water/Flying.
-  const standard = idsOf(buildCandidateLegalityProfile({
-    member: lopunny, moves: lopunnyMoves, moveUsage: lopunnyUsage,
-    levelCap: 35, ability: 'Scrappy',
-  }));
-  assert.ok(!standard.includes('thunderpunch'), standard);
-  assert.ok(standard.includes('jumpkick'), standard);
-  const coverage = idsOf(buildCandidateLegalityProfile({
-    member: lopunny, moves: lopunnyMoves, moveUsage: lopunnyUsage,
-    levelCap: 35, ability: 'Scrappy', movePreference: 'coverage',
-  }));
-  assert.ok(coverage.includes('thunderpunch'), coverage);
-  assert.ok(coverage.includes('jumpkick'), coverage);
+test('Thunder Punch is not a click worth carrying on Lopunny', () => {
+  // Scrappy lets Return hit Ghosts, so Thunder Punch is the clearly better
+  // click only into Water/Flying and a few Flying pairs, under one in fifty.
+  // Neither the standard set nor the coverage build, which rebuilds the
+  // attacks from damage alone, gives it a slot.
+  for (const movePreference of ['default', 'coverage']) {
+    const ids = idsOf(buildCandidateLegalityProfile({
+      member: lopunny, moves: lopunnyMoves, moveUsage: lopunnyUsage,
+      levelCap: 35, ability: 'Scrappy', movePreference,
+    }));
+    assert.ok(!ids.includes('thunderpunch'), `${movePreference}: ${ids}`);
+    assert.ok(ids.includes('jumpkick'), `${movePreference}: ${ids}`);
+  }
 });
 
 test('the standard set keeps the canonical Quick Attack', () => {
@@ -156,12 +154,11 @@ const klinkUsage = new Map([
   ['geargrind', 99], ['magnetrise', 31], ['irondefense', 0.3],
 ]);
 
-test('Klink\'s weak off-type attacks are clicks where a pair says so', () => {
-  // Gear Grind out-hits Vise Grip and Thunder Shock into every single type,
-  // Water included. Vise Grip still out-hits it into the pairs that resist
-  // Steel twice (Lanturn, Rotom-Wash), and Thunder Shock into Water/Flying,
-  // where the 4x hit doubles a resisted Gear Grind. The stronger of the two
-  // is tried first and takes the slot ahead of Charge.
+test('Klink\'s weak off-type attacks are not clicks worth carrying', () => {
+  // Vise Grip out-hits Gear Grind only into the pairs that resist Steel
+  // twice (Lanturn, Rotom-Wash), Thunder Shock only into Water/Flying: each
+  // under one in fifty of the dex. Neither earns a slot, and the last one
+  // goes to Charge as the status filler.
   const moves = [
     'geargrind', 'visegrip', 'charge', 'thundershock', 'irondefense',
     'magnetrise',
@@ -172,14 +169,9 @@ test('Klink\'s weak off-type attacks are clicks where a pair says so', () => {
   }));
   assert.deepEqual(
     new Set(plain),
-    new Set(['geargrind', 'magnetrise', 'irondefense', 'visegrip']),
+    new Set(['geargrind', 'magnetrise', 'irondefense', 'charge']),
     plain,
   );
-  const withoutGrip = idsOf(buildCandidateLegalityProfile({
-    member: klink, moves: moves.filter((move) => move.id !== 'visegrip'),
-    moveUsage: klinkUsage, levelCap: 25, ability: 'Clear Body',
-  }));
-  assert.ok(withoutGrip.includes('thundershock'), withoutGrip);
 });
 
 test('an attack the set out-hits into every typing is a click only under Protean', () => {

@@ -64,11 +64,14 @@ test('Autotomize stands in for Shift Gear, by its shed weight', () => {
       ability: 'Clear Body',
     });
     const ids = idsOf(profile);
-    assert.ok(ids.includes('autotomize') && !ids.includes('rockpolish'), ids);
+    assert.ok(ids.includes('autotomize'), ids);
     assert.ok(!ids.includes('charge') && !ids.includes('irondefense'), ids);
     assert.deepEqual(
       standInOf(profile, 'autotomize'), { id: 'shiftgear', name: 'Shift Gear' },
     );
+    // Rock Polish may still seat later as ordinary utility, but it is not
+    // what answers for Shift Gear.
+    assert.ok(!standInOf(profile, 'rockpolish'));
     // The stand-in reads in Shift Gear's place: second, after Gear Grind.
     assert.equal(ids[1], 'autotomize', ids);
   });
@@ -84,8 +87,9 @@ test('with no weight effect to price, the prior decides the stand-in', () => {
       ability: 'Clear Body',
     });
     const ids = idsOf(profile);
-    assert.ok(ids.includes('rockpolish') && !ids.includes('autotomize'), ids);
+    assert.ok(ids.includes('rockpolish'), ids);
     assert.equal(standInOf(profile, 'rockpolish')?.id, 'shiftgear');
+    assert.ok(!standInOf(profile, 'autotomize'));
   });
 });
 

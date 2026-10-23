@@ -19,16 +19,20 @@ const LARGE_POOL = [
 const withLock = (pool, name) =>
   pool.map((entry) => (entry === name ? `${name}!` : entry));
 
+// Drowzee is the lock subject: at this cap it scores far below the six that
+// make the team on merit, so a lock is the only way it seats. (Luvdisc, the
+// earlier subject, now makes this team on fit once Arbok and Swoobat lost
+// their marginal coverage attacks.)
 test('a locked entry is seated and the rest of the team is re-optimized', async () => {
   const free = await runPool({ pool: SMALL_POOL });
-  assert.ok(!teamInputNames(free).includes('Luvdisc'), 'Luvdisc must lose on merit');
+  assert.ok(!teamInputNames(free).includes('Drowzee'), 'Drowzee must lose on merit');
 
-  const locked = await runPool({ pool: withLock(SMALL_POOL, 'Luvdisc') });
+  const locked = await runPool({ pool: withLock(SMALL_POOL, 'Drowzee') });
   const names = teamInputNames(locked);
-  assert.ok(names.includes('Luvdisc'));
+  assert.ok(names.includes('Drowzee'));
   assert.equal(names.length, 6);
   assert.deepEqual(locked.ignoredLocks, []);
-  const member = locked.team.find((choice) => choice.inputName === 'Luvdisc');
+  const member = locked.team.find((choice) => choice.inputName === 'Drowzee');
   assert.equal(member.locked, true);
   assert.match(member.note, /^locked in/);
   assert.ok(locked.team.filter((choice) => choice.locked).length === 1);
@@ -40,10 +44,10 @@ test('a locked entry is seated and the rest of the team is re-optimized', async 
 
 test('a locked run neither reads nor poisons the unlocked caches', async () => {
   const before = teamInputNames(await runPool({ pool: SMALL_POOL }));
-  await runPool({ pool: withLock(SMALL_POOL, 'Luvdisc') });
+  await runPool({ pool: withLock(SMALL_POOL, 'Drowzee') });
   const after = teamInputNames(await runPool({ pool: SMALL_POOL }));
   assert.deepEqual(after, before);
-  assert.ok(!after.includes('Luvdisc'));
+  assert.ok(!after.includes('Drowzee'));
 });
 
 test('more locks than slots picks the team among the locks alone', async () => {
@@ -60,8 +64,8 @@ test('more locks than slots picks the team among the locks alone', async () => {
 });
 
 test('the lock survives the parallel worker search', async () => {
-  const result = await runPool({ pool: withLock(LARGE_POOL, 'Luvdisc') });
+  const result = await runPool({ pool: withLock(LARGE_POOL, 'Drowzee') });
   assert.equal(result.searchExact, true);
-  assert.ok(teamInputNames(result).includes('Luvdisc'));
+  assert.ok(teamInputNames(result).includes('Drowzee'));
   assert.equal(teamInputNames(result).length, 6);
 });
