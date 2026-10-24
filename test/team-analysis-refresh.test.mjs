@@ -54,7 +54,7 @@ test('Cut removal refreshes realized moves even when the team and build keys sta
   const root = {
     innerHTML: '',
     isConnected: true,
-    ownerDocument: { querySelectorAll: () => [] },
+    querySelectorAll: () => [],
   };
   const options = {
     family: 'singles',

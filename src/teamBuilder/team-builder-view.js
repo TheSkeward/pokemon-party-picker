@@ -461,7 +461,6 @@ function renderResult({
           <p class="muted" data-progression-stale-warning ${progressionStale ? '' : 'hidden'}>Progression changed after this team was optimized. Re-optimize before trusting row scores or legal move notes.</p>
           ${result.ignoredLocks?.length ? `<p class="muted">Locked but not fieldable at this progression, so ignored: ${escapeHtml(result.ignoredLocks.join(', '))}.</p>` : ''}
         </div>
-        <button type="button" class="view-tab" data-copy-pokepaste title="Copies once the sets below have finished loading">Copy team as poképaste</button>
       </div>
       ${renderSwapAuditCallout(result)}
 

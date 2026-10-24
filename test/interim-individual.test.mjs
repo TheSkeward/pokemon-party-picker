@@ -70,7 +70,7 @@ test('the card says the final set is a re-bred one', async () => {
   const root = {
     innerHTML: '',
     isConnected: true,
-    ownerDocument: { querySelectorAll: () => [] },
+    querySelectorAll: () => [],
   };
   await renderTeamAnalysisPanel(root, {
     family: 'singles',

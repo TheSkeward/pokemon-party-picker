@@ -133,11 +133,8 @@ export function renderTeamAnalysisPanel(root, {
 }
 
 function wirePokepasteCopy(root, analysis) {
-  // Bind every copy button on the page, not just the one inside this panel —
-  // the modern layout puts a second one in the team-table header.
-  const scope = root.ownerDocument || document;
   wireCopyButtons(
-    scope.querySelectorAll('[data-copy-pokepaste]'),
+    root.querySelectorAll('[data-copy-pokepaste]'),
     formatTeamPokepaste(
       analysis.profiles.map((profile) => profile.recommendedSet),
     ),
@@ -147,7 +144,7 @@ function wirePokepasteCopy(root, analysis) {
     analysis.fieldableRealTeam || analysis.closestRealTeam?.team;
   if (displayedRealTeam) {
     wireCopyButtons(
-      scope.querySelectorAll('[data-copy-real-pokepaste]'),
+      root.querySelectorAll('[data-copy-real-pokepaste]'),
       formatTeamPokepaste(realTeamPokepasteSets(displayedRealTeam)),
       'Copy as poképaste',
     );
@@ -202,6 +199,7 @@ function renderAnalysis(analysis) {
           <h2>Sets &amp; coverage</h2>
           <p>${analysis.members.length} picks at the current ${getActiveGame().shortLabel} progression. Damage shown is naive unresisted output at your level cap.</p>
         </div>
+        <button type="button" class="view-tab" data-copy-pokepaste>Copy team as poképaste</button>
       </div>
 
       <div class="team-analysis-grid">

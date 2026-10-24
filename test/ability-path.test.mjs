@@ -156,7 +156,7 @@ test('optimizer, analysis, display, and export agree on current / eventual abili
   }
   const root = {
     innerHTML: '', isConnected: true,
-    ownerDocument: { querySelectorAll: () => [] },
+    querySelectorAll: () => [],
   };
   const options = {
     family: 'singles', selection: 'all', progression,
@@ -180,7 +180,7 @@ test('an evolved form caught as a pre-evolution names the ability to catch', asy
   const progression = progressionAt({ badge: 1, levelCap: 25 });
   const root = {
     innerHTML: '', isConnected: true,
-    ownerDocument: { querySelectorAll: () => [] },
+    querySelectorAll: () => [],
   };
   const render = async (pool) => {
     const result = await runPool({ pool, progression });
