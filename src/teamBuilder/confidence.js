@@ -23,7 +23,7 @@
  */
 
 import { scoreCandidate } from './candidate-scoring.js';
-import { choosePoolTeam } from './team-selection.js';
+import { choosePoolTeam, orderLineBuilds } from './team-selection.js';
 import { setScoringOverrides } from './scoring-constants.js';
 
 /**
@@ -318,16 +318,16 @@ function rescoreLine(line, context) {
       const builds = choice.buildAlternatives.map((build) =>
         rescoreChoice({ ...build, buildAlternatives: undefined }),
       );
-      // Representative = best build UNDER THIS SETTING; alternatives and the
-      // optimistic vector (settings-independent) ride along.
-      const best = builds.reduce((lead, build) =>
-        (build.teamScore ?? -Infinity) > (lead.teamScore ?? -Infinity)
-          ? build
-          : lead,
+      // Representative = the build the production rule picks UNDER THIS
+      // SETTING, hedge margin included; alternatives and the optimistic
+      // vector (settings-independent) ride along.
+      const ranked = orderLineBuilds(
+        [...builds].sort((a, b) => b.score - a.score),
       );
+      const best = ranked[0];
       return {
         ...best,
-        buildAlternatives: builds,
+        buildAlternatives: ranked,
         optimisticCoverageVector:
           choice.optimisticCoverageVector || best.optimisticCoverageVector,
       };
