@@ -113,7 +113,8 @@ export async function choosePoolTeam(
  * Post-selection build assignment (roadmap Phase 3): with the six lines fixed,
  * pick one build per member (at most one build per evolutionary line holds by
  * construction — builds are alternatives of the same member) maximizing the
- * realized team score, with each single-copy TM (a single-use-TM game's
+ * realized team score, less each fielded hedge build's margin over its
+ * member's Standard set, with each single-copy TM (a single-use-TM game's
  * `legalityProfile.singleCopyTms`) planned for at most one member. When no
  * assignment can honor the copies, the unconstrained best stands and the
  * members short a copy are told so. Always scores through the exact path
@@ -137,41 +138,96 @@ export function assignTeamBuilds(team, opponentTypeBias = {}) {
 
 /**
  * The best build per member by `scoreOf` over every combination of the
- * members' options. With `honorCopies`, a build needing a copy-limited
- * resource whose copies earlier members' chosen builds already plan is
- * skipped, and null comes back when no combination works. Fixed enumeration
- * order, strict improvement.
+ * members' options, each chosen hedge build first paying its margin over its
+ * member's Standard set (hedgeBuildMargin); the returned score is `scoreOf`
+ * alone. With `honorCopies`, a build needing a copy-limited resource whose
+ * copies earlier members' chosen builds already plan is skipped, and null
+ * comes back when no combination works. Fixed enumeration order, strict
+ * improvement.
  * @param {!Array<!Array<!Object>>} options One build list per member.
  * @param {function(!Array<!Object>): number} scoreOf
  * @param {boolean} honorCopies
  * @return {?{team: !Array<!Object>, score: number}}
  */
 export function chooseBuildAssignment(options, scoreOf, honorCopies) {
+  // The margin decides which assignment wins, not what it scores: a hedge
+  // is fielded only when it buys more than its margin in team score, team
+  // fit included.
+  const margins = options.map((builds) => {
+    const standard = builds.find((build) => build.buildKey === 'default');
+    return builds.map((build) => hedgeBuildMargin(build, standard));
+  });
   let best = null;
   const assignment = new Array(options.length);
   const holders = new Map(); // resource id -> members planning it
-  const walk = (index) => {
+  const walk = (index, charge) => {
     if (index === options.length) {
       const score = scoreOf(assignment);
-      if (!best || score > best.score) best = { score, team: [...assignment] };
+      const merit = score - charge;
+      if (!best || merit > best.merit) {
+        best = { score, merit, team: [...assignment] };
+      }
       return;
     }
-    for (const build of options[index]) {
+    options[index].forEach((build, choice) => {
       const needs = resourcesOf(build);
       if (
         honorCopies &&
         needs.some(({ id, copies }) => (holders.get(id) || 0) >= copies)
       ) {
-        continue;
+        return;
       }
       for (const { id } of needs) holders.set(id, (holders.get(id) || 0) + 1);
       assignment[index] = build;
-      walk(index + 1);
+      walk(index + 1, charge + margins[index][choice]);
       for (const { id } of needs) holders.set(id, holders.get(id) - 1);
-    }
+    });
   };
-  walk(0);
-  return best;
+  walk(0, 0);
+  return best && { score: best.score, team: best.team };
+}
+
+// The realization fallbacks exist so a copy-limited resource can be planned
+// for another member; they are dominated by construction and never compete
+// on merit.
+const isFallbackBuild = (build) =>
+  /^without(-items)?:/.test(String(build?.buildKey));
+
+/**
+ * How far a build must out-score its member's Standard set to be chosen over
+ * it (HEDGE_BUILD_MARGIN in scoring-constants.js): a share of the Standard
+ * set's score for a hedge build, nothing for the Standard set itself or for
+ * a fallback.
+ * @param {!Object} build A scored build row or build choice.
+ * @param {?Object|undefined} standard The same member's Standard set, if it
+ *     has one.
+ * @return {number}
+ */
+export function hedgeBuildMargin(build, standard) {
+  if (!standard || build === standard) return 0;
+  if (build.buildKey === 'default' || isFallbackBuild(build)) return 0;
+  return tunable('HEDGE_BUILD_MARGIN') * Math.max(0, standard.score || 0);
+}
+
+/**
+ * A candidate's builds in the order its line offers them: the representative
+ * first, then the rest in their given order. The Standard set represents the
+ * line unless a hedge build clears its margin, and then the highest-scoring
+ * such hedge does; a fallback never represents it. With no Standard set the
+ * given order stands.
+ * @param {!Array<!Object>} rows Scored builds, highest score first.
+ * @return {!Array<!Object>}
+ */
+export function orderLineBuilds(rows) {
+  const standard = rows.find((row) => row.buildKey === 'default');
+  if (!standard) return rows;
+  const best = rows.find(
+    (row) =>
+      row === standard ||
+      (!isFallbackBuild(row) &&
+        row.score >= standard.score + hedgeBuildMargin(row, standard)),
+  );
+  return [best, ...rows.filter((row) => row !== best)];
 }
 
 const singleCopyTmsOf = (build) => build.legalityProfile?.singleCopyTms || [];

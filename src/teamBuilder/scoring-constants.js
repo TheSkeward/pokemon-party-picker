@@ -81,6 +81,16 @@ export const SCORING_DEFAULTS = Object.freeze({
   DAMAGE_SOFT_RATE: 1.2, // soft saturation rate of damageQ
   NON_PASSIVE_FLOOR: 0.25, // peak damageQ that fully unlocks utility roles
   UTILITY_SATURATION: 1.5, // summed utility value that reads as utilityQ = 1
+  // Share of a candidate's Standard-set score that a hedge build (coverage,
+  // utility, delayed) must out-score it by to be fielded or to represent the
+  // line. The hedges guard against a canonical attack that damage says is
+  // dominated; the Standard set carries the usage evidence and is the
+  // incumbent, and an edge below this is within the model's build-to-build
+  // resolution, so it does not displace it. The value sits between two cases
+  // measured on the 2026-10-24 Reborn gamestate: Lopunny's Coverage set at
+  // 0.19% over its Standard set stays Standard, and Forretress's Delayed set
+  // at 0.63% over its Standard set stays Delayed.
+  HEDGE_BUILD_MARGIN: 0.004,
 
   // --- O: readiness gate -----------------------------------------------------
   ONLINE_NEAR: 0.65,

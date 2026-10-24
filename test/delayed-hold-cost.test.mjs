@@ -37,9 +37,13 @@ test('a delayed route says how many levels the evolution is held', async () => {
 });
 
 test('a three-level hold for Explosion headlines; seventeen for Discharge does not', async () => {
+  // The hold's cost alone decides here. At this progression Explosion's edge
+  // over Self-Destruct, about 0.2%, is inside the hedge margin, which
+  // hedge-build-margin.test.mjs covers.
   const result = await runPool({
     pool: ['Pineco', 'Mareep'],
     progression: progressionAt({ badge: 2, levelCap: 35 }),
+    overrides: { HEDGE_BUILD_MARGIN: 0 },
   });
   const forretress = bestChoice(result, 'Pineco');
   assert.equal(forretress.buildKey, 'delayed', forretress.buildLabel);

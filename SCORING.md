@@ -428,6 +428,12 @@ chooses the canonical form (see Usage trust), fringe usage included: a Rattata
 with FEAR play in AG outranks a Raticate seen nowhere, because the signal is
 evidence of what actually plays and a form no ladder has seen has none.
 
+Among a form's builds the standard set is the incumbent: a coverage, utility
+or delayed set displaces it, as the line's representative or on the team,
+only by out-scoring it by `HEDGE_BUILD_MARGIN` of its score. The standard set
+carries the usage evidence, and a smaller edge is within the model's
+build-to-build resolution.
+
 ### Borrowed priors for fangame-original items
 
 A fangame-original item (Reborn's Amplifield Rock; Rejuvenation's crests

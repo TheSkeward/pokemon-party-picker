@@ -2041,7 +2041,7 @@ function recommendCurrentMoves(
     // dropped Onix's Gyro Ball for Harden), then the shared fill below. It
     // is the hedge against a canonical attack the ladder runs but damage
     // says is dominated, and the team sees it only when it out-scores the
-    // standard set.
+    // standard set by a margin (HEDGE_BUILD_MARGIN, scoring-constants.js).
     addCanonical((move) => move.utility);
     addStandIns();
     add(

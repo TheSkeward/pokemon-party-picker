@@ -52,7 +52,7 @@ import {
   scoreCandidate,
 } from './candidate-scoring';
 import { resolveRepresentativeLightBundle } from './representative-bundle';
-import { choosePoolTeam } from './team-selection';
+import { choosePoolTeam, orderLineBuilds } from './team-selection';
 import { attachCoreLift } from './core-completion.js';
 import { attachTeammateLift } from './teammate-synergy.js';
 import { loadPersistedResults, persistResult } from './result-cache-store.js';
@@ -276,7 +276,7 @@ const MAX_RESULT_CACHE = 400;
 // v75: a stronger same-type attack earns a fill slot; a type the set
 // lacks is a click only under Protean or Libero.
 // v76: the coverage set opens with the strongest attack of any type.
-const RESULT_CACHE_VERSION = '82';
+const RESULT_CACHE_VERSION = '83';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.
@@ -1024,10 +1024,11 @@ async function resolvePoolLine({
 
       const kept = pruneDominatedBuilds(scoredBuilds);
       kept.sort(compareScoredCandidates);
-      const best = kept[0];
+      const ordered = orderLineBuilds(kept);
+      const best = ordered[0];
       // Choice-shaped builds for the post-selection realization pass, built
       // BEFORE tagging `best` so there is no self-nesting.
-      const buildChoices = kept.map((row) =>
+      const buildChoices = ordered.map((row) =>
         makeChoice(input, row, row.buildLabel || 'Build'),
       );
       best.buildChoices = buildChoices;
