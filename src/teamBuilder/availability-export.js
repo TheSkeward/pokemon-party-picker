@@ -3,6 +3,11 @@ import {
   getAvailableMoves,
   loadLegalMoveData,
 } from '../playthrough/legal-moves';
+import { applyBreedingContextToProgression } from '../playthrough/breeding.js';
+import {
+  applySketchContextToProgression,
+  buildMoveTransferContexts,
+} from '../playthrough/sketch.js';
 import { MAX_TRACKED_ITEM_COUNT } from '../playthrough/progression';
 import { dex } from '../games/dex.js';
 
@@ -10,17 +15,35 @@ import { dex } from '../games/dex.js';
  * Builds the plain-text "here are my available Pokémon and items" list from
  * the resolved pool lines and the current progression. Each Pokémon is
  * reported as its current playable form with the moves that are currently
- * legal/available.
- * @param {{lines: Array<Object>, progression: Object}} state
+ * legal/available, egg and Sketch moves included, as every other legality
+ * pass sees them.
+ * @param {{lines: Array<Object>, progression: Object,
+ *     pokemonIndex: ?Array<Object>, poolQuery: ?string}} state The
+ *     progression already carries the pool's met levels; poolQuery is the
+ *     pool joined with the donor box (withDonors), which together decide the
+ *     breeding and Sketch partners.
  * @return {Promise<string>}
  */
-export async function buildPoolAvailabilityText({ lines, progression }) {
+export async function buildPoolAvailabilityText({
+  lines,
+  progression,
+  pokemonIndex,
+  poolQuery,
+}) {
   const resolvedLines = (lines || []).filter(
     (line) => line && !line.unresolved && (line.best || line.bestNonMega),
   );
 
+  const transferContexts = await buildMoveTransferContexts({
+    pokemonIndex,
+    progression,
+    query: poolQuery,
+  });
+
   const entries = await Promise.all(
-    resolvedLines.map((line) => describeLine(line, progression)),
+    resolvedLines.map((line) =>
+      describeLine(line, progression, transferContexts),
+    ),
   );
 
   const seenIds = new Set();
@@ -52,7 +75,11 @@ export async function buildPoolAvailabilityText({ lines, progression }) {
   return sections.join('\n');
 }
 
-async function describeLine(line, progression) {
+async function describeLine(
+  line,
+  progression,
+  { breedingContext, sketchContext },
+) {
   const choice = line.best || line.bestNonMega;
   if (!choice) return null;
 
@@ -65,7 +92,16 @@ async function describeLine(line, progression) {
   try {
     const legalMoveData = await loadLegalMoveData(speciesId);
     if (legalMoveData) {
-      moves = getAvailableMoves(legalMoveData, progression)
+      const progressionWithMoveTransfers = applySketchContextToProgression(
+        applyBreedingContextToProgression(
+          progression,
+          legalMoveData.pokemonId,
+          breedingContext,
+        ),
+        legalMoveData.pokemonId,
+        sketchContext,
+      );
+      moves = getAvailableMoves(legalMoveData, progressionWithMoveTransfers)
         .map((move) => move.name)
         .sort((a, b) => a.localeCompare(b));
     }

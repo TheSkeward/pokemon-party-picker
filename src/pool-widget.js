@@ -1352,11 +1352,12 @@ export function mountPoolOptimizer(container, options = {}) {
     updatePoolStatusMessage('Generating availability list…');
 
     try {
+      const poolQuery = withDonors(state.query, state.donorQuery);
       const text = await buildPoolAvailabilityText({
         lines: state.result.lines,
-        progression: withMetLevels(
-          state.progression, state.query, pokemonIndex,
-        ),
+        pokemonIndex,
+        poolQuery,
+        progression: withMetLevels(state.progression, poolQuery, pokemonIndex),
       });
 
       state.availabilityText = text;
