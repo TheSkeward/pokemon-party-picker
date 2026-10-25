@@ -1,5 +1,5 @@
 {
-  "finishedAt": "2026-10-24T17:43:17.611Z",
+  "finishedAt": "2026-10-25T18:06:55.057Z",
   "results": [
     {
       "script": "scrape-pkmn-teams.mjs",
@@ -38,6 +38,27 @@
       ]
     },
     {
+      "script": "scrape-sample-teams.mjs",
+      "exitCode": 1,
+      "outputTail": [
+        "gen7ou https://www.smogon.com/forums/threads/usm-ou-sample-teams.3626219/: FAILED — 403 https://www.smogon.com/forums/threads/usm-ou-sample-teams.3626219/",
+        "gen7ou https://www.smogon.com/forums/threads/usm-ou-sample-teams-v2-up.3638845/: FAILED — 403 https://www.smogon.com/forums/threads/usm-ou-sample-teams-v2-up.3638845/",
+        "gen7ou https://www.smogon.com/forums/threads/sm-ou-sample-teams.3695427/: FAILED — Smogon requests paused after 403 https://www.smogon.com/forums/threads/usm-ou-sample-teams-v2-up.3638845/",
+        "gen7uu https://www.smogon.com/forums/threads/usum-uu-sample-teams.3621217/: FAILED — Smogon requests paused after 403 https://www.smogon.com/forums/threads/usm-ou-sample-teams-v2-up.3638845/",
+        "gen7ru https://www.smogon.com/forums/threads/usm-ru-sample-teams-thread.3622057/: FAILED — Smogon requests paused after 403 https://www.smogon.com/forums/threads/usm-ou-sample-teams-v2-up.3638845/",
+        "gen7nu https://www.smogon.com/forums/threads/usum-nu-sample-teams.3641525/: FAILED — Smogon requests paused after 403 https://www.smogon.com/forums/threads/usm-ou-sample-teams-v2-up.3638845/",
+        "gen7pu https://www.smogon.com/forums/threads/usum-pu-sample-teams.3611496/: FAILED — Smogon requests paused after 403 https://www.smogon.com/forums/threads/usm-ou-sample-teams-v2-up.3638845/",
+        "gen7lc https://www.smogon.com/forums/threads/usum-lc-sample-teams.3639319/: FAILED — Smogon requests paused after 403 https://www.smogon.com/forums/threads/usm-ou-sample-teams-v2-up.3638845/",
+        "gen7ubers https://www.smogon.com/forums/threads/usum-ubers-sample-teams.3639330/: FAILED — Smogon requests paused after 403 https://www.smogon.com/forums/threads/usm-ou-sample-teams-v2-up.3638845/",
+        "gen7doublesou https://www.smogon.com/forums/threads/usum-doubles-ou-sample-teams.3645990/: FAILED — Smogon requests paused after 403 https://www.smogon.com/forums/threads/usm-ou-sample-teams-v2-up.3638845/",
+        "gen4ou https://www.smogon.com/forums/threads/dpp-ou-sample-teams-v2.3767939/: FAILED — Smogon requests paused after 403 https://www.smogon.com/forums/threads/usm-ou-sample-teams-v2-up.3638845/",
+        "gen4ou https://www.smogon.com/forums/threads/dpp-ou-sample-teams.3687351/: FAILED — Smogon requests paused after 403 https://www.smogon.com/forums/threads/usm-ou-sample-teams-v2-up.3638845/",
+        "gen5ou https://www.smogon.com/forums/threads/bw-ou-sample-teams-mk-2.3762882/: FAILED — Smogon requests paused after 403 https://www.smogon.com/forums/threads/usm-ou-sample-teams-v2-up.3638845/",
+        "gen5ou https://www.smogon.com/forums/threads/bw-ou-samples-thread.3686880/: FAILED — Smogon requests paused after 403 https://www.smogon.com/forums/threads/usm-ou-sample-teams-v2-up.3638845/",
+        "every thread failed — bad URLs or no network access to smogon.com"
+      ]
+    },
+    {
       "script": "scrape-tournament-teams.mjs",
       "exitCode": 0,
       "outputTail": [
@@ -64,39 +85,49 @@
       ]
     },
     {
+      "script": "scrape-rmt-teams.mjs",
+      "exitCode": 0,
+      "outputTail": [
+        "rmt listing https://www.smogon.com/forums/forums/sm-rate-my-team.1052/: FAILED — 403 https://www.smogon.com/forums/forums/sm-rate-my-team.1052/",
+        "rmt listing https://www.smogon.com/forums/forums/past-gen-teams.319/?prefix_id=75: FAILED — 403 https://www.smogon.com/forums/forums/past-gen-teams.319/?prefix_id=75",
+        "rmt listing https://www.smogon.com/forums/forums/past-gen-teams.319/?prefix_id=185: FAILED — Smogon requests paused after 403 https://www.smogon.com/forums/forums/past-gen-teams.319/?prefix_id=75",
+        "rmt: +0 new teams this run"
+      ]
+    },
+    {
       "script": "scrape-replay-teams.mjs",
       "exitCode": 0,
       "outputTail": [
-        "gen4uu: +2 (archive 8296; tours 2, elite 0, fresh 0, rest 0)",
+        "gen4uu: +1 (archive 8297; tours 1, elite 0, fresh 0, rest 0)",
         "gen4nu: +0 (archive 2523; tours 0, elite 0, fresh 0, rest 0)",
         "gen4lc: +0 (archive 3979; tours 0, elite 0, fresh 0, rest 0)",
-        "gen4doublesou: +0 (archive 1267; tours 0, elite 0, fresh 0, rest 0)",
-        "gen4vgc2010: +0 (archive 792; tours 0, elite 0, fresh 0, rest 0)",
+        "gen4doublesou: +1 (archive 1268; tours 0, elite 0, fresh 1, rest 0)",
+        "gen4vgc2010: +3 (archive 795; tours 0, elite 0, fresh 3, rest 0)",
         "gen4vgc2009: +0 (archive 512; tours 0, elite 0, fresh 0, rest 0)",
         "  skip gen5ubers-2696165902: 404 https://replay.pokemonshowdown.com/gen5ubers-2696165902.json",
-        "gen5ubers: +600 (archive 9907; tours 2, elite 0, fresh 3, rest 595)",
-        "gen5ou: +600 (archive 9905; tours 600, elite 0, fresh 0, rest 0)",
-        "gen5uu: +600 (archive 9900; tours 0, elite 0, fresh 2, rest 598)",
-        "gen5ru: +600 (archive 9900; tours 0, elite 0, fresh 0, rest 600)",
-        "gen5nu: +600 (archive 9900; tours 1, elite 0, fresh 0, rest 599)",
-        "gen5pu: +0 (archive 2147; tours 0, elite 0, fresh 0, rest 0)",
-        "gen5lc: +600 (archive 9900; tours 0, elite 0, fresh 0, rest 600)",
-        "gen5doublesou: +0 (archive 3381; tours 0, elite 0, fresh 0, rest 0)",
-        "gen5smogondoubles: +600 (archive 9900; tours 0, elite 0, fresh 0, rest 600)",
+        "gen5ubers: +600 (archive 10507; tours 1, elite 0, fresh 0, rest 599)",
+        "gen5ou: +600 (archive 10505; tours 600, elite 0, fresh 0, rest 0)",
+        "gen5uu: +600 (archive 10500; tours 2, elite 0, fresh 8, rest 590)",
+        "gen5ru: +600 (archive 10500; tours 0, elite 0, fresh 0, rest 600)",
+        "gen5nu: +600 (archive 10500; tours 0, elite 0, fresh 0, rest 600)",
+        "gen5pu: +1 (archive 2148; tours 1, elite 0, fresh 0, rest 0)",
+        "gen5lc: +600 (archive 10500; tours 0, elite 0, fresh 0, rest 600)",
+        "gen5doublesou: +3 (archive 3384; tours 0, elite 0, fresh 3, rest 0)",
+        "gen5smogondoubles: +600 (archive 10500; tours 0, elite 0, fresh 0, rest 600)",
         "gen5gbudoubles: +0 (archive 1192; tours 0, elite 0, fresh 0, rest 0)",
-        "gen5vgc2013: +3 (archive 3678; tours 2, elite 0, fresh 1, rest 0)",
+        "gen5vgc2013: +0 (archive 3678; tours 0, elite 0, fresh 0, rest 0)",
         "gen5vgc2011: +0 (archive 304; tours 0, elite 0, fresh 0, rest 0)",
-        "gen9nationaldexubers: +600 (archive 9600; tours 10, elite 0, fresh 191, rest 399)",
-        "gen9nationaldex: +600 (archive 9600; tours 107, elite 0, fresh 493, rest 0)",
-        "gen9nationaldexuu: +600 (archive 9600; tours 0, elite 0, fresh 4, rest 596)",
-        "gen9ru: +600 (archive 9011; tours 50, elite 0, fresh 100, rest 450)",
-        "gen9nu: +600 (archive 9600; tours 24, elite 0, fresh 69, rest 507)",
-        "gen9pu: +600 (archive 9600; tours 49, elite 0, fresh 34, rest 517)",
-        "gen9lc: +600 (archive 9600; tours 530, elite 0, fresh 9, rest 61)",
-        "gen9nationaldexdoubles: +600 (archive 9600; tours 11, elite 0, fresh 180, rest 409)",
-        "gen9doublesubers: +600 (archive 9600; tours 0, elite 0, fresh 29, rest 571)",
-        "gen9doublesou: +600 (archive 9600; tours 32, elite 0, fresh 568, rest 0)",
-        "gen9doublesuu: +600 (archive 9600; tours 0, elite 0, fresh 12, rest 588)"
+        "gen9nationaldexubers: +600 (archive 10200; tours 34, elite 0, fresh 128, rest 438)",
+        "gen9nationaldex: +600 (archive 10200; tours 102, elite 0, fresh 498, rest 0)",
+        "gen9nationaldexuu: +600 (archive 10200; tours 5, elite 0, fresh 8, rest 587)",
+        "gen9ru: +600 (archive 9611; tours 101, elite 0, fresh 97, rest 402)",
+        "gen9nu: +600 (archive 10200; tours 72, elite 0, fresh 67, rest 461)",
+        "gen9pu: +600 (archive 10200; tours 38, elite 0, fresh 65, rest 497)",
+        "gen9lc: +600 (archive 10200; tours 600, elite 0, fresh 0, rest 0)",
+        "gen9nationaldexdoubles: +600 (archive 10200; tours 4, elite 0, fresh 282, rest 314)",
+        "gen9doublesubers: +600 (archive 10200; tours 0, elite 0, fresh 22, rest 578)",
+        "gen9doublesou: +600 (archive 10200; tours 40, elite 0, fresh 560, rest 0)",
+        "gen9doublesuu: +600 (archive 10200; tours 1, elite 0, fresh 24, rest 575)"
       ]
     }
   ]
