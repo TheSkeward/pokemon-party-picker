@@ -373,7 +373,10 @@ export function getAvailableMoves(legalMoveData, progression = {}) {
         delayedEvolution: true,
         heldLevels,
       });
-    } else if (isEvolutionMove) {
+    } else if (isEvolutionMove && ownArrival <= levelCap) {
+      // The form must exist under the cap. A fielded form always does, but
+      // breeding offers every form of a hatchable line as a donor, and a
+      // Walrein at cap 35 has not evolved yet to learn its Ice Fang.
       sources.push({
         kind: 'level-up',
         label: 'On evolution',

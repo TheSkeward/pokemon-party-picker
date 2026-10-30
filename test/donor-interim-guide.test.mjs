@@ -246,6 +246,30 @@ test('donor routes prefer Starly@37 over Staravia@43', async () => {
   assert.equal(at40.detail, 'Starly breeding chain (@37)');
 });
 
+// Walrein learns Ice Fang on evolving at 44. Below that cap the Spheal line
+// is still a donor family, but Walrein itself does not exist yet.
+test('an evolution-move donor waits for its form to reach the cap', async () => {
+  const { pokemonIndex } = await loadShared();
+  const iceFangSourceAt = async (levelCap) => {
+    const context = await buildBreedingContext({
+      pokemonIndex,
+      progression: {
+        ...progressionAt({ badge: 5, levelCap }),
+        daycareUnlocked: true,
+      },
+      query: 'Electrike\nSpheal',
+    });
+    return context.byPokemonId.electrike.sources.icefang;
+  };
+
+  assert.equal(await iceFangSourceAt(35), undefined);
+  assert.equal(await iceFangSourceAt(43), undefined);
+
+  const at44 = await iceFangSourceAt(44);
+  assert.equal(at44.detail, 'Walrein breeding chain (evo@44)');
+  assert.equal(at44.donorLevel, 44);
+});
+
 test('equal-hop donor families prefer the earlier learn level', async () => {
   const { pokemonIndex } = await loadShared();
   const context = await buildBreedingContext({
