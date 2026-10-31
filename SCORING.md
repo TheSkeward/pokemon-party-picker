@@ -195,6 +195,10 @@ Forretress without Rapid Spin and Spikes is not a Forretress build, and
 before this rule its four-attack coverage set outscored the real one on
 standalone value with no coverage gain for the team.
 
+Snore and Sleep Talk seat only in a set that carries Rest, or on a Comatose
+user: they act only while the user sleeps, so the ladder's Rest sets do not
+make them worth a slot in a set that cannot sleep.
+
 An attack fills an open slot in one of two ways. As a straight upgrade: it
 out-hits a carried attack of its own type into every typing (Night Slash
 over Bite, Sludge over Clear Smog), with no margin required; STAB has no

@@ -907,7 +907,7 @@ export function buildCandidateLegalityProfile({
     }) || stats;
   }
   const damagingMoves = moves.filter((move) =>
-    isUsableDamagingMove(move, moves, member.heldItem),
+    isUsableDamagingMove(move, moves, member.heldItem, member.ability),
   );
   const recommendedMoves = recommendCurrentMoves(
     member,
@@ -1428,14 +1428,15 @@ function isDamagingMove(move) {
   );
 }
 
-// Sleep-conditional attacks are dead moves unless THIS SET can create the
+// Sleep-conditional moves are dead unless THIS SET can create the
 // sleep they rely on — the enabler merely existing in the legal pool doesn't
 // count. Callers pass the relevant context (the recommender passes the set
 // being built):
-//   Snore       needs the USER asleep      → a self-sleep move (Rest).
+//   Snore and Sleep Talk need the USER asleep → a self-sleep move (Rest), or
+//               Comatose, under which the user always counts as asleep.
 //   Dream Eater needs the TARGET asleep    → a sleep-inducing move in the set;
 //               otherwise it lands for zero and must not read as coverage.
-const SLEEP_GATED_DAMAGING_MOVE_IDS = new Set(['snore']);
+const SELF_SLEEP_GATED_MOVE_IDS = new Set(['snore', 'sleeptalk']);
 const SELF_SLEEP_MOVE_IDS = new Set(['rest']);
 const OPPONENT_SLEEP_GATED_DAMAGING_MOVE_IDS = new Set(['dreameater']);
 // Reliable opponent-sleep moves (Yawn's delayed sleep counts — it still puts
@@ -1454,8 +1455,11 @@ function isBerryHeldItem(itemName) {
   return /berry$/.test(toId(itemName || ''));
 }
 
-function hasSelfSleepMove(moves) {
-  return moves.some((move) => SELF_SLEEP_MOVE_IDS.has(move.id));
+function canSleepSelf(moves, ability) {
+  return (
+    toId(ability) === 'comatose' ||
+    moves.some((move) => SELF_SLEEP_MOVE_IDS.has(move.id))
+  );
 }
 function hasOpponentSleepMove(moves) {
   return moves.some((move) => OPPONENT_SLEEP_MOVE_IDS.has(move.id));
@@ -1464,14 +1468,20 @@ function hasOpponentSleepMove(moves) {
 /**
  * Like isDamagingMove, but accounts for conditional attacks (Snore, Dream
  * Eater, Belch). A null heldItem (the item-blind prepass) fails the berry
- * gate — no berry known means Belch cannot be counted on.
+ * gate — no berry known means Belch cannot be counted on. The ability
+ * matters only as Comatose, which lets Snore work without Rest.
  * @return {boolean}
  */
-export function isUsableDamagingMove(move, moves, heldItem = null) {
+export function isUsableDamagingMove(
+  move,
+  moves,
+  heldItem = null,
+  ability = null,
+) {
   if (!isDamagingMove(move)) return false;
   if (
-    SLEEP_GATED_DAMAGING_MOVE_IDS.has(move.id) &&
-    !hasSelfSleepMove(moves)
+    SELF_SLEEP_GATED_MOVE_IDS.has(move.id) &&
+    !canSleepSelf(moves, ability)
   ) {
     return false;
   }
@@ -1960,16 +1970,18 @@ function recommendCurrentMoves(
   }
   const byId = new Map(decorated.map((move) => [move.id, move]));
   const selected = [];
-  // Set-conditional usability: the sleep context for Snore/Dream Eater is the
-  // set being built, not the legal pool. Evaluated live as the set grows:
-  // once Rest is selected, Snore becomes a real attack.
+  // Set-conditional usability: the sleep context for Snore, Sleep Talk and
+  // Dream Eater is the set being built, not the legal pool. Both lists are
+  // evaluated live as the set grows: once Rest is selected, Snore becomes a
+  // real attack and Sleep Talk a real move.
+  const selectable = (move) =>
+    isSelectableMove(move, selected, member.heldItem, member.ability);
   const usableInSet = (move) =>
-    isUsableDamagingMove(move, selected, member.heldItem);
+    isUsableDamagingMove(move, selected, member.heldItem, member.ability);
   const usableDamaging = () =>
     decorated.filter((move) => usableInSet(move));
-  const usableUtility = decorated.filter(
-    (move) => move.utility && isSelectableMove(move, selected, member.heldItem),
-  );
+  const usableUtility = () =>
+    decorated.filter((move) => move.utility && selectable(move));
 
   const coveredTypes = new Set();
   const isHiddenPower = (id) => String(id).startsWith('hiddenpower');
@@ -1999,11 +2011,7 @@ function recommendCurrentMoves(
   const addCanonical = (keep) => {
     for (const id of canonicalIds) {
       const move = byId.get(id);
-      if (
-        move && keep(move) && isSelectableMove(move, selected, member.heldItem)
-      ) {
-        add(move);
-      }
+      if (move && keep(move) && selectable(move)) add(move);
     }
   };
   // A canonical status move the cap still blocks (Shift Gear at level 48 on
@@ -2020,7 +2028,7 @@ function recommendCurrentMoves(
       if (learnableMoveIds && !learnableMoveIds.has(id)) continue;
       const blocked = hydrateLegalMove({ id, sources: [] });
       if (blocked.category !== 'Status') continue;
-      const standIn = usableUtility
+      const standIn = usableUtility()
         .filter(
           (move) =>
             !isSelected(move, selected) && canStandInFor(move, blocked),
@@ -2053,13 +2061,11 @@ function recommendCurrentMoves(
     // Utility build: the strongest role moves by usage, so the canonical
     // utility moves seat first (the measured prior ranks the unrecorded
     // ones), plus the guaranteed attack from the shared steps so it can't
-    // go fully passive.
-    const rankedUtility = usableUtility
-      .filter(
-        (move) => move.usage > 0 || move.utilityWeight >= UTILITY_PRIOR_FLOOR,
-      )
-      .sort(compareUtilityByUsage);
-    for (const move of rankedUtility.slice(0, 3)) add(move);
+    // go fully passive. Each seat re-ranks the live list, so a Sleep Talk
+    // that outranks Rest seats right after it.
+    for (let seat = 0; seat < 3; seat++) {
+      if (!add(bestUtility(usableUtility(), selected))) break;
+    }
   } else {
     // 1. Canonical moves, each kept if available now, and a stand-in for
     // each blocked canonical status move.
@@ -2079,7 +2085,7 @@ function recommendCurrentMoves(
 
   // 3. One utility move, if none is present yet (a damage+utility move counts).
   if (selected.length < 4 && !selected.some((move) => move.utility)) {
-    add(bestUtility(usableUtility, selected));
+    add(bestUtility(usableUtility(), selected));
   }
 
   // 4. Fill by damage, then bonus utility, then any attack. An attack earns
@@ -2149,7 +2155,7 @@ function recommendCurrentMoves(
     // Utility the mon's real sets run, or a notable move with a support
     // role the scoring credits (recovery, setup, status...), beats an attack
     // the set already out-hits everywhere.
-    if (add(bestUtility(usableUtility.filter(runsOrSupports), selected))) {
+    if (add(bestUtility(usableUtility().filter(runsOrSupports), selected))) {
       continue;
     }
     // Every attack left is out-hit by the set into every type (an immunity
@@ -2178,7 +2184,7 @@ function recommendCurrentMoves(
     // with a better move of its type: that attack is never clicked, the
     // status move is. Baby-Doll Eyes and Sand Attack over Tackle on a
     // Linoone that already carries Headbutt.
-    const statusFiller = usableUtility
+    const statusFiller = usableUtility()
       .filter(
         (move) => move.category === 'Status' && !isSelected(move, selected),
       )
@@ -2198,7 +2204,7 @@ function recommendCurrentMoves(
         (move) =>
           moveRank.has(move.id) &&
           !isSelected(move, selected) &&
-          isSelectableMove(move, selected, member.heldItem),
+          selectable(move),
       )
       .sort((a, b) => moveRank.get(a.id) - moveRank.get(b.id))[0];
     if (add(byCompetitiveRank)) continue;
@@ -2259,16 +2265,26 @@ function compareStandIns(a, b, member) {
   );
 }
 
-// A move is selectable if it's a usable damaging move, or any non-damaging
-// (status/utility) move — the sleep-gating only restricts attacks like Snore
-// that need the user asleep, judged against the SET being built. A mon's
-// canonical top-4 is otherwise deliberately NOT second-guessed: if the
-// meaningful tier's real sets run a move, the recommendation may too (a
-// canonical Rest earlier in usage order re-enables a canonical Snore).
-function isSelectableMove(move, sleepContext, heldItem = null) {
-  return isDamagingMove(move)
-    ? isUsableDamagingMove(move, sleepContext, heldItem)
-    : true;
+// A move is selectable if it's a usable damaging move or a non-damaging
+// (status/utility) move. Snore and Sleep Talk do nothing unless the user is
+// asleep, so both are judged against the SET being built and need its Rest,
+// or Comatose. A mon's canonical top-4 is otherwise deliberately NOT
+// second-guessed: if the meaningful tier's real sets run a move, the
+// recommendation may too (a canonical Rest earlier in usage order
+// re-enables a canonical Snore or Sleep Talk).
+function isSelectableMove(
+  move,
+  sleepContext,
+  heldItem = null,
+  ability = null,
+) {
+  if (isDamagingMove(move)) {
+    return isUsableDamagingMove(move, sleepContext, heldItem, ability);
+  }
+  return (
+    !SELF_SLEEP_GATED_MOVE_IDS.has(move.id) ||
+    canSleepSelf(sleepContext, ability)
+  );
 }
 
 // Highest-usage utility move not already chosen. Where this mon's record is
