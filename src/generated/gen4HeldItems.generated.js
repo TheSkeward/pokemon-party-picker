@@ -175,12 +175,12 @@ export const GEN4_HELD_ITEMS = [
     "name": "White Herb"
   },
   {
-    "id": "lightclay",
-    "name": "Light Clay"
-  },
-  {
     "id": "razorfang",
     "name": "Razor Fang"
+  },
+  {
+    "id": "lightclay",
+    "name": "Light Clay"
   },
   {
     "id": "ironball",
@@ -211,12 +211,12 @@ export const GEN4_HELD_ITEMS = [
     "name": "Charti Berry"
   },
   {
-    "id": "shucaberry",
-    "name": "Shuca Berry"
-  },
-  {
     "id": "leppaberry",
     "name": "Leppa Berry"
+  },
+  {
+    "id": "shucaberry",
+    "name": "Shuca Berry"
   },
   {
     "id": "cheriberry",
@@ -407,6 +407,10 @@ export const GEN4_HELD_ITEMS = [
     "name": "Chilan Berry"
   },
   {
+    "id": "mail",
+    "name": "Mail"
+  },
+  {
     "id": "rockincense",
     "name": "Rock Incense"
   },
@@ -415,16 +419,16 @@ export const GEN4_HELD_ITEMS = [
     "name": "Wave Incense"
   },
   {
-    "id": "mail",
-    "name": "Mail"
-  },
-  {
     "id": "silverpowder",
     "name": "Silver Powder"
   },
   {
     "id": "skyplate",
     "name": "Sky Plate"
+  },
+  {
+    "id": "oddincense",
+    "name": "Odd Incense"
   },
   {
     "id": "aspearberry",
@@ -443,10 +447,6 @@ export const GEN4_HELD_ITEMS = [
     "name": "Master Ball"
   },
   {
-    "id": "oddincense",
-    "name": "Odd Incense"
-  },
-  {
     "id": "stoneplate",
     "name": "Stone Plate"
   },
@@ -455,12 +455,12 @@ export const GEN4_HELD_ITEMS = [
     "name": "Full Incense"
   },
   {
-    "id": "smoothrock",
-    "name": "Smooth Rock"
-  },
-  {
     "id": "payapaberry",
     "name": "Payapa Berry"
+  },
+  {
+    "id": "smoothrock",
+    "name": "Smooth Rock"
   },
   {
     "id": "spookyplate",

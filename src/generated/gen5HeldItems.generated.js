@@ -115,12 +115,12 @@ export const GEN5_HELD_ITEMS = [
     "name": "Red Card"
   },
   {
-    "id": "scopelens",
-    "name": "Scope Lens"
-  },
-  {
     "id": "toxicorb",
     "name": "Toxic Orb"
+  },
+  {
+    "id": "scopelens",
+    "name": "Scope Lens"
   },
   {
     "id": "custapberry",
@@ -331,12 +331,12 @@ export const GEN5_HELD_ITEMS = [
     "name": "Dragon Fang"
   },
   {
-    "id": "cobaberry",
-    "name": "Coba Berry"
-  },
-  {
     "id": "fistplate",
     "name": "Fist Plate"
+  },
+  {
+    "id": "cobaberry",
+    "name": "Coba Berry"
   },
   {
     "id": "electricgem",
@@ -451,12 +451,12 @@ export const GEN5_HELD_ITEMS = [
     "name": "Passho Berry"
   },
   {
-    "id": "skyplate",
-    "name": "Sky Plate"
-  },
-  {
     "id": "bindingband",
     "name": "Binding Band"
+  },
+  {
+    "id": "skyplate",
+    "name": "Sky Plate"
   },
   {
     "id": "dreadplate",
@@ -559,16 +559,16 @@ export const GEN5_HELD_ITEMS = [
     "name": "Ring Target"
   },
   {
+    "id": "lightball",
+    "name": "Light Ball"
+  },
+  {
     "id": "fullincense",
     "name": "Full Incense"
   },
   {
     "id": "kasibberry",
     "name": "Kasib Berry"
-  },
-  {
-    "id": "lightball",
-    "name": "Light Ball"
   },
   {
     "id": "oddincense",

@@ -215,6 +215,10 @@ export const GEN9_HELD_ITEMS = [
     "name": "Damp Rock"
   },
   {
+    "id": "grassyseed",
+    "name": "Grassy Seed"
+  },
+  {
     "id": "brightpowder",
     "name": "Bright Powder"
   },
@@ -223,16 +227,12 @@ export const GEN9_HELD_ITEMS = [
     "name": "Zoom Lens"
   },
   {
-    "id": "grassyseed",
-    "name": "Grassy Seed"
+    "id": "heatrock",
+    "name": "Heat Rock"
   },
   {
     "id": "roomservice",
     "name": "Room Service"
-  },
-  {
-    "id": "heatrock",
-    "name": "Heat Rock"
   },
   {
     "id": "adrenalineorb",
@@ -247,24 +247,24 @@ export const GEN9_HELD_ITEMS = [
     "name": "Psychic Seed"
   },
   {
-    "id": "throatspray",
-    "name": "Throat Spray"
-  },
-  {
     "id": "normalgem",
     "name": "Normal Gem"
+  },
+  {
+    "id": "throatspray",
+    "name": "Throat Spray"
   },
   {
     "id": "electricseed",
     "name": "Electric Seed"
   },
   {
-    "id": "blackbelt",
-    "name": "Black Belt"
-  },
-  {
     "id": "silkscarf",
     "name": "Silk Scarf"
+  },
+  {
+    "id": "blackbelt",
+    "name": "Black Belt"
   },
   {
     "id": "keeberry",
@@ -303,12 +303,12 @@ export const GEN9_HELD_ITEMS = [
     "name": "Lagging Tail"
   },
   {
-    "id": "groundiumz",
-    "name": "Groundium Z"
-  },
-  {
     "id": "bigroot",
     "name": "Big Root"
+  },
+  {
+    "id": "groundiumz",
+    "name": "Groundium Z"
   },
   {
     "id": "darkiniumz",
@@ -339,24 +339,24 @@ export const GEN9_HELD_ITEMS = [
     "name": "Psychium Z"
   },
   {
-    "id": "firiumz",
-    "name": "Firium Z"
+    "id": "enigmaberry",
+    "name": "Enigma Berry"
   },
   {
     "id": "cellbattery",
     "name": "Cell Battery"
   },
   {
-    "id": "razorfang",
-    "name": "Razor Fang"
+    "id": "firiumz",
+    "name": "Firium Z"
   },
   {
     "id": "terrainextender",
     "name": "Terrain Extender"
   },
   {
-    "id": "enigmaberry",
-    "name": "Enigma Berry"
+    "id": "razorfang",
+    "name": "Razor Fang"
   },
   {
     "id": "grassiumz",
@@ -375,32 +375,28 @@ export const GEN9_HELD_ITEMS = [
     "name": "Utility Umbrella"
   },
   {
-    "id": "charcoal",
-    "name": "Charcoal"
-  },
-  {
     "id": "mistyseed",
     "name": "Misty Seed"
+  },
+  {
+    "id": "charcoal",
+    "name": "Charcoal"
   },
   {
     "id": "ringtarget",
     "name": "Ring Target"
   },
   {
-    "id": "mysticwater",
-    "name": "Mystic Water"
+    "id": "shucaberry",
+    "name": "Shuca Berry"
   },
   {
     "id": "gripclaw",
     "name": "Grip Claw"
   },
   {
-    "id": "shucaberry",
-    "name": "Shuca Berry"
-  },
-  {
-    "id": "electriumz",
-    "name": "Electrium Z"
+    "id": "mysticwater",
+    "name": "Mystic Water"
   },
   {
     "id": "leppaberry",
@@ -409,6 +405,10 @@ export const GEN9_HELD_ITEMS = [
   {
     "id": "nevermeltice",
     "name": "Never-Melt Ice"
+  },
+  {
+    "id": "electriumz",
+    "name": "Electrium Z"
   },
   {
     "id": "apicotberry",
@@ -423,12 +423,12 @@ export const GEN9_HELD_ITEMS = [
     "name": "Rockium Z"
   },
   {
-    "id": "miracleseed",
-    "name": "Miracle Seed"
-  },
-  {
     "id": "punchingglove",
     "name": "Punching Glove"
+  },
+  {
+    "id": "miracleseed",
+    "name": "Miracle Seed"
   },
   {
     "id": "lightball",
@@ -443,16 +443,16 @@ export const GEN9_HELD_ITEMS = [
     "name": "Soft Sand"
   },
   {
+    "id": "wateriumz",
+    "name": "Waterium Z"
+  },
+  {
     "id": "fairiumz",
     "name": "Fairium Z"
   },
   {
     "id": "hardstone",
     "name": "Hard Stone"
-  },
-  {
-    "id": "wateriumz",
-    "name": "Waterium Z"
   },
   {
     "id": "fistplate",
@@ -467,16 +467,16 @@ export const GEN9_HELD_ITEMS = [
     "name": "Smooth Rock"
   },
   {
+    "id": "fairyfeather",
+    "name": "Fairy Feather"
+  },
+  {
     "id": "bindingband",
     "name": "Binding Band"
   },
   {
     "id": "ghostiumz",
     "name": "Ghostium Z"
-  },
-  {
-    "id": "fairyfeather",
-    "name": "Fairy Feather"
   },
   {
     "id": "earthplate",
@@ -507,20 +507,20 @@ export const GEN9_HELD_ITEMS = [
     "name": "Flyinium Z"
   },
   {
-    "id": "poisonbarb",
-    "name": "Poison Barb"
-  },
-  {
     "id": "twistedspoon",
     "name": "Twisted Spoon"
   },
   {
-    "id": "chartiberry",
-    "name": "Charti Berry"
+    "id": "poisonbarb",
+    "name": "Poison Barb"
   },
   {
     "id": "dragonfang",
     "name": "Dragon Fang"
+  },
+  {
+    "id": "chartiberry",
+    "name": "Charti Berry"
   },
   {
     "id": "shedshell",
@@ -551,68 +551,72 @@ export const GEN9_HELD_ITEMS = [
     "name": "Spell Tag"
   },
   {
-    "id": "meadowplate",
-    "name": "Meadow Plate"
-  },
-  {
     "id": "bignugget",
     "name": "Big Nugget"
+  },
+  {
+    "id": "meadowplate",
+    "name": "Meadow Plate"
   },
   {
     "id": "roseliberry",
     "name": "Roseli Berry"
   },
   {
-    "id": "rawstberry",
-    "name": "Rawst Berry"
-  },
-  {
-    "id": "dragoniumz",
-    "name": "Dragonium Z"
-  },
-  {
     "id": "poisoniumz",
     "name": "Poisonium Z"
-  },
-  {
-    "id": "powerband",
-    "name": "Power Band"
-  },
-  {
-    "id": "rindoberry",
-    "name": "Rindo Berry"
-  },
-  {
-    "id": "sharpbeak",
-    "name": "Sharp Beak"
   },
   {
     "id": "babiriberry",
     "name": "Babiri Berry"
   },
   {
-    "id": "kasibberry",
-    "name": "Kasib Berry"
+    "id": "rawstberry",
+    "name": "Rawst Berry"
   },
   {
-    "id": "cheriberry",
-    "name": "Cheri Berry"
+    "id": "rindoberry",
+    "name": "Rindo Berry"
   },
   {
-    "id": "luminousmoss",
-    "name": "Luminous Moss"
+    "id": "dragoniumz",
+    "name": "Dragonium Z"
+  },
+  {
+    "id": "powerband",
+    "name": "Power Band"
+  },
+  {
+    "id": "sharpbeak",
+    "name": "Sharp Beak"
   },
   {
     "id": "pechaberry",
     "name": "Pecha Berry"
   },
   {
-    "id": "zapplate",
-    "name": "Zap Plate"
+    "id": "kasibberry",
+    "name": "Kasib Berry"
+  },
+  {
+    "id": "luminousmoss",
+    "name": "Luminous Moss"
+  },
+  {
+    "id": "cheriberry",
+    "name": "Cheri Berry"
+  },
+  {
+    "id": "boosterenergy",
+    "name": "Booster Energy"
   },
   {
     "id": "jabocaberry",
     "name": "Jaboca Berry"
+  },
+  {
+    "id": "zapplate",
+    "name": "Zap Plate"
   },
   {
     "id": "splashplate",
@@ -623,12 +627,12 @@ export const GEN9_HELD_ITEMS = [
     "name": "Silver Powder"
   },
   {
-    "id": "boosterenergy",
-    "name": "Booster Energy"
-  },
-  {
     "id": "mindplate",
     "name": "Mind Plate"
+  },
+  {
+    "id": "rowapberry",
+    "name": "Rowap Berry"
   },
   {
     "id": "poweranklet",
@@ -639,20 +643,16 @@ export const GEN9_HELD_ITEMS = [
     "name": "Icicle Plate"
   },
   {
+    "id": "dracoplate",
+    "name": "Draco Plate"
+  },
+  {
     "id": "ironplate",
     "name": "Iron Plate"
   },
   {
-    "id": "rowapberry",
-    "name": "Rowap Berry"
-  },
-  {
     "id": "dreadplate",
     "name": "Dread Plate"
-  },
-  {
-    "id": "dracoplate",
-    "name": "Draco Plate"
   },
   {
     "id": "stoneplate",
@@ -683,24 +683,24 @@ export const GEN9_HELD_ITEMS = [
     "name": "Payapa Berry"
   },
   {
-    "id": "snowball",
-    "name": "Snowball"
-  },
-  {
     "id": "powerlens",
     "name": "Power Lens"
+  },
+  {
+    "id": "snowball",
+    "name": "Snowball"
   },
   {
     "id": "chilanberry",
     "name": "Chilan Berry"
   },
   {
-    "id": "rockincense",
-    "name": "Rock Incense"
-  },
-  {
     "id": "powerweight",
     "name": "Power Weight"
+  },
+  {
+    "id": "rockincense",
+    "name": "Rock Incense"
   },
   {
     "id": "kebiaberry",
@@ -715,12 +715,12 @@ export const GEN9_HELD_ITEMS = [
     "name": "Toxic Plate"
   },
   {
-    "id": "powerbelt",
-    "name": "Power Belt"
-  },
-  {
     "id": "laxincense",
     "name": "Lax Incense"
+  },
+  {
+    "id": "powerbelt",
+    "name": "Power Belt"
   },
   {
     "id": "tangaberry",
@@ -731,24 +731,28 @@ export const GEN9_HELD_ITEMS = [
     "name": "Float Stone"
   },
   {
-    "id": "micleberry",
-    "name": "Micle Berry"
-  },
-  {
     "id": "waveincense",
     "name": "Wave Incense"
+  },
+  {
+    "id": "micleberry",
+    "name": "Micle Berry"
   },
   {
     "id": "seaincense",
     "name": "Sea Incense"
   },
   {
-    "id": "waterstone",
-    "name": "Water Stone"
+    "id": "masterball",
+    "name": "Master Ball"
   },
   {
     "id": "oddincense",
     "name": "Odd Incense"
+  },
+  {
+    "id": "waterstone",
+    "name": "Water Stone"
   },
   {
     "id": "destinyknot",
@@ -757,10 +761,6 @@ export const GEN9_HELD_ITEMS = [
   {
     "id": "fullincense",
     "name": "Full Incense"
-  },
-  {
-    "id": "masterball",
-    "name": "Master Ball"
   },
   {
     "id": "aspearberry",
@@ -799,12 +799,12 @@ export const GEN9_HELD_ITEMS = [
     "name": "Heal Ball"
   },
   {
-    "id": "heavyball",
-    "name": "Heavy Ball"
-  },
-  {
     "id": "pokeball",
     "name": "Poke Ball"
+  },
+  {
+    "id": "heavyball",
+    "name": "Heavy Ball"
   },
   {
     "id": "watermemory",
@@ -831,16 +831,20 @@ export const GEN9_HELD_ITEMS = [
     "name": "Quick Ball"
   },
   {
-    "id": "thunderstone",
-    "name": "Thunder Stone"
-  },
-  {
     "id": "ultraball",
     "name": "Ultra Ball"
   },
   {
+    "id": "thunderstone",
+    "name": "Thunder Stone"
+  },
+  {
     "id": "blukberry",
     "name": "Bluk Berry"
+  },
+  {
+    "id": "greatball",
+    "name": "Great Ball"
   },
   {
     "id": "shinystone",
@@ -851,12 +855,12 @@ export const GEN9_HELD_ITEMS = [
     "name": "Eevium Z"
   },
   {
-    "id": "greatball",
-    "name": "Great Ball"
-  },
-  {
     "id": "poisonmemory",
     "name": "Poison Memory"
+  },
+  {
+    "id": "sablenite",
+    "name": "Sablenite"
   },
   {
     "id": "wellspringmask",
@@ -867,16 +871,16 @@ export const GEN9_HELD_ITEMS = [
     "name": "Gold Bottle Cap"
   },
   {
-    "id": "sablenite",
-    "name": "Sablenite"
-  },
-  {
     "id": "reapercloth",
     "name": "Reaper Cloth"
   },
   {
     "id": "sweetapple",
     "name": "Sweet Apple"
+  },
+  {
+    "id": "dawnstone",
+    "name": "Dawn Stone"
   },
   {
     "id": "duskstone",
@@ -895,12 +899,12 @@ export const GEN9_HELD_ITEMS = [
     "name": "Pretty Feather"
   },
   {
-    "id": "dawnstone",
-    "name": "Dawn Stone"
-  },
-  {
     "id": "electricmemory",
     "name": "Electric Memory"
+  },
+  {
+    "id": "flowersweet",
+    "name": "Flower Sweet"
   },
   {
     "id": "grassmemory",
@@ -927,10 +931,6 @@ export const GEN9_HELD_ITEMS = [
     "name": "Whipped Dream"
   },
   {
-    "id": "flowersweet",
-    "name": "Flower Sweet"
-  },
-  {
     "id": "friendball",
     "name": "Friend Ball"
   },
@@ -951,6 +951,10 @@ export const GEN9_HELD_ITEMS = [
     "name": "Tamato Berry"
   },
   {
+    "id": "fightingmemory",
+    "name": "Fighting Memory"
+  },
+  {
     "id": "stick",
     "name": "Stick"
   },
@@ -969,10 +973,6 @@ export const GEN9_HELD_ITEMS = [
   {
     "id": "electirizer",
     "name": "Electirizer"
-  },
-  {
-    "id": "fightingmemory",
-    "name": "Fighting Memory"
   },
   {
     "id": "leek",
@@ -1071,6 +1071,10 @@ export const GEN9_HELD_ITEMS = [
     "name": "Lustrous Orb"
   },
   {
+    "id": "pinapberry",
+    "name": "Pinap Berry"
+  },
+  {
     "id": "premierball",
     "name": "Premier Ball"
   },
@@ -1093,10 +1097,6 @@ export const GEN9_HELD_ITEMS = [
   {
     "id": "ovalstone",
     "name": "Oval Stone"
-  },
-  {
-    "id": "pinapberry",
-    "name": "Pinap Berry"
   },
   {
     "id": "redorb",
@@ -1223,6 +1223,10 @@ export const GEN9_HELD_ITEMS = [
     "name": "Dream Ball"
   },
   {
+    "id": "dubiousdisc",
+    "name": "Dubious Disc"
+  },
+  {
     "id": "fossilizeddino",
     "name": "Fossilized Dino"
   },
@@ -1265,10 +1269,6 @@ export const GEN9_HELD_ITEMS = [
   {
     "id": "darkmemory",
     "name": "Dark Memory"
-  },
-  {
-    "id": "dubiousdisc",
-    "name": "Dubious Disc"
   },
   {
     "id": "lopunnite",
@@ -1319,6 +1319,10 @@ export const GEN9_HELD_ITEMS = [
     "name": "Banettite"
   },
   {
+    "id": "bottlecap",
+    "name": "Bottle Cap"
+  },
+  {
     "id": "burndrive",
     "name": "Burn Drive"
   },
@@ -1341,6 +1345,10 @@ export const GEN9_HELD_ITEMS = [
   {
     "id": "groundmemory",
     "name": "Ground Memory"
+  },
+  {
+    "id": "gyaradosite",
+    "name": "Gyaradosite"
   },
   {
     "id": "kommoniumz",
@@ -1427,10 +1435,6 @@ export const GEN9_HELD_ITEMS = [
     "name": "Garchompite"
   },
   {
-    "id": "gyaradosite",
-    "name": "Gyaradosite"
-  },
-  {
     "id": "helixfossil",
     "name": "Helix Fossil"
   },
@@ -1499,16 +1503,16 @@ export const GEN9_HELD_ITEMS = [
     "name": "Aloraichium Z"
   },
   {
-    "id": "bottlecap",
-    "name": "Bottle Cap"
-  },
-  {
     "id": "crackedpot",
     "name": "Cracked Pot"
   },
   {
     "id": "diancite",
     "name": "Diancite"
+  },
+  {
+    "id": "fossilizeddrake",
+    "name": "Fossilized Drake"
   },
   {
     "id": "fossilizedfish",
@@ -1569,10 +1573,6 @@ export const GEN9_HELD_ITEMS = [
   {
     "id": "fossilizedbird",
     "name": "Fossilized Bird"
-  },
-  {
-    "id": "fossilizeddrake",
-    "name": "Fossilized Drake"
   },
   {
     "id": "sachet",
