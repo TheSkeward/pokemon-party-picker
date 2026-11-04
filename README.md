@@ -153,3 +153,10 @@ Read that before changing optimizer behavior or scoring constants.
 GitHub Actions builds and deploys the app to GitHub Pages from `main`.
 Scheduled refreshes can update generated data and commit those results back to
 the repository.
+
+The deployment leaves out the raw monthly Smogon sources
+(`site-data/data/sources`), which on their own exceed what a Pages artifact
+may hold; the site's default "All available" mode reads only the indexes
+built from them, and the deployed site offers no other period. A local
+checkout serves single months. The exclusion is set by `DEPLOY_EXCLUDE_DATA`
+in the deploy workflow and recorded in the manifest.

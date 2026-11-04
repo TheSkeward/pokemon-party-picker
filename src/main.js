@@ -14,6 +14,7 @@ import {
 } from './data';
 import { activateGameForFamily, orderFamilies } from './games/registry.js';
 import { applyGameTheme } from './app/theme.js';
+import { excludedDataRoots, loadManifest } from './manifest.js';
 import { bindAppEvents } from './app/app-events';
 import { renderBrowserPage } from './app/browser-page';
 import { captureFocusState, restoreFocusState } from './app/focus-state';
@@ -62,6 +63,9 @@ async function init() {
 
   dataset = await loadFormatData(getState().format);
 
+  // The manifest says which data roots this deployment serves; the month
+  // validation below reads it.
+  await loadManifest();
   ensureValidMonth();
   ensureValidResolverMonth();
 
@@ -108,6 +112,13 @@ function ensureValidResolverMonth() {
   const latest = getLatestAvailabilityMonth(availability);
   const months = Object.keys(availability?.months || {});
 
+  // A deployment without the raw monthly sources serves only "All
+  // available": a single month would scan files that are not there and
+  // read every Pokémon as absent.
+  if (excludedDataRoots().includes('sources')) {
+    if (state.resolverMonth !== 'all') setState({ resolverMonth: 'all' });
+    return;
+  }
   if (
     state.resolverMonth !== 'all' &&
     (!state.resolverMonth || !months.includes(state.resolverMonth))

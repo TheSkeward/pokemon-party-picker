@@ -6,11 +6,16 @@ import { escapeHtml } from '../utils/html.js';
  * @param {!Object} state
  * @param {?{months: !Object}} availability Month options come from the
  *     months keys, newest first.
+ * @param {boolean=} monthsServed Whether single months can be served: a
+ *     deployment without the raw monthly sources offers only "All
+ *     available".
  */
-export function renderResolverControls(container, state, availability) {
-  const months = Object.keys(availability?.months || {})
-    .sort()
-    .reverse();
+export function renderResolverControls(
+  container, state, availability, monthsServed = true,
+) {
+  const months = monthsServed
+    ? Object.keys(availability?.months || {}).sort().reverse()
+    : [];
   container.innerHTML = `
     <section class="panel">
       <div class="toolbar resolver-toolbar">

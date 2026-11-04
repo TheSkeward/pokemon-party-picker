@@ -56,8 +56,13 @@ jobs:
       - name: Run fast tests
         run: npm test
 
+      # The raw monthly Smogon sources alone put the Pages artifact over its
+      # 1 GB limit; the site's default mode reads only the indexes built from
+      # them, and the app hides single-month mode when they are absent.
       - name: Build static site
         run: npm run build:site
+        env:
+          DEPLOY_EXCLUDE_DATA: sources
 
       - name: Configure Pages
         uses: actions/configure-pages@v6

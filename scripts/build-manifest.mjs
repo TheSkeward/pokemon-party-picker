@@ -79,11 +79,19 @@ const gameVersions = {
   b2w2: `@pkmn/dex ${dexVersion}`,
 };
 
+// Data roots a deployment leaves out (scripts/copy-data.mjs reads the same
+// variable), so the app knows which modes it cannot serve.
+const excludedData = (process.env.DEPLOY_EXCLUDE_DATA || '')
+  .split(',')
+  .map((name) => name.trim())
+  .filter(Boolean);
+
 const manifest = {
   generatedAt: new Date().toISOString(),
   gameVersions,
   scoringVersion: SCORING_VERSION,
   dataSignature: combined,
+  excludedData,
   sources,
   generated,
 };

@@ -3,6 +3,7 @@ import { getAvailabilitySelectionLabel } from '../data';
 import { describePrecomputedSetSource } from '../setDetails/precomputed-set-details';
 import { renderMovesetPanel } from '../views/moveset-view';
 import { renderResolverControls } from '../views/resolver-controls-view';
+import { excludedDataRoots } from '../manifest.js';
 import { renderResolverResults } from '../views/resolver-results-view';
 
 /**
@@ -44,6 +45,7 @@ export function renderResolverPage(pageRoot, context) {
     document.querySelector('#resolver-controls-root'),
     state,
     availability,
+    !excludedDataRoots().includes('sources'),
   );
 
   renderResolverResults(
