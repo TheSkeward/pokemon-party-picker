@@ -1,5 +1,5 @@
 {
-  "finishedAt": "2026-11-03T22:20:39.160Z",
+  "finishedAt": "2026-11-04T21:51:35.004Z",
   "results": [
     {
       "script": "scrape-pkmn-teams.mjs",
@@ -48,45 +48,45 @@
       "script": "scrape-forum-teams.mjs",
       "exitCode": 0,
       "outputTail": [
-        "forum gen7ou: archive 2397",
-        "forums: page budget — 6 listing, 68 new-thread, 2 resume, 0 bumped, 0 recheck (120 deferred to next run, thread cap 100)",
-        "forums: +82 teams this run"
+        "forum gen7ou: archive 2477",
+        "forums: page budget — 6 listing, 31 new-thread, 1 resume, 0 bumped, 0 recheck (120 deferred to next run, thread cap 100)",
+        "forums: +80 teams this run"
       ]
     },
     {
       "script": "scrape-replay-teams.mjs",
       "exitCode": 0,
       "outputTail": [
+        "gen4ou: +600 (archive 16974; tours 600, elite 0, fresh 0, rest 0)",
+        "gen4uu: +10 (archive 8346; tours 0, elite 0, fresh 10, rest 0)",
         "gen4nu: +0 (archive 2531; tours 0, elite 0, fresh 0, rest 0)",
-        "gen4lc: +3 (archive 3986; tours 0, elite 0, fresh 3, rest 0)",
-        "gen4doublesou: +0 (archive 1269; tours 0, elite 0, fresh 0, rest 0)",
+        "gen4lc: +0 (archive 3986; tours 0, elite 0, fresh 0, rest 0)",
+        "gen4doublesou: +2 (archive 1271; tours 0, elite 0, fresh 2, rest 0)",
         "gen4vgc2010: +0 (archive 811; tours 0, elite 0, fresh 0, rest 0)",
-        "gen4vgc2009: +1 (archive 516; tours 0, elite 0, fresh 1, rest 0)",
-        "gen5ubers: +600 (archive 15307; tours 0, elite 0, fresh 2, rest 598)",
-        "gen5ou: +600 (archive 15344; tours 600, elite 0, fresh 0, rest 0)",
-        "gen5uu: +600 (archive 15300; tours 0, elite 0, fresh 0, rest 600)",
-        "gen5ru: +600 (archive 15300; tours 0, elite 0, fresh 0, rest 600)",
-        "gen5nu: +600 (archive 15300; tours 0, elite 0, fresh 0, rest 600)",
-        "gen5pu: +0 (archive 2148; tours 0, elite 0, fresh 0, rest 0)",
-        "gen5lc: +600 (archive 15331; tours 0, elite 0, fresh 0, rest 600)",
+        "gen4vgc2009: +0 (archive 516; tours 0, elite 0, fresh 0, rest 0)",
+        "gen5ubers: +600 (archive 15907; tours 0, elite 0, fresh 5, rest 595)",
+        "gen5ou: +600 (archive 15944; tours 600, elite 0, fresh 0, rest 0)",
+        "gen5uu: +600 (archive 15900; tours 0, elite 0, fresh 1, rest 599)",
+        "gen5ru: +600 (archive 15900; tours 0, elite 0, fresh 0, rest 600)",
+        "gen5nu: +600 (archive 15900; tours 0, elite 0, fresh 0, rest 600)",
+        "gen5pu: +1 (archive 2149; tours 0, elite 0, fresh 1, rest 0)",
+        "gen5lc: +600 (archive 15931; tours 0, elite 0, fresh 0, rest 600)",
         "gen5doublesou: +0 (archive 3391; tours 0, elite 0, fresh 0, rest 0)",
-        "gen5smogondoubles: +600 (archive 15344; tours 0, elite 0, fresh 0, rest 600)",
+        "gen5smogondoubles: +600 (archive 15944; tours 0, elite 0, fresh 0, rest 600)",
         "gen5gbudoubles: +0 (archive 1192; tours 0, elite 0, fresh 0, rest 0)",
-        "gen5vgc2013: +1 (archive 3697; tours 0, elite 0, fresh 1, rest 0)",
+        "gen5vgc2013: +1 (archive 3698; tours 0, elite 0, fresh 1, rest 0)",
         "gen5vgc2011: +0 (archive 305; tours 0, elite 0, fresh 0, rest 0)",
-        "gen9nationaldexubers: +600 (archive 14400; tours 26, elite 0, fresh 93, rest 481)",
-        "gen9nationaldex: +600 (archive 15000; tours 131, elite 0, fresh 469, rest 0)",
-        "gen9nationaldexuu: +1 (archive 11486; tours 0, elite 0, fresh 1, rest 0)",
-        "gen9ru: +600 (archive 13827; tours 71, elite 0, fresh 61, rest 468)",
-        "  skip gen9nu-2601491041: fetch failed",
-        "gen9nu: +600 (archive 14444; tours 15, elite 0, fresh 23, rest 562)",
-        "gen9pu: +600 (archive 15000; tours 115, elite 0, fresh 66, rest 419)",
-        "gen9lc: +600 (archive 15000; tours 2, elite 0, fresh 16, rest 582)",
-        "gen9nationaldexdoubles: +600 (archive 15003; tours 0, elite 0, fresh 115, rest 485)",
-        "  skip gen9doublesubers-2562611697: fetch failed",
-        "gen9doublesubers: +600 (archive 15000; tours 0, elite 0, fresh 15, rest 585)",
-        "gen9doublesou: +600 (archive 15000; tours 157, elite 0, fresh 443, rest 0)",
-        "gen9doublesuu: +600 (archive 15073; tours 0, elite 0, fresh 6, rest 594)"
+        "gen9nationaldexubers: +600 (archive 15000; tours 32, elite 0, fresh 116, rest 452)",
+        "gen9nationaldex: +600 (archive 15600; tours 158, elite 0, fresh 442, rest 0)",
+        "gen9nationaldexuu: +0 (archive 11486; tours 0, elite 0, fresh 0, rest 0)",
+        "gen9ru: +600 (archive 14427; tours 85, elite 0, fresh 31, rest 484)",
+        "gen9nu: +600 (archive 15044; tours 44, elite 0, fresh 17, rest 539)",
+        "gen9pu: +600 (archive 15600; tours 23, elite 0, fresh 23, rest 554)",
+        "gen9lc: +600 (archive 15600; tours 6, elite 0, fresh 16, rest 578)",
+        "gen9nationaldexdoubles: +600 (archive 15603; tours 0, elite 0, fresh 122, rest 478)",
+        "gen9doublesubers: +600 (archive 15600; tours 0, elite 0, fresh 14, rest 586)",
+        "gen9doublesou: +600 (archive 15600; tours 185, elite 0, fresh 415, rest 0)",
+        "gen9doublesuu: +600 (archive 15673; tours 0, elite 0, fresh 12, rest 588)"
       ]
     }
   ]
