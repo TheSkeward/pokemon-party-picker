@@ -276,7 +276,11 @@ const MAX_RESULT_CACHE = 400;
 // v75: a stronger same-type attack earns a fill slot; a type the set
 // lacks is a click only under Protean or Libero.
 // v76: the coverage set opens with the strongest attack of any type.
-const RESULT_CACHE_VERSION = '85';
+// v86: a self-KO move lands once per stint and seats only as a canonical
+// move; the seat of a canonical attack a build cannot seat (set aside by
+// the coverage build, or reached only by an evolution hold) is refilled
+// only from attacks the record runs meaningfully, else by a utility move.
+const RESULT_CACHE_VERSION = '86';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.
@@ -1503,6 +1507,9 @@ async function resolveCandidateBuilds({
       member,
       moves: buildMoves,
       learnableMoveIds: new Set((legalMoveData?.moves || []).map((m) => m.id)),
+      // The hold routes this build may leave out; the delayed build carries
+      // them in buildMoves, where they are ordinary moves.
+      holdReachableMoveIds: new Set(delayedMoves.map((move) => move.id)),
       representativeName: candidate.name,
       levelCap: progression.levelCap,
       ability,

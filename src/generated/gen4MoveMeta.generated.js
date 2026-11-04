@@ -2117,6 +2117,7 @@ export const MOVE_META = {
     "priority": 0,
     "utility": false,
     "accuracy": 100,
+    "selfKO": true,
     "pp": 5
   },
   "firefang": {
@@ -2490,6 +2491,7 @@ export const MOVE_META = {
     "priority": 0,
     "utility": false,
     "accuracy": 100,
+    "selfKO": true,
     "pp": 5
   },
   "skillswap": {

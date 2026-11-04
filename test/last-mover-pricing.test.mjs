@@ -52,8 +52,9 @@ test('a slow Forretress\'s Payback out-hits its Bug Bite and seats for it', () =
     byId.get('payback').damageSteps.join('\n'), /doubles after the target acts/,
   );
 
-  // With Explosion carried, Bug Bite's only claim was the Ghost gap; Payback
-  // fills it harder and takes the slot.
+  // Payback leads the fill as the straight upgrade over Rapid Spin, and Bug
+  // Bite follows as the click it still owns. Explosion, a self-KO move
+  // outside the canonical set, never seats.
   const built = buildCandidateLegalityProfile({
     member: forretress,
     moves: ['rapidspin', 'spikes', 'explosion', 'payback', 'bugbite', 'protect']
@@ -65,7 +66,7 @@ test('a slow Forretress\'s Payback out-hits its Bug Bite and seats for it', () =
   });
   const ids = built.recommendedMoves.map((move) => move.id);
   assert.deepEqual(
-    new Set(ids), new Set(['rapidspin', 'spikes', 'explosion', 'payback']), ids,
+    new Set(ids), new Set(['rapidspin', 'spikes', 'payback', 'bugbite']), ids,
   );
 });
 
@@ -76,5 +77,13 @@ test('the real Pineco line at badge 2 runs Payback', async () => {
   });
   const ids = bestChoice(result, 'Pineco').legalityProfile.recommendedMoves
     .map((move) => move.id);
-  assert.ok(ids.includes('payback') && !ids.includes('bugbite'), ids);
+  // Payback seats ahead of Bug Bite; Explosion, which the record runs in
+  // one Forretress set of twenty, never seats outside the canonical set.
+  assert.ok(ids.includes('payback'), ids);
+  assert.ok(
+    !ids.includes('bugbite') ||
+      ids.indexOf('payback') < ids.indexOf('bugbite'),
+    ids,
+  );
+  assert.ok(!ids.includes('explosion'), ids);
 });

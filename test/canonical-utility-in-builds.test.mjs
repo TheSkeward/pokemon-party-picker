@@ -31,10 +31,12 @@ test('the coverage build keeps the canonical utility moves and trades attacks', 
     movePreference: 'coverage',
   }));
   assert.ok(ids.includes('rapidspin') && ids.includes('spikes'), ids);
-  // Self-Destruct out-hits Rapid Spin into every type, so sharing its type
-  // does not keep it out: an attack earns a slot wherever it raises the
-  // set's best damage.
-  assert.ok(ids.includes('selfdestruct'), ids);
+  // Payback out-hits Rapid Spin into every type, so sharing its type does
+  // not keep it out: an attack earns a slot wherever it raises the set's
+  // best damage. Self-Destruct would out-hit it, but a self-KO move seats
+  // only where the record runs it, and here it does not.
+  assert.ok(ids.includes('payback'), ids);
+  assert.ok(!ids.includes('selfdestruct'), ids);
 });
 
 test('the utility build seats the canonical utility moves first', () => {

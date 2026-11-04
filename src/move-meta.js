@@ -137,6 +137,9 @@ export function hydrateLegalMove(rawMove) {
     multihit: meta?.multihit,
     recharge: meta?.recharge ?? false,
     charge: meta?.charge ?? false,
+    // Faints its user every time it is used: one landing per stint, and a
+    // seat only where the record runs it.
+    selfKO: meta?.selfKO ?? false,
     // Ability-interaction flags (contact/punch/bite/pulse/sound/recoil/
     // secondary) — which abilities boost or convert this move is decided by
     // these move properties (damageModel.getAbilityDamageMultiplier).

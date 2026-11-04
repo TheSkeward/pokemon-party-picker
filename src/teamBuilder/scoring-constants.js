@@ -31,7 +31,10 @@ export const SCORING_DEFAULTS = Object.freeze({
   // time: regenerate both in the same commit as any change here. Safe as a
   // non-gate ONLY because meaningfulUsage no longer outranks score in any
   // comparator. Making this a gate again would violate SCORING.md's
-  // score-sovereignty invariant.
+  // score-sovereignty invariant. Set construction, where usage already
+  // decides the seats, does read it: the seat of a canonical attack a build
+  // cannot seat is refilled only from attacks at or above this floor
+  // (recommendCurrentMoves, team-analysis.js).
   MIN_MEANINGFUL_USAGE_PERCENT: 100 * (1 - 0.5 ** (1 / 25)),
   // A sustained trace in one of the ladder's strongest formats is evidence
   // that a line is not competitively absent, even when it falls below the
@@ -117,8 +120,8 @@ export const SCORING_DEFAULTS = Object.freeze({
   TIME_FRICTION: 0, // day/night or minor special condition
   // Holding a level evolution to learn a pre-evolution's move costs the
   // levels held, each dearer than the last (the k-th level held costs k of
-  // these), not a flat sum: three levels of Pineco for Explosion are a
-  // short grind in the grass and cost 12, seventeen of Mareep for Discharge
+  // these), not a flat sum: five levels of Stufful for Hammer Arm are a
+  // short grind in the grass and cost 30, seventeen of Mareep for Discharge
   // are a long stretch fought with the weaker body and cost 306. A short
   // hold goes through on a modest gain; a long one needs a large gain. The
   // card labels the hold either way.

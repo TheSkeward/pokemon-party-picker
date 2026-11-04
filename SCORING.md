@@ -115,7 +115,10 @@ That makes the orb 1.375×, and Slow Start's five turns outlast the stint, so
 it stays priced as always-on.
 
 The same stint prices every multi-turn move as output per turn on the field.
-A recharge move lands on the odd turns and a charge move on the even ones,
+A move that faints its user (Explosion, Self-Destruct, Misty Explosion)
+lands once per stint, whichever turn it is clicked on: a suicide lead is
+one landing, not four. A recharge move lands on the odd turns and a charge
+move on the even ones,
 half the stint each; what the opponent does on the other turn is
 survivability, which the damage model prices nowhere, so a semi-invulnerable
 charge earns no more than an exposed one, and a charge the user's own weather
@@ -186,14 +189,41 @@ top of the score distribution.
 
 Every build keeps the canonical moves the player can use now. The standard
 set locks all of them; the coverage set keeps the canonical utility moves,
-sets the canonical attacks aside and rebuilds the attacks from damage alone,
-strongest of any type first, as the hedge against a canonical attack the
-ladder runs but damage says is dominated; the utility set ranks
-its utility moves by usage, so the canonical ones seat first. A build may
-trade a canonical attack for coverage, never a canonical utility move: a
-Forretress without Rapid Spin and Spikes is not a Forretress build, and
-before this rule its four-attack coverage set outscored the real one on
-standalone value with no coverage gain for the team.
+sets the canonical attacks aside and rebuilds the attacks from damage, as
+the hedge against a canonical attack the ladder runs but damage says is
+dominated; the utility set ranks its utility moves by usage, so the
+canonical ones seat first. A build may trade a canonical attack for
+coverage, never a canonical utility move: a Forretress without Rapid Spin
+and Spikes is not a Forretress build, and before this rule its four-attack
+coverage set outscored the real one on standalone value with no coverage
+gain for the team.
+
+The seat of a canonical attack a build cannot seat is refilled only from
+attacks the record runs meaningfully (`MIN_MEANINGFUL_USAGE_PERCENT`), else
+by a utility move. Two builds leave such seats: the coverage build, whose
+set-aside attacks may be replaced only by attacks real sets run, and the
+build without an evolution hold whose canonical attack the hold would reach
+(the readiness card counts the hold satisfiable). A move almost nobody runs
+never evicts one most sets use: Forretress's record runs Gyro Ball in six
+sets of ten and Heavy Slam in one of a hundred, so Heavy Slam cannot take
+Gyro Ball's seat, and at a cap where Gyro Ball needs a Pineco held to 42 the
+build without the hold seats a utility move there and the held build wins on
+score, while Staraptor's build without the Starly hold still seats Aerial
+Ace, which real sets run, and the 23-level hold still loses. A canonical
+attack with no route at all leaves no seat, and a set with no damaging move
+takes the ordinary damage fill, so no set is left unable to attack. This is
+a rule of set construction, where usage already decides the seats; build
+selection stays on score, so the meaningful-usage floor is not a gate
+between scored builds.
+
+A self-KO move seats only where the record runs it, the way Snore and Sleep
+Talk seat only beside Rest; outside the canonical set it is never a fill. A
+one-landing attack that forfeits the user is a suicide lead, and the record
+says which Pokémon lead that way. Electrode and Golem run Explosion in a
+third of their sets but fifth by usage, so they lose it under this rule on
+purpose: a floor on usage instead of the canonical set would let Explosion
+back onto Forretress, whose record runs it in one set of twenty, and the
+build without the Pineco hold would win again.
 
 Snore and Sleep Talk seat only in a set that carries Rest, or on a Comatose
 user: they act only while the user sleeps, so the ladder's Rest sets do not
@@ -417,7 +447,7 @@ team and lets the player decide whether the grind is worthwhile. Holding a
 level evolution past its level to learn a pre-evolution's move is priced by
 the levels held, each dearer than the last, not as a flat sum: the unevolved
 body falls further behind its evolved form for every level the hold lasts.
-Three levels of Pineco for Explosion are a short grind in the grass and go
+Five levels of Stufful for Hammer Arm are a short grind in the grass and go
 through on a modest gain; seventeen levels of Mareep for Discharge are a
 long stretch fought with the weaker body and need a large one. The card
 labels the hold either way. An elective

@@ -1,6 +1,6 @@
 // Holding a level evolution to learn a pre-evolution's move costs the levels
-// held, each dearer than the last, not a flat sum. Three levels of Pineco
-// for Explosion is a short grind and the delayed set headlines on a modest
+// held, each dearer than the last, not a flat sum. Five levels of Stufful
+// for Hammer Arm is a short grind and the delayed set headlines on a modest
 // gain; seventeen levels of Mareep for Discharge is a long stretch fought as
 // a Mareep, and the default set keeps the headline.
 import test from 'node:test';
@@ -36,28 +36,28 @@ test('a delayed route says how many levels the evolution is held', async () => {
   assert.equal(braveBird.availableSources[0].heldLevels, 23);
 });
 
-test('a three-level hold for Explosion headlines; seventeen for Discharge does not', async () => {
-  // The hold's cost alone decides here. At this progression Explosion's edge
-  // over Self-Destruct, about 0.2%, is inside the hedge margin, which
-  // hedge-build-margin.test.mjs covers.
+test('a five-level hold for Hammer Arm headlines; seventeen for Discharge does not', async () => {
+  // The hold's cost alone decides here; the hedge margin is zeroed so the
+  // delayed set competes on score, which hedge-build-margin.test.mjs
+  // covers.
   const result = await runPool({
-    pool: ['Pineco', 'Mareep'],
+    pool: ['Stufful', 'Mareep'],
     progression: progressionAt({ badge: 2, levelCap: 35 }),
     overrides: { HEDGE_BUILD_MARGIN: 0 },
   });
-  const forretress = bestChoice(result, 'Pineco');
-  assert.equal(forretress.buildKey, 'delayed', forretress.buildLabel);
-  assert.match(forretress.buildLabel, /Explosion; Pineco to 34/);
-  const ids = forretress.legalityProfile.recommendedMoves.map((m) => m.id);
-  assert.ok(ids.includes('explosion') && !ids.includes('selfdestruct'), ids);
-  const proof = forretress.legalityProfile.legalityProof;
-  assert.equal(proof.heldLevels, 3);
-  // The k-th level held costs k units: 1 + 2 + 3.
+  const bewear = bestChoice(result, 'Stufful');
+  assert.equal(bewear.buildKey, 'delayed', bewear.buildLabel);
+  assert.match(bewear.buildLabel, /Hammer Arm; Stufful to 32/);
+  const ids = bewear.legalityProfile.recommendedMoves.map((m) => m.id);
+  assert.ok(ids.includes('hammerarm'), ids);
+  const proof = bewear.legalityProfile.legalityProof;
+  assert.equal(proof.heldLevels, 5);
+  // The k-th level held costs k units: 1 + 2 + 3 + 4 + 5.
   assert.equal(
-    proof.buildFriction, 6 * SCORING_DEFAULTS.DELAYED_EVO_FRICTION_PER_LEVEL,
+    proof.buildFriction, 15 * SCORING_DEFAULTS.DELAYED_EVO_FRICTION_PER_LEVEL,
   );
   assert.deepEqual(proof.delayedMoves, [
-    { name: 'Explosion', source: 'Level 34 (Pineco)', heldLevels: 3 },
+    { name: 'Hammer Arm', source: 'Level 32 (Stufful)', heldLevels: 5 },
   ]);
 
   const ampharos = bestChoice(result, 'Mareep');

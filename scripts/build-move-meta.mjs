@@ -183,6 +183,12 @@ function main() {
     // Two-turn charge moves (Solar Beam, Fly, ...). The damage model amortizes
     // the wasted turn — except for the semi-invulnerable ones, handled by id.
     if (move.flags?.charge) entry.charge = true;
+    // A move that faints its user whenever it is used (Explosion,
+    // Self-Destruct, Misty Explosion): one landing per stay on the field, and
+    // a seat only where the record runs it. The dex also marks moves that
+    // faint the user only on a hit (Final Gambit, Memento, Healing Wish);
+    // those are fixed-damage or status and never enter the damage model.
+    if (move.selfdestruct === 'always') entry.selfKO = true;
     // Ability-interaction flags: whether an ability boosts/converts a move is
     // a property of the move itself — Tough Claws → contact, Iron Fist →
     // punch, Strong Jaw → bite, Mega Launcher → pulse, Liquid Voice → sound,

@@ -3149,6 +3149,7 @@ export const MOVE_META = {
     "priority": 0,
     "utility": false,
     "accuracy": 100,
+    "selfKO": true,
     "pp": 5
   },
   "extrasensory": {
@@ -6778,6 +6779,7 @@ export const MOVE_META = {
     "priority": 0,
     "utility": false,
     "accuracy": 100,
+    "selfKO": true,
     "pp": 5
   },
   "mistyterrain": {
@@ -9046,6 +9048,7 @@ export const MOVE_META = {
     "priority": 0,
     "utility": false,
     "accuracy": 100,
+    "selfKO": true,
     "pp": 5
   },
   "shadowball": {

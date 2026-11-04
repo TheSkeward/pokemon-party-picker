@@ -60,6 +60,7 @@ import {
   movePriorOf,
 } from './move-prior.js';
 import { statusSideValue } from './move-side-value.js';
+import { tunable } from './scoring-constants.js';
 
 export { analysisTypes };
 
@@ -450,6 +451,9 @@ async function buildMemberLegalMoveEntry({
     member,
     moves: buildPool,
     learnableMoveIds: new Set((legalMoveData?.moves || []).map((m) => m.id)),
+    holdReachableMoveIds: new Set(
+      moves.filter((move) => move.delayedEvolution).map((move) => move.id),
+    ),
     representativeName: row.name,
     attackerStats,
     levelCap: progression.levelCap,
@@ -873,6 +877,10 @@ export function buildCandidateLegalityProfile({
   // missing now reads as blocked (a stand-in may answer for it) rather than
   // absent. Null trusts the record: a move the ladder runs is learnable.
   learnableMoveIds = null,
+  // Moves this build leaves out that an evolution hold would reach (the
+  // readiness card counts them satisfiable): a canonical attack among them
+  // reserves its seat for an attack the record runs.
+  holdReachableMoveIds = null,
 }) {
   // Carry the recommended held item AND the mon's competitive ability on the
   // member, so every damage estimate (display, ranking, bias, team scoring)
@@ -918,6 +926,7 @@ export function buildCandidateLegalityProfile({
     movePreference,
     moveRank,
     learnableMoveIds,
+    holdReachableMoveIds,
   );
   const recommendedDamagingMoves = recommendedMoves.filter(isDamagingMove);
   const stabMoves = damagingMoves
@@ -1575,6 +1584,8 @@ function formatRecommendedMove(move, member, attackerStats, peakDamage = 0) {
   return {
     ...formatProfileMove(move, member, attackerStats, peakDamage),
     availableSources: move.availableSources || [],
+    // Whether this seat holds a move the mon's real sets run.
+    canonical: Boolean(move.canonical),
     category: move.category,
     sourceLabel: formatBestSource(move),
     sourceTitle: formatBestSourceTitle(move),
@@ -1843,6 +1854,8 @@ const FAILS_IF_DISRUPTED = new Set(['focuspunch', 'shelltrap']);
  *     (Gen 5+), so Fury Swipes [2,5] → 3.1, not the naive midpoint 3.5;
  *   - per-strike accuracy (Population Bomb, Triple Axel, Triple Kick): the
  *     expected strikes before the first miss, all of them under Skill Link;
+ *   - self-KO (Explosion, Self-Destruct): once per stint, since the user is
+ *     gone after it;
  *   - recharge: lands on the odd turns of the stint (Hyper Beam);
  *   - charge: lands on the even turns, whatever the charge turn looks like
  *     to the opponent, and every turn when the user's own weather skips the
@@ -1861,7 +1874,7 @@ export function getEffectiveHitMultiplier(move, ability = null) {
   const hits = moveHitMultiplier(move, ability);
   // Truant acts on the odd turns, as a recharge move does; the recharge
   // turn is the loafing turn, so the two are not paid twice.
-  if (toId(ability) === 'truant' && !move.recharge) {
+  if (toId(ability) === 'truant' && !move.recharge && !move.selfKO) {
     return hits * HIT_FIRST_RATE;
   }
   return hits;
@@ -1904,6 +1917,9 @@ function moveHitMultiplier(move, ability) {
     return (multihit[0] + multihit[1]) / 2;
   }
 
+  // A self-KO move ends the stay: it lands once over the stint, whichever
+  // turn it is clicked on.
+  if (move.selfKO) return 1 / STINT;
   if (move.recharge) return HIT_FIRST_RATE;
   if (move.charge) return chargeSkipped(move, ability) ? 1 : HIT_SECOND_RATE;
   if (FAILS_IF_DISRUPTED.has(move.id)) return 1 / 3;
@@ -1954,10 +1970,19 @@ function recommendCurrentMoves(
   movePreference = 'default',
   moveRank = new Map(),
   learnableMoveIds = null,
+  holdReachableMoveIds = null,
 ) {
   const decorated = moves.map((move) =>
     decorateMove(move, member, attackerStats, moveUsage, opponentTypeBias),
   );
+  // The canonical set: the mon's top-4 moves by usage, in usage order. Each
+  // decorated move knows whether it belongs to it.
+  const canonicalIds = [...moveUsage.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 4)
+    .map(([id]) => id);
+  const canonicalIdSet = new Set(canonicalIds);
+  for (const move of decorated) move.canonical = canonicalIdSet.has(move.id);
   // A flinch chance ranks as the action it denies, on top of the damage
   // that fills slots; the displayed damage stays the damage.
   const peakDamage = Math.max(
@@ -1974,9 +1999,14 @@ function recommendCurrentMoves(
   // Dream Eater is the set being built, not the legal pool. Both lists are
   // evaluated live as the set grows: once Rest is selected, Snore becomes a
   // real attack and Sleep Talk a real move.
+  // A self-KO attack seats only where the record runs it, the way Snore and
+  // Sleep Talk need Rest: outside the canonical set it is never a fill.
+  const seatsSelfKO = (move) => !move.selfKO || move.canonical;
   const selectable = (move) =>
+    seatsSelfKO(move) &&
     isSelectableMove(move, selected, member.heldItem, member.ability);
   const usableInSet = (move) =>
+    seatsSelfKO(move) &&
     isUsableDamagingMove(move, selected, member.heldItem, member.ability);
   const usableDamaging = () =>
     decorated.filter((move) => usableInSet(move));
@@ -2003,11 +2033,27 @@ function recommendCurrentMoves(
     return true;
   };
 
-  // The canonical set: the mon's top-4 moves by usage, in usage order.
-  const canonicalIds = [...moveUsage.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 4)
-    .map(([id]) => id);
+  // The seat of a canonical attack this build has not seated is refilled
+  // only from attacks the record runs meaningfully
+  // (MIN_MEANINGFUL_USAGE_PERCENT), else by a utility move: a move almost
+  // nobody runs never evicts one most sets use. The coverage and utility
+  // builds leave such seats by setting canonical attacks aside; a build
+  // without an evolution hold leaves one for each canonical attack the hold
+  // would reach (holdReachableMoveIds). A canonical attack with no route at
+  // all leaves no seat; its slot takes the ordinary fill, as does a set with
+  // no damaging move at all (step 2). Counted when the fill starts.
+  const isAttackId = (id) =>
+    isDamagingMove(byId.get(id) || hydrateLegalMove({ id, sources: [] }));
+  const countReservedSeats = () =>
+    canonicalIds.filter((id) => {
+      if (selected.some((entry) => entry.id === id)) return false;
+      const move = byId.get(id);
+      if (move) return isDamagingMove(move) && selectable(move);
+      return Boolean(holdReachableMoveIds?.has(id)) && isAttackId(id);
+    }).length;
+  let reservedSeats = 0;
+  const meaningful = (move) =>
+    move.usage >= tunable('MIN_MEANINGFUL_USAGE_PERCENT');
   const addCanonical = (keep) => {
     for (const id of canonicalIds) {
       const move = byId.get(id);
@@ -2052,11 +2098,16 @@ function recommendCurrentMoves(
     // standard set by a margin (HEDGE_BUILD_MARGIN, scoring-constants.js).
     addCanonical((move) => move.utility);
     addStandIns();
-    add(
-      usableDamaging()
-        .filter((move) => !isFixedDamageMove(move.id))
-        .sort(compareByDamage)[0],
-    );
+    // A set-aside canonical attack leaves a reserved seat, filled below from
+    // the attacks the record runs; only a mon with no canonical attack
+    // opens on damage alone.
+    if (!countReservedSeats()) {
+      add(
+        usableDamaging()
+          .filter((move) => !isFixedDamageMove(move.id))
+          .sort(compareByDamage)[0],
+      );
+    }
   } else if (movePreference === 'utility') {
     // Utility build: the strongest role moves by usage, so the canonical
     // utility moves seat first (the measured prior ranks the unrecorded
@@ -2073,6 +2124,8 @@ function recommendCurrentMoves(
     addStandIns();
   }
 
+  reservedSeats = countReservedSeats();
+
   // 2. Guarantee at least one attack — but only if none was picked yet. A mon
   // that already has a damaging move (even a weak one like Rapid Spin, kept for
   // its utility) is left as-is; we don't shove its hardest hitter on top.
@@ -2080,7 +2133,11 @@ function recommendCurrentMoves(
     selected.length < 4 &&
     !selected.some((move) => usableInSet(move))
   ) {
-    add(usableDamaging().sort(compareByDamage)[0]);
+    // A set with no damaging move takes the ordinary fill, reserved seat or
+    // not: the refill rule never leaves a set unable to attack.
+    if (add(usableDamaging().sort(compareByDamage)[0]) && reservedSeats) {
+      reservedSeats -= 1;
+    }
   }
 
   // 3. One utility move, if none is present yet (a damage+utility move counts).
@@ -2143,6 +2200,26 @@ function recommendCurrentMoves(
     String(member.ability || '').toLowerCase().replace(/[^a-z]/g, ''),
   );
   while (selected.length < 4) {
+    // A reserved seat (see reservedSeats): the strongest attack the record
+    // runs meaningfully that raises coverage, else a utility move the mon's
+    // sets run or that does a credited job. With neither, the seat falls to
+    // the ordinary fill below.
+    if (reservedSeats > 0) {
+      reservedSeats -= 1;
+      const refill = usableDamaging()
+        .filter(
+          (move) =>
+            !isFixedDamageMove(move.id) &&
+            !isSelected(move, selected) &&
+            meaningful(move),
+        )
+        .sort(compareByDamage)
+        .find(raisesCoverage);
+      if (add(refill)) continue;
+      if (add(bestUtility(usableUtility().filter(runsOrSupports), selected))) {
+        continue;
+      }
+    }
     // An attack earns a slot as a straight upgrade of a carried move of its
     // own type, or as a coverage click worth carrying (raisesCoverage).
     const upgrade = usableDamaging()
