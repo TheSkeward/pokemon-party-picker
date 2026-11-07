@@ -460,6 +460,7 @@ function renderResult({
           ${renderGamestateStrip(state.progression)}
           <p class="muted" data-progression-stale-warning ${progressionStale ? '' : 'hidden'}>Progression changed after this team was optimized. Re-optimize before trusting row scores or legal move notes.</p>
           ${result.ignoredLocks?.length ? `<p class="muted">Locked but not fieldable at this progression, so ignored: ${escapeHtml(result.ignoredLocks.join(', '))}.</p>` : ''}
+          ${result.ignoredMoveLocks?.length ? `<p class="muted">Locked moves no move in the game answers to, so ignored: ${escapeHtml(result.ignoredMoveLocks.map((lock) => `${lock.name} {${lock.move}}`).join(', '))}.</p>` : ''}
         </div>
       </div>
       ${renderSwapAuditCallout(result)}

@@ -3,6 +3,7 @@ import {
   getPreferredMoveSource,
   getMoveSourcePriority,
   loadLegalMoveData,
+  lockedMoveIdsFor,
 } from '../playthrough/legal-moves';
 import { getCurrentSpeciesForChoice } from '../playthrough/current-species.js';
 import {
@@ -35,9 +36,13 @@ import {
 } from './damage-model.js';
 import { loadTopSet } from './top-spread.js';
 import { formatAbilityPath, resolveBuildAbilities } from './ability-path.js';
-import { withMetLevels } from './input-groups';
+import { withPoolAnnotations } from './input-groups';
 import { hydrateLegalMove, isInertInFamily } from '../move-meta.js';
-import { computeSetReadiness } from '../playthrough/set-readiness.js';
+import {
+  CANONICAL_SET_SIZE,
+  canonicalMoveIds,
+  computeSetReadiness,
+} from '../playthrough/set-readiness.js';
 import { teamMemberKey } from './item-recommendations.js';
 import { selectObservedSet } from './observed-sets.js';
 import { loadTeamIndex } from './team-index.js';
@@ -79,8 +84,9 @@ export async function buildTeamAnalysis(
   progression = {},
   breedingOptions = {},
 ) {
-  // Met levels ("Munna@14") ride the progression here as in the optimizer.
-  progression = withMetLevels(
+  // The pool's met levels and move locks ride the progression here as in
+  // the optimizer.
+  progression = withPoolAnnotations(
     progression,
     breedingOptions.poolQuery,
     breedingOptions.pokemonIndex,
@@ -454,6 +460,7 @@ async function buildMemberLegalMoveEntry({
     holdReachableMoveIds: new Set(
       moves.filter((move) => move.delayedEvolution).map((move) => move.id),
     ),
+    lockedMoveIds: lockedMoveIdsFor(memberProgression, battleSpeciesId),
     representativeName: row.name,
     attackerStats,
     levelCap: progression.levelCap,
@@ -881,6 +888,9 @@ export function buildCandidateLegalityProfile({
   // readiness card counts them satisfiable): a canonical attack among them
   // reserves its seat for an attack the record runs.
   holdReachableMoveIds = null,
+  // The pool's move locks for this line (legal-moves.js lockedMoveIdsFor):
+  // the player's own canonical moves, seated first in every build.
+  lockedMoveIds = [],
 }) {
   // Carry the recommended held item AND the mon's competitive ability on the
   // member, so every damage estimate (display, ranking, bias, team scoring)
@@ -927,6 +937,7 @@ export function buildCandidateLegalityProfile({
     moveRank,
     learnableMoveIds,
     holdReachableMoveIds,
+    lockedMoveIds,
   );
   const recommendedDamagingMoves = recommendedMoves.filter(isDamagingMove);
   const stabMoves = damagingMoves
@@ -936,16 +947,15 @@ export function buildCandidateLegalityProfile({
         member.types.includes(move.type) && !isFixedDamageMove(move.id),
     )
     .sort(compareMoveQuality);
-  // Display order: the mon's canonical moves (its top-4 by usage) lead, in
-  // descending-usage order, mirroring how its competitive set reads; the
-  // remaining picks follow in descending estimated damage. (Damage already
-  // factors STAB and the attacker's level/nature/EVs vs a neutral defender, so
-  // it ranks the user's own clicks without "knowing" super-effectiveness.)
+  // Display order: the mon's canonical moves (the pool's locks, then its
+  // top moves by usage) lead, in that order, mirroring how its competitive
+  // set reads; the remaining picks follow in descending estimated damage.
+  // (Damage already factors STAB and the attacker's level/nature/EVs vs a
+  // neutral defender, so it ranks the user's own clicks without "knowing"
+  // super-effectiveness.)
   const canonicalRankById = new Map(
-    [...moveUsage.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 4)
-      .map(([id], index) => [id, index]),
+    canonicalMoveIds(moveUsage, CANONICAL_SET_SIZE, lockedMoveIds)
+      .map((id, index) => [id, index]),
   );
   // A stand-in reads in the place of the canonical move it answers for.
   for (const move of recommendedMoves) {
@@ -1584,8 +1594,10 @@ function formatRecommendedMove(move, member, attackerStats, peakDamage = 0) {
   return {
     ...formatProfileMove(move, member, attackerStats, peakDamage),
     availableSources: move.availableSources || [],
-    // Whether this seat holds a move the mon's real sets run.
+    // Whether this seat holds a move the mon's real sets run, and whether
+    // the pool locked it there.
     canonical: Boolean(move.canonical),
+    locked: Boolean(move.locked),
     category: move.category,
     sourceLabel: formatBestSource(move),
     sourceTitle: formatBestSourceTitle(move),
@@ -1971,18 +1983,23 @@ function recommendCurrentMoves(
   moveRank = new Map(),
   learnableMoveIds = null,
   holdReachableMoveIds = null,
+  lockedMoveIds = [],
 ) {
   const decorated = moves.map((move) =>
     decorateMove(move, member, attackerStats, moveUsage, opponentTypeBias),
   );
-  // The canonical set: the mon's top-4 moves by usage, in usage order. Each
-  // decorated move knows whether it belongs to it.
-  const canonicalIds = [...moveUsage.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 4)
-    .map(([id]) => id);
+  // The canonical set: the pool's locked moves first, then the mon's top
+  // moves by usage to four, in usage order. Each decorated move knows
+  // whether it belongs to it, and whether the pool locked it.
+  const canonicalIds = canonicalMoveIds(
+    moveUsage, CANONICAL_SET_SIZE, lockedMoveIds,
+  );
   const canonicalIdSet = new Set(canonicalIds);
-  for (const move of decorated) move.canonical = canonicalIdSet.has(move.id);
+  const lockedIdSet = new Set(lockedMoveIds);
+  for (const move of decorated) {
+    move.canonical = canonicalIdSet.has(move.id);
+    move.locked = lockedIdSet.has(move.id);
+  }
   // A flinch chance ranks as the action it denies, on top of the damage
   // that fills slots; the displayed damage stays the damage.
   const peakDamage = Math.max(
@@ -2047,6 +2064,8 @@ function recommendCurrentMoves(
   const countReservedSeats = () =>
     canonicalIds.filter((id) => {
       if (selected.some((entry) => entry.id === id)) return false;
+      // A locked move the cap still blocks leaves its seat to the fill.
+      if (lockedIdSet.has(id)) return false;
       const move = byId.get(id);
       if (move) return isDamagingMove(move) && selectable(move);
       return Boolean(holdReachableMoveIds?.has(id)) && isAttackId(id);
@@ -2060,6 +2079,10 @@ function recommendCurrentMoves(
       if (move && keep(move) && selectable(move)) add(move);
     }
   };
+  // The pool's locked moves seat first in every build, in the pool's order:
+  // a lock is the player's own canon, so no build sets one aside and no
+  // fill takes its seat. One the cap still blocks waits, with no stand-in.
+  const addLocked = () => addCanonical((move) => move.locked);
   // A canonical status move the cap still blocks (Shift Gear at level 48 on
   // a cap-35 Klink) is stood in for by the legal move that does the same
   // job: the same role, and for setup the same primary stat, so Autotomize
@@ -2070,7 +2093,7 @@ function recommendCurrentMoves(
   // absent, not blocked, and gets no stand-in.
   const addStandIns = () => {
     for (const id of canonicalIds) {
-      if (byId.has(id)) continue;
+      if (byId.has(id) || lockedIdSet.has(id)) continue;
       if (learnableMoveIds && !learnableMoveIds.has(id)) continue;
       const blocked = hydrateLegalMove({ id, sources: [] });
       if (blocked.category !== 'Status') continue;
@@ -2096,6 +2119,7 @@ function recommendCurrentMoves(
     // is the hedge against a canonical attack the ladder runs but damage
     // says is dominated, and the team sees it only when it out-scores the
     // standard set by a margin (HEDGE_BUILD_MARGIN, scoring-constants.js).
+    addLocked();
     addCanonical((move) => move.utility);
     addStandIns();
     // A set-aside canonical attack leaves a reserved seat, filled below from
@@ -2113,13 +2137,16 @@ function recommendCurrentMoves(
     // utility moves seat first (the measured prior ranks the unrecorded
     // ones), plus the guaranteed attack from the shared steps so it can't
     // go fully passive. Each seat re-ranks the live list, so a Sleep Talk
-    // that outranks Rest seats right after it.
-    for (let seat = 0; seat < 3; seat++) {
+    // that outranks Rest seats right after it. A locked utility move holds
+    // one of the three seats.
+    addLocked();
+    while (selected.filter((move) => move.utility).length < 3) {
       if (!add(bestUtility(usableUtility(), selected))) break;
     }
   } else {
     // 1. Canonical moves, each kept if available now, and a stand-in for
     // each blocked canonical status move.
+    addLocked();
     addCanonical(() => true);
     addStandIns();
   }

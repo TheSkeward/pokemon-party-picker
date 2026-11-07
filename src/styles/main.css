@@ -1638,8 +1638,10 @@ html {
   color: var(--text-muted);
 }
 
-/* A stand-in names the blocked canonical move it answers for. */
-.team-set-move-standin {
+/* A stand-in names the blocked canonical move it answers for; a locked move
+   is one the pool fixed in every set built for the line. */
+.team-set-move-standin,
+.team-set-move-lock {
   font-size: var(--type-s);
   color: var(--text-muted);
   font-style: italic;

@@ -225,6 +225,21 @@ purpose: a floor on usage instead of the canonical set would let Explosion
 back onto Forretress, whose record runs it in one set of twenty, and the
 build without the Pineco hold would win again.
 
+A move the pool locks into a line (`Meowstic {Thunder Wave}`) is that
+line's own canonical move, ranked above the usage record: the set is built
+from the locks in the pool's order, then the record's top moves to four.
+Every build seats the locks first, the coverage set included, and no fill
+takes a lock's seat, so the score describes the set the player runs rather
+than passing a verdict on it. A lock the cap still blocks waits for its
+route like any canonical move, with no stand-in and no reserved seat; one
+the game never teaches the line is reported, not seated. A locked self-KO
+move seats, since the lock is the record. The readiness ramp counts no
+lock: it measures how far the mon is toward the set its usage describes,
+and a lock is the player's canon, not the ladder's, so locking moves the
+score only through the set it builds. Counting locks there had let two
+locked moves carry Meowstic to full usage trust and cut its score by
+two-thirds for a set its record never ran.
+
 Snore and Sleep Talk seat only in a set that carries Rest, or on a Comatose
 user: they act only while the user sleeps, so the ladder's Rest sets do not
 make them worth a slot in a set that cannot sleep.

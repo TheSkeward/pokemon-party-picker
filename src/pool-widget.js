@@ -66,7 +66,7 @@ import {
   getRenewablyObtainableItems,
 } from './games/items.js';
 import { buildPoolAvailabilityText } from './teamBuilder/availability-export';
-import { withMetLevels } from './teamBuilder/input-groups';
+import { withPoolAnnotations } from './teamBuilder/input-groups';
 import {
   assignTeamItems,
   loadTeamItemUsage,
@@ -1357,7 +1357,9 @@ export function mountPoolOptimizer(container, options = {}) {
         lines: state.result.lines,
         pokemonIndex,
         poolQuery,
-        progression: withMetLevels(state.progression, poolQuery, pokemonIndex),
+        progression: withPoolAnnotations(
+          state.progression, poolQuery, pokemonIndex,
+        ),
       });
 
       state.availabilityText = text;

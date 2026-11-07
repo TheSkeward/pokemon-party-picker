@@ -635,6 +635,30 @@ export function receivedForm(legalMoveData, progression = {}) {
 }
 
 /**
+ * The moves the pool locks into this line's set ("Meowstic {Thunder
+ * Wave}"), read from progression.lockedMovesByPokemon by walking the
+ * fielded form's ancestry (a Mega's base species, then each
+ * pre-evolution), in the pool's order; empty when nothing on the line is
+ * locked.
+ * @param {!Object=} progression
+ * @param {?string=} pokemonId
+ * @return {!Array<string>}
+ */
+export function lockedMoveIdsFor(progression = {}, pokemonId = null) {
+  const locks = progression.lockedMovesByPokemon;
+  if (!locks || !pokemonId) return [];
+  const species = dex().progressionSpecies;
+  const walked = new Set();
+  for (let id = pokemonId; id && !walked.has(id);) {
+    if (Array.isArray(locks[id]) && locks[id].length) return locks[id];
+    walked.add(id);
+    const record = species[id];
+    id = (record?.isMega && record.baseSpeciesId) || record?.prevoId;
+  }
+  return [];
+}
+
+/**
  * @return {!Map<string, !Object>} getAvailableMoves keyed by move id.
  */
 export function getAvailableMoveMap(legalMoveData, progression) {

@@ -591,7 +591,21 @@ function renderSetReadiness(readiness, profile = null) {
     )}</small></div>`
     : '';
 
-  const parts = [`${readiness.readyMoveCount}/${readiness.moves.length} moves`];
+  const parts = [];
+  if (readiness.moves.length) {
+    parts.push(`${readiness.readyMoveCount}/${readiness.moves.length} moves`);
+  }
+  // Every lock, the ones inside the competitive set included.
+  const locks = [
+    ...readiness.moves.filter((move) => move.locked),
+    ...(readiness.lockedMoves || []),
+  ];
+  if (locks.length) {
+    const ready = locks.filter(
+      (move) => move.status === 'ready' || move.status === 'scaling',
+    ).length;
+    parts.push(`${ready}/${locks.length} locked`);
+  }
   if (readiness.item?.name) {
     if (readiness.item.status === 'ready') parts.push('item ✓');
     else if (readiness.item.status === 'later')
@@ -607,10 +621,11 @@ function renderSetReadiness(readiness, profile = null) {
   );
 
   const tooltip = [
-    ...readiness.moves.map((move) => {
+    ...[...readiness.moves, ...(readiness.lockedMoves || [])].map((move) => {
       const mark =
         move.status === 'ready' ? '✓' : move.status === 'scaling' ? '↗' : '✗';
-      return `${mark} ${move.label}${move.detail ? ` — ${move.detail}` : ''}`;
+      const lock = move.locked ? ' (locked in the pool)' : '';
+      return `${mark} ${move.label}${lock}${move.detail ? ` — ${move.detail}` : ''}`;
     }),
     readiness.item?.name
       ? `${readiness.item.status === 'ready' ? '✓' : '✗'} ${readiness.item.name}${
@@ -675,7 +690,7 @@ function renderSetMove(move) {
   return `
     <div class="team-set-move">
       ${renderTypeBadge(move.type)}
-      <span class="team-set-move-name"${facts ? ` title="${escapeHtml(facts)}"` : ''}>${escapeHtml(move.name)}${move.standsInFor ? ` <small class="team-set-move-standin" title="${escapeAttr(`Stands in for ${move.standsInFor.name}, a move of this set that cannot be learned yet`)}">for ${escapeHtml(move.standsInFor.name)}</small>` : ''}</span>
+      <span class="team-set-move-name"${facts ? ` title="${escapeHtml(facts)}"` : ''}>${escapeHtml(move.name)}${move.standsInFor ? ` <small class="team-set-move-standin" title="${escapeAttr(`Stands in for ${move.standsInFor.name}, a move of this set that cannot be learned yet`)}">for ${escapeHtml(move.standsInFor.name)}</small>` : ''}${move.locked ? ' <small class="team-set-move-lock" title="Locked in the pool: this move is in every set built for the line">locked</small>' : ''}</span>
       <span class="team-set-move-dmg"${move.damageSteps?.length ? ` title="${escapeAttr(move.damageSteps.join('\n'))}"` : ''}>${escapeHtml(formatDamage(move))}</span>
       <span class="team-set-move-src" title="${escapeAttr(sourceTitle)}">${escapeHtml(move.sourceLabel || 'Legal')}</span>
     </div>

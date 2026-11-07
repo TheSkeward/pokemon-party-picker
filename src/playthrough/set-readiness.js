@@ -1,7 +1,8 @@
 /**
  * @fileoverview Canonical-set readiness (display only): how much of a mon's
  * competitive set — its top-4 usage moves plus canonical item — is assemblable
- * right now, and the cap at which it completes ("L*").
+ * right now, and the cap at which it completes ("L*"). The pool's move locks
+ * are priced beside it, never counted in it.
  *
  * Definitional rules:
  *   - A level-scaling move in the canonical set (Seismic Toss class: damage =
@@ -24,7 +25,7 @@ import {
   getItemUnlockBadge,
   getUnlockBadge,
 } from '../games/schedule.js';
-import { receivedForm } from './legal-moves.js';
+import { lockedMoveIdsFor, receivedForm } from './legal-moves.js';
 import { mechanics, moveSources } from '../games/legality.js';
 import { fixedMoveDamage } from '../teamBuilder/damage-model.js';
 import { getMoveMetaById } from '../move-meta.js';
@@ -83,17 +84,28 @@ const badgePhrase = (badge) =>
   badge === 0 ? 'from the start' : `@${badge} badge${badge === 1 ? '' : 's'}`;
 
 /**
- * The canonical competitive set: the top-N usage moves of the represented form.
+ * The canonical competitive set: the pool's locked moves in their order,
+ * then the top usage moves of the represented form until the set holds N.
  * @param {?Map<string, number>} moveUsage Move id -> usage %.
  * @param {number=} size
+ * @param {!Array<string>=} lockedMoveIds
  * @return {Array<string>}
  */
-export function canonicalMoveIds(moveUsage, size = CANONICAL_SET_SIZE) {
-  if (!moveUsage?.size) return [];
-  return [...moveUsage.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, size)
-    .map(([id]) => id);
+export function canonicalMoveIds(
+  moveUsage, size = CANONICAL_SET_SIZE, lockedMoveIds = [],
+) {
+  const ids = [];
+  for (const id of lockedMoveIds || []) {
+    if (!ids.includes(id)) ids.push(id);
+  }
+  const byUsage = moveUsage?.size
+    ? [...moveUsage.entries()].sort((a, b) => b[1] - a[1])
+    : [];
+  for (const [id] of byUsage) {
+    if (ids.length >= size) break;
+    if (!ids.includes(id)) ids.push(id);
+  }
+  return ids.slice(0, size);
 }
 
 /**
@@ -101,11 +113,13 @@ export function canonicalMoveIds(moveUsage, size = CANONICAL_SET_SIZE) {
  * with a human detail (moves: "ready" / "scaling" / "later" / "blocked"; item:
  * "ready" / "later" / "unknown" / "none") and the cap at which the set
  * completes.
- * @return {?Object} Null when there is no canonical set (no usage data).
- *     `fullAtCap` is null when the set is complete now; `pendingPickups` marks
- *     sets gated only on pickups already reachable at the current cap;
- *     `needsRebreed` marks a set the fielded individual can never complete
- *     (an egg-only canonical move with no egg possible yet).
+ * @return {?Object} Null when there is no canonical set (no usage data and
+ *     no locked move). `fullAtCap` is null when the set is complete now;
+ *     `pendingPickups` marks sets gated only on pickups already reachable
+ *     at the current cap; `needsRebreed` marks a set the fielded individual
+ *     can never complete (an egg-only canonical move with no egg possible
+ *     yet). Each move says whether the pool locked it, and `lockedMoves`
+ *     prices the locks outside the competitive set without counting them.
  */
 export function computeSetReadiness({
   legalMoveData,
@@ -113,8 +127,10 @@ export function computeSetReadiness({
   topSet,
   progression = {},
 }) {
+  const locked = lockedMoveIdsFor(progression, legalMoveData?.pokemonId);
   const canonical = canonicalMoveIds(topSet?.moveUsage);
-  if (!canonical.length) return null;
+  if (!canonical.length && !locked.length) return null;
+  const lockedIds = new Set(locked);
 
   const availableIds = new Set(availableMoves.map((move) => move.id));
   // Usage data collapses every Hidden Power variant to the single id
@@ -135,12 +151,14 @@ export function computeSetReadiness({
   const capNeeds = []; // cap-equivalents of everything not ready yet
   let scaling = false;
 
-  const moves = canonical.map((id) => {
+  // Prices one move: its status now and, for a move of the competitive set
+  // (`counts`), the cap-equivalent of its earliest route.
+  const price = (id, counts) => {
     const label =
       availableMoves.find((move) => move.id === id)?.name ||
       getMoveMetaById(id)?.name ||
       id;
-    if (isLevelScalingMove(id)) scaling = true;
+    if (counts && isLevelScalingMove(id)) scaling = true;
 
     if (id === 'hiddenpower' && !mechanics().hiddenPowerTypeChanger) {
       return {
@@ -255,14 +273,24 @@ export function computeSetReadiness({
     }
 
     candidates.sort((a, b) => a.cap - b.cap);
-    capNeeds.push(candidates[0].cap);
+    if (counts) capNeeds.push(candidates[0].cap);
     // Every route is worth knowing: a pre-evolution's level-up closes when
     // the stone is used, and the TM is the way back.
     const detail = candidates
       .map((candidate) => candidate.detail)
       .join(' · or ');
     return { id, label, status: 'later', detail };
-  });
+  };
+  const moves = canonical.map((id) => ({
+    ...price(id, true), locked: lockedIds.has(id),
+  }));
+  // The pool's locks outside the competitive set, priced the same way but
+  // counted in neither the ready ratio nor the completion cap: those
+  // measure how far the mon is toward the set its usage describes, and a
+  // lock is the player's canon, not the ladder's.
+  const lockedMoves = locked
+    .filter((id) => !canonical.includes(id))
+    .map((id) => ({ ...price(id, false), locked: true }));
 
   const itemName = topSet?.item || null;
   const itemId = itemName ? toId(itemName) : '';
@@ -305,6 +333,7 @@ export function computeSetReadiness({
   return {
     pendingPickups,
     moves,
+    lockedMoves,
     readyMoveCount: moves.filter(
       (move) => move.status === 'ready' || move.status === 'scaling',
     ).length,

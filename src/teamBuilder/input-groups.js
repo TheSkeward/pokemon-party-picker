@@ -1,6 +1,12 @@
 import { resolveQueryEntries } from '../data';
-import { parseMetLevels, parsePoolTokens } from './pool-parsing';
+import {
+  parseLockedMoves,
+  parseMetLevels,
+  parsePoolTokens,
+} from './pool-parsing';
 import { normalizeName } from './name-utils';
+import { getMoveMeta } from '../move-meta.js';
+import { toId } from '../utils/ids.js';
 
 /**
  * The pool's met levels by species id ("Munna@14" -> { munna: 14 }),
@@ -25,20 +31,75 @@ export function metLevelsByPokemonId(query, pokemonIndex) {
 }
 
 /**
- * The progression with the pool's met levels stamped in as
- * metLevelByPokemon, so every legality pass (optimizer, analysis, legal-moves
- * panel, availability list) reads the same ones. The progression itself when
- * the pool carries none, so cache keys are untouched for pools without them.
+ * The pool's move locks by species id ("Meowstic {Thunder Wave}" ->
+ * { meowstic: ['thunderwave'] }), in the pool's order, each name resolved
+ * through the move catalog. A name the catalog lacks is left out here and
+ * reported by unknownMoveLocks.
+ * @param {string} query
+ * @param {Array<Object>} pokemonIndex
+ * @return {!Object<string, !Array<string>>}
+ */
+export function lockedMovesByPokemonId(query, pokemonIndex) {
+  return resolveMoveLocks(query, pokemonIndex).byId;
+}
+
+/**
+ * The locked move names no move in the game answers to, with the entry
+ * that carries each, for the pool's input report.
+ * @param {string} query
+ * @param {Array<Object>} pokemonIndex
+ * @return {!Array<{name: string, move: string}>}
+ */
+export function unknownMoveLocks(query, pokemonIndex) {
+  return resolveMoveLocks(query, pokemonIndex).unknown;
+}
+
+function resolveMoveLocks(query, pokemonIndex) {
+  const byName = parseLockedMoves(query, pokemonIndex);
+  const byId = {};
+  const unknown = [];
+  if (!byName.size) return { byId, unknown };
+  for (const group of buildInputGroups(query, pokemonIndex)) {
+    if (group.unresolved) continue;
+    const names = byName.get(normalizeName(group.input.name));
+    if (!names || byId[group.input.id]) continue;
+    const ids = [];
+    for (const name of names) {
+      if (!getMoveMeta(name)) {
+        unknown.push({ name: group.input.name, move: name });
+        continue;
+      }
+      const id = toId(name);
+      if (!ids.includes(id)) ids.push(id);
+    }
+    if (ids.length) byId[group.input.id] = ids;
+  }
+  return { byId, unknown };
+}
+
+/**
+ * The progression with the pool's per-entry marks stamped in: met levels as
+ * metLevelByPokemon and move locks as lockedMovesByPokemon, so every
+ * legality pass (optimizer, analysis, legal-moves panel, availability list)
+ * reads the same ones. The progression itself when the pool carries none,
+ * so cache keys are untouched for pools without them.
  * @param {!Object} progression
  * @param {string} query
  * @param {Array<Object>} pokemonIndex
  * @return {!Object}
  */
-export function withMetLevels(progression, query, pokemonIndex) {
+export function withPoolAnnotations(progression, query, pokemonIndex) {
   if (!query || !Array.isArray(pokemonIndex)) return progression;
+  const marks = {};
   const metLevelByPokemon = metLevelsByPokemonId(query, pokemonIndex);
-  if (!Object.keys(metLevelByPokemon).length) return progression;
-  return { ...progression, metLevelByPokemon };
+  if (Object.keys(metLevelByPokemon).length) {
+    marks.metLevelByPokemon = metLevelByPokemon;
+  }
+  const lockedMovesByPokemon = lockedMovesByPokemonId(query, pokemonIndex);
+  if (Object.keys(lockedMovesByPokemon).length) {
+    marks.lockedMovesByPokemon = lockedMovesByPokemon;
+  }
+  return Object.keys(marks).length ? { ...progression, ...marks } : progression;
 }
 
 /**

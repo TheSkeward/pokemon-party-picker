@@ -14,7 +14,8 @@ export function parsePoolTokens(query, pokemonIndex) {
  * competitive-primary assumption for that line. The optimizer validates the
  * text against the line's real ability options and silently ignores anything
  * that doesn't match, so ordinary parenthetical noise in pasted lists can't
- * corrupt scoring.
+ * corrupt scoring. A move lock ("{Thunder Wave}") beside it is not an
+ * annotation.
  * @param {string} query
  * @param {Array<Object>} pokemonIndex
  * @return {Map<string, string>} Normalized pokemon name -> annotation text.
@@ -25,7 +26,7 @@ export function parseAbilityAnnotations(query, pokemonIndex) {
     for (const part of rawLine.split(',')) {
       const match =
         /^(.*?)\s*[([]\s*([A-Za-z][A-Za-z' -]{1,28})\s*[)\]]\s*$/.exec(
-          part.trim(),
+          stripMoveLock(part).trim(),
         );
       if (!match) continue;
       const name = findPokemonNameInText(match[1], pokemonIndex);
@@ -106,6 +107,26 @@ export function parseMetLevels(query, pokemonIndex) {
 }
 
 /**
+ * Move locks: a pool entry written as "Meowstic {Thunder Wave / Psychic}"
+ * fixes those moves in every set built for the line, in that order, as the
+ * player's own canonical moves; fewer than four leaves the rest of the set
+ * to the builder. Names are kept as written; input-groups.js resolves them
+ * against the move catalog.
+ * @param {string} query
+ * @param {Array<Object>} pokemonIndex
+ * @return {Map<string, !Array<string>>} Normalized name -> move names.
+ */
+export function parseLockedMoves(query, pokemonIndex) {
+  const locks = new Map();
+  for (const entry of poolEntries(query, pokemonIndex).values()) {
+    if (entry.moves.length) {
+      locks.set(normalizeName(entry.canonical), entry.moves);
+    }
+  }
+  return locks;
+}
+
+/**
  * Rewrites the pool text in canonical form with one entry locked or
  * unlocked. Same output shape as normalizePoolText.
  * @param {string} query
@@ -126,8 +147,8 @@ export function setPoolEntryLock(query, name, locked, pokemonIndex) {
  * @param {string} query
  * @param {Array<Object>} pokemonIndex
  * @return {string} Deduplicated canonical names, alphabetized and
- *     comma-joined, each keeping its lock and keep markers and ability
- *     annotation.
+ *     comma-joined, each keeping its lock and keep markers, ability
+ *     annotation and move lock.
  *     Annotations must survive normalization: the widget normalizes the pool
  *     text before every optimize, so anything dropped here never reaches
  *     the optimizer.
@@ -138,9 +159,10 @@ export function normalizePoolText(query, pokemonIndex) {
 
 /**
  * @return {Map<string, {canonical: string, ability: ?string,
- *     locked: boolean, kept: boolean}>} Normalized name -> entry,
- *     deduplicated; a name locked, kept or annotated on any of its
- *     occurrences keeps that fact.
+ *     locked: boolean, kept: boolean, metLevel: ?(number|true),
+ *     moves: !Array<string>}>} Normalized name -> entry, deduplicated; a
+ *     name locked, kept or annotated on any of its occurrences keeps that
+ *     fact, and its move locks accumulate in order.
  */
 function poolEntries(query, pokemonIndex) {
   const annotations = parseAbilityAnnotations(query, pokemonIndex);
@@ -159,10 +181,16 @@ function poolEntries(query, pokemonIndex) {
         locked: false,
         kept: false,
         metLevel: null,
+        moves: [],
       };
       if (hasLockMarker(part)) entry.locked = true;
       if (hasKeepMarker(part)) entry.kept = true;
       if (entry.metLevel == null) entry.metLevel = metLevelOf(part);
+      for (const move of movesOf(part)) {
+        if (!entry.moves.some((seen) => sameMove(seen, move))) {
+          entry.moves.push(move);
+        }
+      }
       entries.set(key, entry);
     }
   }
@@ -178,9 +206,36 @@ const MET_MARK = /@\s*(\d{1,3})?(?=[\s!*]*$)/;
 // A met level's digits anywhere in a token, for name resolution: "Porygon@2"
 // must not read as Porygon2.
 const MET_DIGITS = /@\s*\d{1,3}(?!\d)/;
+// "{Psychic / Thunder Wave}": the moves locked into the entry's set, slash-
+// separated. Braces, because parentheses and brackets carry the ability
+// annotation and the comma separates entries.
+const MOVE_LOCK = /\{([^}]*)\}/g;
 
+function stripMoveLock(token) {
+  return String(token || '').replace(MOVE_LOCK, ' ');
+}
+
+const sameMove = (a, b) => a.toLowerCase() === b.toLowerCase();
+
+// The locked move names of a token, as written, deduplicated.
+function movesOf(token) {
+  const names = [];
+  for (const match of String(token || '').matchAll(MOVE_LOCK)) {
+    for (const raw of match[1].split('/')) {
+      const name = raw.trim().replace(/\s+/g, ' ');
+      if (name && !names.some((seen) => sameMove(seen, name))) {
+        names.push(name);
+      }
+    }
+  }
+  return names;
+}
+
+// The token without its move lock or trailing ability annotation. The lock
+// goes first: it may follow the annotation, and a move name must never read
+// as a marker or a Pokémon name.
 function stripAnnotation(token) {
-  return String(token || '')
+  return stripMoveLock(token)
     .trim()
     .replace(/\s*[([][^)\]]*[)\]]\s*$/, '');
 }
@@ -218,10 +273,11 @@ function hasKeepMarker(token) {
 function formatPoolEntries(entries) {
   return [...entries.values()]
     .map(
-      ({ canonical, ability, locked, kept, metLevel }) =>
+      ({ canonical, ability, locked, kept, metLevel, moves }) =>
         canonical + (metLevel === true ? '@' : metLevel ? `@${metLevel}` : '') +
         (locked ? '!' : '') + (kept ? '*' : '') +
-        (ability ? ` (${ability})` : ''),
+        (ability ? ` (${ability})` : '') +
+        (moves.length ? ` {${moves.join(' / ')}}` : ''),
     )
     .sort((a, b) => a.localeCompare(b))
     .join(', ');
@@ -274,7 +330,7 @@ function extractNameFromPoolToken(value, pokemonIndex) {
 }
 
 function findPokemonNameInText(value, pokemonIndex) {
-  const text = String(value || '').replace(MET_DIGITS, ' ').trim();
+  const text = stripMoveLock(value).replace(MET_DIGITS, ' ').trim();
   const key = normalizeName(text);
   if (!key) return null;
 

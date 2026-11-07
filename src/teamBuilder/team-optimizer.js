@@ -23,12 +23,17 @@ import {
 import {
   getAvailableMoves,
   loadLegalMoveData,
+  lockedMoveIdsFor,
 } from '../playthrough/legal-moves';
 import { buildCandidateLegalityProfile } from './team-analysis';
 import { loadTopSet } from './top-spread.js';
 import { resolveBuildAbilities } from './ability-path.js';
 import { computeSetReadiness } from '../playthrough/set-readiness.js';
-import { buildInputGroups, withMetLevels } from './input-groups';
+import {
+  buildInputGroups,
+  unknownMoveLocks,
+  withPoolAnnotations,
+} from './input-groups';
 import { isInertInFamily } from '../move-meta.js';
 import {
   parseAbilityAnnotations,
@@ -280,7 +285,9 @@ const MAX_RESULT_CACHE = 400;
 // move; the seat of a canonical attack a build cannot seat (set aside by
 // the coverage build, or reached only by an evolution hold) is refilled
 // only from attacks the record runs meaningfully, else by a utility move.
-const RESULT_CACHE_VERSION = '86';
+// v87: the pool's move locks ("Meowstic {Thunder Wave}") seat first in
+// every build as the line's own canonical moves.
+const RESULT_CACHE_VERSION = '87';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.
@@ -354,9 +361,13 @@ export async function optimizeTeamFromPool({
 
   await ensureHydrated();
 
-  // Met levels ("Munna@14") gate a line's level-1 moves, so they ride the
-  // progression into every legality pass below and into its signature.
-  progression = withMetLevels(progression, query, pokemonIndex);
+  // Met levels ("Munna@14") gate a line's level-1 moves and move locks
+  // ("Meowstic {Thunder Wave}") fix its sets, so both ride the progression
+  // into every legality pass below and into its signature.
+  progression = withPoolAnnotations(progression, query, pokemonIndex);
+  // Locked move names no move in the game answers to, for the input
+  // report; they key nothing, so a memo hit reports them too.
+  const ignoredMoveLocks = unknownMoveLocks(query, pokemonIndex);
   const { breedingContext, sketchContext } =
     await buildMoveTransferContexts({
       pokemonIndex,
@@ -447,6 +458,7 @@ export async function optimizeTeamFromPool({
       resolveMs: 0,
       searchMs: 0,
     };
+    memoized.ignoredMoveLocks = ignoredMoveLocks;
     return memoized;
   }
 
@@ -557,6 +569,7 @@ export async function optimizeTeamFromPool({
   };
   result.poolSelection = scoringPool.selection;
   result.poolUsageEntries = scoringPool.poolUsageEntries;
+  result.ignoredMoveLocks = ignoredMoveLocks;
   // Warm = anything short of from-scratch: line-cache hits and/or an
   // incremental (grown) search. Cold = every line resolved fresh AND a full
   // search.
@@ -1434,6 +1447,8 @@ async function resolveCandidateBuilds({
     .filter((move) => !isInertInFamily(move.id, family));
   const naturalMoves = moves.filter((move) => !move.delayedEvolution);
   const delayedMoves = moves.filter((move) => move.delayedEvolution);
+  // The pool's move locks for this line, seated first in every build.
+  const lockedMoveIds = lockedMoveIdsFor(memberProgression, battleSpeciesId);
 
   // Ability: a user annotation ("Froakie (Torrent)") pins the caught mon's real
   // ability; otherwise assume its primary competitive ability and measure
@@ -1510,6 +1525,7 @@ async function resolveCandidateBuilds({
       // The hold routes this build may leave out; the delayed build carries
       // them in buildMoves, where they are ordinary moves.
       holdReachableMoveIds: new Set(delayedMoves.map((move) => move.id)),
+      lockedMoveIds,
       representativeName: candidate.name,
       levelCap: progression.levelCap,
       ability,

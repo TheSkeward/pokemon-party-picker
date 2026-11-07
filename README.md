@@ -32,6 +32,11 @@ https://theskeward.github.io/pokemon-party-picker/
   `@` (`Munna@`) means it arrived too late to have them at all. Everything
   learned at level 2 or above is reachable by candying down, so the level
   decides nothing else.
+- Lock moves into a Pokemon's set with braces (`Meowstic {Thunder Wave /
+  Psychic}`): they are that Pokemon's own canonical moves, seated first in
+  every set the optimizer builds for it and scored as such. Fewer than four
+  leaves the rest to the recommendation; a lock the game cannot teach yet
+  waits, and the readiness line says when it arrives.
 - The donor box is your whole box: everything you add to the pool lands
   there and stays when you remove it from the pool. Donors supply egg moves,
   Sketch partners, and move transfers; only the pool is fielded.

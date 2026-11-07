@@ -101,3 +101,35 @@ test('a bare @ marks a late arrival; a pasted Showdown item line does not', asyn
     [['eevee', true], ['munna', true], ['rockruff', true]],
   );
 });
+
+test('a move lock rides the entry beside every other mark', async () => {
+  const { parseLockedMoves, parseLockedNames, parseMetLevels } = await import(
+    '../src/teamBuilder/pool-parsing.js',
+  );
+  const meowstic =
+    'Meowstic@14!* (Prankster) {Psychic / Reflect / Light Screen / Thunder Wave}';
+  const query =
+    `${meowstic}, Mew {Natural Gift}, Eevee {Bite} (Adaptability), ` +
+    'Eevee {Bite / Quick Attack}';
+  const normalized = normalizePoolText(query, pokemonIndex);
+  assert.equal(
+    normalized,
+    `Eevee (Adaptability) {Bite / Quick Attack}, ${meowstic}, Mew {Natural Gift}`,
+  );
+  assert.deepEqual(
+    [...parseLockedMoves(normalized, pokemonIndex)].sort(),
+    [
+      ['eevee', ['Bite', 'Quick Attack']],
+      ['meowstic', ['Psychic', 'Reflect', 'Light Screen', 'Thunder Wave']],
+      // Natural Gift is no Natu: a move name never reads as a Pokémon.
+      ['mew', ['Natural Gift']],
+    ],
+  );
+  // The lock hides none of the other marks.
+  assert.deepEqual(
+    [...parseAbilityAnnotations(normalized, pokemonIndex)].sort(),
+    [['eevee', 'Adaptability'], ['meowstic', 'Prankster']],
+  );
+  assert.deepEqual([...parseLockedNames(normalized, pokemonIndex)], ['meowstic']);
+  assert.deepEqual([...parseMetLevels(normalized, pokemonIndex)], [['meowstic', 14]]);
+});
