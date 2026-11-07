@@ -37,6 +37,9 @@ https://theskeward.github.io/pokemon-party-picker/
   every set the optimizer builds for it and scored as such. Fewer than four
   leaves the rest to the recommendation; a lock the game cannot teach yet
   waits, and the readiness line says when it arrives.
+- The pool is written back alphabetized after each optimize: plain entries
+  share comma-joined lines, and an entry with an ability or a move lock
+  stands on its own line.
 - The donor box is your whole box: everything you add to the pool lands
   there and stays when you remove it from the pool. Donors supply egg moves,
   Sketch partners, and move transfers; only the pool is fielded.

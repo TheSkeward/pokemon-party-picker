@@ -146,9 +146,10 @@ export function setPoolEntryLock(query, name, locked, pokemonIndex) {
 /**
  * @param {string} query
  * @param {Array<Object>} pokemonIndex
- * @return {string} Deduplicated canonical names, alphabetized and
- *     comma-joined, each keeping its lock and keep markers, ability
- *     annotation and move lock.
+ * @return {string} Deduplicated canonical names, alphabetized, each keeping
+ *     its lock and keep markers, ability annotation and move lock. Plain
+ *     entries share comma-joined lines; an entry with an ability or a move
+ *     lock stands on its own line.
  *     Annotations must survive normalization: the widget normalizes the pool
  *     text before every optimize, so anything dropped here never reaches
  *     the optimizer.
@@ -270,17 +271,43 @@ function hasKeepMarker(token) {
   return /^[!*]*\*\S/.test(bare) || /\S\s*\*[!*]*$/.test(bare);
 }
 
+// The pool text written back: alphabetical, with each run of plain entries
+// (a name and its markers) comma-joined on one line and every entry that
+// carries an ability or a move lock on a line of its own, so a pool of bare
+// names stays one line and an annotated entry reads at a glance.
 function formatPoolEntries(entries) {
-  return [...entries.values()]
-    .map(
-      ({ canonical, ability, locked, kept, metLevel, moves }) =>
-        canonical + (metLevel === true ? '@' : metLevel ? `@${metLevel}` : '') +
-        (locked ? '!' : '') + (kept ? '*' : '') +
-        (ability ? ` (${ability})` : '') +
-        (moves.length ? ` {${moves.join(' / ')}}` : ''),
-    )
-    .sort((a, b) => a.localeCompare(b))
-    .join(', ');
+  const formatted = [...entries.values()]
+    .map((entry) => ({
+      text: formatPoolEntry(entry),
+      annotated: Boolean(entry.ability || entry.moves.length),
+    }))
+    .sort((a, b) => a.text.localeCompare(b.text));
+  const lines = [];
+  let run = [];
+  const flush = () => {
+    if (run.length) lines.push(run.join(', '));
+    run = [];
+  };
+  for (const { text, annotated } of formatted) {
+    if (!annotated) {
+      run.push(text);
+      continue;
+    }
+    flush();
+    lines.push(text);
+  }
+  flush();
+  return lines.join('\n');
+}
+
+function formatPoolEntry({
+  canonical, ability, locked, kept, metLevel, moves,
+}) {
+  return canonical +
+    (metLevel === true ? '@' : metLevel ? `@${metLevel}` : '') +
+    (locked ? '!' : '') + (kept ? '*' : '') +
+    (ability ? ` (${ability})` : '') +
+    (moves.length ? ` {${moves.join(' / ')}}` : '');
 }
 
 function extractPoolNames(query, pokemonIndex) {

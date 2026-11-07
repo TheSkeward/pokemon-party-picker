@@ -12,7 +12,7 @@ const pokemonIndex = JSON.parse(
 test('normalizePoolText keeps ability annotations', () => {
   const query = 'Froakie (Torrent), bidoof\nGothitelle [Shadow Tag]';
   const normalized = normalizePoolText(query, pokemonIndex);
-  assert.equal(normalized, 'Bidoof, Froakie (Torrent), Gothitelle (Shadow Tag)');
+  assert.equal(normalized, 'Bidoof\nFroakie (Torrent)\nGothitelle (Shadow Tag)');
   assert.deepEqual(
     [...parseAbilityAnnotations(normalized, pokemonIndex)],
     [...parseAbilityAnnotations(query, pokemonIndex)],
@@ -50,7 +50,7 @@ test('a keep marker survives normalization beside a lock and an annotation', asy
   const normalized = normalizePoolText(query, pokemonIndex);
   assert.equal(
     normalized,
-    'Eevee, Gengar!* (Cursed Body), Larvesta*, Rockruff*',
+    'Eevee\nGengar!* (Cursed Body)\nLarvesta*, Rockruff*',
   );
   assert.deepEqual(
     [...parseKeptNames(normalized, pokemonIndex)].sort(),
@@ -76,7 +76,7 @@ test('a met level rides the entry and never fuses with the name', async () => {
   );
   assert.equal(
     normalized,
-    'Munna@14!* (Synchronize), Porygon@2, Rockruff@7*',
+    'Munna@14!* (Synchronize)\nPorygon@2, Rockruff@7*',
   );
   assert.deepEqual(
     [...parseMetLevels(normalized, pokemonIndex)].sort(),
@@ -94,7 +94,7 @@ test('a bare @ marks a late arrival; a pasted Showdown item line does not', asyn
   );
   assert.equal(
     normalized,
-    'Eevee@, Gengar, Munna@ (Synchronize), Rockruff@!*',
+    'Eevee@, Gengar\nMunna@ (Synchronize)\nRockruff@!*',
   );
   assert.deepEqual(
     [...parseMetLevels(normalized, pokemonIndex)].sort(),
@@ -114,7 +114,7 @@ test('a move lock rides the entry beside every other mark', async () => {
   const normalized = normalizePoolText(query, pokemonIndex);
   assert.equal(
     normalized,
-    `Eevee (Adaptability) {Bite / Quick Attack}, ${meowstic}, Mew {Natural Gift}`,
+    `Eevee (Adaptability) {Bite / Quick Attack}\n${meowstic}\nMew {Natural Gift}`,
   );
   assert.deepEqual(
     [...parseLockedMoves(normalized, pokemonIndex)].sort(),
@@ -132,4 +132,30 @@ test('a move lock rides the entry beside every other mark', async () => {
   );
   assert.deepEqual([...parseLockedNames(normalized, pokemonIndex)], ['meowstic']);
   assert.deepEqual([...parseMetLevels(normalized, pokemonIndex)], [['meowstic', 14]]);
+});
+
+test('an annotated entry takes its own line; plain runs share one', () => {
+  // A pool of bare names and markers stays one line.
+  assert.equal(
+    normalizePoolText('Wooper, Aron!, Larvesta*, Munna@14', pokemonIndex),
+    'Aron!, Larvesta*, Munna@14, Wooper',
+  );
+  // Alphabetical order holds across the lines; a plain run between two
+  // annotated entries is one line, however long.
+  const normalized = normalizePoolText(
+    'Wooper, Mawile* (Intimidate) {Iron Head / Sucker Punch}, Onix, ' +
+      'Aron, Amoonguss* (Regenerator) {Toxic / Spore}, Beedrill, Meditite',
+    pokemonIndex,
+  );
+  assert.equal(
+    normalized,
+    [
+      'Amoonguss* (Regenerator) {Toxic / Spore}',
+      'Aron, Beedrill',
+      'Mawile* (Intimidate) {Iron Head / Sucker Punch}',
+      'Meditite, Onix, Wooper',
+    ].join('\n'),
+  );
+  // The layout is a fixed point: normalizing it again changes nothing.
+  assert.equal(normalizePoolText(normalized, pokemonIndex), normalized);
 });
