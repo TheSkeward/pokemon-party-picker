@@ -31,6 +31,7 @@ import {
 } from './teamBuilder/usage-line-ranking.js';
 import { computeTeamConfidence } from './teamBuilder/confidence.js';
 import { computeInvestmentPlan } from './teamBuilder/investment.js';
+import { OptimizePhase } from './teamBuilder/optimize-phase.js';
 import { setScoringOverrides } from './teamBuilder/scoring-constants.js';
 import {
   buildPerformanceReport,
@@ -125,7 +126,8 @@ export function mountPoolOptimizer(container, options = {}) {
     teamSortDir: getParam('teamSortDir') || loadSavedTeamSortDir() || 'desc',
     result: null,
     resultProgressionKey: '',
-    loading: false,
+    // Where the current run is (optimize-phase.js). The view switches on it.
+    phase: OptimizePhase.IDLE,
     statusMessage: '',
     availabilityText: '',
     teamItemUsage: null,
@@ -133,9 +135,8 @@ export function mountPoolOptimizer(container, options = {}) {
     itemRecommendations: {},
     confidence: null,
     investment: null,
-    analysisPending: false,
-    postAnalysisSkipped: null,
-    postAnalysisDeferred: false,
+    // Why the analysis step was skipped, set with the analysis-skipped phase.
+    postAnalysisSkipReason: null,
   };
 
   const setDetails = createTeamBuilderSetDetailsLoader({
@@ -208,13 +209,11 @@ export function mountPoolOptimizer(container, options = {}) {
     await activeAnalysis;
     if (runToken !== optimizeRunToken) return;
 
-    state.loading = true;
+    state.phase = OptimizePhase.OPTIMIZING;
     state.statusMessage = 'Optimizing pool...';
     state.confidence = null;
     state.investment = null;
-    state.analysisPending = false;
-    state.postAnalysisSkipped = null;
-    state.postAnalysisDeferred = false;
+    state.postAnalysisSkipReason = null;
     render();
     startOptimizeProgress(
       Math.min(
@@ -297,7 +296,9 @@ export function mountPoolOptimizer(container, options = {}) {
       setDetails.cancel();
 
       stopOptimizeProgress();
-      state.loading = false;
+      // The team is in. The analysis step owns the phase from here, so the
+      // render below shows its panels as pending rather than the optimize bar.
+      state.phase = OptimizePhase.ANALYZING;
       const polishSwapCount = state.result.searchPolish?.swaps?.length || 0;
       const approxNote = [
         state.result.searchExact
@@ -338,7 +339,7 @@ export function mountPoolOptimizer(container, options = {}) {
       console.error('Team Builder optimization failed', error);
 
       stopOptimizeProgress();
-      state.loading = false;
+      state.phase = OptimizePhase.FAILED;
       state.result = null;
       state.statusMessage = `Optimization failed: ${error?.message || error}`;
 
@@ -354,15 +355,18 @@ export function mountPoolOptimizer(container, options = {}) {
   // window (overrides poisoned under the base cache signature otherwise).
   async function runPostAnalysis(forResult, pipeline = null) {
     sweepAbortRequested = false;
+    // Entered from an optimize and from the deferred panel's button alike:
+    // the step is analyzing until it settles or exits early below.
+    state.phase = OptimizePhase.ANALYZING;
     state.confidence = null;
     state.investment = null;
-    state.postAnalysisSkipped = null;
-    state.postAnalysisDeferred = false;
+    state.postAnalysisSkipReason = null;
     let superseded = false;
     try {
       if (forResult.postAnalysis) {
         state.confidence = forResult.postAnalysis.confidence || null;
         state.investment = forResult.postAnalysis.investment || null;
+        state.phase = OptimizePhase.COMPLETE;
         if (pipeline) {
           pipeline.phases.confidence = 0;
           pipeline.phases.investment = 0;
@@ -373,7 +377,8 @@ export function mountPoolOptimizer(container, options = {}) {
 
       const skipReason = getPostAnalysisSkipReason(forResult);
       if (skipReason) {
-        state.postAnalysisSkipped = skipReason;
+        state.postAnalysisSkipReason = skipReason;
+        state.phase = OptimizePhase.ANALYSIS_SKIPPED;
         if (pipeline) {
           pipeline.phases.confidence = 0;
           pipeline.phases.investment = 0;
@@ -391,14 +396,13 @@ export function mountPoolOptimizer(container, options = {}) {
       // compute-now button, and an explicit Optimize click computes
       // everything as before.
       if (pipeline?.background) {
-        state.postAnalysisDeferred = true;
+        state.phase = OptimizePhase.ANALYSIS_DEFERRED;
         pipeline.phases.confidence = 0;
         pipeline.phases.investment = 0;
         render();
         return;
       }
 
-      state.analysisPending = true;
       const pendingHandle = render();
       // Wait for the movesets (Team Analysis panel) to land before starting
       // the sweep: its settings run as long synchronous blocks that starve
@@ -480,7 +484,11 @@ export function mountPoolOptimizer(container, options = {}) {
     } finally {
       setScoringOverrides(null);
       if (state.result === forResult) {
-        state.analysisPending = false;
+        // A step still analyzing has settled, panels landed or not; the
+        // deferred and skipped exits above already named their phase.
+        if (state.phase === OptimizePhase.ANALYZING) {
+          state.phase = OptimizePhase.COMPLETE;
+        }
         // One telemetry sample per completed interactive pipeline: optimizer
         // phases from telemetryMeta, item/render/analysis phases measured
         // here. Superseded runs are dropped — partial timings would skew the
@@ -567,7 +575,7 @@ export function mountPoolOptimizer(container, options = {}) {
     if (autoReoptimizeTimer) clearTimeout(autoReoptimizeTimer);
     autoReoptimizeTimer = setTimeout(() => {
       autoReoptimizeTimer = null;
-      if (state.loading) {
+      if (state.phase === OptimizePhase.OPTIMIZING) {
         scheduleAutoReoptimize(true, delayMs);
         return;
       }
@@ -1056,7 +1064,7 @@ export function mountPoolOptimizer(container, options = {}) {
 
         const saved = savePool(state.query);
 
-        state.result = null;
+        discardResult();
         state.resultProgressionKey = '';
         state.availabilityText = '';
         state.teamItemUsage = null;
@@ -1087,7 +1095,7 @@ export function mountPoolOptimizer(container, options = {}) {
         const saved = saveDonors(state.donorQuery);
         // Donors change what the pool can breed or Sketch, so the result
         // and everything derived from it are stale.
-        state.result = null;
+        discardResult();
         state.resultProgressionKey = '';
         state.availabilityText = '';
         state.teamItemUsage = null;
@@ -1109,7 +1117,9 @@ export function mountPoolOptimizer(container, options = {}) {
     app
       .querySelector('#compute-post-analysis-button')
       ?.addEventListener('click', () => {
-        if (!state.result || state.analysisPending) return;
+        if (!state.result || state.phase !== OptimizePhase.ANALYSIS_DEFERRED) {
+          return;
+        }
         activeAnalysis = runPostAnalysis(state.result, null);
       });
 
@@ -1187,7 +1197,7 @@ export function mountPoolOptimizer(container, options = {}) {
         // count clamps, unknown-field drops) as any other stored state.
         saveProgression(imported.progression);
         state.progression = loadSavedProgression();
-        state.result = null;
+        discardResult();
         recomputeItemRecommendations();
         render();
         updatePoolStatusMessage('Gamestate imported. Optimizing…');
@@ -1203,7 +1213,7 @@ export function mountPoolOptimizer(container, options = {}) {
       // The donor box is the whole box and outlives the pool: clearing the
       // pool empties the fieldable subset only.
       state.query = '';
-      state.result = null;
+      discardResult();
       state.resultProgressionKey = '';
       state.statusMessage = 'Saved pool cleared';
 
@@ -1704,6 +1714,16 @@ export function mountPoolOptimizer(container, options = {}) {
         state.resultProgressionKey &&
         state.resultProgressionKey !== getProgressionKey(state.progression),
     );
+  }
+
+  // An edit that discards the result ends the run that produced it: a sweep
+  // in flight sees the result change and stops itself. An optimize still in
+  // flight keeps its phase, since it will still land.
+  function discardResult() {
+    state.result = null;
+    if (state.phase !== OptimizePhase.OPTIMIZING) {
+      state.phase = OptimizePhase.IDLE;
+    }
   }
 
   function getProgressionSavedMessage(stale) {

@@ -19,6 +19,7 @@ import { accessFields, isAccessOpen } from '../games/evolution.js';
 import { moveSources } from '../games/legality.js';
 import { checkpointShortLabel, getCheckpoint } from '../games/schedule.js';
 import { renderTeamAnalysisPanel } from './team-analysis-view';
+import { OptimizePhase } from './optimize-phase.js';
 import { getCurrentSpeciesForChoice } from '../playthrough/current-species.js';
 import { describeEvolutionPath } from '../playthrough/evolution-requirements.js';
 import { teamMemberKey } from './item-recommendations';
@@ -66,7 +67,7 @@ export function renderTeamBuilderPage({
 
     ${renderPoolControls({ embedded, families, poolStats, donorStats, state })}
 
-    ${state.loading ? renderLoading(state) : ''}
+    ${state.phase === OptimizePhase.OPTIMIZING ? renderLoading(state) : ''}
 
     ${state.result ? renderResult({ familyLabel, formatsIndex, keptNames: parseKeptNames(state.query, pokemonIndex), setDetails, state }) : renderEmpty(state)}
 
@@ -345,7 +346,7 @@ function renderPoolControls({
             ${[6, 5, 4, 3, 2, 1].map((slots) => `<option value="${slots}" ${teamSlotsOf(state.progression?.teamSlots) === slots ? 'selected' : ''}>${slots}</option>`).join('')}
           </select>
         </label>
-        <button class="view-tab primary-action" id="optimize-button"${usageTrustTooltip(state) ? ` title="${escapeAttr(usageTrustTooltip(state))}"` : ''}>${state.loading ? 'Optimizing...' : 'Normalize + optimize team'}</button>
+        <button class="view-tab primary-action" id="optimize-button"${usageTrustTooltip(state) ? ` title="${escapeAttr(usageTrustTooltip(state))}"` : ''}>${state.phase === OptimizePhase.OPTIMIZING ? 'Optimizing...' : 'Normalize + optimize team'}</button>
         <button class="view-tab" id="copy-pool-button">Copy pool</button>
         <button class="view-tab" id="export-gamestate-button" title="Copy pool + progression + inventory to the clipboard as JSON. Everything lives in this browser's local storage — one data clear loses it all unless the copy is pasted somewhere safe.">Export gamestate</button>
         <button class="view-tab" id="import-gamestate-button" title="Restore a gamestate backup saved as a file (replaces the current pool and progression).">Import gamestate</button>
@@ -509,9 +510,7 @@ function renderResult({
 
     <div id="reborn-team-analysis-root"></div>
 
-    ${renderPostAnalysisSkippedSection(state)}
-    ${renderInvestmentSection(state)}
-    ${renderConfidenceSection(state)}
+    ${renderPostAnalysisSections(state)}
     ${renderExplanationsSection(state)}
 
     ${renderUnresolved(result.unresolved)}
@@ -530,14 +529,27 @@ function renderScoringPoolNote(result) {
   return `<p class="muted">Scored ${selection.scoredLines} distinct pool lines in numbered-bench usage order.${duplicateNote}${tailNote}</p>`;
 }
 
-function renderPostAnalysisSkippedSection(state) {
-  if (state.analysisPending || state.confidence || state.investment) return '';
+/**
+ * The analysis step's panels for the run's phase: a notice while it is
+ * deferred or skipped, placeholders while it is analyzing, the stability and
+ * investment panels once they have landed. Exported for the phase test.
+ * @param {!Object} state
+ * @return {string}
+ */
+export function renderPostAnalysisSections(state) {
+  return [
+    renderPostAnalysisSkippedSection(state),
+    renderInvestmentSection(state),
+    renderConfidenceSection(state),
+  ].join('\n    ');
+}
 
+function renderPostAnalysisSkippedSection(state) {
   // Deferred (background-triggered optimize with no persisted copy): the
   // stability sweep + investment projection are two more full optimizer runs
   // — minutes of every-core work — so they only start on request here or on
   // an explicit Optimize click, never from a page load or auto-reoptimize.
-  if (state.postAnalysisDeferred) {
+  if (state.phase === OptimizePhase.ANALYSIS_DEFERRED) {
     return `
       <section class="panel">
         <h2>Stability and investment</h2>
@@ -547,7 +559,8 @@ function renderPostAnalysisSkippedSection(state) {
     `;
   }
 
-  const skipped = state.postAnalysisSkipped;
+  if (state.phase !== OptimizePhase.ANALYSIS_SKIPPED) return '';
+  const skipped = state.postAnalysisSkipReason;
   if (!skipped) return '';
 
   const poolSize = skipped.poolSize || 0;
@@ -565,7 +578,7 @@ function renderPostAnalysisSkippedSection(state) {
 // with inclusion frequencies from the robustness sweep, plus the bench mons
 // that seat under plausible alternative settings.
 function renderConfidenceSection(state) {
-  if (state.analysisPending && !state.confidence) {
+  if (state.phase === OptimizePhase.ANALYZING && !state.confidence) {
     return `
       <section class="panel">
         <h2>Recommendation stability</h2>
@@ -697,7 +710,7 @@ function renderExplanationsSection(state) {
 // right now" vs "worth training soon" are different products; future value
 // lives HERE, never in selection.
 function renderInvestmentSection(state) {
-  if (state.analysisPending && !state.investment) {
+  if (state.phase === OptimizePhase.ANALYZING && !state.investment) {
     return state.confidence
       ? `<section class="panel"><h2>Investment picks</h2><p class="muted">Evaluating the pool at the next level caps…</p></section>`
       : '';
