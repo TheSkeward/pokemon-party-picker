@@ -32,6 +32,10 @@ import {
 import { computeTeamConfidence } from './teamBuilder/confidence.js';
 import { computeInvestmentPlan } from './teamBuilder/investment.js';
 import { OptimizePhase } from './teamBuilder/optimize-phase.js';
+import {
+  ProgressPhase,
+  SearchStage,
+} from './teamBuilder/optimize-progress.js';
 import { setScoringOverrides } from './teamBuilder/scoring-constants.js';
 import {
   buildPerformanceReport,
@@ -269,7 +273,7 @@ export function mountPoolOptimizer(container, options = {}) {
       // once, so gem item recommendations can be gated (type must match a
       // recommended move; Unburden boost only when Unburden is actually the
       // set's ability).
-      updateOptimizeProgress({ phase: 'items' });
+      updateOptimizeProgress({ phase: ProgressPhase.ITEMS });
       const itemsStart = Date.now();
       const teamItemContext = await getTeamItemContext(
         state.result.team,
@@ -1409,7 +1413,7 @@ export function mountPoolOptimizer(container, options = {}) {
     stopOptimizeProgress();
     optimizeProgress = {
       start: Date.now(),
-      phase: 'resolve',
+      phase: ProgressPhase.RESOLVE,
       phaseStart: Date.now(),
       completed: 0,
       total: poolSize || 0,
@@ -1434,18 +1438,18 @@ export function mountPoolOptimizer(container, options = {}) {
     const phaseElapsed = now - model.phaseStart;
     const budget = model.budget;
     let remaining;
-    if (model.phase === 'rank') {
+    if (model.phase === ProgressPhase.RANK) {
       const fraction = model.total ? model.completed / model.total : 0;
       remaining =
         500 * (1 - fraction) +
         budget.resolveMs +
         budget.searchMs +
         budget.tailMs;
-    } else if (model.phase === 'resolve') {
+    } else if (model.phase === ProgressPhase.RESOLVE) {
       const fraction = model.total ? model.completed / model.total : 0;
       remaining =
         budget.resolveMs * (1 - fraction) + budget.searchMs + budget.tailMs;
-    } else if (model.phase === 'search') {
+    } else if (model.phase === ProgressPhase.SEARCH) {
       const f = model.searchFraction || 0;
       if (f > 0.02) {
         // Real worker progress: project remaining time from the measured
@@ -1473,7 +1477,8 @@ export function mountPoolOptimizer(container, options = {}) {
     // Running far past the search budget: pulse to say "still working" —
     // the estimate was wrong, not the run dead.
     const late =
-      model.phase === 'search' && phaseElapsed > 2 * budget.searchMs;
+      model.phase === ProgressPhase.SEARCH &&
+      phaseElapsed > 2 * budget.searchMs;
     bar.style.animation = late
       ? 'pool-progress-pulse 1.2s ease-in-out infinite'
       : '';
@@ -1485,27 +1490,31 @@ export function mountPoolOptimizer(container, options = {}) {
     return String(value);
   }
 
-  function updateOptimizeProgress({ phase = 'resolve', completed, total, stage, detail }) {
+  // Consumes the optimizer's progress reports (optimize-progress.js); the
+  // items phase is the widget's own, reported around item loading above.
+  function updateOptimizeProgress({
+    phase = ProgressPhase.RESOLVE, completed, total, stage, detail,
+  }) {
     const label = app.querySelector('[data-optimize-progress-label]');
     if (label) {
-      if (phase === 'rank') {
+      if (phase === ProgressPhase.RANK) {
         label.textContent = total
           ? `Ranking ${completed}/${total} pool lines by usage...`
           : 'Ranking pool lines by usage...';
-      } else if (phase === 'search') {
+      } else if (phase === ProgressPhase.SEARCH) {
         label.textContent =
-          stage === 'synergy'
+          stage === SearchStage.SYNERGY
             ? 'Search prep — loading teammate synergy...'
-            : stage === 'polish'
+            : stage === SearchStage.POLISH
               ? `Search done — auditing shortlist swaps (round ${detail?.round || 1})...`
-              : stage === 'realize'
+              : stage === SearchStage.REALIZE
                 ? 'Search done — realizing best builds...'
-                : stage === 'bench'
+                : stage === SearchStage.BENCH
                   ? 'Search done — ranking bench swaps...'
                   : total
                     ? `Searching team combinations — ${Math.min(99, Math.floor((100 * (completed || 0)) / total))}% of ${formatComboCount(total)}...`
                     : 'Searching team combinations...';
-      } else if (phase === 'items') {
+      } else if (phase === ProgressPhase.ITEMS) {
         label.textContent = 'Loading item usage for the team...';
       } else {
         label.textContent = total
@@ -1519,11 +1528,11 @@ export function mountPoolOptimizer(container, options = {}) {
         optimizeProgress.phaseStart = Date.now();
         optimizeProgress.searchFraction = 0;
       }
-      if (phase === 'resolve' || phase === 'rank') {
+      if (phase === ProgressPhase.RESOLVE || phase === ProgressPhase.RANK) {
         optimizeProgress.completed = completed || 0;
         if (total) optimizeProgress.total = total;
       }
-      if (phase === 'search' && total) {
+      if (phase === ProgressPhase.SEARCH && total) {
         optimizeProgress.searchFraction = Math.min(
           1,
           (completed || 0) / total,

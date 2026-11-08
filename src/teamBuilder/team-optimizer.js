@@ -1,5 +1,6 @@
 import { getActiveGame } from '../games/registry.js';
 import { loadMovePrior } from './move-prior.js';
+import { ProgressPhase, SearchStage } from './optimize-progress.js';
 import { investmentSideOfSpread } from './damage-model.js';
 import {
   applyBreedingContextToProgression,
@@ -357,7 +358,7 @@ export async function optimizeTeamFromPool({
   );
   let total = initialScoredPoolSize + unresolvedPoolSize;
   let completed = 0;
-  onProgress?.({ phase: 'resolve', completed, total });
+  onProgress?.({ phase: ProgressPhase.RESOLVE, completed, total });
 
   await ensureHydrated();
 
@@ -440,7 +441,7 @@ export async function optimizeTeamFromPool({
     .join(',')}`;
   const memoized = resultCache.get(poolKey);
   if (memoized) {
-    onProgress?.({ phase: 'resolve', completed: total, total });
+    onProgress?.({ phase: ProgressPhase.RESOLVE, completed: total, total });
     // A fast-mode hit must not touch the incremental cache: its results are
     // shortlist-grade (searchExact false), so seeding would NULL the exact
     // Layer-2 state the user's next pool edit needs.
@@ -476,7 +477,7 @@ export async function optimizeTeamFromPool({
   const groups = scoringPool.groups;
   total = groups.length;
   completed = 0;
-  onProgress?.({ phase: 'resolve', completed, total });
+  onProgress?.({ phase: ProgressPhase.RESOLVE, completed, total });
 
   const hitLineKeys = new Set();
   const resolveStart = Date.now();
@@ -502,7 +503,7 @@ export async function optimizeTeamFromPool({
           hitLineKeys,
         }).then((line) => {
           completed += 1;
-          onProgress?.({ phase: 'resolve', completed, total });
+          onProgress?.({ phase: ProgressPhase.RESOLVE, completed, total });
           // Copy: cached lines are shared across runs, and the lock belongs
           // to this query, not to the line.
           return line && group.locked ? { ...line, locked: true } : line;
@@ -536,12 +537,12 @@ export async function optimizeTeamFromPool({
   // Pair-evidence attachment (teammate lift + core index) fetches per-line
   // index files, so on a cold load it is a visible slice of the "search"
   // phase — captioned as its own stage.
-  onProgress?.({ phase: 'search', stage: 'synergy' });
+  onProgress?.({ phase: ProgressPhase.SEARCH, stage: SearchStage.SYNERGY });
   await Promise.all([
     attachTeammateLift(lines, family),
     attachCoreLift(lines, family),
   ]);
-  onProgress?.({ phase: 'search' });
+  onProgress?.({ phase: ProgressPhase.SEARCH });
   const result = await choosePoolTeam(lines, progression.opponentTypeBias, {
     exhaustive: exhaustive && !fastMode,
     teamSize: teamSlotsOf(progression.teamSlots),
@@ -556,12 +557,14 @@ export async function optimizeTeamFromPool({
     // scores — the part the investment plan actually consumes — stay exact.
     hint: fastMode,
     onSearchProgress: (scanned, totalCombos) =>
-      onProgress?.({ phase: 'search', completed: scanned, total: totalCombos }),
+      onProgress?.({
+        phase: ProgressPhase.SEARCH, completed: scanned, total: totalCombos,
+      }),
     // Post-scan tail stages (swap-polish audit rounds, build realization,
     // bench ranking) get their own captions — on a fast machine the worker
     // scan is sub-second and the VISIBLE search time is this tail.
     onSearchStage: (stage, detail) =>
-      onProgress?.({ phase: 'search', stage, detail }),
+      onProgress?.({ phase: ProgressPhase.SEARCH, stage, detail }),
   });
   result.timings = {
     resolveMs: searchStart - resolveStart,
@@ -750,7 +753,9 @@ async function selectScoringGroups({
   }
 
   let completed = 0;
-  onProgress?.({ phase: 'rank', completed, total: recognized.length });
+  onProgress?.({
+    phase: ProgressPhase.RANK, completed, total: recognized.length,
+  });
   const ranked = await Promise.all(
     recognized.map(async (group) => {
       const candidates = getReachableLineCandidates(
@@ -778,7 +783,9 @@ async function selectScoringGroups({
         })),
       );
       completed += 1;
-      onProgress?.({ phase: 'rank', completed, total: recognized.length });
+      onProgress?.({
+        phase: ProgressPhase.RANK, completed, total: recognized.length,
+      });
       const usageOrder = getLineUsageOrder(rows, group.input.name);
       return {
         group,

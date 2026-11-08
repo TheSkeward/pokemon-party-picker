@@ -19,6 +19,7 @@ import {
 } from '../playthrough/type-chart.js';
 import { parallelFullSearch, PARALLEL_THRESHOLD } from './parallel-search.js';
 import { tunable } from './scoring-constants.js';
+import { SearchStage } from './optimize-progress.js';
 import { moveSources } from '../games/legality.js';
 
 /**
@@ -623,7 +624,7 @@ async function selectTeamByFit(
     );
     prepareFitScoring(lines, opponentTypeBias, fixed);
     try {
-      onSearchStage?.('realize');
+      onSearchStage?.(SearchStage.REALIZE);
       await yieldForPaint();
       const candidates = (refs?.top || [])
         .map((entry) =>
@@ -633,7 +634,7 @@ async function selectTeamByFit(
       const evaluated = realizeBestTeam(candidates, opponentTypeBias);
       if (evaluated) {
         if (benchSwaps) {
-          onSearchStage?.('bench');
+          onSearchStage?.(SearchStage.BENCH);
           await yieldForPaint();
         }
         const benchSwapScores = benchSwaps
@@ -738,7 +739,7 @@ async function selectTeamByFit(
       searchExact = false; // exact on the shortlist, not the whole pool
     }
 
-    onSearchStage?.('realize');
+    onSearchStage?.(SearchStage.REALIZE);
     await yieldForPaint();
     let evaluated =
       realizeBestTeam(candidates || [], opponentTypeBias) || {
@@ -766,7 +767,7 @@ async function selectTeamByFit(
       searchPolish = polished.record;
       benchSwapScores = polished.scanScores;
     } else if (benchSwaps) {
-      onSearchStage?.('bench');
+      onSearchStage?.(SearchStage.BENCH);
       await yieldForPaint();
       // Exact paths: the ranking is display-only (the bench view's "most
       // droppable" flags) and skippable — the confidence sweep only needs the
@@ -923,7 +924,7 @@ async function polishTeamBySwaps(
   fixedInputIds = null) {
   let current = evaluated;
   const swaps = [];
-  onSearchStage?.('polish', { round: 1 });
+  onSearchStage?.(SearchStage.POLISH, { round: 1 });
   await yieldForPaint();
   let scan =
     scanTeamSwaps(lines, current.team, opponentTypeBias, fixedInputIds);
@@ -955,7 +956,7 @@ async function polishTeamBySwaps(
       score: realized.score,
       megaUsed: realized.team.find((choice) => choice.isMega) || null,
     };
-    onSearchStage?.('polish', { round: swaps.length + 1 });
+    onSearchStage?.(SearchStage.POLISH, { round: swaps.length + 1 });
     await yieldForPaint();
     scan = scanTeamSwaps(lines, current.team, opponentTypeBias, fixedInputIds);
   }
