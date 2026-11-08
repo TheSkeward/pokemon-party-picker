@@ -587,7 +587,7 @@ function renderSetReadiness(readiness, profile = null) {
     .map((move) => move.label);
   const interim = readiness.needsRebreed
     ? `<div class="team-set-interim"><small>${escapeHtml(
-      `Interim: the final set is a re-bred ${profile?.inputName || profile?.currentName || 'one'} hatched with ${eggOnly.join(' and ')}; this one is priced on its own best attacks.`,
+      `Interim: the final set is a re-bred ${profile?.inputName || profile?.currentName || 'one'} hatched with ${eggOnly.join(' and ')}.`,
     )}</small></div>`
     : '';
 

@@ -275,7 +275,7 @@ function renderItemInventory(ownedItems, badges) {
           <span class="visually-hidden">Quantity to add as</span>
           <select
             data-item-add-count
-            title="Quantity the item is added at. 6+ means effectively unlimited — the default, because most tracked items are renewable shop stock. Enter in the search box adds too."
+            title="Quantity the item is added at. 6+ means effectively unlimited and is the default. Enter in the search box adds too."
           >
             ${Array.from({ length: MAX_TRACKED_ITEM_COUNT }, (_, index) => {
               const value = index + 1;

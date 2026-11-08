@@ -437,7 +437,6 @@ function renderResult({
     : hasMegas
       ? ' No Mega selected.'
       : '';
-  const megaRule = hasMegas ? ' at most one Mega,' : '';
 
   const lineUsageByInput = lineUsageByInputId(result.lines);
   const sortedTeam = getSortedTeam(
@@ -449,14 +448,11 @@ function renderResult({
   );
   const progressionStale = Boolean(state.resultProgressionStale);
 
-  // The scoring rule rides on the heading as hover text: the panel shows the
-  // team, the strip states what the scores assume, and the prose waits.
-  const scoringRule = `Scored at level cap ${String(state.progression?.levelCap || '?')}: each pick's current-form value plus a readiness-gated competitive ceiling, minus build friction (evolution requirements are shown as information, never priced); the team is chosen with damage-aware coverage and shared-weakness fit,${megaRule} one build realized per line. Displayed by ${getSortLabel(state.teamSort, state.teamSortDir)}. Click a row to inspect its set.`;
   const teamPanel = `
     <section class="panel team-results-panel" id="team">
       <div class="panel-header">
         <div>
-          <h2 title="${escapeAttr(scoringRule)}">Recommended ${escapeHtml(familyLabel)} Team</h2>
+          <h2 title="Click a row to inspect its set.">Recommended ${escapeHtml(familyLabel)} Team</h2>
           <p>${result.team.length} picks from ${result.linesConsidered} resolved input lines.${megaText}</p>
           ${renderGamestateStrip(state.progression)}
           <p class="muted" data-progression-stale-warning ${progressionStale ? '' : 'hidden'}>Progression changed after this team was optimized. Re-optimize before trusting row scores or legal move notes.</p>
@@ -1197,8 +1193,6 @@ function renderItemRec(item) {
 
   if (item.unburden) {
     qualifier = qualifier ? `${qualifier}, Unburden` : 'Unburden';
-    title =
-      'Consumable item weighted up because this Pokémon can have Unburden.';
   }
 
   return `<div class="representative-note item-rec-note"${title ? ` title="${escapeAttr(title)}"` : ''}>Item: ${escapeHtml(item.name)}${qualifier ? ` (${escapeHtml(qualifier)})` : ''}</div>`;
@@ -1467,20 +1461,6 @@ function compareNumber(a, b) {
   const safeB = typeof b === 'number' ? b : -Infinity;
 
   return safeA === safeB ? 0 : safeA - safeB;
-}
-
-function getSortLabel(sortBy, sortDir = 'desc') {
-  const direction = sortDir === 'asc' ? 'ascending' : 'descending';
-
-  if (sortBy === 'lead') return `Lead % ${direction}`;
-  if (sortBy === 'usage') return `Usage % ${direction}`;
-  if (sortBy === 'tier') return `meaningful usage tier (best tier first when ${direction})`;
-  if (sortBy === 'score') return `optimizer score ${direction}`;
-  if (sortBy === 'current' || sortBy === 'input') {
-    return `current form ${direction}`;
-  }
-
-  return `eventual form ${direction}`;
 }
 
 function renderUnresolved(unresolved = []) {
