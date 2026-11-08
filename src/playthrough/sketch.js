@@ -1,5 +1,6 @@
 import { buildInputGroups } from '../teamBuilder/input-groups.js';
 import { toId } from '../utils/ids.js';
+import { digest } from '../utils/digest.js';
 import {
   acquisitionOf,
   applyBreedingContextToProgression,
@@ -213,7 +214,7 @@ export function sketchContextSignature(sketchContext) {
       ].join(':');
     })
     .join('|');
-  return `${sketch.moveIds.length}:${hashSignature(text)}`;
+  return `${sketch.moveIds.length}:${digest(text)}`;
 }
 
 function getOwnedFieldableSpecies({ pokemonIndex, progression, query }) {
@@ -355,17 +356,6 @@ function formatPartnerSource(source) {
   return source.detail
     ? `${source.label}: ${source.detail}`
     : String(source.label || 'currently available');
-}
-
-function hashSignature(text) {
-  let first = 0x811c9dc5;
-  let second = 0x9e3779b9;
-  for (let index = 0; index < text.length; index += 1) {
-    const code = text.charCodeAt(index);
-    first = Math.imul(first ^ code, 0x01000193);
-    second = Math.imul(second ^ code, 0x85ebca6b);
-  }
-  return `${(first >>> 0).toString(36)}${(second >>> 0).toString(36)}`;
 }
 
 function emptyContext() {

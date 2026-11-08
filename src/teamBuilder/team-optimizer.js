@@ -2,6 +2,7 @@ import { getActiveGame } from '../games/registry.js';
 import { loadMovePrior } from './move-prior.js';
 import { ProgressPhase, SearchStage } from './optimize-progress.js';
 import { investmentSideOfSpread } from './damage-model.js';
+import { digest } from '../utils/digest.js';
 import {
   applyBreedingContextToProgression,
 } from '../playthrough/breeding.js';
@@ -288,7 +289,10 @@ const MAX_RESULT_CACHE = 400;
 // only from attacks the record runs meaningfully, else by a utility move.
 // v87: the pool's move locks ("Meowstic {Thunder Wave}") seat first in
 // every build as the line's own canonical moves.
-const RESULT_CACHE_VERSION = '87';
+// v88: cache keys are a digest of the score context, not its text. The
+// records keyed by the text (hundreds of kilobytes each) must go: LevelDB
+// copies every record key into its manifest on each compaction.
+const RESULT_CACHE_VERSION = '88';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.
@@ -424,9 +428,15 @@ export async function optimizeTeamFromPool({
   // The game id leads the signature: every cache layer keyed by contextSig
   // (line cache, result cache, persisted results) is per-game, so switching
   // games can never serve one game's verdicts to another.
-  const contextSig = `${getActiveGame().id}|${family}|${selection}|${progressionSig}|${breedingSig}|${sketchSig}|${abilitySig}|${scoringOverridesSignature()}|${dataSignature}${
+  const contextText = `${getActiveGame().id}|${family}|${selection}|${progressionSig}|${breedingSig}|${sketchSig}|${abilitySig}|${scoringOverridesSignature()}|${dataSignature}${
     fastMode ? '|search:fast2' : ''
   }${scoreAllLines ? '|pool:all' : ''}`;
+  // The caches key on a digest of that text, never the text itself. The
+  // breeding signature alone runs to hundreds of kilobytes with the daycare
+  // open, and the pool key is also the persisted record's IndexedDB key,
+  // which LevelDB copies into its manifest on every compaction: a day of
+  // text keys grew one manifest to 13 GB and crashed the browser on open.
+  const contextSig = digest(contextText);
   const searchKey = lockSig ? `${contextSig}|lock:${lockSig}` : contextSig;
 
   // Layer 3: the result is a pure function of the score context and the set of

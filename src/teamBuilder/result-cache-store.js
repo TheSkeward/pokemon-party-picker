@@ -22,17 +22,57 @@ const DB_VERSION = 1;
 // persist alongside the interactive result: each gamestate can write three
 // records (now + two "search:fast" future caps), so 60 keeps ~20 gamestates.
 const MAX_ENTRIES = 60;
+// Everything stored here is bounded by MAX_ENTRIES records of about a
+// megabyte, so an origin footprint far beyond that means the backing store
+// itself has gone wrong. A LevelDB manifest once reached 13 GB (it copies
+// the record keys on every compaction, and the keys were huge), and opening
+// it ran the browser process out of memory on every page load. Above this
+// the store stays closed for the session and the status line says so;
+// clearing the site's data resets it.
+const MAX_PLAUSIBLE_USAGE_BYTES = 1024 ** 3;
 
 let dbPromise = null;
+let unavailableReason = null;
+
+/**
+ * @return {?string} Why results are not being persisted this session, for
+ *     the status line; null while the store is usable.
+ */
+export function persistenceUnavailableReason() {
+  return unavailableReason;
+}
+
+// The quota estimate is computed from the store's files on disk, so it is
+// safe to read even when opening the store is not.
+async function originUsageBytes() {
+  try {
+    const estimate = await navigator.storage?.estimate?.();
+    return Number(estimate?.usage) || 0;
+  } catch {
+    return 0;
+  }
+}
 
 function openDb() {
   if (dbPromise) return dbPromise;
-  dbPromise = new Promise((resolve) => {
+  dbPromise = (async () => {
+    if (typeof indexedDB === 'undefined') return null;
+    const usage = await originUsageBytes();
+    if (usage > MAX_PLAUSIBLE_USAGE_BYTES) {
+      unavailableReason =
+        `this site's browser storage holds ${(usage / 1024 ** 3).toFixed(1)} GB, ` +
+        'far more than the result cache can hold; clear the site\'s data in ' +
+        'the browser settings to repair it';
+      return null;
+    }
+    return openStore();
+  })();
+  return dbPromise;
+}
+
+function openStore() {
+  return new Promise((resolve) => {
     try {
-      if (typeof indexedDB === 'undefined') {
-        resolve(null);
-        return;
-      }
       const request = indexedDB.open(DB_NAME, DB_VERSION);
       request.onupgradeneeded = () => {
         const db = request.result;
@@ -48,7 +88,6 @@ function openDb() {
       resolve(null);
     }
   });
-  return dbPromise;
 }
 
 /**
