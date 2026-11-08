@@ -118,8 +118,9 @@ export function canonicalMoveIds(
  *     `pendingPickups` marks sets gated only on pickups already reachable
  *     at the current cap; `needsRebreed` marks a set the fielded individual
  *     can never complete (an egg-only canonical move with no egg possible
- *     yet). Each move says whether the pool locked it, and `lockedMoves`
- *     prices the locks outside the competitive set without counting them.
+ *     yet). Each move says whether the pool locked it and whether a lock
+ *     took its seat in the built set (`displaced`); `lockedMoves` prices
+ *     the locks outside the competitive set without counting them.
  */
 export function computeSetReadiness({
   legalMoveData,
@@ -131,6 +132,11 @@ export function computeSetReadiness({
   const canonical = canonicalMoveIds(topSet?.moveUsage);
   if (!canonical.length && !locked.length) return null;
   const lockedIds = new Set(locked);
+  // The four the builder seats: the locks, then the record. A record move
+  // outside them has given its seat to a lock; it is still priced here.
+  const seated = new Set(
+    canonicalMoveIds(topSet?.moveUsage, CANONICAL_SET_SIZE, locked),
+  );
 
   const availableIds = new Set(availableMoves.map((move) => move.id));
   // Usage data collapses every Hidden Power variant to the single id
@@ -282,7 +288,9 @@ export function computeSetReadiness({
     return { id, label, status: 'later', detail };
   };
   const moves = canonical.map((id) => ({
-    ...price(id, true), locked: lockedIds.has(id),
+    ...price(id, true),
+    locked: lockedIds.has(id),
+    displaced: !seated.has(id),
   }));
   // The pool's locks outside the competitive set, priced the same way but
   // counted in neither the ready ratio nor the completion cap: those
@@ -338,7 +346,6 @@ export function computeSetReadiness({
       (move) => move.status === 'ready' || move.status === 'scaling',
     ).length,
     item,
-    ability: { name: topSet?.ability || null, status: 'ready' },
     scaling,
     // null = the set is complete right now (and nothing scales with level).
     fullAtCap,

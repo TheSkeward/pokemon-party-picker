@@ -113,6 +113,12 @@ test('the readiness line prices a lock beside the competitive set', async () => 
     [['thunderwave', 'later', true]],
   );
   assert.match(readiness.lockedMoves[0].detail, /TM73/);
+  // Reflect is both locked and the record's; Calm Mind's seat went to
+  // Thunder Wave.
+  assert.deepEqual(
+    readiness.moves.map((move) => move.displaced),
+    [false, false, false, true],
+  );
   const plain = computeSetReadiness({
     legalMoveData: meowstic,
     availableMoves: getAvailableMoves(meowstic, at(5, 45)),
@@ -122,6 +128,26 @@ test('the readiness line prices a lock beside the competitive set', async () => 
   assert.equal(readiness.readyMoveCount, plain.readyMoveCount);
   assert.equal(readiness.fullAtCap, plain.fullAtCap);
   assert.deepEqual(plain.lockedMoves, []);
+  assert.ok(plain.moves.every((move) => !move.displaced));
+});
+
+test("the team analysis reads the pool's locks as the optimizer does", async () => {
+  const { pokemonIndex } = await loadShared();
+  const query = 'Meowstic {Fake Out / Psyshock}';
+  const progression = at(5, 45);
+  const result = await runPool({ pool: [query], progression });
+  const { buildTeamAnalysis } = await import(
+    '../src/teamBuilder/team-analysis.js',
+  );
+  const analysis = await buildTeamAnalysis(result.team, progression, {
+    family: 'singles', selection: 'all', query, pokemonIndex,
+  });
+  const readiness = analysis.profiles[0].setReadiness;
+  const shown = [...readiness.moves, ...readiness.lockedMoves]
+    .filter((move) => move.locked)
+    .map((move) => move.id)
+    .sort();
+  assert.deepEqual(shown, ['fakeout', 'psyshock']);
 });
 
 test('a legal lock seats first in every build and a blocked one waits', async () => {

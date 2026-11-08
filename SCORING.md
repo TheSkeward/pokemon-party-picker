@@ -238,7 +238,9 @@ lock: it measures how far the mon is toward the set its usage describes,
 and a lock is the player's canon, not the ladder's, so locking moves the
 score only through the set it builds. Counting locks there had let two
 locked moves carry Meowstic to full usage trust and cut its score by
-two-thirds for a set its record never ran.
+two-thirds for a set its record never ran. The readiness line still lists
+every lock beside the record's four and names the record moves whose seats
+the locks took, so the set above it reads as built.
 
 Snore and Sleep Talk seat only in a set that carries Rest, or on a Comatose
 user: they act only while the user sleeps, so the ladder's Rest sets do not

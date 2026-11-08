@@ -88,7 +88,7 @@ export async function buildTeamAnalysis(
   // the optimizer.
   progression = withPoolAnnotations(
     progression,
-    breedingOptions.poolQuery,
+    breedingOptions.query,
     breedingOptions.pokemonIndex,
   );
   const { breedingContext, sketchContext: baseSketchContext } =

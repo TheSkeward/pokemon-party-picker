@@ -593,7 +593,13 @@ function renderSetReadiness(readiness, profile = null) {
 
   const parts = [];
   if (readiness.moves.length) {
-    parts.push(`${readiness.readyMoveCount}/${readiness.moves.length} moves`);
+    const displaced = readiness.moves.filter((move) => move.displaced).length;
+    const seats = displaced
+      ? ` (${displaced} seat${displaced === 1 ? '' : 's'} to locks)`
+      : '';
+    parts.push(
+      `${readiness.readyMoveCount}/${readiness.moves.length} moves${seats}`,
+    );
   }
   // Every lock, the ones inside the competitive set included.
   const locks = [
@@ -620,19 +626,28 @@ function renderSetReadiness(readiness, profile = null) {
         : `full at cap ${readiness.fullAtCap}`,
   );
 
+  // Listed as the builder seats them: the locks first, then the record's
+  // moves, each saying why it is or is not in the set above.
+  const entries = [...readiness.moves, ...(readiness.lockedMoves || [])];
+  const ordered = [
+    ...entries.filter((move) => move.locked),
+    ...entries.filter((move) => !move.locked),
+  ];
   const tooltip = [
-    ...[...readiness.moves, ...(readiness.lockedMoves || [])].map((move) => {
+    ...ordered.map((move) => {
       const mark =
         move.status === 'ready' ? '✓' : move.status === 'scaling' ? '↗' : '✗';
       const lock = move.locked ? ' (locked in the pool)' : '';
-      return `${mark} ${move.label}${lock}${move.detail ? ` — ${move.detail}` : ''}`;
+      const detail = [move.detail, move.displaced ? 'seat taken by a lock' : '']
+        .filter(Boolean)
+        .join('; ');
+      return `${mark} ${move.label}${lock}${detail ? ` — ${detail}` : ''}`;
     }),
     readiness.item?.name
       ? `${readiness.item.status === 'ready' ? '✓' : '✗'} ${readiness.item.name}${
         readiness.item.detail ? ` — ${readiness.item.detail}` : ''
       }`
       : null,
-    `✓ ability — always selectable in ${getActiveGame().shortLabel}`,
   ]
     .filter(Boolean)
     .join('\n');
