@@ -343,8 +343,7 @@ button:hover {
   font-size: var(--type-s);
   font-weight: 600;
 }
-.status-pill.loading,
-.status-pill.loading-tail {
+.status-pill.loading {
   color: var(--text-muted);
 }
 .status-pill.ready {

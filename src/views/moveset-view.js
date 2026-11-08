@@ -134,8 +134,6 @@ function renderStatusLine(status) {
       status.total > 0
         ? `Loading set details… ${status.checked}/${status.total}`
         : 'Loading set details…';
-  } else if (status.phase === 'loading-tail') {
-    label = `Loading additional set options… ${status.checked}/${status.total}`;
   } else if (status.phase === 'ready') {
     label =
       status.contributed > 1
