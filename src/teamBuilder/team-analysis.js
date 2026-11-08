@@ -21,6 +21,9 @@ import {
 } from '../playthrough/type-chart.js';
 import {
   EXPECTED_STINT_TURNS,
+  MAX_PASSED_STAGES,
+  abilityBoostStages,
+  boostScaledPower,
   coverageDamageIntoType,
   downloadAttackShare,
   explainMoveDamage,
@@ -28,11 +31,13 @@ import {
   getAbilityEffectiveMoveType,
   getAttackingStats,
   investmentSideOfSpread,
+  isBoostScalingMove,
   isFixedDamageMove,
   isVariablePowerMove,
   mirrorSpreadSide,
   normalizeLevel,
   parseSpread,
+  setupStages,
 } from './damage-model.js';
 import { loadTopSet } from './top-spread.js';
 import { formatAbilityPath, resolveBuildAbilities } from './ability-path.js';
@@ -112,6 +117,7 @@ export async function buildTeamAnalysis(
         selection,
         assignedItem,
         itemAware: true,
+        ...bestPasserFor(team, row),
       });
       entry.profile.recommendedSet = buildRecommendedSet({
         member: entry.member,
@@ -303,6 +309,25 @@ async function computeRealTeamResult({
   }
 }
 
+/**
+ * The strongest Baton Pass a teammate's realized build hands this member:
+ * the stages and the passer's name, for pricing its boost-scaling attacks.
+ * @param {!Array<!Object>} team
+ * @param {!Object} row
+ * @return {{passedStages: number, passerName: string}}
+ */
+function bestPasserFor(team, row) {
+  let best = { passedStages: 0, passerName: '' };
+  for (const other of team || []) {
+    if (other === row) continue;
+    const stages = other.legalityProfile?.passableStages || 0;
+    if (stages > best.passedStages) {
+      best = { passedStages: stages, passerName: other.name };
+    }
+  }
+  return best;
+}
+
 // Loads one team member's current species, its progression-legal moves, and the
 // derived legality profile. Shared by the full analysis, the donor guides, and
 // getTeamItemContext so all see exactly the same recommended moves. Does NOT
@@ -316,6 +341,9 @@ async function buildMemberLegalMoveEntry({
   selection,
   assignedItem = null,
   itemAware = false,
+  // The team's best Baton Pass into this member (bestPasserFor).
+  passedStages = 0,
+  passerName = '',
 }) {
   const currentSpecies = getCurrentSpeciesForChoice(row, progression);
   const representativeRecord = dex().progressionSpecies[row.pokemonId];
@@ -472,6 +500,8 @@ async function buildMemberLegalMoveEntry({
     ability: topSet.ability,
     opponentTypeBias: progression.opponentTypeBias,
     movePreference: realized.movePreference,
+    passedStages,
+    passerName,
     // An interim mon prices the spread mirrored to its own side, as its
     // card shows it.
     spread: topSet.spread,
@@ -814,6 +844,7 @@ export async function getTeamItemContext(
         sketchContext,
         family,
         selection,
+        ...bestPasserFor(team, row),
       });
       const damageTypes = new Set(
         (entry.profile.recommendedMoves || [])
@@ -859,7 +890,7 @@ export async function getTeamItemContext(
  */
 export function buildCandidateLegalityProfile({
   member: rawMember,
-  moves = [],
+  moves: rawMoves = [],
   representativeName = '',
   attackerStats,
   levelCap,
@@ -891,18 +922,25 @@ export function buildCandidateLegalityProfile({
   // The pool's move locks for this line (legal-moves.js lockedMoveIdsFor):
   // the player's own canonical moves, seated first in every build.
   lockedMoveIds = [],
+  // Stages a teammate's Baton Pass hands this build (the pool's best passer
+  // in the optimizer, the team's in the analysis), and who passes them.
+  passedStages = 0,
+  passerName = '',
 }) {
   // Carry the recommended held item AND the mon's competitive ability on the
   // member, so every damage estimate (display, ranking, bias, team scoring)
   // reflects them — Protean makes every move STAB.
-  const member =
-    heldItem || ability
-      ? {
-        ...rawMember,
-        ...(heldItem ? { heldItem } : {}),
-        ...(ability ? { ability } : {}),
-      }
-      : rawMember;
+  const member = {
+    ...rawMember,
+    ...(heldItem ? { heldItem } : {}),
+    ...(ability ? { ability } : {}),
+    passedStages,
+    passerName,
+  };
+  // Boost-scaling attacks carry the pass's and the ability's stages into
+  // every consumer; the set's own setup moves join inside the recommender.
+  const baseBoost = boostContext(member);
+  const moves = rawMoves.map((move) => withBoostStages(move, baseBoost));
   const assumed = attackerStats
     ? null
     : assumedInvestment(member, moves, levelCap, investmentSide);
@@ -1008,8 +1046,24 @@ export function buildCandidateLegalityProfile({
     return Math.min(1, best / coverageRef);
   });
 
+  // What this build can hand a teammate: with Baton Pass seated, one use of
+  // each setup move it carries plus the stages its ability holds at the
+  // pass, capped at MAX_PASSED_STAGES.
+  const passableStages = recommendedMoves.some(
+    (move) => move.id === 'batonpass',
+  )
+    ? Math.min(
+      MAX_PASSED_STAGES,
+      recommendedMoves
+        .filter((move) => move.category === 'Status')
+        .reduce((sum, move) => sum + setupStages(move), 0) +
+        abilityBoostStages(member.ability, true),
+    )
+    : 0;
+
   return {
     coverageVector,
+    passableStages,
     // The ability the score ASSUMES (the form's primary competitive ability,
     // e.g. Protean for the Greninja line). Surfaced so the assumption is
     // visible — the actual caught mon's ability isn't known here, so this is
@@ -1682,7 +1736,8 @@ function getDamageSteps(move, member, attackerStats) {
 }
 
 function getDamageEstimate(move, member, attackerStats) {
-  const key = `${move.id}|${member.id}|${member.ability || ''}|${member.heldItem || ''}|${attackerStats?.atk ?? ''}|${attackerStats?.spa ?? ''}|${attackerStats?.spe ?? ''}|${attackerStats?.level ?? ''}`;
+  // A boost-scaling attack's stages ride on the move itself (boostStages).
+  const key = `${move.id}|${move.boostStages ?? ''}|${member.id}|${member.ability || ''}|${member.heldItem || ''}|${attackerStats?.atk ?? ''}|${attackerStats?.spa ?? ''}|${attackerStats?.spe ?? ''}|${attackerStats?.level ?? ''}`;
   const cached = damageMemo.get(key);
   if (cached !== undefined) return cached;
   const value = computeDamageEstimate(move, member, attackerStats);
@@ -1698,13 +1753,14 @@ function computeDamageEstimate(move, member, attackerStats) {
   const itemName = member.heldItem
     ? dex().heldItemsById[toId(member.heldItem)]?.name || member.heldItem
     : '';
+  const power = getMovePower(move);
   const { damage: perHit, steps } = explainMoveDamage({
     moveId: move.id,
     moveName: move.name,
     // Scale base power by the move's effective-hit factor (multi-hit average,
     // recharge amortization, escalating-move weighting), so ranking and the
     // shown estimate reflect a turn's real output, not a single hit.
-    basePower: move.basePower * hitMultiplier,
+    basePower: power * hitMultiplier,
     category: move.category,
     type: effectiveType,
     attackerTypes: member.types,
@@ -1735,12 +1791,13 @@ function computeDamageEstimate(move, member, attackerStats) {
       `Download: +1 Atk against the ${share}% of species whose Defense is lower, +1 SpA against the rest`,
     );
   }
-  if (hitMultiplier !== 1 && move.basePower) {
+  if (hitMultiplier !== 1 && power) {
     steps.splice(
       1, 0,
-      `Base power ${move.basePower} × ${Math.round(hitMultiplier * 100) / 100} for a turn's hits (multi-hit average, recharge, escalation, or Truant)`,
+      `Base power ${power} × ${Math.round(hitMultiplier * 100) / 100} for a turn's hits (multi-hit average, recharge, escalation, delay, or Truant)`,
     );
   }
+  if (isBoostScalingMove(move.id)) steps.splice(1, 0, boostStagesStep(move));
   if (effectiveType !== move.type) {
     steps.splice(1, 0, `Dealt as ${effectiveType} under ${member.ability}`);
   }
@@ -1795,8 +1852,10 @@ export function getAccuracyFactor(move, ability = null) {
 
 function getMovePower(move) {
   // Fixed-damage moves have no base power; their real damage lives in the
-  // estimatedDamage field (damageModel.fixedMoveDamage), not here.
-  return move.basePower || 0;
+  // estimatedDamage field (damageModel.fixedMoveDamage), not here. A
+  // boost-scaling attack (Stored Power) is read at the stages its build
+  // holds (boostContext), 20 when it holds none.
+  return boostScaledPower(move.id, move.boostStages) ?? (move.basePower || 0);
 }
 
 // Escalating multi-turn moves whose effective power isn't a simple multi-hit or
@@ -1857,6 +1916,12 @@ function chargeSkipped(move, ability) {
 // power; Counter/Mirror Coat are BP 0 and never enter this model.
 const FAILS_IF_DISRUPTED = new Set(['focuspunch', 'shelltrap']);
 
+// Attacks that land two turns after the click and cannot be clicked again
+// while one is pending (Future Sight, Doom Desire): the hit arrives after
+// the foe has had two turns to change the picture, and the move is out of
+// reach meanwhile, so it takes the charge move's rate.
+const DELAYED_HIT_MOVE_IDS = new Set(['futuresight', 'doomdesire']);
+
 /**
  * How many "hits' worth" of base power a move lands per turn, used to scale
  * the damage estimate so multi-hit and multi-turn moves are ranked by real
@@ -1874,6 +1939,8 @@ const FAILS_IF_DISRUPTED = new Set(['focuspunch', 'shelltrap']);
  *     charge (Solar Beam under Drought);
  *   - fails-if-disrupted (Focus Punch/Shell Trap): 1/3, a judgement about
  *     how often the opponent's attack lands first, not a stint rate;
+ *   - delayed (Future Sight, Doom Desire): the charge rate, for the two
+ *     turns each hit is outstanding;
  *   - escalating (Rollout, Ice Ball, Fury Cutter, Echoed Voice): the chain's
  *     average over the stint, each later turn discounted by the chance the
  *     chain has held.
@@ -1935,8 +2002,64 @@ function moveHitMultiplier(move, ability) {
   if (move.recharge) return HIT_FIRST_RATE;
   if (move.charge) return chargeSkipped(move, ability) ? 1 : HIT_SECOND_RATE;
   if (FAILS_IF_DISRUPTED.has(move.id)) return 1 / 3;
+  if (DELAYED_HIT_MOVE_IDS.has(move.id)) return HIT_SECOND_RATE;
 
   return 1;
+}
+
+/**
+ * The positive stages a build's boost-scaling attacks are priced at, with
+ * the source of each: the stages a teammate's Baton Pass hands this mon
+ * (member.passedStages: the pool's best passer in the optimizer, the
+ * team's in the analysis), what its own ability accumulates over the
+ * stint, and one use of each setup move the set carries.
+ * @param {!Object} member
+ * @param {!Array<!Object>=} setMoves The moves seated so far.
+ * @return {{stages: number, sources: !Array<string>}}
+ */
+function boostContext(member, setMoves = []) {
+  const sources = [];
+  let stages = 0;
+  const passed = member.passedStages || 0;
+  if (passed > 0) {
+    stages += passed;
+    const passer = member.passerName ? `${member.passerName}'s` : 'a teammate\'s';
+    sources.push(`${passer} Baton Pass +${passed}`);
+  }
+  const own = abilityBoostStages(member.ability);
+  if (own > 0) {
+    stages += own;
+    sources.push(`${member.ability} +${own} over the stint`);
+  }
+  for (const move of setMoves) {
+    const raised = move.category === 'Status' ? setupStages(move) : 0;
+    if (raised > 0) {
+      stages += raised;
+      sources.push(`${move.name} +${raised}`);
+    }
+  }
+  return { stages, sources };
+}
+
+// A copy of a boost-scaling attack priced at the context's stages; any other
+// move as it is.
+function withBoostStages(move, context) {
+  if (!isBoostScalingMove(move.id)) return move;
+  return {
+    ...move,
+    boostStages: context.stages,
+    boostSources: context.sources,
+  };
+}
+
+// The stage line of a boost-scaling attack's working: what the build holds
+// and where each stage comes from.
+function boostStagesStep(move) {
+  const stages = move.boostStages || 0;
+  if (!stages) {
+    return `${move.name}: 20 power with no boosts in this build, 20 more per positive stage`;
+  }
+  return `${move.name}: 20 + 20 × ${stages} positive stages (${(move.boostSources || []).join(', ')}) = ${getMovePower(move)} power`;
 }
 
 // Builds the recommended 4-move set for the mon as currently fielded. The order
@@ -1985,8 +2108,14 @@ function recommendCurrentMoves(
   holdReachableMoveIds = null,
   lockedMoveIds = [],
 ) {
+  // Boost-scaling attacks open at the stages the pass and the ability give;
+  // the set's own setup moves join as they seat (repriceBoosts).
+  const baseBoost = boostContext(member);
   const decorated = moves.map((move) =>
-    decorateMove(move, member, attackerStats, moveUsage, opponentTypeBias),
+    decorateMove(
+      withBoostStages(move, baseBoost),
+      member, attackerStats, moveUsage, opponentTypeBias,
+    ),
   );
   // The canonical set: the pool's locked moves first, then the mon's top
   // moves by usage to four, in usage order. A lock this build cannot seat
@@ -2017,6 +2146,28 @@ function recommendCurrentMoves(
   }
   const byId = new Map(decorated.map((move) => [move.id, move]));
   const selected = [];
+  // A boost-scaling attack is re-priced as the set gains setup moves: one
+  // use of each raises the stages it hits with. The decorated move is
+  // updated in place, so every seat and summary reads the same figure.
+  const repriceBoosts = () => {
+    const context = boostContext(member, selected);
+    for (const move of decorated) {
+      if (
+        !isBoostScalingMove(move.id) || move.boostStages === context.stages
+      ) {
+        continue;
+      }
+      const flinch = move.flinchValue || 0;
+      Object.assign(
+        move,
+        decorateMove(
+          withBoostStages(move, context),
+          member, attackerStats, moveUsage, opponentTypeBias,
+        ),
+      );
+      move.rankingDamage += flinch;
+    }
+  };
   // Set-conditional usability: the sleep context for Snore, Sleep Talk and
   // Dream Eater is the set being built, not the legal pool. Both lists are
   // evaluated live as the set grows: once Rest is selected, Snore becomes a
@@ -2156,6 +2307,7 @@ function recommendCurrentMoves(
     addStandIns();
   }
 
+  repriceBoosts();
   reservedSeats = countReservedSeats();
 
   // 2. Guarantee at least one attack — but only if none was picked yet. A mon
@@ -2319,6 +2471,7 @@ function recommendCurrentMoves(
     if (add(byCompetitiveRank)) continue;
     break;
   }
+  repriceBoosts();
 
   return selected.slice(0, 4);
 }

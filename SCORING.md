@@ -128,7 +128,10 @@ Cutter, Echoed Voice) is averaged over the stint with each later turn
 discounted by the chance the chain has held, so a five-turn Rollout never
 lands its last doubling. Moves that roll accuracy on every strike stop at the
 first miss. Focus Punch keeps its one-third judgement, which is about the
-opponent attacking first rather than about turns.
+opponent attacking first rather than about turns. Future Sight and Doom
+Desire land two turns after the click and cannot be clicked again while a
+hit is pending, so they take the charge move's rate: the hit arrives after
+the foe has had two turns to change the picture.
 Booster Energy with Protosynthesis or Quark Drive, weather or terrain the
 ability itself sets (with their accuracy effects on Thunder, Hurricane and
 Blizzard), and Orichalcum Pulse and Hadron Engine fire on entry and are priced
@@ -138,6 +141,22 @@ rather than by comparing medians. Palafin's Hero form needs a switch and
 stays out. Scrappy and Mind's Eye let Normal and Fighting coverage reach
 Ghosts. Because no dataset measures playthrough fight length, the stint is an
 assumption, named in code so it can be revisited.
+
+Stored Power and Power Trip are priced at the positive stages their build
+holds, 20 power plus 20 per stage, never at the dex's floor: one use of each
+setup move the set carries (Calm Mind 2, Shell Smash 6, its drops not
+counted), the Speed Boost stages the user averages over the stint, and the
+best Baton Pass another line of the pool could hand it. A line's pass is
+Baton Pass among its legal moves plus the most stages one of its setup moves
+raises and the Speed Boost stages it holds on the turn it passes, capped at
+`MAX_PASSED_STAGES`. The pass is a fact about the team, not the mon, so the
+line's score records what it owes the pass, the same set priced without it,
+and the team search withdraws that credit in the share no teammate's
+realized build passes: all of it with no passer, none beside one that passes
+as much. The set card prices the attack from the passer actually on the
+team and names it. Before this an Espeon whose record runs Stored Power
+beside Baton Pass was priced as a 20-power attacker and its coverage hedge
+swapped the move for Future Sight.
 
 The additive routes (specialist bulk, tempo, and the priority-utility
 saturation) can overshoot 1, so they saturate through `soft_ceiling` rather

@@ -1,8 +1,15 @@
 import { getActiveGame } from '../games/registry.js';
 import { loadMovePrior } from './move-prior.js';
 import { ProgressPhase, SearchStage } from './optimize-progress.js';
-import { investmentSideOfSpread } from './damage-model.js';
+import {
+  MAX_PASSED_STAGES,
+  abilityBoostStages,
+  investmentSideOfSpread,
+  isBoostScalingMove,
+  setupStages,
+} from './damage-model.js';
 import { digest } from '../utils/digest.js';
+import { toId } from '../utils/ids.js';
 import {
   applyBreedingContextToProgression,
 } from '../playthrough/breeding.js';
@@ -296,7 +303,12 @@ const MAX_RESULT_CACHE = 400;
 // individual in hand and fields only what it can evolve into, never a form
 // the line could only hatch; such entries on hatchable lines resolve to
 // different candidates.
-const RESULT_CACHE_VERSION = '89';
+// v90: Stored Power and Power Trip are priced at the stages their build
+// holds (own setup moves, Speed Boost, and the pool's best Baton Pass, which
+// the team search withdraws without a passer on the team); Future Sight and
+// Doom Desire take the charge rate. Sets, damage figures and scores change
+// for every line that runs one of them.
+const RESULT_CACHE_VERSION = '90';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.
@@ -405,6 +417,18 @@ export async function optimizeTeamFromPool({
       .map(([name, ability]) => `${name}=${ability}`)
       .join(',')
     : 'none';
+  // What the pool's lines can hand each other by Baton Pass prices every
+  // boost-scaling attack, so the packages join the score context as the
+  // breeding signature does.
+  const passPackages = await buildPassPackages({
+    groups: allGroups,
+    pokemonIndex,
+    progression,
+    breedingContext,
+    sketchContext,
+    abilityAnnotations,
+    family,
+  });
   // Locked entries ("Gothitelle!") pin a line into the team. They change
   // which team the search may return, never how a line scores, so they key
   // the search and result caches but not the line cache.
@@ -432,7 +456,7 @@ export async function optimizeTeamFromPool({
   // The game id leads the signature: every cache layer keyed by contextSig
   // (line cache, result cache, persisted results) is per-game, so switching
   // games can never serve one game's verdicts to another.
-  const contextText = `${getActiveGame().id}|${family}|${selection}|${progressionSig}|${breedingSig}|${sketchSig}|${abilitySig}|${scoringOverridesSignature()}|${dataSignature}${
+  const contextText = `${getActiveGame().id}|${family}|${selection}|${progressionSig}|${breedingSig}|${sketchSig}|${abilitySig}|${passPackages.signature}|${scoringOverridesSignature()}|${dataSignature}${
     fastMode ? '|search:fast2' : ''
   }${scoreAllLines ? '|pool:all' : ''}`;
   // The caches key on a digest of that text, never the text itself. The
@@ -512,6 +536,7 @@ export async function optimizeTeamFromPool({
             abilityAnnotations,
             fastMode,
             candidateBundles: scoringPool.candidateBundlesByGroup.get(group),
+            passPackage: passPackages.received.get(group.input?.id) || null,
           },
           contextSig,
           hitLineKeys,
@@ -886,6 +911,102 @@ function stableStringify(value) {
   return JSON.stringify(value);
 }
 
+/**
+ * What each pool line could hand a teammate by Baton Pass, and the best
+ * such package every line could receive from another line. A line's package
+ * is read from its strongest fieldable candidate: Baton Pass among its legal
+ * moves, the most positive stages one use of a setup move raises, and the
+ * stages Speed Boost holds by the stint's last turn when the line may run it
+ * (any slot, unless the pool pins another ability), capped at
+ * MAX_PASSED_STAGES. Boost-scaling attacks are priced at the package their
+ * line receives, and the team search withdraws that credit when no passer
+ * makes the team (search-kernel passAdjustment).
+ * @return {!Promise<{received: !Map<string, {stages: number,
+ *     passerName: string}>, signature: string}>}
+ */
+async function buildPassPackages({
+  groups,
+  pokemonIndex,
+  progression,
+  breedingContext,
+  sketchContext,
+  abilityAnnotations,
+  family,
+}) {
+  const byInput = new Map();
+  await Promise.all(
+    groups.map(async (group) => {
+      const input = group.input;
+      if (group.unresolved || !input?.id) return;
+      const pinned = abilityAnnotations?.get(normalizeName(input.name)) || null;
+      let best = null;
+      const candidates = getReachableLineCandidates(
+        group, pokemonIndex, progression, abilityAnnotations,
+      );
+      for (const candidate of candidates) {
+        const currentSpecies = getCurrentSpeciesForChoice(
+          {
+            inputPokemonId: input.id,
+            inputName: input.name,
+            pokemonId: candidate.id,
+            name: candidate.name,
+          },
+          progression,
+        );
+        const speciesId = currentSpecies?.id || candidate.id;
+        const legalMoveData = await loadLegalMoveData(speciesId);
+        if (!legalMoveData) continue;
+        const memberProgression = applySketchContextToProgression(
+          applyBreedingContextToProgression(
+            progression, speciesId, breedingContext,
+          ),
+          speciesId,
+          sketchContext,
+        );
+        const moves = getAvailableMoves(legalMoveData, memberProgression)
+          .filter((move) => !isInertInFamily(move.id, family));
+        if (!moves.some((move) => move.id === 'batonpass')) continue;
+        const setup = Math.max(
+          0,
+          ...moves
+            .filter((move) => move.category === 'Status')
+            .map(setupStages),
+        );
+        const abilities = Object.values(dex().abilitySlots?.[speciesId] || {});
+        const speedBoost = pinned
+          ? toId(pinned) === 'speedboost'
+          : abilities.some((ability) => toId(ability) === 'speedboost');
+        const stages = Math.min(
+          MAX_PASSED_STAGES,
+          setup + (speedBoost ? abilityBoostStages('Speed Boost', true) : 0),
+        );
+        if (stages > 0 && (!best || stages > best.stages)) {
+          best = {
+            stages,
+            passerName: currentSpecies?.name || candidate.name,
+          };
+        }
+      }
+      if (best) byInput.set(input.id, best);
+    }),
+  );
+  // Strongest first, ties by id so the context signature is stable.
+  const ranked = [...byInput.entries()].sort(
+    (a, b) => b[1].stages - a[1].stages || a[0].localeCompare(b[0]),
+  );
+  const received = new Map();
+  for (const group of groups) {
+    const id = group.input?.id;
+    if (!id) continue;
+    // A line never passes to itself.
+    const other = ranked.find(([inputId]) => inputId !== id);
+    if (other) received.set(id, other[1]);
+  }
+  const signature =
+    ranked.map(([id, pkg]) => `${id}:${pkg.stages}`).join(',') || 'none';
+  return { received, signature };
+}
+
 async function resolvePoolLine({
   availability,
   breedingContext,
@@ -898,6 +1019,9 @@ async function resolvePoolLine({
   fastMode = false,
   abilityAnnotations = null,
   candidateBundles = null,
+  // The best Baton Pass another line of the pool could hand this one
+  // (buildPassPackages), pricing its boost-scaling attacks.
+  passPackage = null,
 }) {
   if (group.unresolved || !group.entries.length) {
     return {
@@ -942,6 +1066,8 @@ async function resolvePoolLine({
           selection,
           abilityOverride,
           fastMode,
+          passedStages: passPackage?.stages || 0,
+          passerName: passPackage?.passerName || '',
         });
         return { candidate, bundle, builds };
       } catch (error) {
@@ -1024,6 +1150,7 @@ async function resolvePoolLine({
           buildKey: variant.key,
           buildLabel: variant.label,
           legalityProfile: variant.profile,
+          passableStages: variant.profile.passableStages || 0,
           ...scoreOf(variant.profile),
         }))
         .filter((row) => Number.isFinite(row.score));
@@ -1059,6 +1186,23 @@ async function resolvePoolLine({
         for (const row of scoredBuilds) {
           row.abilitySensitivity = sensitivity;
           row.legalityProfile.abilitySensitivity = sensitivity;
+        }
+      }
+
+      // The pass credit: what the default set's score owes the teammate's
+      // Baton Pass (the same set priced without it), stamped on every build
+      // so the team search can withdraw it from a team with no passer.
+      if (builds.passProbe) {
+        const probe = scoreOf(builds.passProbe);
+        const defaultRow =
+          scoredBuilds.find((row) => row.buildKey === 'default') ||
+            scoredBuilds[0];
+        const credit = Number.isFinite(probe.score)
+          ? Math.max(0, Math.round(defaultRow.score - probe.score))
+          : 0;
+        for (const row of scoredBuilds) {
+          row.passCredit = credit;
+          row.passStages = builds.passedStages;
         }
       }
 
@@ -1349,6 +1493,10 @@ function makeChoice(input, result, note) {
     buildKey: result.buildKey || 'default',
     buildLabel: result.buildLabel || null,
     abilitySensitivity: result.abilitySensitivity || 0,
+    // Baton Pass terms for the team search (search-kernel passAdjustment).
+    passCredit: result.passCredit || 0,
+    passStages: result.passStages || 0,
+    passableStages: result.passableStages || 0,
     ...(result.buildChoices ? { buildAlternatives: result.buildChoices } : {}),
     ...(result.optimisticCoverageVector
       ? { optimisticCoverageVector: result.optimisticCoverageVector }
@@ -1411,6 +1559,10 @@ async function resolveCandidateBuilds({
   // delayed variant, no ability probe. The plan reads line scores and the
   // future team; its stated bar is "shortlist-grade hint".
   fastMode = false,
+  // The best Baton Pass another pool line could hand this candidate, and
+  // who passes it (buildPassPackages).
+  passedStages = 0,
+  passerName = '',
 }) {
   // Profile building is the optimizer's dominant synchronous CPU block —
   // hence the yield here.
@@ -1540,10 +1692,13 @@ async function resolveCandidateBuilds({
     buildFriction = 0,
     ability,
     preMegaAbility: buildPreMegaAbility = null,
+    passedStages: buildPassedStages = passedStages,
   }) => {
     const profile = buildCandidateLegalityProfile({
       member,
       moves: buildMoves,
+      passedStages: buildPassedStages,
+      passerName,
       learnableMoveIds: new Set((legalMoveData?.moves || []).map((m) => m.id)),
       // The hold routes this build may leave out; the delayed build carries
       // them in buildMoves, where they are ordinary moves.
@@ -1662,6 +1817,8 @@ async function resolveCandidateBuilds({
         selection,
         abilityOverride,
         fastMode: true,
+        passedStages,
+        passerName,
       });
       const profile = fallback.variants[0]?.profile;
       if (profile && profile.fieldedId !== currentSpecies?.id) {
@@ -1757,9 +1914,28 @@ async function resolveCandidateBuilds({
       })
       : null;
 
+  // The default set priced without the teammate's pass, so the line's score
+  // can say what it owes the pass. Only a set that seats a boost-scaling
+  // attack owes anything.
+  const passProbe =
+    !fastMode &&
+    passedStages > 0 &&
+    (variants[0].profile.recommendedMoves || []).some((move) =>
+      isBoostScalingMove(move.id))
+      ? makeProfile({
+        movePreference: 'default',
+        buildMoves: naturalMoves,
+        ability: assumedAbility,
+        preMegaAbility,
+        passedStages: 0,
+      })
+      : null;
+
   return {
     variants,
     sensitivityProbe,
+    passProbe,
+    passedStages,
     assumedAbility,
     abilityKnown,
     secondaryAbility,

@@ -463,6 +463,71 @@ export function isVariablePowerMove(moveId) {
   return VARIABLE_POWER_MOVE_IDS.has(moveId);
 }
 
+// Attacks whose power follows the user's positive stat stages: 20, plus 20
+// per stage (Stored Power, Power Trip). The dex lists their floor.
+const BOOST_SCALING_MOVE_IDS = new Set(['storedpower', 'powertrip']);
+const BOOST_SCALING_BASE_POWER = 20;
+const BOOST_SCALING_POWER_PER_STAGE = 20;
+
+/**
+ * The most stages a teammate's Baton Pass is credited with. Shell Smash
+ * passes six positive stages, and no chain hands over more before the
+ * receiver has to act.
+ * @type {number}
+ */
+export const MAX_PASSED_STAGES = 6;
+
+/**
+ * @param {string} moveId
+ * @return {boolean}
+ */
+export function isBoostScalingMove(moveId) {
+  return BOOST_SCALING_MOVE_IDS.has(moveId);
+}
+
+/**
+ * The power a boost-scaling attack reaches at a positive stage count; null
+ * for any other move.
+ * @param {string} moveId
+ * @param {number=} stages
+ * @return {?number}
+ */
+export function boostScaledPower(moveId, stages = 0) {
+  if (!isBoostScalingMove(moveId)) return null;
+  return (
+    BOOST_SCALING_BASE_POWER +
+    BOOST_SCALING_POWER_PER_STAGE * Math.max(0, stages || 0)
+  );
+}
+
+/**
+ * Positive stages one use of a setup move raises on its user: Calm Mind 2,
+ * Shell Smash 6 (its drops never count against Stored Power).
+ * @param {{raises: (Object|undefined)}} move
+ * @return {number}
+ */
+export function setupStages(move) {
+  let total = 0;
+  for (const value of Object.values(move?.raises || {})) {
+    if (value > 0) total += value;
+  }
+  return total;
+}
+
+/**
+ * Positive stages the user's ability accumulates on its own. Speed Boost
+ * raises Speed at the end of every turn, so over the stint its attacks
+ * average (N - 1) / 2 stages and the stint's last turn, when a passer hands
+ * them on, holds N - 1.
+ * @param {?string} ability
+ * @param {boolean=} atPass Count the stages held on the stint's last turn.
+ * @return {number}
+ */
+export function abilityBoostStages(ability, atPass = false) {
+  if (abilityId(ability) !== 'speedboost') return 0;
+  return atPass ? EXPECTED_STINT_TURNS - 1 : (EXPECTED_STINT_TURNS - 1) / 2;
+}
+
 /**
  * Power of Grass Knot and Low Kick from the target's weight (Gen 3+ table).
  * @param {number} kg

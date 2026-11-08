@@ -287,7 +287,32 @@ export function getUsagePercent(choice) {
 // scoreCandidate currently emits `teamScore` and `score` equal; the fallback
 // covers choices built elsewhere without a `teamScore`.
 function sumTeamScore(team) {
-  return team.reduce((sum, row) => sum + (row.teamScore ?? row.score ?? 0), 0);
+  return (
+    team.reduce((sum, row) => sum + (row.teamScore ?? row.score ?? 0), 0) +
+    passAdjustment(team)
+  );
+}
+
+// A boost-scaling attack (Stored Power) was priced at the stages the pool's
+// best Baton Pass hands its user (passStages), and the score owes that pass
+// passCredit. The team pays the credit back in the share no teammate on it
+// can pass: all of it with no passer, none when a teammate's build passes
+// as much, a proportional part between. A mon never passes to itself.
+function passAdjustment(team) {
+  let adjust = 0;
+  for (const choice of team) {
+    const credit = choice.passCredit || 0;
+    if (!credit) continue;
+    let passed = 0;
+    for (const other of team) {
+      if (other === choice) continue;
+      const stages = other.passableStages || 0;
+      if (stages > passed) passed = stages;
+    }
+    const assumed = choice.passStages || 1;
+    adjust -= credit * (1 - Math.min(1, passed / assumed));
+  }
+  return adjust;
 }
 
 function scoreTeamFit(team, opponentTypeBias = {}) {

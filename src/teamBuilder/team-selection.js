@@ -802,6 +802,10 @@ function buildCompactLines(lines) {
       // needs the line's usage trust and both pair-evidence maps (top-24
       // entries each, still tiny).
       usageWeight: choice.usageWeight ?? 0,
+      // Baton Pass terms (search-kernel passAdjustment).
+      passCredit: choice.passCredit || 0,
+      passStages: choice.passStages || 0,
+      passableStages: choice.passableStages || 0,
       _teammates: choice._teammates || null,
       _corePartners: choice._corePartners || null,
       legalityProfile: {
