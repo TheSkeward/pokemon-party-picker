@@ -6,17 +6,43 @@ import {
   isStrictPreEvolutionOf,
 } from '../playthrough/current-species.js';
 import { buildInputGroups } from './input-groups';
+import { normalizeName } from './name-utils';
+import { parseAbilityAnnotations } from './pool-parsing';
 import { dex } from '../games/dex.js';
+
+/**
+ * Whether a pool entry describes the Pokémon in hand rather than its line:
+ * a caught ability, a move lock or a met level is a fact about one
+ * individual, so that entry fields only what it can itself become, never a
+ * form the line could only hatch.
+ * @param {?Object} input
+ * @param {!Object=} progression With the pool's marks stamped in.
+ * @param {?Map<string, string>=} abilityAnnotations
+ * @return {boolean}
+ */
+export function describesIndividual(
+  input,
+  progression = {},
+  abilityAnnotations = null,
+) {
+  if (!input?.id) return false;
+  if (abilityAnnotations?.get(normalizeName(input.name))) return true;
+  if ((progression?.lockedMovesByPokemon?.[input.id] || []).length) return true;
+  return progression?.metLevelByPokemon?.[input.id] != null;
+}
 
 /**
  * Which family forms can this input actually become? Descendants and their
  * Megas always qualify. Strict pre-evolutions and sibling branches require the
- * daycare on a hatchable line, because hatching is the route back down/across.
+ * daycare on a hatchable line, because hatching is the route back down/across,
+ * and an entry that describes the individual in hand (describesIndividual)
+ * never takes that route: the hatch would be another Pokémon.
  */
 export function getReachableLineCandidates(
   group,
   pokemonIndex,
   progression = {},
+  abilityAnnotations = null,
 ) {
   const input = group?.input;
   if (group?.unresolved || !input) return [];
@@ -24,7 +50,9 @@ export function getReachableLineCandidates(
   const inputBaseId =
     dex().progressionSpecies[input.id]?.baseSpeciesId || input.id;
   const daycareReach =
-    Boolean(progression?.daycareUnlocked) && canHatchLine(input.id);
+    Boolean(progression?.daycareUnlocked) &&
+    canHatchLine(input.id) &&
+    !describesIndividual(input, progression, abilityAnnotations);
   return getLineRepresentativeCandidates(input.id, pokemonIndex).filter(
     (candidate) => {
       if (daycareReach) return true;
@@ -97,6 +125,7 @@ export function buildFieldablePoolLines({
 } = {}) {
   if (!query || !pokemonIndex?.length) return [];
 
+  const abilityAnnotations = parseAbilityAnnotations(query, pokemonIndex);
   return buildInputGroups(query, pokemonIndex)
     .filter((group) => !group.unresolved)
     .map((group) => {
@@ -104,6 +133,7 @@ export function buildFieldablePoolLines({
         group,
         pokemonIndex,
         progression,
+        abilityAnnotations,
       );
       const choices = (candidates.length ? candidates : [group.input]).map(
         (candidate) => ({

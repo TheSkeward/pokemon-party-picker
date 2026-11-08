@@ -243,6 +243,13 @@ two-thirds for a set its record never ran. The readiness line still lists
 every lock beside the record's four and names the record moves whose seats
 the locks took, so the set above it reads as built.
 
+A caught ability, a move lock or a met level describes the Pokémon in hand,
+so an entry carrying one fields only the forms it can itself become. The
+forms a hatchable line reaches through the daycare belong to its plain
+entries: `Umbreon (Synchronize)` stays an Umbreon beside a plain `Eevee`
+that may field Espeon, and its locks and ability go with it rather than
+onto a hatch they never described.
+
 Snore and Sleep Talk seat only in a set that carries Rest, or on a Comatose
 user: they act only while the user sleeps, so the ladder's Rest sets do not
 make them worth a slot in a set that cannot sleep.

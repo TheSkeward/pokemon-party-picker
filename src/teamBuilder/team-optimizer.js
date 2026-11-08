@@ -292,7 +292,11 @@ const MAX_RESULT_CACHE = 400;
 // v88: cache keys are a digest of the score context, not its text. The
 // records keyed by the text (hundreds of kilobytes each) must go: LevelDB
 // copies every record key into its manifest on each compaction.
-const RESULT_CACHE_VERSION = '88';
+// v89: an entry with a caught ability, a move lock or a met level is the
+// individual in hand and fields only what it can evolve into, never a form
+// the line could only hatch; such entries on hatchable lines resolve to
+// different candidates.
+const RESULT_CACHE_VERSION = '89';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.
@@ -772,6 +776,7 @@ async function selectScoringGroups({
         group,
         pokemonIndex,
         progression,
+        abilityAnnotations,
       );
       const rows = await Promise.all(
         candidates.map(async (candidate) => ({
@@ -910,6 +915,7 @@ async function resolvePoolLine({
     group,
     pokemonIndex,
     progression,
+    abilityAnnotations,
   );
   const abilityOverride =
     abilityAnnotations?.get(normalizeName(input.name)) || null;
