@@ -45,7 +45,7 @@ export function renderMovesetPanel(container, options = {}) {
     return;
   }
 
-  if (!movesetEntry && (!status || status.phase === 'idle')) {
+  if (!movesetEntry && !status) {
     container.innerHTML = `
       <section class="panel details-panel empty-details">
         <h2>${escapeHtml(selectedPokemonName)}</h2>
@@ -124,7 +124,7 @@ export function renderMovesetPanel(container, options = {}) {
 }
 
 function renderStatusLine(status) {
-  if (!status || status.phase === 'idle') return '';
+  if (!status) return '';
 
   let label = '';
   const tone = status.phase;
