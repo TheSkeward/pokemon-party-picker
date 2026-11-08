@@ -231,8 +231,9 @@ from the locks in the pool's order, then the record's top moves to four.
 Every build seats the locks first, the coverage set included, and no fill
 takes a lock's seat, so the score describes the set the player runs rather
 than passing a verdict on it. A lock the cap still blocks waits for its
-route like any canonical move, with no stand-in and no reserved seat; one
-the game never teaches the line is reported, not seated. A locked self-KO
+route and holds no seat meanwhile, so the record's next move keeps the
+set full until the lock is learnable; one the game never teaches the line
+is reported, not seated. A locked self-KO
 move seats, since the lock is the record. The readiness ramp counts no
 lock: it measures how far the mon is toward the set its usage describes,
 and a lock is the player's canon, not the ladder's, so locking moves the

@@ -1989,10 +1989,15 @@ function recommendCurrentMoves(
     decorateMove(move, member, attackerStats, moveUsage, opponentTypeBias),
   );
   // The canonical set: the pool's locked moves first, then the mon's top
-  // moves by usage to four, in usage order. Each decorated move knows
-  // whether it belongs to it, and whether the pool locked it.
+  // moves by usage to four, in usage order. A lock this build cannot seat
+  // (the cap or a missing route blocks it) holds no seat meanwhile, so the
+  // record's next move keeps the set full. Each decorated move knows
+  // whether it belongs to the set, and whether the pool locked it.
+  const legalIds = new Set(decorated.map((move) => move.id));
   const canonicalIds = canonicalMoveIds(
-    moveUsage, CANONICAL_SET_SIZE, lockedMoveIds,
+    moveUsage,
+    CANONICAL_SET_SIZE,
+    lockedMoveIds.filter((id) => legalIds.has(id)),
   );
   const canonicalIdSet = new Set(canonicalIds);
   const lockedIdSet = new Set(lockedMoveIds);
@@ -2064,7 +2069,7 @@ function recommendCurrentMoves(
   const countReservedSeats = () =>
     canonicalIds.filter((id) => {
       if (selected.some((entry) => entry.id === id)) return false;
-      // A locked move the cap still blocks leaves its seat to the fill.
+      // A lock that could not seat leaves its seat to the fill.
       if (lockedIdSet.has(id)) return false;
       const move = byId.get(id);
       if (move) return isDamagingMove(move) && selectable(move);

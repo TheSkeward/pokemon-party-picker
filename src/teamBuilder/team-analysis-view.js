@@ -638,7 +638,11 @@ function renderSetReadiness(readiness, profile = null) {
       const mark =
         move.status === 'ready' ? '✓' : move.status === 'scaling' ? '↗' : '✗';
       const lock = move.locked ? ' (locked in the pool)' : '';
-      const detail = [move.detail, move.displaced ? 'seat taken by a lock' : '']
+      const detail = [
+        move.detail,
+        move.displaced ? 'seat taken by a lock' : '',
+        move.locked && move.status === 'later' ? 'seats once learnable' : '',
+      ]
         .filter(Boolean)
         .join('; ');
       return `${mark} ${move.label}${lock}${detail ? ` — ${detail}` : ''}`;

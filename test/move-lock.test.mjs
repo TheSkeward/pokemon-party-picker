@@ -113,11 +113,29 @@ test('the readiness line prices a lock beside the competitive set', async () => 
     [['thunderwave', 'later', true]],
   );
   assert.match(readiness.lockedMoves[0].detail, /TM73/);
-  // Reflect is both locked and the record's; Calm Mind's seat went to
-  // Thunder Wave.
+  // Reflect is both locked and the record's, and Thunder Wave waits on
+  // its route, so no record move has lost its seat.
   assert.deepEqual(
     readiness.moves.map((move) => move.displaced),
-    [false, false, false, true],
+    [false, false, false, false],
+  );
+  // Two locks the cap allows take the seats of the record's last two.
+  const seatedLocks = {
+    ...progression,
+    lockedMovesByPokemon: { meowstic: ['psyshock', 'fakeout'] },
+  };
+  const displaced = computeSetReadiness({
+    legalMoveData: meowstic,
+    availableMoves: getAvailableMoves(meowstic, seatedLocks),
+    topSet,
+    progression: seatedLocks,
+  });
+  assert.deepEqual(
+    displaced.moves.map((move) => [move.id, move.displaced]),
+    [
+      ['psychic', false], ['reflect', false],
+      ['lightscreen', true], ['calmmind', true],
+    ],
   );
   const plain = computeSetReadiness({
     legalMoveData: meowstic,
@@ -129,6 +147,35 @@ test('the readiness line prices a lock beside the competitive set', async () => 
   assert.equal(readiness.fullAtCap, plain.fullAtCap);
   assert.deepEqual(plain.lockedMoves, []);
   assert.ok(plain.moves.every((move) => !move.displaced));
+});
+
+test("a lock the cap blocks holds no seat: the record's next move keeps it", async () => {
+  const escavalier = bestChoice(
+    await runPool({
+      pool: ['Escavalier {Swords Dance / X-Scissor}'],
+      donorPool: ['Scolipede', 'Skorupi'],
+      progression: at(5, 50),
+    }),
+    'Escavalier',
+  );
+  // Swords Dance waits on level 52 or TM75. X-Scissor seats, and the
+  // record's Knock Off takes the fourth seat rather than a damage fill;
+  // only Pursuit has lost its seat, to X-Scissor.
+  assert.deepEqual(ids(escavalier), [
+    'xscissor', 'megahorn', 'ironhead', 'knockoff',
+  ]);
+  const readiness = escavalier.legalityProfile.setReadiness;
+  assert.deepEqual(
+    readiness.moves.map((move) => [move.id, move.displaced]),
+    [
+      ['megahorn', false], ['ironhead', false],
+      ['knockoff', false], ['pursuit', true],
+    ],
+  );
+  assert.deepEqual(
+    readiness.lockedMoves.map((move) => [move.id, move.status]),
+    [['swordsdance', 'later'], ['xscissor', 'ready']],
+  );
 });
 
 test("the team analysis reads the pool's locks as the optimizer does", async () => {

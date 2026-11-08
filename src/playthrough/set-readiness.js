@@ -132,11 +132,6 @@ export function computeSetReadiness({
   const canonical = canonicalMoveIds(topSet?.moveUsage);
   if (!canonical.length && !locked.length) return null;
   const lockedIds = new Set(locked);
-  // The four the builder seats: the locks, then the record. A record move
-  // outside them has given its seat to a lock; it is still priced here.
-  const seated = new Set(
-    canonicalMoveIds(topSet?.moveUsage, CANONICAL_SET_SIZE, locked),
-  );
 
   const availableIds = new Set(availableMoves.map((move) => move.id));
   // Usage data collapses every Hidden Power variant to the single id
@@ -147,6 +142,14 @@ export function computeSetReadiness({
     availableIds.has(id) ||
     (id === 'hiddenpower' &&
       [...availableIds].some((moveId) => moveId.startsWith('hiddenpower')));
+  // The four the builder seats: the locks it can seat now, then the
+  // record. A record move outside them has given its seat to a lock; it is
+  // still priced here. A lock that waits on its route holds no seat.
+  const seated = new Set(
+    canonicalMoveIds(
+      topSet?.moveUsage, CANONICAL_SET_SIZE, locked.filter(isMoveAvailable),
+    ),
+  );
   const rawById = new Map(
     (legalMoveData?.moves || []).map((move) => [move.id, move]),
   );
