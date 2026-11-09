@@ -51,7 +51,6 @@ export async function computeInvestmentPlan({
   progression,
   query,
   donorQuery = '',
-  selection,
   result,
   // Checked before each future-cap optimize. A user optimize awaits the whole
   // post-analysis before it starts (the sweep's override handshake), so
@@ -91,7 +90,6 @@ export async function computeInvestmentPlan({
         progression: { ...progression, levelCap: String(cap) },
         query,
         donorQuery,
-        selection,
         searchMode: 'fast',
       }),
     });

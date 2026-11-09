@@ -169,7 +169,6 @@ export async function runPool({
         progression || progressionAt({ badge, levelCap, opponentTypeBias }),
       query: pool.join('\n'),
       donorQuery: donorPool.join('\n'),
-      selection: 'all',
       scoreAllLines,
     });
   } finally {

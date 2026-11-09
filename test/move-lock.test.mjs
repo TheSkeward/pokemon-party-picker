@@ -187,7 +187,7 @@ test("the team analysis reads the pool's locks as the optimizer does", async () 
     '../src/teamBuilder/team-analysis.js',
   );
   const analysis = await buildTeamAnalysis(result.team, progression, {
-    family: 'singles', selection: 'all', query, pokemonIndex,
+    family: 'singles', query, pokemonIndex,
   });
   const readiness = analysis.profiles[0].setReadiness;
   const shown = [...readiness.moves, ...readiness.lockedMoves]

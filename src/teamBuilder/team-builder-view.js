@@ -89,7 +89,6 @@ export function renderTeamBuilderPage({
       pokemonIndex,
       poolQuery: withDonors(state.query, state.donorQuery),
       progression: state.progression,
-      selection: state.selection,
       team: getSortedTeam(
         state.result?.team || [],
         state.teamSort,
@@ -310,13 +309,6 @@ function renderPoolControls({
       </div>
 
       <div class="toolbar pool-toolbar">
-        <label hidden>
-          <span>Period</span>
-          <select id="selection-input">
-            <option value="all" ${state.selection === 'all' ? 'selected' : ''}>All available</option>
-          </select>
-        </label>
-
         ${
           embedded
             ? ''
@@ -1342,7 +1334,7 @@ function renderSelectedSetDetails({ app, pokemonIndex, setDetails, state }) {
     // deepest-tier fallback and cross-family sourcing, where the number
     // wouldn't match).
     sourceUsageLabel: describeSourceUsage(selected.bundle?.ranking, detail),
-    aggregate: state.selection === 'all',
+    aggregate: true,
     stitched: Boolean(detail?.stitched),
     status: setDetails.getStatus(),
   });
@@ -1481,9 +1473,7 @@ function renderSource(source, formatsIndex) {
     formatsIndex.find((format) => format.id === source.formatId)?.label ||
     source.formatId;
 
-  return source.selection === 'all'
-    ? `${escapeHtml(label)} @ ${source.cutoff} (${source.monthsPresent}/${source.monthsAvailable} mo)`
-    : `${escapeHtml(label)} @ ${source.cutoff}`;
+  return `${escapeHtml(label)} @ ${source.cutoff} (${source.monthsPresent}/${source.monthsAvailable} mo)`;
 }
 
 function formatPercent(value) {

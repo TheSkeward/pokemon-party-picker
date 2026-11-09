@@ -43,8 +43,6 @@ let resolverDebounceTimer = null;
 
 const resolverSetDetails = createPrecomputedSetDetailsLoader({
   getFamily: () => getState().family,
-  // The set index holds one slice, every month aggregated.
-  getSelection: () => 'all',
   onUpdate: () => rerenderPreservingFocus(),
 });
 
@@ -119,7 +117,6 @@ async function computeResolverResults() {
     family: state.family,
     pokemonIndex,
     query: state.resolverQuery,
-    selection: 'all',
     literalResolveLimit: LITERAL_RESOLVE_LIMIT,
   });
 }

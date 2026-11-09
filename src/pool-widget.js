@@ -119,7 +119,6 @@ export function mountPoolOptimizer(container, options = {}) {
 
   const state = {
     family: initialFamily,
-    selection: getParam('selection') || 'all',
     // Filled by init() once the family's game is active.
     query: '',
     // The donor box: owned, never fielded, kept for move transfers.
@@ -146,7 +145,6 @@ export function mountPoolOptimizer(container, options = {}) {
 
   const setDetails = createTeamBuilderSetDetailsLoader({
     getFamily: () => state.family,
-    getSelection: () => state.selection,
     onUpdate: () => render(),
   });
 
@@ -253,7 +251,6 @@ export function mountPoolOptimizer(container, options = {}) {
         progression: state.progression,
         query: state.query,
         donorQuery: state.donorQuery,
-        selection: state.selection,
         onProgress: updateOptimizeProgress,
         // The explicit Optimize button (and other direct triggers) run an exact
         // search; only background auto-reoptimize accepts the fast
@@ -281,7 +278,6 @@ export function mountPoolOptimizer(container, options = {}) {
         state.progression,
         {
           family: state.family,
-          selection: state.selection,
           pokemonIndex,
           query: withDonors(state.query, state.donorQuery),
         },
@@ -291,7 +287,6 @@ export function mountPoolOptimizer(container, options = {}) {
       state.teamItemUsage = await loadTeamItemUsage({
         team: state.result.team,
         family: state.family,
-        selection: state.selection,
         itemContext: state.teamItemContext,
       });
       if (runToken !== optimizeRunToken) return;
@@ -460,7 +455,6 @@ export function mountPoolOptimizer(container, options = {}) {
         progression: state.progression,
         query: state.query,
         donorQuery: state.donorQuery,
-        selection: state.selection,
         result: forResult,
         shouldAbort: () => sweepAbortRequested || state.result !== forResult,
         // Progressive: render the first future cap's plan as soon as it
@@ -729,14 +723,6 @@ export function mountPoolOptimizer(container, options = {}) {
         state.family = event.target.value;
         writeUrl();
         window.location.reload();
-      });
-
-    app
-      .querySelector('#selection-input')
-      ?.addEventListener('change', async (event) => {
-        state.selection = event.target.value;
-        setDetails.cancel();
-        await computeAndRender();
       });
 
     app.querySelectorAll('[data-team-sort]').forEach((button) => {
@@ -1643,7 +1629,6 @@ export function mountPoolOptimizer(container, options = {}) {
       pokemonIndex,
       poolQuery: withDonors(state.query, state.donorQuery),
       progression: state.progression,
-      selection: state.selection,
       team: getSortedTeam(
         state.result?.team || [],
         state.teamSort,
@@ -1796,7 +1781,6 @@ export function mountPoolOptimizer(container, options = {}) {
 
     const params = new URLSearchParams();
     params.set('family', state.family);
-    params.set('selection', state.selection);
     params.set('teamSort', state.teamSort);
     params.set('teamSortDir', state.teamSortDir);
 

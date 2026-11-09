@@ -44,7 +44,7 @@ test('Swellow is interim while Boomburst needs a re-bred Taillow', async () => {
 test('the card shows the physical build the interim Swellow was priced as', async () => {
   const result = await runPool({ pool: ['Taillow'], progression });
   const analysis = await buildTeamAnalysis(
-    result.team, progression, { family: 'singles', selection: 'all' });
+    result.team, progression, { family: 'singles' });
   const set = analysis.profiles[0].recommendedSet;
   // Timid 0/0/0/252/4/252 mirrored: Jolly with the attacking EVs swapped.
   assert.equal(set.nature, 'Jolly');

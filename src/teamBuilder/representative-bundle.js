@@ -11,7 +11,6 @@ import { resolveBestAvailableLightBundle } from '../data';
 export async function resolveRepresentativeLightBundle({
   family,
   pokemonId,
-  selection,
 }) {
   // The resolver index covers every month, format and cutoff of the slice,
   // so it is authoritative: a null usage here means the mon is genuinely
@@ -19,7 +18,6 @@ export async function resolveRepresentativeLightBundle({
   const bundle = await resolveBestAvailableLightBundle({
     family,
     pokemonId,
-    selection,
   });
   return bundle || { usage: null, leads: null };
 }

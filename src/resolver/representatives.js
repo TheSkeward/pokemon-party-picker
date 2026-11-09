@@ -16,7 +16,7 @@ import { getCanonicalLineCandidates } from '../teamBuilder/usage-line-ranking.js
  * representative id (highest score wins) and sorted by lead% descending,
  * broad matches last.
  * @param {{availability: ?Object, family: string, pokemonIndex: !Object,
- *     query: string, selection: string, literalResolveLimit: number}} params
+ *     query: string, literalResolveLimit: number}} params
  * @return {!Promise<!Array<!Object>>} representativeScore is -Infinity on
  *     literal and unresolved rows.
  */
@@ -25,7 +25,6 @@ export async function computeResolverRepresentativeResults({
   family,
   pokemonIndex,
   query,
-  selection,
   literalResolveLimit = 25,
 }) {
   const entries = resolveQueryEntries(query, pokemonIndex);
@@ -38,7 +37,6 @@ export async function computeResolverRepresentativeResults({
           family,
           group,
           literalResolveLimit,
-          selection,
         });
       }
 
@@ -60,7 +58,6 @@ export async function computeResolverRepresentativeResults({
         candidatesToScore.map(async (candidate) => {
           const bundle = await resolveBestAvailableLightBundle({
             family,
-            selection,
             pokemonId: candidate.id,
           });
 
@@ -126,7 +123,6 @@ async function resolveLiteralSearchGroup({
   family,
   group,
   literalResolveLimit,
-  selection,
 }) {
   const shouldResolveData = group.entries.length <= literalResolveLimit;
 
@@ -144,7 +140,6 @@ async function resolveLiteralSearchGroup({
       bundle: shouldResolveData
         ? await resolveBestAvailableLightBundle({
           family,
-          selection,
           pokemonId: entry.id,
         })
         : { usage: null, leads: null },

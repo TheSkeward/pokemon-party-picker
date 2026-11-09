@@ -98,7 +98,7 @@ import { isMegaRingOpen } from '../games/evolution.js';
 //            a pure function of those, so revisiting any pool state seen this
 //            session — undo, toggle a mon off/on, delete-then-re-add — returns
 //            instantly with no line resolution and no search.
-// All invalidate the moment the score context (family/selection/progression, or
+// All invalidate the moment the score context (family/progression, or
 // a line's reachable egg moves) changes — it's folded into every key.
 const lineCache = new Map();
 const MAX_LINE_CACHE = 4000;
@@ -308,7 +308,10 @@ const MAX_RESULT_CACHE = 400;
 // the team search withdraws without a passer on the team); Future Sight and
 // Doom Desire take the charge rate. Sets, damage figures and scores change
 // for every line that runs one of them.
-const RESULT_CACHE_VERSION = '90';
+// v91: the score context no longer names a data slice (the set and
+// resolver indexes hold one, every month aggregated); records keyed with
+// one are retired.
+const RESULT_CACHE_VERSION = '91';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.
@@ -346,7 +349,6 @@ export async function optimizeTeamFromPool({
   // the pool for egg moves, Sketch partners and move transfers only, and
   // never become lines, candidates or bench entries.
   donorQuery = '',
-  selection,
   onProgress,
   exhaustive = true,
   // "fast" is for background projections (the investment plan's future-cap
@@ -456,7 +458,7 @@ export async function optimizeTeamFromPool({
   // The game id leads the signature: every cache layer keyed by contextSig
   // (line cache, result cache, persisted results) is per-game, so switching
   // games can never serve one game's verdicts to another.
-  const contextText = `${getActiveGame().id}|${family}|${selection}|${progressionSig}|${breedingSig}|${sketchSig}|${abilitySig}|${passPackages.signature}|${scoringOverridesSignature()}|${dataSignature}${
+  const contextText = `${getActiveGame().id}|${family}|${progressionSig}|${breedingSig}|${sketchSig}|${abilitySig}|${passPackages.signature}|${scoringOverridesSignature()}|${dataSignature}${
     fastMode ? '|search:fast2' : ''
   }${scoreAllLines ? '|pool:all' : ''}`;
   // The caches key on a digest of that text, never the text itself. The
@@ -508,7 +510,6 @@ export async function optimizeTeamFromPool({
     family,
     pokemonIndex,
     progression,
-    selection,
     onProgress,
     limit: scoringPoolLimit,
   });
@@ -532,7 +533,6 @@ export async function optimizeTeamFromPool({
             group,
             pokemonIndex,
             progression,
-            selection,
             abilityAnnotations,
             fastMode,
             candidateBundles: scoringPool.candidateBundlesByGroup.get(group),
@@ -768,7 +768,6 @@ async function selectScoringGroups({
   family,
   pokemonIndex,
   progression,
-  selection,
   onProgress,
   limit,
 }) {
@@ -809,7 +808,6 @@ async function selectScoringGroups({
           bundle: await resolveRepresentativeLightBundle({
             family,
             pokemonId: candidate.id,
-            selection,
           }).catch((error) => {
             // Same containment as resolvePoolLine: a transient fetch failure
             // degrades one candidate's rank signal (the null bundle is
@@ -1013,7 +1011,6 @@ async function resolvePoolLine({
   group,
   pokemonIndex,
   progression,
-  selection,
   fastMode = false,
   abilityAnnotations = null,
   candidateBundles = null,
@@ -1050,7 +1047,6 @@ async function resolvePoolLine({
           await resolveRepresentativeLightBundle({
             family,
             pokemonId: candidate.id,
-            selection,
           });
         const builds = await resolveCandidateBuilds({
           breedingContext,
@@ -1059,7 +1055,6 @@ async function resolvePoolLine({
           family,
           input,
           progression,
-          selection,
           abilityOverride,
           fastMode,
           passedStages: passPackage?.stages || 0,
@@ -1548,7 +1543,6 @@ async function resolveCandidateBuilds({
   family,
   input,
   progression,
-  selection,
   abilityOverride = null,
   // Fast (hint-grade) runs — the investment plan's future-cap projections —
   // resolve ONLY the default build: no coverage/utility alternatives, no
@@ -1629,13 +1623,11 @@ async function resolveCandidateBuilds({
   const topSet = await loadTopSet({
     family,
     pokemonId: candidate.id,
-    selection,
   });
   const caughtTopSet = candidate.isMega
     ? await loadTopSet({
       family,
       pokemonId: megaBaseId,
-      selection,
     })
     : topSet;
   const {
@@ -1810,7 +1802,6 @@ async function resolveCandidateBuilds({
         family,
         input,
         progression: withoutOwnedItems(progression, itemIds),
-        selection,
         abilityOverride,
         fastMode: true,
         passedStages,

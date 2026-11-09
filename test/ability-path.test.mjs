@@ -142,7 +142,7 @@ test('optimizer, analysis, display, and export agree on current / eventual abili
       expected[profile.currentId]);
   }
   const analysis = await buildTeamAnalysis(result.team, progression, {
-    family: 'singles', selection: 'all', lines: result.lines,
+    family: 'singles', lines: result.lines,
   });
   for (const profile of analysis.profiles) {
     const [current, eventual] = expected[profile.currentId];
@@ -159,7 +159,7 @@ test('optimizer, analysis, display, and export agree on current / eventual abili
     querySelectorAll: () => [],
   };
   const options = {
-    family: 'singles', selection: 'all', progression,
+    family: 'singles', progression,
     team: result.team, lines: result.lines,
   };
   await renderTeamAnalysisPanel(root, options);
@@ -185,7 +185,7 @@ test('an evolved form caught as a pre-evolution names the ability to catch', asy
   const render = async (pool) => {
     const result = await runPool({ pool, progression });
     await renderTeamAnalysisPanel(root, {
-      family: 'singles', selection: 'all', progression,
+      family: 'singles', progression,
       team: result.team, lines: result.lines,
     });
     return root.innerHTML;

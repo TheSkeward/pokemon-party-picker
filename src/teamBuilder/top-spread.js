@@ -7,19 +7,14 @@ import { moveId as toMoveId } from '../utils/ids.js';
  * index — top EV spread + nature ("Nature:HP/Atk/Def/SpA/SpD/Spe"), ability,
  * and item — so the damage model can use the real investment and the analysis
  * can show a complete Showdown set. Shares the URL-keyed fetch cache with the
- * item recommender. Falls back to the "all" selection when the requested
- * selection has no set index.
- * @param {{family: string, pokemonId: string, selection: string}} target
+ * item recommender.
+ * @param {{family: string, pokemonId: string}} target
  * @return {Promise<{spread: ?string, ability: ?string,
  *     abilities: Array<{name: string, usage: number}>, item: ?string,
  *     moveUsage: Map<string, number>, moveRank: Map<string, number>}>}
  */
-export async function loadTopSet({ family, pokemonId, selection }) {
-  const data =
-    (await fetchSetIndex({ family, pokemonId, selection })) ||
-    (selection !== 'all'
-      ? await fetchSetIndex({ family, pokemonId, selection: 'all' })
-      : null);
+export async function loadTopSet({ family, pokemonId }) {
+  const data = await fetchSetIndex({ family, pokemonId });
 
   return {
     spread: topUsageName(data?.spreads),
@@ -91,11 +86,12 @@ function topUsageName(entries) {
   return best?.name || null;
 }
 
-async function fetchSetIndex({ family, pokemonId, selection }) {
+// The set index holds one slice, every month aggregated.
+async function fetchSetIndex({ family, pokemonId }) {
   if (!family || !pokemonId) return null;
   try {
     return await fetchJsonCached(
-      dataUrl(`set-index/${family}/${selection}/${pokemonId}.json`),
+      dataUrl(`set-index/${family}/all/${pokemonId}.json`),
     );
   } catch {
     return null;

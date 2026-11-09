@@ -39,7 +39,6 @@ export function renderTeamAnalysisPanel(root, {
   pokemonIndex = [],
   poolQuery = '',
   progression,
-  selection,
   team,
 }) {
   if (!root) return;
@@ -67,7 +66,6 @@ export function renderTeamAnalysisPanel(root, {
     itemAssignments || null,
     progression || null,
     family || '',
-    selection || '',
     poolQuery,
     // The bench fix suggestions read the pool lines; a render without them
     // (a progression edit's quick refresh) must not settle for one with.
@@ -84,7 +82,6 @@ export function renderTeamAnalysisPanel(root, {
         lines,
         pokemonIndex,
         query: poolQuery,
-        selection,
       })
         .catch((error) => {
           console.error('Failed to build Reborn team analysis', error);

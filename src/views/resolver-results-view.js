@@ -136,7 +136,6 @@ function sameSource(a, b) {
   return Boolean(
     a &&
       b &&
-      a.selection === b.selection &&
       a.formatId === b.formatId &&
       a.cutoff === b.cutoff &&
       a.month === b.month &&
@@ -149,7 +148,5 @@ function formatSource(source, formatsIndex) {
   const label =
     formatsIndex.find((format) => format.id === source.formatId)?.label ||
     source.formatId;
-  if (source.selection === 'all')
-    return `${label} @ ${source.cutoff} (all, ${source.monthsPresent}/${source.monthsAvailable} mo)`;
-  return `${label} @ ${source.cutoff} (${source.month})`;
+  return `${label} @ ${source.cutoff} (all, ${source.monthsPresent}/${source.monthsAvailable} mo)`;
 }

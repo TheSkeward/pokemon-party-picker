@@ -160,7 +160,7 @@ export function teamMemberKey(choice) {
  * @return {Promise<Map<string, Array<Object>>>} memberKey -> item candidates.
  */
 export async function loadTeamItemUsage(
-  { team, family, selection, itemContext }) {
+  { team, family, itemContext }) {
   const usageByMember = new Map();
 
   await Promise.all(
@@ -169,7 +169,6 @@ export async function loadTeamItemUsage(
       const items = await fetchMemberItems({
         family,
         pokemonId: choice.pokemonId,
-        selection,
         unburden: Boolean(itemContext?.get(key)?.unburden),
       });
       usageByMember.set(
@@ -276,15 +275,9 @@ function bestRemainingItem(remaining, context) {
   return best;
 }
 
-async function fetchMemberItems({ family, pokemonId, selection, unburden }) {
+async function fetchMemberItems({ family, pokemonId, unburden }) {
   const [data, gen5Items] = await Promise.all([
-    fetchSetIndex({ family, pokemonId, selection }).then(
-      (primary) =>
-        primary ||
-        (selection !== 'all'
-          ? fetchSetIndex({ family, pokemonId, selection: 'all' })
-          : null),
-    ),
+    fetchSetIndex({ family, pokemonId }),
     fetchGen5Items(pokemonId),
   ]);
 
@@ -422,10 +415,11 @@ async function fetchGen5Items(pokemonId) {
   }
 }
 
-async function fetchSetIndex({ family, pokemonId, selection }) {
+// The set index holds one slice, every month aggregated.
+async function fetchSetIndex({ family, pokemonId }) {
   try {
     return await fetchJsonCached(
-      dataUrl(`set-index/${family}/${selection}/${pokemonId}.json`),
+      dataUrl(`set-index/${family}/all/${pokemonId}.json`),
     );
   } catch {
     return null;

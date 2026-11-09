@@ -8,22 +8,15 @@ import { hydrateLegalMove } from '../move-meta.js';
 /**
  * Stateful loader for the selected Pokémon's precomputed set detail.
  * select() on the already-selected Pokémon deselects; stale async responses
- * are dropped via a generation counter. When the requested selection has no
- * set file, the "all" selection file is used and flagged on the detail as
- * selectionFallback. Unused legal moves are appended as kind "legal-unused".
- * `onUpdate` fires after every state change.
- * @param {{getFamily: function(): string, getSelection: function(): string,
- *     onUpdate: function(): void}} deps
+ * are dropped via a generation counter. Unused legal moves are appended as
+ * kind "legal-unused". `onUpdate` fires after every state change.
+ * @param {{getFamily: function(): string, onUpdate: function(): void}} deps
  * @return {{cancel: function(): void, getDetail: function(): ?Object,
  * getMessage: function(): string, getSelectedPokemonId: function(): ?string,
  *     getStatus: function(): ?Object, isSelected: function(string): boolean,
  *     select: function(string): void}}
  */
-export function createPrecomputedSetDetailsLoader({
-  getFamily,
-  getSelection,
-  onUpdate,
-}) {
+export function createPrecomputedSetDetailsLoader({ getFamily, onUpdate }) {
   let generation = 0;
   let selectedPokemonId = null;
   let detail = null;
@@ -75,32 +68,14 @@ export function createPrecomputedSetDetailsLoader({
 
   async function loadPrecomputedSetDetail(pokemonId, requestGeneration) {
     try {
-      const requestedSelection = getSelection();
       const [result, legalMoves] = await Promise.all([
-        fetchSetDetailWithAllFallback({
-          family: getFamily(),
-          pokemonId,
-          selection: requestedSelection,
-        }),
+        fetchSetDetail({ family: getFamily(), pokemonId }),
         fetchLegalMoves(pokemonId),
       ]);
 
       if (requestGeneration !== generation) return;
 
-      let merged = result.detail;
-
-      if (merged && result.usedFallback) {
-        merged = {
-          ...merged,
-          requestedSelection,
-          selectionFallback: {
-            requested: requestedSelection,
-            used: result.usedSelection,
-          },
-        };
-      }
-
-      merged = appendUnusedLegalMoves(merged, legalMoves, pokemonId);
+      const merged = appendUnusedLegalMoves(result, legalMoves, pokemonId);
 
       if (!merged) {
         detail = null;
@@ -124,9 +99,7 @@ export function createPrecomputedSetDetailsLoader({
         contributed: detail?.sourcesUsed?.length || 1,
       };
 
-      message = result.usedFallback
-        ? `Showing all-period set details; ${requestedSelection} has no precomputed set file.`
-        : '';
+      message = '';
 
       onUpdate();
     } catch (error) {
@@ -150,59 +123,25 @@ export function createPrecomputedSetDetailsLoader({
 
 /**
  * Source label for a set detail: "format @ cutoff", prefixed with "canonical
- * tier" when the detail names a primarySource, suffixed with the requested
- * period when all-period details were substituted for it.
+ * tier" when the detail names a primarySource.
  * @param {?Object} source Set detail as produced by the loader.
  * @return {string} Empty when the source carries no format info.
  */
 export function describePrecomputedSetSource(source) {
-  const fallback = source?.selectionFallback;
-
   const tier =
     source?.primarySource?.sourceText ||
     source?.sourceText ||
-    (source?.selection === 'all'
+    (source?.formatId
       ? `${source.formatId} @ ${source.cutoff} (all available)`
-      : source?.formatId
-        ? `${source.formatId} @ ${source.cutoff}`
-        : '');
+      : '');
 
-  const base = source?.primarySource ? `canonical tier ${tier}` : tier;
-
-  if (fallback) {
-    return `${base} · all-period details shown for ${fallback.requested}`;
-  }
-
-  return base;
+  return source?.primarySource ? `canonical tier ${tier}` : tier;
 }
 
-async function fetchSetDetailWithAllFallback({ family, pokemonId, selection }) {
-  const primary = await fetchSetDetail({ family, pokemonId, selection });
-
-  if (primary || selection === 'all') {
-    return {
-      detail: primary,
-      usedFallback: false,
-      usedSelection: selection,
-    };
-  }
-
-  const fallback = await fetchSetDetail({
-    family,
-    pokemonId,
-    selection: 'all',
-  });
-
-  return {
-    detail: fallback,
-    usedFallback: Boolean(fallback),
-    usedSelection: 'all',
-  };
-}
-
-async function fetchSetDetail({ family, pokemonId, selection }) {
+// The set index holds one slice, every month aggregated.
+async function fetchSetDetail({ family, pokemonId }) {
   return fetchJsonCached(
-    dataUrl(`set-index/${family}/${selection}/${pokemonId}.json`),
+    dataUrl(`set-index/${family}/all/${pokemonId}.json`),
   );
 }
 

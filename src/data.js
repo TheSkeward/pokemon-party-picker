@@ -254,32 +254,28 @@ export function resolveQueryEntries(query, pokemonIndex) {
   return results;
 }
 
-async function loadResolverIndex(family, selection) {
-  if (selection !== 'all') return null;
-
-  const key = `${family}:${selection}`;
-  if (resolverIndexCache.has(key)) return resolverIndexCache.get(key);
+// The resolver index holds one slice per family, every month aggregated.
+async function loadResolverIndex(family) {
+  if (resolverIndexCache.has(family)) return resolverIndexCache.get(family);
 
   // Cache the in-flight load, not only its resolved value. A large scoring pool
   // asks for hundreds of summaries concurrently; without promise sharing every
   // caller fetched and parsed the same complete resolver index.
   const promise = (async () => {
     const response = await fetch(
-      dataUrl(`resolver-index/${family}/${selection}.json`),
+      dataUrl(`resolver-index/${family}/all.json`),
     );
     if (response.status === 404) return null;
     if (!response.ok) {
-      throw new Error(
-        `Failed to load resolver index for ${family}/${selection}`,
-      );
+      throw new Error(`Failed to load resolver index for ${family}`);
     }
     return response.json();
   })();
-  resolverIndexCache.set(key, promise);
+  resolverIndexCache.set(family, promise);
   try {
     return await promise;
   } catch (error) {
-    resolverIndexCache.delete(key);
+    resolverIndexCache.delete(family);
     throw error;
   }
 }
@@ -289,16 +285,15 @@ async function loadResolverIndex(family, selection) {
  *     when absent everywhere) plus canonical ranking/trace facts, read from
  *     the family's resolver index.
  */
-export async function resolveBestAvailableLightBundle(
-  { family, selection, pokemonId }) {
-  const cacheKey = `${family}:${selection}:${pokemonId}`;
+export async function resolveBestAvailableLightBundle({ family, pokemonId }) {
+  const cacheKey = `${family}:${pokemonId}`;
   if (resolverSummaryCache.has(cacheKey)) return resolverSummaryCache.get(
     cacheKey);
 
   // The resolver index is precomputed from every source file of the slice,
   // aggregating every Pokémon present in any of them, so it is
   // authoritative: a miss means the Pokémon is absent everywhere.
-  const resolverIndex = await loadResolverIndex(family, selection);
+  const resolverIndex = await loadResolverIndex(family);
   const bundle = resolverIndex?.pokemon?.[pokemonId] || {
     usage: null,
     leads: null,

@@ -34,7 +34,7 @@ test('before the ring, a Lopunny line fields Lopunny and spends no Mega slot', a
   assert.equal(result.megaUsed, null);
 
   const analysis = await buildTeamAnalysis(result.team, progression, {
-    family: 'singles', selection: 'all', lines: result.lines,
+    family: 'singles', lines: result.lines,
   });
   const shown = analysis.profiles[0];
   assert.equal(shown.megaReady, false);

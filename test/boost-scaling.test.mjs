@@ -107,7 +107,6 @@ test('Stored Power is priced at the pool\'s best pass and seats on Espeon', asyn
     lines: result.lines,
     pokemonIndex,
     query: withDonors(pool.join('\n'), donorPool.join('\n')),
-    selection: '',
   });
   const profile = analysis.profiles.find(
     (entry) => entry.currentId === 'espeon',

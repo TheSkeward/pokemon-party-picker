@@ -103,7 +103,7 @@ export async function buildTeamAnalysis(
       retainRoutes: true,
     });
   let sketchContext = baseSketchContext;
-  const { family, selection, itemAssignments } = breedingOptions;
+  const { family, itemAssignments } = breedingOptions;
   await loadMovePrior(family);
   let legalMoveEntries = await Promise.all(
     team.map(async (row) => {
@@ -114,7 +114,6 @@ export async function buildTeamAnalysis(
         breedingContext,
         sketchContext,
         family,
-        selection,
         assignedItem,
         itemAware: true,
         ...bestPasserFor(team, row),
@@ -141,7 +140,6 @@ export async function buildTeamAnalysis(
     sketchContext,
     itemAssignments,
     family,
-    selection,
   });
   if (preferredSketch) {
     sketchContext = preferredSketch.sketchContext;
@@ -156,7 +154,6 @@ export async function buildTeamAnalysis(
     progression,
     breedingContext,
     family,
-    selection,
   });
 
   const members = legalMoveEntries.map((entry) => entry.member);
@@ -203,7 +200,6 @@ async function preferSelectedTeamSketchRoutes({
   sketchContext: baseSketchContext,
   itemAssignments,
   family,
-  selection,
 }) {
   const smeargleIndexes = legalMoveEntries
     .map((entry, index) => ({ entry, index }))
@@ -246,7 +242,6 @@ async function preferSelectedTeamSketchRoutes({
       breedingContext,
       sketchContext,
       family,
-      selection,
       assignedItem,
       itemAware: true,
     });
@@ -338,7 +333,6 @@ async function buildMemberLegalMoveEntry({
   breedingContext,
   sketchContext,
   family,
-  selection,
   assignedItem = null,
   itemAware = false,
   // The team's best Baton Pass into this member (bestPasserFor).
@@ -393,17 +387,16 @@ async function buildMemberLegalMoveEntry({
   let topSet = await loadTopSet({
     family,
     pokemonId: member.representativeId || member.id,
-    selection,
   });
   if (
     !topSet.moveUsage?.size &&
     member.representativeId &&
     member.representativeId !== member.id
   ) {
-    topSet = await loadTopSet({ family, pokemonId: member.id, selection });
+    topSet = await loadTopSet({ family, pokemonId: member.id });
   }
   const caughtTopSet = representativeRecord?.isMega
-    ? await loadTopSet({ family, pokemonId: megaBaseId, selection })
+    ? await loadTopSet({ family, pokemonId: megaBaseId })
     : topSet;
   const canonicalTopSet = topSet;
   // Computed before the attacker stats: an interim individual (the final
@@ -689,7 +682,6 @@ async function attachDonorInterimGuides({
   progression,
   breedingContext,
   family,
-  selection,
 }) {
   const guideCache = new Map();
   const globalCap = Number.parseInt(progression.levelCap, 10) || 100;
@@ -732,7 +724,6 @@ async function attachDonorInterimGuides({
         // to become usable while it waits to learn the move being supplied.
         sketchContext: null,
         family,
-        selection,
       });
       return {
         donorId,
@@ -832,7 +823,7 @@ export async function getTeamItemContext(
       ...breedingOptions,
       progression,
     });
-  const { family, selection } = breedingOptions;
+  const { family } = breedingOptions;
   const byMember = new Map();
 
   await Promise.all(
@@ -843,7 +834,6 @@ export async function getTeamItemContext(
         breedingContext,
         sketchContext,
         family,
-        selection,
         ...bestPasserFor(team, row),
       });
       const damageTypes = new Set(

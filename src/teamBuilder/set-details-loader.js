@@ -4,21 +4,12 @@ import {
 } from '../setDetails/precomputed-set-details';
 
 /**
- * @param {{getFamily: function(): string, getSelection: function(): Object,
- *     onUpdate: function(): void}} hooks
+ * @param {{getFamily: function(): string, onUpdate: function(): void}} hooks
  * @return {Object} Precomputed set-details loader with `describeSource`
  *     attached.
  */
-export function createTeamBuilderSetDetailsLoader({
-  getFamily,
-  getSelection,
-  onUpdate,
-}) {
-  const loader = createPrecomputedSetDetailsLoader({
-    getFamily,
-    getSelection,
-    onUpdate,
-  });
+export function createTeamBuilderSetDetailsLoader({ getFamily, onUpdate }) {
+  const loader = createPrecomputedSetDetailsLoader({ getFamily, onUpdate });
 
   return {
     ...loader,

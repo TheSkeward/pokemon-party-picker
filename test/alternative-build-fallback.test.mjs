@@ -14,7 +14,7 @@ const progression = {
 // lists canonical moves before the damage-ordered rest.
 const expectedMoves = ['nuzzle', 'spark', 'quickattack', 'charm'];
 const moveIds = (profile) => profile.recommendedMoves.map((move) => move.id);
-const analysisOptions = { family: 'singles', selection: 'all' };
+const analysisOptions = { family: 'singles' };
 
 test('Pachirisu fills its alternative set without changing its coverage priorities', async () => {
   const result = await runPool({ pool: ['Pachirisu'], progression });
