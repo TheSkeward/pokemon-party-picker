@@ -75,23 +75,27 @@ jobs:
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url || steps.deployment-retry.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment-retry.outputs.page_url || steps.deployment-last.outputs.page_url }}
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-      # The site payload is large (multi-GB of usage data), and the Pages
-      # file-sync phase intermittently gives up with "Deployment failed, try
-      # again later" — a deploy-side flake, not a build failure. Retry once
-      # before declaring the run failed.
+      # The Pages file sync fails two ways, both on its side: it rejects the
+      # deployment after about a minute ("try again later"), or it hangs in
+      # syncing_files. A healthy sync finishes inside a minute, so each
+      # attempt waits four minutes at most instead of the action's ten.
+      # 2026-11-01..04: the attempt and a retry five minutes later died in
+      # the same incident four times out of four, so a second retry waits
+      # fifteen minutes more. 2026-11-08: both attempts hung for the full
+      # ten minutes, and a fresh dispatch 27 minutes after the first attempt
+      # succeeded at once.
       - name: Deploy to GitHub Pages
         id: deployment
         continue-on-error: true
         uses: actions/deploy-pages@v5
+        with:
+          timeout: 240000
 
-      # Observed 2026-07-06: the attempt AND an immediate retry died in the
-      # same Pages backend incident ("try again later", ~90s apart). Wait out
-      # the bad window before retrying.
       - name: Wait before retrying Pages deploy
         if: steps.deployment.outcome == 'failure'
         run: sleep 300
@@ -99,4 +103,18 @@ jobs:
       - name: Retry deploy to GitHub Pages
         id: deployment-retry
         if: steps.deployment.outcome == 'failure'
+        continue-on-error: true
         uses: actions/deploy-pages@v5
+        with:
+          timeout: 240000
+
+      - name: Wait before the last Pages deploy attempt
+        if: steps.deployment.outcome == 'failure' && steps.deployment-retry.outcome == 'failure'
+        run: sleep 900
+
+      - name: Last deploy attempt to GitHub Pages
+        id: deployment-last
+        if: steps.deployment.outcome == 'failure' && steps.deployment-retry.outcome == 'failure'
+        uses: actions/deploy-pages@v5
+        with:
+          timeout: 240000
