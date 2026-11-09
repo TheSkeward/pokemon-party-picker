@@ -32,7 +32,6 @@ import {
 import { computeTeamConfidence } from './teamBuilder/confidence.js';
 import { computeInvestmentPlan } from './teamBuilder/investment.js';
 import { OptimizePhase } from './teamBuilder/optimize-phase.js';
-import { persistenceUnavailableReason } from './teamBuilder/result-cache-store.js';
 import {
   ProgressPhase,
   SearchStage,
@@ -314,12 +313,9 @@ export function mountPoolOptimizer(container, options = {}) {
           ? ' Some data failed to load, so parts of the pool were skipped — optimize again to retry.'
           : '',
       ].join('');
-      const cacheNote = persistenceUnavailableReason()
-        ? ` Results are not being cached: ${persistenceUnavailableReason()}.`
-        : '';
       state.statusMessage = saved
-        ? `${getOptimizationSummary(state.result)}${approxNote}${cacheNote}`
-        : `${getOptimizationSummary(state.result)}${approxNote}${cacheNote} Pool could not be saved locally; browser storage is full.`;
+        ? `${getOptimizationSummary(state.result)}${approxNote}`
+        : `${getOptimizationSummary(state.result)}${approxNote} Pool could not be saved locally; browser storage is full.`;
 
       writeUrl();
       const renderStart = Date.now();

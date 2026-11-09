@@ -10,6 +10,11 @@
  * Every operation degrades silently to a no-op if IndexedDB is unavailable,
  * the data isn't cloneable, or the quota is exceeded: persistence is a cache,
  * never a source of truth, so a failure just falls back to recomputing.
+ *
+ * The record key must stay short. LevelDB copies record keys into its
+ * manifest on every flush and compaction, so a 2 MB key grew one manifest to
+ * 13 GB in a day; the optimizer keys on a digest of the score context
+ * (test/result-cache-key.test.mjs bounds the length).
  */
 
 // Frozen at the project's original name; renaming would orphan every
@@ -22,51 +27,14 @@ const DB_VERSION = 1;
 // persist alongside the interactive result: each gamestate can write three
 // records (now + two "search:fast" future caps), so 60 keeps ~20 gamestates.
 const MAX_ENTRIES = 60;
-// Everything stored here is bounded by MAX_ENTRIES records of about a
-// megabyte, so an origin footprint far beyond that means the backing store
-// itself has gone wrong. A LevelDB manifest once reached 13 GB (it copies
-// the record keys on every compaction, and the keys were huge), and opening
-// it ran the browser process out of memory on every page load. Above this
-// the store stays closed for the session and the status line says so;
-// clearing the site's data resets it.
-const MAX_PLAUSIBLE_USAGE_BYTES = 1024 ** 3;
 
 let dbPromise = null;
-let unavailableReason = null;
-
-/**
- * @return {?string} Why results are not being persisted this session, for
- *     the status line; null while the store is usable.
- */
-export function persistenceUnavailableReason() {
-  return unavailableReason;
-}
-
-// The quota estimate is computed from the store's files on disk, so it is
-// safe to read even when opening the store is not.
-async function originUsageBytes() {
-  try {
-    const estimate = await navigator.storage?.estimate?.();
-    return Number(estimate?.usage) || 0;
-  } catch {
-    return 0;
-  }
-}
 
 function openDb() {
   if (dbPromise) return dbPromise;
-  dbPromise = (async () => {
-    if (typeof indexedDB === 'undefined') return null;
-    const usage = await originUsageBytes();
-    if (usage > MAX_PLAUSIBLE_USAGE_BYTES) {
-      unavailableReason =
-        `this site's browser storage holds ${(usage / 1024 ** 3).toFixed(1)} GB, ` +
-        'far more than the result cache can hold; clear the site\'s data in ' +
-        'the browser settings to repair it';
-      return null;
-    }
-    return openStore();
-  })();
+  dbPromise = typeof indexedDB === 'undefined'
+    ? Promise.resolve(null)
+    : openStore();
   return dbPromise;
 }
 
