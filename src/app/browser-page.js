@@ -1,8 +1,8 @@
 import {
+  describeDatasetMonths,
+  getAggregateRows,
+  getDatasetLabel,
   getMovesetEntry,
-  getMovesetLookupContext,
-  getRowsForSelection,
-  getSelectionLabel,
 } from '../data';
 import { renderControls } from '../views/controls-view';
 import { renderMovesetPanel } from '../views/moveset-view';
@@ -10,7 +10,8 @@ import { renderTable } from '../views/table-view';
 
 /**
  * Renders the Usage Data page (controls, usage table, moveset panel) into
- * `pageRoot`, replacing its contents.
+ * `pageRoot`, replacing its contents. The table and the panel aggregate
+ * every month the format's data holds.
  * @param {!Element} pageRoot
  * @param {{browserMovesetData: ?Object, dataset: !Object,
  *     formatsIndex: !Array<!Object>, state: !Object}} context
@@ -18,15 +19,14 @@ import { renderTable } from '../views/table-view';
 export function renderBrowserPage(pageRoot, context) {
   const { browserMovesetData, dataset, formatsIndex, state } = context;
 
-  const rows = getRowsForSelection(dataset, state.month);
-  const selectionLabel = getSelectionLabel(dataset, state.month);
+  const rows = getAggregateRows(dataset);
   const browserSelectedRow =
     rows.find((row) => row.pokemonId === state.selectedPokemon) || null;
-  const browserMovesetContext = getMovesetLookupContext(dataset, state);
   const browserMovesetEntry = getMovesetEntry(
     browserMovesetData,
     state.selectedPokemon,
   );
+  const span = describeDatasetMonths(dataset);
 
   pageRoot.innerHTML = `
     <section id="controls-root"></section>
@@ -37,21 +37,21 @@ export function renderBrowserPage(pageRoot, context) {
   renderControls(
     document.querySelector('#controls-root'),
     state,
-    dataset,
     formatsIndex,
   );
 
   renderTable(document.querySelector('#content-root'), rows, state, {
-    isAggregate: state.month === 'all',
-    selectionLabel,
+    selectionLabel: getDatasetLabel(dataset),
   });
 
   renderMovesetPanel(document.querySelector('#details-root'), {
     selectedPokemonName:
       browserSelectedRow?.name || browserMovesetEntry?.name || null,
     movesetEntry: browserMovesetEntry,
-    lookupLabel: browserMovesetContext?.label || '',
-    aggregate: Boolean(browserMovesetContext?.aggregate),
+    lookupLabel: span
+      ? `all available months (${span})`
+      : 'all available months',
+    aggregate: true,
     stitched: false,
     status: null,
   });

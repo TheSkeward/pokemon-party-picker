@@ -35,7 +35,6 @@ export async function computeResolverRepresentativeResults({
     groups.map(async (group) => {
       if (group.mode === 'literal') {
         return resolveLiteralSearchGroup({
-          availability,
           family,
           group,
           literalResolveLimit,
@@ -60,7 +59,6 @@ export async function computeResolverRepresentativeResults({
       const candidateResults = await Promise.all(
         candidatesToScore.map(async (candidate) => {
           const bundle = await resolveBestAvailableLightBundle({
-            availability,
             family,
             selection,
             pokemonId: candidate.id,
@@ -125,7 +123,6 @@ export async function computeResolverRepresentativeResults({
 }
 
 async function resolveLiteralSearchGroup({
-  availability,
   family,
   group,
   literalResolveLimit,
@@ -146,7 +143,6 @@ async function resolveLiteralSearchGroup({
       literalSearchOnly: !shouldResolveData,
       bundle: shouldResolveData
         ? await resolveBestAvailableLightBundle({
-          availability,
           family,
           selection,
           pokemonId: entry.id,

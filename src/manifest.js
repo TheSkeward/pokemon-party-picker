@@ -9,7 +9,6 @@ import { dataUrl } from './utils/data-url.js';
 import { setDataVersionTag } from './utils/data-url.js';
 
 let manifestPromise = null;
-let excluded = [];
 
 /** @return {!Promise<?Object>} The manifest, or null when it fails to load. */
 export function loadManifest() {
@@ -21,25 +20,11 @@ export function loadManifest() {
       .then((response) => (response.ok ? response.json() : null))
       .then((manifest) => {
         if (manifest?.dataSignature) setDataVersionTag(manifest.dataSignature);
-        excluded = Array.isArray(manifest?.excludedData)
-          ? manifest.excludedData
-          : [];
         return manifest;
       })
       .catch(() => null);
   }
   return manifestPromise;
-}
-
-/**
- * The data roots this deployment left out (DEPLOY_EXCLUDE_DATA at build
- * time), known once loadManifest has resolved; empty before that and for a
- * full checkout. The raw monthly sources are the one root a deployment
- * drops, and only single-month mode reads them.
- * @return {!Array<string>}
- */
-export function excludedDataRoots() {
-  return excluded;
 }
 
 /**

@@ -4,23 +4,18 @@ import { dex } from './games/dex.js';
 
 const LEAD_SMOOTHING_K = 200;
 
-const HIDDEN_MOVESET_ENTRY_KEYS = new Set(['other', 'nothing']);
-const SOURCE_FETCH_CONCURRENCY = 16;
-
 const jsonCache = new Map();
-const sourceCache = new Map();
-const browserMovesetCache = new Map();
+const aggregateMovesetCache = new Map();
 const resolverSummaryCache = new Map();
 const resolverIndexCache = new Map();
-const aggregatedMovesetCandidateCache = new Map();
 
 /** @return {!Promise<!Array<!Object>>} */
 export async function loadFormatsIndex() {
-  return loadJson(dataUrl('formats.json')); 
+  return loadJson(dataUrl('formats.json'));
 }
 /** @return {!Promise<!Object>} */
 export async function loadAvailability() {
-  return loadJson(dataUrl('availability.json')); 
+  return loadJson(dataUrl('availability.json'));
 }
 /**
  * @return {!Promise<!Array<!Object>>} The species index narrowed to the
@@ -46,70 +41,35 @@ export function filterToActiveGame(pokemonIndex) {
  * @return {!Promise<!Object>}
  */
 export async function loadFormatData(formatId) {
-  return loadJson(dataUrl(`by-format/${formatId}.json`)); 
+  return loadJson(dataUrl(`by-format/${formatId}.json`));
 }
 
 /**
+ * A format's movesets aggregated across every month the data holds
+ * (scripts/build-aggregate-movesets.mjs). The monthly moveset files are
+ * build inputs that no deployment ships.
  * @param {string} formatId
- * @param {string} month
- * @return {!Promise<?Object>} Moveset data, or null when the format/month has
+ * @return {!Promise<?Object>} Moveset data, or null when the format has
  *     none (404).
  */
-export async function loadMovesetData(formatId, month) {
-  const key = `${formatId}:${month}`;
-  if (browserMovesetCache.has(key)) return browserMovesetCache.get(key);
-  const response = await fetch(dataUrl(`movesets/${formatId}/${month}.json`));
-  if (response.status === 404) {
-    browserMovesetCache.set(key, null); return null; 
+export async function loadAggregateMovesets(formatId) {
+  if (aggregateMovesetCache.has(formatId)) {
+    return aggregateMovesetCache.get(formatId);
   }
-  if (!response.ok) throw new Error(`Failed to load movesets for ${formatId} ${month}`);
+  const response = await fetch(
+    dataUrl(`aggregate-movesets/${formatId}.json`),
+  );
+  if (response.status === 404) {
+    aggregateMovesetCache.set(formatId, null);
+    return null;
+  }
+  if (!response.ok) {
+    throw new Error(`Failed to load movesets for ${formatId}`);
+  }
   const data = await response.json();
-  browserMovesetCache.set(key, data);
+  aggregateMovesetCache.set(formatId, data);
   return data;
 }
-
-/**
- * @param {string} month
- * @param {string} formatId
- * @param {number} cutoff Rating cutoff the source file was published at.
- * @param {string} dataKind 'usage', 'leads', or 'moveset'.
- * @return {!Promise<?Object>} Parsed source file, or null when absent (404).
- */
-export async function loadSourceData(month, formatId, cutoff, dataKind) {
-  const key = `${month}:${formatId}:${cutoff}:${dataKind}`;
-  // Cache the in-flight promise (not just the resolved data) so the many
-  // concurrent optimizer lines that scan the same source files share one fetch
-  // instead of each firing its own and saturating the connection pool.
-  if (sourceCache.has(key)) return sourceCache.get(key);
-
-  const promise = (async () => {
-    const response = await fetch(
-      dataUrl(`sources/${month}/${formatId}/${cutoff}/${dataKind}.json`),
-    );
-    if (response.status === 404) return null;
-    if (!response.ok) {
-      throw new Error(
-        `Failed to load source data for ${month} ${formatId} ${cutoff} ${dataKind}`,
-      );
-    }
-    return response.json();
-  })();
-
-  sourceCache.set(key, promise);
-  try {
-    return await promise;
-  } catch (error) {
-    sourceCache.delete(key);
-    throw error;
-  }
-}
-
-// NOTE on sourceCache memory: it deliberately retains every parsed
-// month/format/cutoff source file for the tab's lifetime — hundreds of MB on
-// a big pool. Do not add eviction: every fresh resolve would re-fetch and
-// re-JSON.parse the working set on the main thread, which is far more costly
-// than the once-paid resident memory. Shrinking this for real means smaller
-// data (pre-aggregated per-format summaries), not eviction.
 
 async function loadJson(url) {
   if (jsonCache.has(url)) return jsonCache.get(url);
@@ -147,65 +107,40 @@ export function formatBelongsToFamily(formatsIndex, formatId, family) {
 }
 
 /**
- * @param {!Object} dataset
- * @param {string} selection Month key, or 'all' to aggregate across months.
- * @return {!Array<!Object>} Usage rows with lead metrics attached.
+ * @param {!Object} dataset A format's by-format file.
+ * @return {!Array<!Object>} Usage rows aggregated across the format's
+ *     months, with lead metrics attached.
  */
-export function getRowsForSelection(dataset, selection) {
-  const rows = selection === 'all' ? buildAggregateRows(dataset) : dataset.monthly?.[selection] || [];
-  return addLeadMetrics(rows);
-}
-
-/** @return {string} */
-export function getSelectionLabel(dataset, selection) {
-  if (selection === 'all') {
-    const months = dataset.months || [];
-    if (!months.length) return 'All available';
-    return `All available (${months[0]} → ${months[months.length - 1]})`;
-  }
-  return selection;
+export function getAggregateRows(dataset) {
+  return addLeadMetrics(buildAggregateRows(dataset));
 }
 
 /**
- * @return {?{formatId: string, month: string, label: string,
- *     aggregate: boolean}} Where to load movesets for the current selection,
- *     or null when no Pokémon is selected.
+ * @param {{months: (!Array<string>|undefined)}} dataset
+ * @return {string} The span of months a format's data covers
+ *     ("2014-11 → 2026-10"); '' with no months.
  */
-export function getMovesetLookupContext(dataset, state) {
-  if (!state.selectedPokemon) return null;
-  if (state.month === 'all') {
-    // Real aggregate built by scripts/build-aggregate-movesets.mjs — never
-    // silently fall back to a single month here (for thin formats that shows
-    // one player's set at 100%).
-    const months = dataset.months || [];
-    const label = months.length
-      ? `all available months (${months[0]} → ${months[months.length - 1]})`
-      : 'all available months';
-    return { formatId: state.format, month: 'all', label, aggregate: true };
-  }
-  return {
-    formatId: state.format,
-    month: state.month,
-    label: state.month,
-    aggregate: false,
-  };
+export function describeDatasetMonths(dataset) {
+  const months = dataset?.months || [];
+  return months.length ? `${months[0]} → ${months[months.length - 1]}` : '';
+}
+
+/** @return {string} */
+export function getDatasetLabel(dataset) {
+  const span = describeDatasetMonths(dataset);
+  return span ? `All available (${span})` : 'All available';
 }
 
 /** @return {?Object} */
 export function getMovesetEntry(movesetData, pokemonId) {
-  return movesetData?.pokemon?.[pokemonId] || null; 
+  return movesetData?.pokemon?.[pokemonId] || null;
 }
 /** @return {!Array<string>} Sorted month keys. */
 export function getAvailabilityMonths(availability) {
-  return Object.keys(availability?.months || {}).sort(); 
+  return Object.keys(availability?.months || {}).sort();
 }
 /** @return {string} */
-export function getLatestAvailabilityMonth(availability) {
-  return availability?.latestMonth || getAvailabilityMonths(availability).at(-1) || ''; 
-}
-/** @return {string} */
-export function getAvailabilitySelectionLabel(availability, selection) {
-  if (selection !== 'all') return selection;
+export function getAvailabilityLabel(availability) {
   const months = getAvailabilityMonths(availability);
   if (!months.length) return 'All available';
   return `All available (${months[0]} → ${months[months.length - 1]})`;
@@ -351,341 +286,25 @@ async function loadResolverIndex(family, selection) {
 
 /**
  * @return {!Promise<!Object>} One Pokémon's usage/leads summaries (each null
- *     when absent everywhere) plus canonical ranking/trace facts.
+ *     when absent everywhere) plus canonical ranking/trace facts, read from
+ *     the family's resolver index.
  */
 export async function resolveBestAvailableLightBundle(
-  { availability, family, selection, pokemonId }) {
+  { family, selection, pokemonId }) {
   const cacheKey = `${family}:${selection}:${pokemonId}`;
   if (resolverSummaryCache.has(cacheKey)) return resolverSummaryCache.get(
     cacheKey);
 
+  // The resolver index is precomputed from every source file of the slice,
+  // aggregating every Pokémon present in any of them, so it is
+  // authoritative: a miss means the Pokémon is absent everywhere.
   const resolverIndex = await loadResolverIndex(family, selection);
-
-  // The resolver index is precomputed from the exact same source files the live
-  // scan would read, aggregating every Pokémon present in any of them — so for
-  // "all" it's authoritative and already cached as a single static file. A hit
-  // returns the precomputed bundle (including trace-usage obscure NFEs); a miss
-  // means the Pokémon is absent everywhere, so there's nothing to rescan. This
-  // keeps every Pokémon's data while avoiding the slow per-mon source scan.
-  if (resolverIndex) {
-    const bundle = resolverIndex.pokemon?.[pokemonId] || {
-      usage: null,
-      leads: null,
-    };
-    resolverSummaryCache.set(cacheKey, bundle);
-    return bundle;
-  }
-
-  const usage = await resolveBestAvailableUsage(
-    { availability, family, selection, pokemonId });
-  const leads = await resolveBestAvailableLeads(
-    { availability, family, selection, pokemonId });
-
-  // Canonical-tier facts (first meaningful tier, best trace tier) are
-  // long-run properties of the mon, so they come from the all-period index
-  // even when a single month is selected: one month of a fringe mon is
-  // noise, and the tier a set should be sourced from doesn't flap month to
-  // month. The monthly usage/leads rows above keep their period semantics.
-  const allIndex = await loadResolverIndex(family, 'all');
-  const canonical = allIndex?.pokemon?.[pokemonId] || null;
-
-  const bundle = {
-    usage,
-    leads,
-    ranking: canonical?.ranking ?? null,
-    trace: canonical?.trace ?? null,
-    lineRanking: canonical?.lineRanking,
-    lineTrace: canonical?.lineTrace,
+  const bundle = resolverIndex?.pokemon?.[pokemonId] || {
+    usage: null,
+    leads: null,
   };
   resolverSummaryCache.set(cacheKey, bundle);
   return bundle;
-}
-
-
-
-/**
- * @return {!Array<!Object>} Moveset source candidates in resolution priority
- *     order: the requested family's formats first, then those of the other
- *     families of its generation (a Gen 7 singles set may fall back to Gen 7
- *     doubles data, never to another generation's).
- */
-export function getMovesetResolverCandidates(availability, family, selection) {
-  const configs = availability?.familyConfigs || {};
-  const gen = configs[family]?.gen;
-  const siblings = Object.keys(configs).filter(
-    (id) => id !== family && configs[id].gen === gen);
-  return [family, ...siblings].flatMap((familyId) =>
-    [...iterateCandidateSources(availability, familyId, selection, 'moveset')]);
-}
-
-/**
- * @return {!Promise<?Object>} The candidate's moveset entry aggregated across
- *     its months, or null when the Pokémon appears in none of them.
- */
-export async function loadAggregatedMovesetCandidate(candidate, pokemonId) {
-  const cacheKey = `${candidate.family}:${candidate.selection}:${candidate.formatId}:${candidate.cutoff}:${pokemonId}`;
-  if (aggregatedMovesetCandidateCache.has(cacheKey)) {
-    return aggregatedMovesetCandidateCache.get(cacheKey);
-  }
-  const aggregated = await aggregateMovesetCandidate(candidate, pokemonId);
-  aggregatedMovesetCandidateCache.set(cacheKey, aggregated);
-  return aggregated;
-}
-
-async function resolveBestAvailableUsage(
-  { availability, family, selection, pokemonId }) {
-  for (const candidate of iterateCandidateSources(availability, family, selection, 'usage')) {
-    let totalUsage = 0;
-    let totalRawCount = 0;
-    let monthsPresent = 0;
-    let name = null;
-
-    const monthEntries = await mapLimit(
-      candidate.months,
-      SOURCE_FETCH_CONCURRENCY,
-      async (month) => {
-        const source = await loadSourceData(month, candidate.formatId, candidate.cutoff, 'usage');
-        return source?.pokemon?.[pokemonId] || null;
-      },
-    );
-
-    for (const entry of monthEntries) {
-      if (!entry) continue;
-      name = entry.name;
-      totalUsage += entry.usage;
-      totalRawCount += entry.rawCount;
-      monthsPresent += 1;
-    }
-
-    if (monthsPresent === 0) continue;
-
-    return {
-      selection,
-      family,
-      month: selection === 'all' ? null : candidate.months[0],
-      formatId: candidate.formatId,
-      cutoff: candidate.cutoff,
-      monthsAvailable: candidate.months.length,
-      monthsPresent,
-      entry: {
-        pokemonId,
-        name,
-        usage: totalUsage / candidate.months.length,
-        rawCount: totalRawCount,
-      },
-      value: totalUsage / candidate.months.length,
-    };
-  }
-
-  return null;
-}
-
-async function resolveBestAvailableLeads(
-  { availability, family, selection, pokemonId }) {
-  for (const candidate of iterateCandidateSources(availability, family, selection, 'leads')) {
-    let totalUsageRawForPrior = 0;
-    let totalLeadRawForPrior = 0;
-    let usageRawCount = 0;
-    let leadRawCount = 0;
-    let monthsPresent = 0;
-    let name = null;
-
-    const monthEntries = await mapLimit(
-      candidate.months,
-      SOURCE_FETCH_CONCURRENCY,
-      async (month) => {
-        const [usageSource, leadsSource] = await Promise.all([
-          loadSourceData(month, candidate.formatId, candidate.cutoff, 'usage'),
-          loadSourceData(month, candidate.formatId, candidate.cutoff, 'leads'),
-        ]);
-
-        if (!usageSource || !leadsSource) return null;
-
-        return {
-          usageEntry: usageSource.pokemon?.[pokemonId] || null,
-          leadEntry: leadsSource.pokemon?.[pokemonId] || null,
-          totalUsageRaw: leadsSource.summary?.totalUsageRaw || 0,
-          totalLeadRaw: leadsSource.summary?.totalLeadRaw || 0,
-        };
-      },
-    );
-
-    for (const monthEntry of monthEntries) {
-      if (!monthEntry) continue;
-
-      totalUsageRawForPrior += monthEntry.totalUsageRaw;
-      totalLeadRawForPrior += monthEntry.totalLeadRaw;
-
-      if (monthEntry.usageEntry) {
-        name = monthEntry.usageEntry.name;
-        usageRawCount += monthEntry.usageEntry.rawCount;
-        monthsPresent += 1;
-      }
-
-      if (monthEntry.leadEntry) {
-        leadRawCount += monthEntry.leadEntry.leadRawCount || 0;
-      }
-    }
-
-    if (usageRawCount === 0 || monthsPresent === 0) continue;
-
-    const prior = totalUsageRawForPrior > 0
-      ? totalLeadRawForPrior / totalUsageRawForPrior
-      : 0;
-    const value =
-      ((leadRawCount + LEAD_SMOOTHING_K * prior) /
-        (usageRawCount + LEAD_SMOOTHING_K)) * 100;
-
-    return {
-      selection,
-      family,
-      month: selection === 'all' ? null : candidate.months[0],
-      formatId: candidate.formatId,
-      cutoff: candidate.cutoff,
-      monthsAvailable: candidate.months.length,
-      monthsPresent,
-      entry: { pokemonId, name, usageRawCount, leadRawCount },
-      value,
-    };
-  }
-
-  return null;
-}
-
-async function aggregateMovesetCandidate(candidate, pokemonId) {
-  const aggregate = {
-    moves: new Map(),
-    items: new Map(),
-    abilities: new Map(),
-    spreads: new Map(),
-  };
-
-  let totalRawCount = 0;
-  let monthsPresent = 0;
-  let name = null;
-
-  const monthEntries = await mapLimit(
-    candidate.months,
-    SOURCE_FETCH_CONCURRENCY,
-    async (month) => {
-      const source = await loadSourceData(month, candidate.formatId, candidate.cutoff, 'moveset');
-      return source?.pokemon?.[pokemonId] || null;
-    },
-  );
-
-  for (const entry of monthEntries) {
-    if (!entry) continue;
-
-    name = entry.name;
-    totalRawCount += entry.rawCount || 0;
-    monthsPresent += 1;
-
-    accumulateSection(
-      aggregate.moves,
-      filterVisibleMovesetEntries(entry.moves),
-      entry.rawCount,
-    );
-    accumulateSection(
-      aggregate.items,
-      filterVisibleMovesetEntries(entry.items),
-      entry.rawCount,
-    );
-    accumulateSection(
-      aggregate.abilities,
-      filterVisibleMovesetEntries(entry.abilities),
-      entry.rawCount,
-    );
-    accumulateSection(
-      aggregate.spreads,
-      filterVisibleMovesetEntries(entry.spreads),
-      entry.rawCount,
-    );
-  }
-
-  if (totalRawCount === 0 || monthsPresent === 0) return null;
-
-  return {
-    selection: candidate.selection,
-    family: candidate.family,
-    month: candidate.selection === 'all' ? null : candidate.months[0],
-    formatId: candidate.formatId,
-    cutoff: candidate.cutoff,
-    monthsAvailable: candidate.months.length,
-    monthsPresent,
-    entry: {
-      pokemonId,
-      name,
-      rawCount: totalRawCount,
-      moves: finalizeSection(aggregate.moves, totalRawCount),
-      items: finalizeSection(aggregate.items, totalRawCount),
-      abilities: finalizeSection(aggregate.abilities, totalRawCount),
-      spreads: finalizeSection(aggregate.spreads, totalRawCount),
-    },
-  };
-}
-
-async function mapLimit(items, limit, mapper) {
-  const results = new Array(items.length);
-  let nextIndex = 0;
-  const workerCount = Math.min(limit, items.length);
-
-  await Promise.all(
-    Array.from({ length: workerCount }, async () => {
-      while (nextIndex < items.length) {
-        const index = nextIndex;
-        nextIndex += 1;
-        results[index] = await mapper(items[index], index);
-      }
-    }),
-  );
-
-  return results;
-}
-
-// Best-available order: the family's tiers strongest first, each at its
-// cutoffs highest first; the first candidate with data for the Pokémon wins.
-function* iterateCandidateSources(availability, family, selection, dataKind) {
-  const familyConfig = availability?.familyConfigs?.[family] || {};
-  const formatOrder = familyConfig.formatOrder || [];
-  const cutoffPriority = familyConfig.cutoffPriority || [];
-  for (const formatId of formatOrder) {
-    for (const cutoff of cutoffPriority) {
-      const months =
-        getCandidateMonths(availability, selection, formatId, dataKind, cutoff);
-      if (months.length === 0) continue;
-      yield { formatId, cutoff, months, selection, family };
-    }
-  }
-}
-
-function getCandidateMonths(
-  availability, selection, formatId, dataKind, cutoff) {
-  if (selection === 'all') {
-    return getAvailabilityMonths(availability).filter((month) =>
-      availability?.months?.[month]?.[formatId]?.[dataKind]?.includes(cutoff));
-  }
-  return availability?.months?.[selection]?.[formatId]?.[dataKind]
-    ?.includes(cutoff)
-    ? [selection]
-    : [];
-}
-function filterVisibleMovesetEntries(entries = []) {
-  return entries.filter(
-    (entry) => !HIDDEN_MOVESET_ENTRY_KEYS.has(normalizeSearch(entry.name))); 
-}
-function accumulateSection(targetMap, entries = [], rawCount = 0) {
-  for (const entry of entries) {
-    const weight = (entry.usage / 100) * rawCount; targetMap.set(
-      entry.name, (targetMap.get(entry.name) || 0) + weight); 
-  } 
-}
-function finalizeSection(sourceMap, totalRawCount) {
-  return [...sourceMap.entries()]
-    .map(([name, weight]) => ({
-      name,
-      usage: totalRawCount > 0 ? (weight / totalRawCount) * 100 : 0,
-    }))
-    .sort((a, b) => b.usage - a.usage || a.name.localeCompare(b.name));
 }
 
 function buildAggregateRows(dataset) {

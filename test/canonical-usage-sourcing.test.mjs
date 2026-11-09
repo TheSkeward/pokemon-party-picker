@@ -133,46 +133,6 @@ test('set stitching uses the relaxed higher-tier source as primary', () => {
   assert.equal(detail.moves[0].name, 'high');
 });
 
-test('monthly resolution uses stepped fallback and preserves canonical facts', async () => {
-  globalThis.__ENV__ ??= { BASE_URL: '/' };
-  const { resolveRepresentativeLightBundle } = await import(
-    '../src/teamBuilder/representative-bundle.js',
-  );
-  const fetchBefore = globalThis.fetch;
-  const canonicalTrace = { tierRank: 0, formatId: 'high', cutoff: 0, value: 2 };
-  globalThis.fetch = async (url) => {
-    const path = String(url);
-    const data = path.includes('resolver-index')
-      ? { pokemon: { example: { trace: canonicalTrace } } }
-      : path.includes('/usage.json')
-        ? { pokemon: { example: { name: 'Example', rawCount: 100,
-          usage: path.includes('/high/') ? 2.0 : 2.2 } } }
-        : { pokemon: {}, summary: {} };
-    return { ok: true, json: async () => data };
-  };
-  try {
-    const result = await resolveRepresentativeLightBundle({
-      family: 'test-stepped', pokemonId: 'example', selection: '2026-01',
-      minMeaningfulUsagePercent: 100 * (1 - 0.5 ** (1 / 25)),
-      availability: {
-        familyConfigs: { 'test-stepped': {
-          formatOrder: ['high', 'low'], cutoffPriority: [0],
-        } },
-        months: { '2026-01': {
-          high: { usage: [0], leads: [0] },
-          low: { usage: [0], leads: [0] },
-        } },
-      },
-    });
-    assert.equal(result.usage.formatId, 'high');
-    assert.equal(result.usage.value, 2);
-    assert.deepEqual(result.trace, canonicalTrace);
-    assert.equal(result.ranking, null);
-  } finally {
-    globalThis.fetch = fetchBefore;
-  }
-});
-
 test('a trace tier without moveset data yields to the next tier by the same rule', () => {
   const aggregate = (formatId, tierRank, value, family = 'singles') => ({
     formatId, cutoff: 0, tierRank, value, family, selection: 'all',

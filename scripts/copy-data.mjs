@@ -1,11 +1,10 @@
 /**
  * @fileoverview Copies the checked-in runtime data into the built site.
  * DEPLOY_EXCLUDE_DATA names top-level data roots to leave out of a
- * deployment, comma-separated: the raw monthly Smogon sources alone exceed
- * what GitHub Pages accepts in one artifact, and the site's default mode
- * reads only the indexes built from them. The manifest records the same
- * list (scripts/build-manifest.mjs) so the app can tell what it does not
- * have.
+ * deployment, comma-separated: the raw monthly Smogon sources and the
+ * monthly moveset files are build inputs the site never reads, and the
+ * sources alone exceed what GitHub Pages accepts in one artifact. The
+ * manifest records the same list (scripts/build-manifest.mjs).
  */
 import fs from 'node:fs/promises';
 import path from 'node:path';

@@ -1,8 +1,9 @@
 /**
- * @fileoverview Builds movesets/<formatId>/all.json — the "All available"
- * aggregate of a format's monthly moveset files — so the browser's detail pane
- * can show genuinely aggregated sets instead of silently falling back to the
- * latest month (which for thin formats is one player's single set at 100%).
+ * @fileoverview Builds aggregate-movesets/<formatId>.json — the "All
+ * available" aggregate of a format's monthly moveset files — so the browser's
+ * detail pane shows genuinely aggregated sets. The aggregates live in their
+ * own data root because deployments ship them and leave the monthly files
+ * out (scripts/copy-data.mjs).
  *
  * Aggregation matches scripts/set-index/aggregate-movesets.mjs: an entry's
  * monthly usage% is converted back to a count (usage/100 × that month's
@@ -15,6 +16,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const MOVESETS_ROOT = path.resolve('site-data', 'data', 'movesets');
+const AGGREGATE_ROOT = path.resolve('site-data', 'data', 'aggregate-movesets');
 const MONTH_FILE = /^\d{4}-\d{2}\.json$/;
 const SECTIONS = ['moves', 'items', 'abilities', 'spreads'];
 
@@ -96,12 +98,13 @@ function main() {
     .map((entry) => entry.name)
     .sort();
 
+  fs.mkdirSync(AGGREGATE_ROOT, { recursive: true });
   let written = 0;
   for (const formatId of formatIds) {
     const aggregate = aggregateFormat(formatId);
     if (!aggregate) continue;
     fs.writeFileSync(
-      path.join(MOVESETS_ROOT, formatId, 'all.json'),
+      path.join(AGGREGATE_ROOT, `${formatId}.json`),
       JSON.stringify(aggregate),
     );
     written += 1;

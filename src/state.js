@@ -7,12 +7,10 @@ export const DEFAULT_STATE = {
   // browser format (main.js re-validates both against the usage data).
   family: getActiveGame().families[0],
   format: 'gen7anythinggoes',
-  month: 'all',
   search: '',
   sortBy: 'rank',
   sortDir: 'asc',
   selectedPokemon: null,
-  resolverMonth: 'all',
   resolverQuery: '',
   resolverSelectedPokemon: null,
 };

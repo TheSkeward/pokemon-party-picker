@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     # Only redeploy when the published site can actually change. Every deploy
-    # re-syncs the full multi-GB data payload to Pages (the flaky part), so
+    # re-syncs the whole data payload to Pages (the flaky part), so
     # test-only / docs-only commits shouldn't roll those dice.
     paths:
       - "src/**"
@@ -56,13 +56,15 @@ jobs:
       - name: Run fast tests
         run: npm test
 
-      # The raw monthly Smogon sources alone put the Pages artifact over its
-      # 1 GB limit; the site's default mode reads only the indexes built from
-      # them, and the app hides single-month mode when they are absent.
+      # The raw monthly Smogon sources and the monthly moveset files are
+      # build inputs: the site reads only the indexes and aggregates built
+      # from them, and the sources alone would put the Pages artifact over
+      # its 1 GB limit. Leaving both out cuts what Pages syncs per deploy
+      # from 3.5 GB to about 1.2 GB.
       - name: Build static site
         run: npm run build:site
         env:
-          DEPLOY_EXCLUDE_DATA: sources
+          DEPLOY_EXCLUDE_DATA: sources,movesets
 
       - name: Configure Pages
         uses: actions/configure-pages@v6

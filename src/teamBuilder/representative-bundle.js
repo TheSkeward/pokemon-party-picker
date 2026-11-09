@@ -1,232 +1,25 @@
-import {
-  loadSourceData,
-  resolveBestAvailableLightBundle as resolveIndexedBestAvailableLightBundle,
-} from '../data';
-import { compareTraceUsage } from './trace-usage.js';
-
-const LEAD_SMOOTHING_K = 200;
+import { resolveBestAvailableLightBundle } from '../data';
 
 /**
  * @return {Promise<{usage: ?Object, leads: ?Object, ranking: ?Object,
  *     trace: ?Object, lineRanking: (?Object|undefined),
- *     lineTrace: (?Object|undefined)}>} The first format/cutoff bundle at or
- *     above the meaningful-usage bar, else the best trace found, carrying
- *     the long-run set-source and line-identity signals; nulls when the mon
- *     is absent everywhere.
+ *     lineTrace: (?Object|undefined)}>} The resolver index's bundle for the
+ *     mon: the first format/cutoff at or above the meaningful-usage bar,
+ *     else its best trace, carrying the long-run set-source and
+ *     line-identity signals; nulls when the mon is absent everywhere.
  */
 export async function resolveRepresentativeLightBundle({
-  availability,
   family,
-  minMeaningfulUsagePercent,
   pokemonId,
   selection,
 }) {
-  if (selection === 'all') {
-    // The resolver index and its parallelized best-available scan already cover
-    // every month/format/cutoff for "all", so they're authoritative: a null
-    // usage here means the mon is genuinely absent everywhere. Returning that
-    // directly avoids a second, fully sequential full scan.
-    const indexedBundle = await resolveIndexedBestAvailableLightBundle({
-      availability,
-      family,
-      pokemonId,
-      selection,
-    });
-
-    return indexedBundle || { usage: null, leads: null };
-  }
-
-  // Set sources and evolutionary identities use long-run evidence even
-  // while the displayed usage/leads are for a selected month.
-  const canonical = await resolveIndexedBestAvailableLightBundle({
-    availability, family, pokemonId, selection: 'all',
-  });
-  const canonicalFacts = {
-    ranking: canonical?.ranking ?? null,
-    trace: canonical?.trace ?? null,
-    lineRanking: canonical?.lineRanking,
-    lineTrace: canonical?.lineTrace,
-  };
-  let bestTrace = null;
-  let bestTraceRow = null;
-  let tierRank = -1;
-
-  for (const candidate of iterateCandidateSources(
-    availability,
+  // The resolver index covers every month, format and cutoff of the slice,
+  // so it is authoritative: a null usage here means the mon is genuinely
+  // absent everywhere.
+  const bundle = await resolveBestAvailableLightBundle({
     family,
+    pokemonId,
     selection,
-    'usage',
-  )) {
-    tierRank += 1;
-    const usage = await aggregateUsageCandidate(candidate, pokemonId);
-    if (!usage) continue;
-
-    const leads = await aggregateLeadsCandidate(candidate, pokemonId);
-
-    const bundle = { usage, leads, ...canonicalFacts };
-
-    if (usage.value >= minMeaningfulUsagePercent) {
-      return bundle;
-    }
-
-    const traceRow = { value: usage.value, tierRank };
-    if (usage.value > 0 &&
-      (!bestTraceRow || compareTraceUsage(traceRow, bestTraceRow) < 0)) {
-      bestTrace = bundle;
-      bestTraceRow = traceRow;
-    }
-  }
-
-  return bestTrace || { usage: null, leads: null, ...canonicalFacts };
-}
-
-function* iterateCandidateSources(availability, family, selection, dataKind) {
-  const familyConfig = availability?.familyConfigs?.[family];
-  const formatOrder = familyConfig?.formatOrder || [];
-  const cutoffPriority = familyConfig?.cutoffPriority || [];
-
-  for (const formatId of formatOrder) {
-    for (const cutoff of cutoffPriority) {
-      const months = getCandidateMonths(
-        availability,
-        selection,
-        formatId,
-        dataKind,
-        cutoff,
-      );
-
-      if (!months.length) continue;
-
-      yield { formatId, cutoff, months, selection, family };
-    }
-  }
-}
-
-function getCandidateMonths(
-  availability,
-  selection,
-  formatId,
-  dataKind,
-  cutoff,
-) {
-  if (selection === 'all') {
-    return Object.keys(availability?.months || {})
-      .sort()
-      .filter((month) =>
-        availability?.months?.[month]?.[formatId]?.[dataKind]?.includes(cutoff),
-      );
-  }
-
-  return availability?.months?.[selection]?.[formatId]?.[dataKind]?.includes(
-    cutoff,
-  )
-    ? [selection]
-    : [];
-}
-
-async function aggregateUsageCandidate(candidate, pokemonId) {
-  let totalUsage = 0;
-  let totalRawCount = 0;
-  let monthsPresent = 0;
-  let name = null;
-
-  for (const month of candidate.months) {
-    const source = await loadSourceData(
-      month,
-      candidate.formatId,
-      candidate.cutoff,
-      'usage',
-    );
-    const entry = source?.pokemon?.[pokemonId];
-    if (!entry) continue;
-
-    name = entry.name;
-    totalUsage += entry.usage;
-    totalRawCount += entry.rawCount;
-    monthsPresent += 1;
-  }
-
-  if (monthsPresent === 0) return null;
-
-  return {
-    selection: candidate.selection,
-    family: candidate.family,
-    month: candidate.selection === 'all' ? null : candidate.months[0],
-    formatId: candidate.formatId,
-    cutoff: candidate.cutoff,
-    monthsAvailable: candidate.months.length,
-    monthsPresent,
-    entry: {
-      pokemonId,
-      name,
-      usage: totalUsage / candidate.months.length,
-      rawCount: totalRawCount,
-    },
-    value: totalUsage / candidate.months.length,
-  };
-}
-
-async function aggregateLeadsCandidate(candidate, pokemonId) {
-  let totalUsageRawForPrior = 0;
-  let totalLeadRawForPrior = 0;
-  let usageRawCount = 0;
-  let leadRawCount = 0;
-  let monthsPresent = 0;
-  let name = null;
-
-  for (const month of candidate.months) {
-    const usageSource = await loadSourceData(
-      month,
-      candidate.formatId,
-      candidate.cutoff,
-      'usage',
-    );
-    const leadsSource = await loadSourceData(
-      month,
-      candidate.formatId,
-      candidate.cutoff,
-      'leads',
-    );
-
-    if (!usageSource || !leadsSource) continue;
-
-    totalUsageRawForPrior += leadsSource.summary?.totalUsageRaw || 0;
-    totalLeadRawForPrior += leadsSource.summary?.totalLeadRaw || 0;
-
-    const usageEntry = usageSource.pokemon?.[pokemonId];
-    const leadEntry = leadsSource.pokemon?.[pokemonId];
-
-    if (usageEntry) {
-      name = usageEntry.name;
-      usageRawCount += usageEntry.rawCount;
-      monthsPresent += 1;
-    }
-
-    if (leadEntry) {
-      leadRawCount += leadEntry.leadRawCount || 0;
-    }
-  }
-
-  if (usageRawCount === 0 || monthsPresent === 0) return null;
-
-  const prior =
-    totalUsageRawForPrior > 0
-      ? totalLeadRawForPrior / totalUsageRawForPrior
-      : 0;
-  const value =
-    ((leadRawCount + LEAD_SMOOTHING_K * prior) /
-      (usageRawCount + LEAD_SMOOTHING_K)) *
-    100;
-
-  return {
-    selection: candidate.selection,
-    family: candidate.family,
-    month: candidate.selection === 'all' ? null : candidate.months[0],
-    formatId: candidate.formatId,
-    cutoff: candidate.cutoff,
-    monthsAvailable: candidate.months.length,
-    monthsPresent,
-    entry: { pokemonId, name, usageRawCount, leadRawCount },
-    value,
-  };
+  });
+  return bundle || { usage: null, leads: null };
 }

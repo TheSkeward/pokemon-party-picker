@@ -25,21 +25,9 @@ export function bindAppEvents(handlers) {
     });
 
   document
-    .querySelector('#month-select')
-    ?.addEventListener('change', (event) => {
-      handlers.onMonthChange(event.target.value);
-    });
-
-  document
     .querySelector('#search-input')
     ?.addEventListener('input', (event) => {
       handlers.onSearchInput(event.target.value);
-    });
-
-  document
-    .querySelector('#resolver-month-select')
-    ?.addEventListener('change', (event) => {
-      handlers.onResolverMonthChange(event.target.value);
     });
 
   document

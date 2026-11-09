@@ -807,9 +807,7 @@ async function selectScoringGroups({
         candidates.map(async (candidate) => ({
           candidate,
           bundle: await resolveRepresentativeLightBundle({
-            availability,
             family,
-            minMeaningfulUsagePercent: MIN_MEANINGFUL_USAGE_PERCENT,
             pokemonId: candidate.id,
             selection,
           }).catch((error) => {
@@ -1050,9 +1048,7 @@ async function resolvePoolLine({
         const bundle =
           candidateBundles?.get(candidate.id) ||
           await resolveRepresentativeLightBundle({
-            availability,
             family,
-            minMeaningfulUsagePercent: MIN_MEANINGFUL_USAGE_PERCENT,
             pokemonId: candidate.id,
             selection,
           });

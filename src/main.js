@@ -3,18 +3,16 @@ import './styles/main.css';
 import {
   formatBelongsToFamily,
   getDefaultBrowserFormat,
-  getLatestAvailabilityMonth,
-  getMovesetLookupContext,
   listFamilies,
+  loadAggregateMovesets,
   loadAvailability,
   loadFormatData,
   loadFormatsIndex,
-  loadMovesetData,
   loadPokemonIndex,
 } from './data';
 import { activateGameForFamily, orderFamilies } from './games/registry.js';
 import { applyGameTheme } from './app/theme.js';
-import { excludedDataRoots, loadManifest } from './manifest.js';
+import { loadManifest } from './manifest.js';
 import { bindAppEvents } from './app/app-events';
 import { renderBrowserPage } from './app/browser-page';
 import { captureFocusState, restoreFocusState } from './app/focus-state';
@@ -45,7 +43,8 @@ let resolverDebounceTimer = null;
 
 const resolverSetDetails = createPrecomputedSetDetailsLoader({
   getFamily: () => getState().family,
-  getSelection: () => getState().resolverMonth,
+  // The set index holds one slice, every month aggregated.
+  getSelection: () => 'all',
   onUpdate: () => rerenderPreservingFocus(),
 });
 
@@ -63,11 +62,9 @@ async function init() {
 
   dataset = await loadFormatData(getState().format);
 
-  // The manifest says which data roots this deployment serves; the month
-  // validation below reads it.
+  // The manifest's data signature versions the data URLs fetched after it
+  // (utils/data-url.js).
   await loadManifest();
-  ensureValidMonth();
-  ensureValidResolverMonth();
 
   await ensureBrowserMovesetData();
 
@@ -91,64 +88,27 @@ function ensureValidFamilyAndFormat() {
   ) {
     setState({
       format: fallbackFormat,
-      month: 'all',
       selectedPokemon: null,
       resolverSelectedPokemon: null,
     });
   }
 }
 
-function ensureValidMonth() {
-  const state = getState();
-  const months = dataset.months || [];
-
-  if (state.month !== 'all' && !months.includes(state.month)) {
-    setState({ month: 'all', selectedPokemon: null });
-  }
-}
-
-function ensureValidResolverMonth() {
-  const state = getState();
-  const latest = getLatestAvailabilityMonth(availability);
-  const months = Object.keys(availability?.months || {});
-
-  // A deployment without the raw monthly sources serves only "All
-  // available": a single month would scan files that are not there and
-  // read every Pokémon as absent.
-  if (excludedDataRoots().includes('sources')) {
-    if (state.resolverMonth !== 'all') setState({ resolverMonth: 'all' });
-    return;
-  }
-  if (
-    state.resolverMonth !== 'all' &&
-    (!state.resolverMonth || !months.includes(state.resolverMonth))
-  ) {
-    setState({ resolverMonth: latest || 'all' });
-  }
-}
-
+// The browser's moveset panel reads the format's aggregate, fetched once
+// per format and only while a Pokémon is selected on the browser view.
 async function ensureBrowserMovesetData() {
   const state = getState();
 
-  if (state.view !== 'browser') {
+  if (state.view !== 'browser' || !state.selectedPokemon) {
     browserMovesetData = null;
     browserMovesetKey = null;
     return;
   }
 
-  const context = getMovesetLookupContext(dataset, state);
+  if (browserMovesetKey === state.format) return;
 
-  if (!context) {
-    browserMovesetData = null;
-    browserMovesetKey = null;
-    return;
-  }
-
-  const key = `${context.formatId}:${context.month}`;
-  if (browserMovesetKey === key) return;
-
-  browserMovesetData = await loadMovesetData(context.formatId, context.month);
-  browserMovesetKey = key;
+  browserMovesetData = await loadAggregateMovesets(state.format);
+  browserMovesetKey = state.format;
 }
 
 async function computeResolverResults() {
@@ -159,7 +119,7 @@ async function computeResolverResults() {
     family: state.family,
     pokemonIndex,
     query: state.resolverQuery,
-    selection: state.resolverMonth,
+    selection: 'all',
     literalResolveLimit: LITERAL_RESOLVE_LIMIT,
   });
 }
@@ -208,8 +168,6 @@ function bindEvents() {
     onBrowserPokemonClick: handleBrowserPokemonClick,
     onFamilyChange: handleFamilyChange,
     onFormatChange: handleFormatChange,
-    onMonthChange: handleMonthChange,
-    onResolverMonthChange: handleResolverMonthChange,
     onResolverPokemonClick: handleResolverPokemonClick,
     onResolverQueryInput: handleResolverQueryInput,
     onSearchInput: handleSearchInput,
@@ -235,7 +193,6 @@ async function handleFamilyChange(nextFamily) {
   setState({
     family: nextFamily,
     format: nextFormat,
-    month: 'all',
     selectedPokemon: null,
     resolverSelectedPokemon: null,
   });
@@ -256,15 +213,7 @@ async function handleFormatChange(format) {
 
   dataset = await loadFormatData(format);
 
-  setState({ format, month: 'all', selectedPokemon: null });
-
-  await sync();
-}
-
-async function handleMonthChange(month) {
-  clearPendingResolverDebounce();
-
-  setState({ month, selectedPokemon: null });
+  setState({ format, selectedPokemon: null });
 
   await sync();
 }
@@ -273,18 +222,6 @@ async function handleSearchInput(search) {
   clearPendingResolverDebounce();
 
   setState({ search });
-
-  await sync();
-}
-
-async function handleResolverMonthChange(resolverMonth) {
-  clearPendingResolverDebounce();
-  resolverSetDetails.cancel();
-
-  setState({
-    resolverMonth,
-    resolverSelectedPokemon: null,
-  });
 
   await sync();
 }

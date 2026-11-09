@@ -1,9 +1,8 @@
 import { escapeHtml } from '../utils/html.js';
-import { getAvailabilitySelectionLabel } from '../data';
+import { getAvailabilityLabel } from '../data';
 import { describePrecomputedSetSource } from '../setDetails/precomputed-set-details';
 import { renderMovesetPanel } from '../views/moveset-view';
 import { renderResolverControls } from '../views/resolver-controls-view';
-import { excludedDataRoots } from '../manifest.js';
 import { renderResolverResults } from '../views/resolver-results-view';
 
 /**
@@ -25,10 +24,6 @@ export function renderResolverPage(pageRoot, context) {
     state,
   } = context;
 
-  const resolverSelectionLabel = getAvailabilitySelectionLabel(
-    availability,
-    state.resolverMonth,
-  );
   const resolverSelected =
     resolverResults.find(
       (row) => row.pokemonId === state.resolverSelectedPokemon,
@@ -44,8 +39,6 @@ export function renderResolverPage(pageRoot, context) {
   renderResolverControls(
     document.querySelector('#resolver-controls-root'),
     state,
-    availability,
-    !excludedDataRoots().includes('sources'),
   );
 
   renderResolverResults(
@@ -53,7 +46,7 @@ export function renderResolverPage(pageRoot, context) {
     resolverResults,
     state,
     formatsIndex,
-    resolverSelectionLabel,
+    getAvailabilityLabel(availability),
     resolverLoadingState,
   );
 
@@ -65,9 +58,7 @@ export function renderResolverPage(pageRoot, context) {
     lookupLabel: resolverMovesetDetail
       ? describePrecomputedSetSource(resolverMovesetDetail)
       : '',
-    aggregate:
-      state.resolverMonth === 'all' ||
-      Boolean(resolverMovesetDetail?.selectionFallback),
+    aggregate: true,
     stitched: Boolean(resolverMovesetDetail?.stitched),
     status: setDetails.getStatus(),
   });
@@ -79,4 +70,3 @@ export function renderResolverPage(pageRoot, context) {
     );
   }
 }
-
