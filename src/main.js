@@ -205,22 +205,21 @@ async function handleViewChange(nextView) {
   await sync({ recomputeResolverResults: false });
 }
 
+// The format, the search text and the sort (below) shape the usage table
+// only. The Set Lookup results read none of them, so these handlers skip
+// that recompute and leave one that is still pending to run on its timer.
 async function handleFormatChange(format) {
-  clearPendingResolverDebounce();
-
   dataset = await loadFormatData(format);
 
   setState({ format, selectedPokemon: null });
 
-  await sync();
+  await sync({ recomputeResolverResults: false });
 }
 
 async function handleSearchInput(search) {
-  clearPendingResolverDebounce();
-
   setState({ search });
 
-  await sync();
+  await sync({ recomputeResolverResults: false });
 }
 
 function handleResolverQueryInput(resolverQuery) {
@@ -249,8 +248,6 @@ async function handleSort(nextSortBy) {
 
   setState({ sortBy: nextSortBy, sortDir: nextSortDir });
 
-  // The sort only reorders the usage table. A Set Lookup recompute that is
-  // still pending is left to run on its own timer.
   await sync({ recomputeResolverResults: false });
 }
 
