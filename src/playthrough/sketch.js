@@ -15,16 +15,83 @@ import {
   loadLegalMoveData,
 } from './legal-moves.js';
 import { dex } from '../games/dex.js';
+import { getActiveGame } from '../games/registry.js';
+import { stableStringify } from '../utils/stable-stringify.js';
 
 const SMEARGLE_ID = 'smeargle';
+
+// Building the contexts walks every owned species' move pool against every
+// donor, and each consumer of one gamestate asks for the same pair: the
+// optimizer before it can key its caches, the item recommendations, the
+// Sets & coverage panel, the legal-moves panel. The pair depends only on the
+// game, the progression, the owned species and whether routes are kept, so
+// it is built once per such input and shared. A roster lock changes none of
+// those. Twelve entries hold the current gamestate and the investment
+// plan's future caps, with room to come back to a few earlier ones.
+const TRANSFER_MEMO_ENTRIES = 12;
+/** @type {!Map<string, !Promise<!Object>>} Least recently used first. */
+const transferMemo = new Map();
 
 /**
  * Resolve the two move-transfer systems in dependency order. Breeding first
  * establishes every partner's real move pool; Sketch then copies from those
  * partners. A final breeding pass lets a partner-backed Smeargle serve as an
  * egg donor without ever allowing Sketch to bootstrap itself.
+ * @return {!Promise<{breedingContext: !Object, sketchContext: !Object}>}
+ *     Shared between callers with the same inputs, so never to be mutated.
  */
-export async function buildMoveTransferContexts(options = {}) {
+export function buildMoveTransferContexts(options = {}) {
+  const key = transferMemoKey(options);
+  if (key === null) return resolveMoveTransferContexts(options);
+
+  const known = transferMemo.get(key);
+  if (known) {
+    // Re-inserting moves the entry to the recently used end.
+    transferMemo.delete(key);
+    transferMemo.set(key, known);
+    return known;
+  }
+  const building = resolveMoveTransferContexts(options);
+  transferMemo.set(key, building);
+  if (transferMemo.size > TRANSFER_MEMO_ENTRIES) {
+    transferMemo.delete(transferMemo.keys().next().value);
+  }
+  // A failed build must not answer the next request.
+  building.catch(() => {
+    if (transferMemo.get(key) === building) transferMemo.delete(key);
+  });
+  return building;
+}
+
+/**
+ * @return {?string} The memo key, or null for a build steered by an option
+ *     the key does not describe; such a build is not shared.
+ */
+function transferMemoKey({
+  pokemonIndex = [],
+  progression = {},
+  query = '',
+  retainRoutes = false,
+  sketchContext = null,
+  preferredPartnerIds = null,
+  preferredMoveIdsByPartnerId = null,
+}) {
+  if (sketchContext || preferredPartnerIds || preferredMoveIdsByPartnerId) {
+    return null;
+  }
+  // Both builders read the pool text only for the species it resolves to.
+  const ownedIds = buildInputGroups(query, pokemonIndex)
+    .filter((group) => !group.unresolved && group.input?.id)
+    .map((group) => group.input.id);
+  return digest([
+    getActiveGame().id,
+    retainRoutes ? 'routes' : 'plain',
+    ownedIds.join(','),
+    stableStringify(progression),
+  ].join('|'));
+}
+
+async function resolveMoveTransferContexts(options) {
   let breedingContext = await buildBreedingContext(options);
   const sketchContext = await buildSketchContext({
     ...options,

@@ -10,6 +10,7 @@ import {
 } from './damage-model.js';
 import { digest } from '../utils/digest.js';
 import { toId } from '../utils/ids.js';
+import { stableStringify } from '../utils/stable-stringify.js';
 import {
   applyBreedingContextToProgression,
 } from '../playthrough/breeding.js';
@@ -890,21 +891,6 @@ async function selectScoringGroups({
       scored: scoredInputIds.has(entry.inputPokemonId),
     })),
   };
-}
-
-// Stable, order-independent stringify for cache keys: object keys are sorted
-// and array elements (which here are set-like — owned items, TM ids, bias) too.
-function stableStringify(value) {
-  if (Array.isArray(value)) {
-    return `[${value.map(stableStringify).sort().join(',')}]`;
-  }
-  if (value && typeof value === 'object') {
-    return `{${Object.keys(value)
-      .sort()
-      .map((key) => `${key}:${stableStringify(value[key])}`)
-      .join(',')}}`;
-  }
-  return JSON.stringify(value);
 }
 
 /**
