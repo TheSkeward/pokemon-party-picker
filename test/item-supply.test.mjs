@@ -14,6 +14,7 @@ import {
   unauditedItemSources,
 } from '../src/games/item-sources.js';
 import {
+  getItemSources,
   getItemSupply,
   getItemUnlockBadge,
   renewableSources,
@@ -118,15 +119,28 @@ test("Reborn's supply follows its sources", () => {
   // A Pickup holder at level 71 finds Leftovers, two badges before the one
   // an NPC gives.
   assert.deepEqual(supply('leftovers'), [[11, Infinity, 'pickup']]);
-  // The Aventurine Woods' Sitrus tree gives the berry and the plot to
-  // regrow it in; a Lansat Berry is first had at badge 14.
-  assert.deepEqual(supply('sitrusberry'), [[7, Infinity, 'regrow']]);
+  // The Aventurine Woods' Lum tree gives the berry and the plot to regrow
+  // it in; a Lansat Berry is first had at badge 14. A wild Audino carries a
+  // Sitrus Berry before the plots open.
+  assert.deepEqual(supply('lumberry'), [[7, Infinity, 'regrow']]);
   assert.deepEqual(supply('lansatberry'), [[14, Infinity, 'regrow']]);
+  assert.deepEqual(supply('sitrusberry'), [[5, Infinity, 'wild']]);
   // An Oran Berry is sold a badge after Pickup first finds one.
   assert.deepEqual(supply('oranberry'), [[0, Infinity, 'pickup']]);
   // One Assault Vest until the post-game point counter.
   assert.deepEqual(
     supply('assaultvest'), [[14, 1, 'single'], [18, Infinity, 'shop']]);
+  // Grimer on the Old Rod carries Black Sludge from the start.
+  assert.deepEqual(supply('blacksludge'), [[0, Infinity, 'wild']]);
+  // Shuckle always holds Berry Juice, which nothing else restocks.
+  assert.deepEqual(supply('berryjuice'), [[4, Infinity, 'wild']]);
+  // The one Kricketot is an event, not a wild table: a Metronome is first
+  // restocked by the shop, and its first wild holder is a Chatot.
+  assert.deepEqual(supply('metronome'), [[2, Infinity, 'shop']]);
+  const metronomeHolder = getItemSources('metronome')
+    .find((source) => source.kind === 'wild');
+  assert.equal(metronomeHolder.badge, 5);
+  assert.match(metronomeHolder.via, /^Chatot \(5%\), Chrysolia Forest/);
   assert.deepEqual(supply('notanitem'), []);
   assert.equal(getItemUnlockBadge('notanitem'), null);
   for (const [id, source] of renewableSources()) {

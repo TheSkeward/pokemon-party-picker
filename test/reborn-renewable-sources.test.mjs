@@ -2,6 +2,7 @@
 // (scripts/reborn/renewable-sources.mjs): the earliest wild holder of each
 // item, Pickup, the point counters and planted berries.
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
 import {
@@ -170,4 +171,34 @@ test('a berry regrows once a plot is open and one has been had', () => {
     // one never had cannot be planted.
     { oranberry: 7, lansatberry: 14 },
   );
+});
+
+test('a wild holder is a Pokémon in a dated encounter table', () => {
+  const read = (name) => JSON.parse(readFileSync(
+    new URL(`../scripts/reborn/${name}`, import.meta.url), 'utf8'));
+  const extracted = read('reborn-encounters.generated.json').data;
+  const dated = read('reborn-encounter-badges.json').maps;
+  const inTables = new Set(extracted.maps.flatMap((map) =>
+    Object.values(map.types).flatMap((slots) =>
+      slots.map((slot) => slot.species))));
+  // Each carries an item in the wild data and was once entered by hand as
+  // its holder, but none is in a wild table: the one Kricketot is an event
+  // in Lower Peridot Ward.
+  for (const species of ['KRICKETOT', 'SEEDOT', 'LOTAD']) {
+    assert.ok(!inTables.has(species), species);
+  }
+  assert.ok(inTables.has('GRIMER'));
+  // Every table has a record, one badge or null per encounter type.
+  for (const map of extracted.maps) {
+    const record = dated[map.mapId];
+    assert.ok(record, `map ${map.mapId} ${map.mapName} is not dated`);
+    assert.deepEqual(
+      Object.keys(record.types).sort(), Object.keys(map.types).sort(),
+      `map ${map.mapId}`,
+    );
+    for (const badge of Object.values(record.types)) {
+      const inRange = Number.isInteger(badge) && badge >= 0 && badge <= 18;
+      assert.ok(badge === null || inRange, `map ${map.mapId}: ${badge}`);
+    }
+  }
 });
