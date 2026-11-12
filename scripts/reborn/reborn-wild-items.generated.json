@@ -1,0 +1,4535 @@
+{
+  "game": "Pokemon Reborn",
+  "version": "19.5.43",
+  "source": "mons.dat + Scripts/Field.rb + items.dat",
+  "data": {
+    "holdChances": {
+      "source": { "file": "Scripts/Field.rb", "line": 1193, "endLine": 1203 },
+      "roll": "rand(100); slots are tested in order common, uncommon, rare, each owning the next band of that width",
+      "default": {
+        "common": 50,
+        "uncommon": 5,
+        "rare": 1,
+        "source": { "file": "Scripts/Field.rb", "line": 1194 }
+      },
+      "boosted": {
+        "common": 60,
+        "uncommon": 20,
+        "rare": 5,
+        "leadAbilities": ["COMPOUNDEYES", "SUPERLUCK"],
+        "condition": "!$Trainer.party[0].isEgg? && [:COMPOUNDEYES, :SUPERLUCK].include?($Trainer.party[0].ability)",
+        "source": { "file": "Scripts/Field.rb", "line": 1195 }
+      },
+      "allSlotsSame": {
+        "rule": "when all three slots name the same item it is always held",
+        "source": { "file": "Scripts/Field.rb", "line": 1197 }
+      }
+    },
+    "itemNames": {
+      "ABSORBBULB": "Absorb Bulb",
+      "ASPEARBERRY": "Aspear Berry",
+      "BERRYJUICE": "Berry Juice",
+      "BIGMUSHROOM": "Big Mushroom",
+      "BIGPEARL": "Big Pearl",
+      "BIGROOT": "Big Root",
+      "BLACKBELT": "Black Belt",
+      "BLACKGLASSES": "Black Glasses",
+      "BLACKSLUDGE": "Black Sludge",
+      "BRIGHTPOWDER": "Bright Powder",
+      "CELLBATTERY": "Cell Battery",
+      "CHARCOAL": "Charcoal",
+      "CHERIBERRY": "Cheri Berry",
+      "CHESTOBERRY": "Chesto Berry",
+      "CLEANSETAG": "Cleanse Tag",
+      "DEEPSEASCALE": "Deep Sea Scale",
+      "DEEPSEATOOTH": "Deep Sea Tooth",
+      "DRAGONFANG": "Dragon Fang",
+      "DRAGONSCALE": "Dragon Scale",
+      "ELECTIRIZER": "Electirizer",
+      "ELEMENTALSEED": "Elemental Seed",
+      "EVERSTONE": "Everstone",
+      "FOCUSBAND": "Focus Band",
+      "GRIPCLAW": "Grip Claw",
+      "HARDSTONE": "Hard Stone",
+      "HEARTSCALE": "Heart Scale",
+      "HONEY": "Honey",
+      "IRONBALL": "Iron Ball",
+      "KINGSROCK": "King's Rock",
+      "LAGGINGTAIL": "Lagging Tail",
+      "LEFTOVERS": "Leftovers",
+      "LIGHTBALL": "Light Ball",
+      "LIGHTCLAY": "Light Clay",
+      "LUCKYEGG": "Lucky Egg",
+      "LUCKYPUNCH": "Lucky Punch",
+      "LUMBERRY": "Lum Berry",
+      "LUMINOUSMOSS": "Luminous Moss",
+      "MAGICALSEED": "Magical Seed",
+      "MAGMARIZER": "Magmarizer",
+      "MAGNET": "Magnet",
+      "MAXREVIVE": "Max Revive",
+      "MENTALHERB": "Mental Herb",
+      "METALCOAT": "Metal Coat",
+      "METALPOWDER": "Metal Powder",
+      "METRONOME": "Metronome",
+      "MIRACLESEED": "Miracle Seed",
+      "MOOMOOMILK": "Moomoo Milk",
+      "MOONSTONE": "Moon Stone",
+      "MYSTICWATER": "Mystic Water",
+      "NEVERMELTICE": "Never-Melt Ice",
+      "ORANBERRY": "Oran Berry",
+      "OVALSTONE": "Oval Stone",
+      "PEARL": "Pearl",
+      "PECHABERRY": "Pecha Berry",
+      "PERSIMBERRY": "Persim Berry",
+      "POISONBARB": "Poison Barb",
+      "POTION": "Potion",
+      "POWERHERB": "Power Herb",
+      "PRETTYWING": "Pretty Wing",
+      "QUICKCLAW": "Quick Claw",
+      "QUICKPOWDER": "Quick Powder",
+      "RAWSTBERRY": "Rawst Berry",
+      "RAZORCLAW": "Razor Claw",
+      "RAZORFANG": "Razor Fang",
+      "REVIVE": "Revive",
+      "SACREDASH": "Sacred Ash",
+      "SHARPBEAK": "Sharp Beak",
+      "SHEDSHELL": "Shed Shell",
+      "SILKSCARF": "Silk Scarf",
+      "SILVERPOWDER": "Silver Powder",
+      "SITRUSBERRY": "Sitrus Berry",
+      "SMOKEBALL": "Smoke Ball",
+      "SNOWBALL": "Snowball",
+      "SOFTSAND": "Soft Sand",
+      "SPELLTAG": "Spell Tag",
+      "STARDUST": "Stardust",
+      "STARPIECE": "Star Piece",
+      "STICK": "Stick",
+      "STICKYBARB": "Sticky Barb",
+      "SUNSTONE": "Sun Stone",
+      "THICKCLUB": "Thick Club",
+      "TINYMUSHROOM": "Tiny Mushroom",
+      "TWISTEDSPOON": "Twisted Spoon",
+      "WIDELENS": "Wide Lens"
+    },
+    "species": {
+      "BULBASAUR": {
+        "Normal Form": { "name": "Bulbasaur", "common": null, "uncommon": null, "rare": null }
+      },
+      "IVYSAUR": {
+        "Normal Form": { "name": "Ivysaur", "common": null, "uncommon": null, "rare": null }
+      },
+      "VENUSAUR": {
+        "Normal Form": { "name": "Venusaur", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Venusaur", "common": null, "uncommon": null, "rare": null }
+      },
+      "CHARMANDER": {
+        "Normal Form": { "name": "Charmander", "common": null, "uncommon": null, "rare": null }
+      },
+      "CHARMELEON": {
+        "Normal Form": { "name": "Charmeleon", "common": null, "uncommon": null, "rare": null }
+      },
+      "CHARIZARD": {
+        "Normal Form": { "name": "Charizard", "common": null, "uncommon": null, "rare": null },
+        "Mega X Form": { "name": "Charizard", "common": null, "uncommon": null, "rare": null },
+        "Mega Y Form": { "name": "Charizard", "common": null, "uncommon": null, "rare": null }
+      },
+      "SQUIRTLE": {
+        "Normal Form": { "name": "Squirtle", "common": null, "uncommon": null, "rare": null }
+      },
+      "WARTORTLE": {
+        "Normal Form": { "name": "Wartortle", "common": null, "uncommon": null, "rare": null }
+      },
+      "BLASTOISE": {
+        "Normal Form": { "name": "Blastoise", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Blastoise", "common": null, "uncommon": null, "rare": null }
+      },
+      "CATERPIE": {
+        "Normal Form": { "name": "Caterpie", "common": null, "uncommon": null, "rare": null }
+      },
+      "METAPOD": {
+        "Normal Form": { "name": "Metapod", "common": null, "uncommon": null, "rare": null }
+      },
+      "BUTTERFREE": {
+        "Normal Form": {
+          "name": "Butterfree",
+          "common": null,
+          "uncommon": "SILVERPOWDER",
+          "rare": null
+        }
+      },
+      "WEEDLE": {
+        "Normal Form": { "name": "Weedle", "common": null, "uncommon": null, "rare": null }
+      },
+      "KAKUNA": {
+        "Normal Form": { "name": "Kakuna", "common": null, "uncommon": null, "rare": null }
+      },
+      "BEEDRILL": {
+        "Normal Form": {
+          "name": "Beedrill",
+          "common": null,
+          "uncommon": "POISONBARB",
+          "rare": null
+        },
+        "Mega Form": {
+          "name": "Beedrill",
+          "common": null,
+          "uncommon": "POISONBARB",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "PIDGEY": {
+        "Normal Form": { "name": "Pidgey", "common": null, "uncommon": null, "rare": null }
+      },
+      "PIDGEOTTO": {
+        "Normal Form": { "name": "Pidgeotto", "common": null, "uncommon": null, "rare": null }
+      },
+      "PIDGEOT": {
+        "Normal Form": { "name": "Pidgeot", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Pidgeot", "common": null, "uncommon": null, "rare": null }
+      },
+      "RATTATA": {
+        "Normal Form": { "name": "Rattata", "common": null, "uncommon": null, "rare": null },
+        "Alolan Form": {
+          "name": "Rattata",
+          "common": null,
+          "uncommon": "PECHABERRY",
+          "rare": null
+        }
+      },
+      "RATICATE": {
+        "Normal Form": { "name": "Raticate", "common": null, "uncommon": null, "rare": null },
+        "Alolan Form": {
+          "name": "Raticate",
+          "common": null,
+          "uncommon": "PECHABERRY",
+          "rare": null
+        }
+      },
+      "SPEAROW": {
+        "Normal Form": {
+          "name": "Spearow",
+          "common": null,
+          "uncommon": "SHARPBEAK",
+          "rare": null
+        }
+      },
+      "FEAROW": {
+        "Normal Form": {
+          "name": "Fearow",
+          "common": null,
+          "uncommon": "SHARPBEAK",
+          "rare": null
+        }
+      },
+      "EKANS": {
+        "Normal Form": { "name": "Ekans", "common": null, "uncommon": null, "rare": null }
+      },
+      "ARBOK": {
+        "Normal Form": { "name": "Arbok", "common": null, "uncommon": null, "rare": null }
+      },
+      "PIKACHU": {
+        "Normal Form": {
+          "name": "Pikachu",
+          "common": null,
+          "uncommon": "LIGHTBALL",
+          "rare": null
+        }
+      },
+      "RAICHU": {
+        "Normal Form": { "name": "Raichu", "common": null, "uncommon": null, "rare": null },
+        "Alolan Form": { "name": "Raichu", "common": null, "uncommon": null, "rare": null }
+      },
+      "SANDSHREW": {
+        "Normal Form": {
+          "name": "Sandshrew",
+          "common": null,
+          "uncommon": "GRIPCLAW",
+          "rare": null
+        },
+        "Alolan Form": {
+          "name": "Sandshrew",
+          "common": null,
+          "uncommon": "GRIPCLAW",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "SANDSLASH": {
+        "Normal Form": {
+          "name": "Sandslash",
+          "common": null,
+          "uncommon": "GRIPCLAW",
+          "rare": null
+        },
+        "Alolan Form": {
+          "name": "Sandslash",
+          "common": null,
+          "uncommon": "GRIPCLAW",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "NIDORANfE": {
+        "Normal Form": { "name": "Nidoran", "common": null, "uncommon": null, "rare": null }
+      },
+      "NIDORINA": {
+        "Normal Form": { "name": "Nidorina", "common": null, "uncommon": null, "rare": null }
+      },
+      "NIDOQUEEN": {
+        "Normal Form": { "name": "Nidoqueen", "common": null, "uncommon": null, "rare": null }
+      },
+      "NIDORANmA": {
+        "Normal Form": { "name": "Nidoran", "common": null, "uncommon": null, "rare": null }
+      },
+      "NIDORINO": {
+        "Normal Form": { "name": "Nidorino", "common": null, "uncommon": null, "rare": null }
+      },
+      "NIDOKING": {
+        "Normal Form": { "name": "Nidoking", "common": null, "uncommon": null, "rare": null }
+      },
+      "CLEFAIRY": {
+        "Normal Form": {
+          "name": "Clefairy",
+          "common": null,
+          "uncommon": "MOONSTONE",
+          "rare": null
+        }
+      },
+      "CLEFABLE": {
+        "Normal Form": {
+          "name": "Clefable",
+          "common": null,
+          "uncommon": "MOONSTONE",
+          "rare": null
+        }
+      },
+      "VULPIX": {
+        "Normal Form": {
+          "name": "Vulpix",
+          "common": null,
+          "uncommon": "CHARCOAL",
+          "rare": null
+        },
+        "Alolan Form": {
+          "name": "Vulpix",
+          "common": null,
+          "uncommon": "SNOWBALL",
+          "rare": null
+        }
+      },
+      "NINETALES": {
+        "Normal Form": {
+          "name": "Ninetales",
+          "common": null,
+          "uncommon": "CHARCOAL",
+          "rare": null
+        },
+        "Alolan Form": {
+          "name": "Ninetales",
+          "common": null,
+          "uncommon": "SNOWBALL",
+          "rare": null
+        }
+      },
+      "JIGGLYPUFF": {
+        "Normal Form": {
+          "name": "Jigglypuff",
+          "common": null,
+          "uncommon": "MOONSTONE",
+          "rare": null
+        }
+      },
+      "WIGGLYTUFF": {
+        "Normal Form": {
+          "name": "Wigglytuff",
+          "common": null,
+          "uncommon": "MOONSTONE",
+          "rare": null
+        }
+      },
+      "ZUBAT": {
+        "Normal Form": { "name": "Zubat", "common": null, "uncommon": null, "rare": null }
+      },
+      "GOLBAT": {
+        "Normal Form": { "name": "Golbat", "common": null, "uncommon": null, "rare": null }
+      },
+      "ODDISH": {
+        "Normal Form": {
+          "name": "Oddish",
+          "common": null,
+          "uncommon": "ABSORBBULB",
+          "rare": null
+        }
+      },
+      "GLOOM": {
+        "Normal Form": {
+          "name": "Gloom",
+          "common": null,
+          "uncommon": "ABSORBBULB",
+          "rare": null
+        }
+      },
+      "VILEPLUME": {
+        "Normal Form": {
+          "name": "Vileplume",
+          "common": null,
+          "uncommon": "ABSORBBULB",
+          "rare": null
+        }
+      },
+      "PARAS": {
+        "Normal Form": {
+          "name": "Paras",
+          "common": "TINYMUSHROOM",
+          "uncommon": "BIGMUSHROOM",
+          "rare": null
+        }
+      },
+      "PARASECT": {
+        "Normal Form": {
+          "name": "Parasect",
+          "common": "TINYMUSHROOM",
+          "uncommon": "BIGMUSHROOM",
+          "rare": null
+        }
+      },
+      "VENONAT": {
+        "Normal Form": { "name": "Venonat", "common": null, "uncommon": null, "rare": null }
+      },
+      "VENOMOTH": {
+        "Normal Form": {
+          "name": "Venomoth",
+          "common": null,
+          "uncommon": "SHEDSHELL",
+          "rare": null
+        }
+      },
+      "DIGLETT": {
+        "Normal Form": {
+          "name": "Diglett",
+          "common": null,
+          "uncommon": "SOFTSAND",
+          "rare": null
+        },
+        "Alolan Form": {
+          "name": "Diglett",
+          "common": null,
+          "uncommon": "SOFTSAND",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "DUGTRIO": {
+        "Normal Form": {
+          "name": "Dugtrio",
+          "common": null,
+          "uncommon": "SOFTSAND",
+          "rare": null
+        },
+        "Alolan Form": {
+          "name": "Dugtrio",
+          "common": null,
+          "uncommon": "SOFTSAND",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "MEOWTH": {
+        "Normal Form": {
+          "name": "Meowth",
+          "common": null,
+          "uncommon": "QUICKCLAW",
+          "rare": null
+        },
+        "Alolan Form": {
+          "name": "Meowth",
+          "common": null,
+          "uncommon": "QUICKCLAW",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "PERSIAN": {
+        "Normal Form": {
+          "name": "Persian",
+          "common": null,
+          "uncommon": "QUICKCLAW",
+          "rare": null
+        },
+        "Alolan Form": {
+          "name": "Persian",
+          "common": null,
+          "uncommon": "QUICKCLAW",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "PSYDUCK": {
+        "Normal Form": { "name": "Psyduck", "common": null, "uncommon": null, "rare": null }
+      },
+      "GOLDUCK": {
+        "Normal Form": { "name": "Golduck", "common": null, "uncommon": null, "rare": null }
+      },
+      "MANKEY": {
+        "Normal Form": { "name": "Mankey", "common": null, "uncommon": null, "rare": null }
+      },
+      "PRIMEAPE": {
+        "Normal Form": { "name": "Primeape", "common": null, "uncommon": null, "rare": null }
+      },
+      "GROWLITHE": {
+        "Normal Form": { "name": "Growlithe", "common": null, "uncommon": null, "rare": null }
+      },
+      "ARCANINE": {
+        "Normal Form": { "name": "Arcanine", "common": null, "uncommon": null, "rare": null }
+      },
+      "POLIWAG": {
+        "Normal Form": { "name": "Poliwag", "common": null, "uncommon": null, "rare": null }
+      },
+      "POLIWHIRL": {
+        "Normal Form": {
+          "name": "Poliwhirl",
+          "common": null,
+          "uncommon": "KINGSROCK",
+          "rare": null
+        }
+      },
+      "POLIWRATH": {
+        "Normal Form": {
+          "name": "Poliwrath",
+          "common": null,
+          "uncommon": "KINGSROCK",
+          "rare": null
+        }
+      },
+      "ABRA": {
+        "Normal Form": {
+          "name": "Abra",
+          "common": null,
+          "uncommon": "TWISTEDSPOON",
+          "rare": null
+        },
+        "PULSE Form": {
+          "name": "Abra",
+          "common": null,
+          "uncommon": "TWISTEDSPOON",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        },
+        "PULSE2 Form": {
+          "name": "Abra",
+          "common": null,
+          "uncommon": "TWISTEDSPOON",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "KADABRA": {
+        "Normal Form": {
+          "name": "Kadabra",
+          "common": null,
+          "uncommon": "TWISTEDSPOON",
+          "rare": null
+        }
+      },
+      "ALAKAZAM": {
+        "Normal Form": {
+          "name": "Alakazam",
+          "common": null,
+          "uncommon": "TWISTEDSPOON",
+          "rare": null
+        },
+        "Mega Form": {
+          "name": "Alakazam",
+          "common": null,
+          "uncommon": "TWISTEDSPOON",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "MACHOP": {
+        "Normal Form": {
+          "name": "Machop",
+          "common": null,
+          "uncommon": "FOCUSBAND",
+          "rare": null
+        }
+      },
+      "MACHOKE": {
+        "Normal Form": {
+          "name": "Machoke",
+          "common": null,
+          "uncommon": "FOCUSBAND",
+          "rare": null
+        }
+      },
+      "MACHAMP": {
+        "Normal Form": {
+          "name": "Machamp",
+          "common": null,
+          "uncommon": "FOCUSBAND",
+          "rare": null
+        },
+        "BRUH Form": {
+          "name": "Machamp",
+          "common": null,
+          "uncommon": "FOCUSBAND",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "BELLSPROUT": {
+        "Normal Form": { "name": "Bellsprout", "common": null, "uncommon": null, "rare": null }
+      },
+      "WEEPINBELL": {
+        "Normal Form": { "name": "Weepinbell", "common": null, "uncommon": null, "rare": null }
+      },
+      "VICTREEBEL": {
+        "Normal Form": { "name": "Victreebel", "common": null, "uncommon": null, "rare": null }
+      },
+      "TENTACOOL": {
+        "Normal Form": {
+          "name": "Tentacool",
+          "common": null,
+          "uncommon": "POISONBARB",
+          "rare": null
+        }
+      },
+      "TENTACRUEL": {
+        "Normal Form": {
+          "name": "Tentacruel",
+          "common": null,
+          "uncommon": "POISONBARB",
+          "rare": null
+        }
+      },
+      "GEODUDE": {
+        "Normal Form": {
+          "name": "Geodude",
+          "common": null,
+          "uncommon": "EVERSTONE",
+          "rare": null
+        },
+        "Alolan Form": {
+          "name": "Geodude",
+          "common": null,
+          "uncommon": "CELLBATTERY",
+          "rare": null
+        }
+      },
+      "GRAVELER": {
+        "Normal Form": {
+          "name": "Graveler",
+          "common": null,
+          "uncommon": "EVERSTONE",
+          "rare": null
+        },
+        "Alolan Form": {
+          "name": "Graveler",
+          "common": null,
+          "uncommon": "CELLBATTERY",
+          "rare": null
+        }
+      },
+      "GOLEM": {
+        "Normal Form": {
+          "name": "Golem",
+          "common": null,
+          "uncommon": "EVERSTONE",
+          "rare": null
+        },
+        "Alolan Form": {
+          "name": "Golem",
+          "common": "CELLBATTERY",
+          "uncommon": "EVERSTONE",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "PONYTA": {
+        "Normal Form": { "name": "Ponyta", "common": null, "uncommon": null, "rare": null }
+      },
+      "RAPIDASH": {
+        "Normal Form": { "name": "Rapidash", "common": null, "uncommon": null, "rare": null }
+      },
+      "SLOWPOKE": {
+        "Normal Form": {
+          "name": "Slowpoke",
+          "common": null,
+          "uncommon": "LAGGINGTAIL",
+          "rare": null
+        }
+      },
+      "SLOWBRO": {
+        "Normal Form": {
+          "name": "Slowbro",
+          "common": null,
+          "uncommon": "KINGSROCK",
+          "rare": null
+        },
+        "Mega Form": {
+          "name": "Slowbro",
+          "common": null,
+          "uncommon": "KINGSROCK",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "MAGNEMITE": {
+        "Normal Form": {
+          "name": "Magnemite",
+          "common": null,
+          "uncommon": "METALCOAT",
+          "rare": null
+        }
+      },
+      "MAGNETON": {
+        "Normal Form": {
+          "name": "Magneton",
+          "common": null,
+          "uncommon": "METALCOAT",
+          "rare": null
+        }
+      },
+      "FARFETCHD": {
+        "Normal Form": {
+          "name": "Farfetch'd",
+          "common": null,
+          "uncommon": "STICK",
+          "rare": null
+        }
+      },
+      "DODUO": {
+        "Normal Form": {
+          "name": "Doduo",
+          "common": null,
+          "uncommon": "SHARPBEAK",
+          "rare": null
+        }
+      },
+      "DODRIO": {
+        "Normal Form": {
+          "name": "Dodrio",
+          "common": null,
+          "uncommon": "SHARPBEAK",
+          "rare": null
+        }
+      },
+      "SEEL": {
+        "Normal Form": { "name": "Seel", "common": null, "uncommon": null, "rare": null }
+      },
+      "DEWGONG": {
+        "Normal Form": { "name": "Dewgong", "common": null, "uncommon": null, "rare": null }
+      },
+      "GRIMER": {
+        "Normal Form": {
+          "name": "Grimer",
+          "common": null,
+          "uncommon": "BLACKSLUDGE",
+          "rare": null
+        },
+        "Alolan Form": {
+          "name": "Grimer",
+          "common": null,
+          "uncommon": "BLACKSLUDGE",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "MUK": {
+        "Normal Form": {
+          "name": "Muk",
+          "common": "BLACKSLUDGE",
+          "uncommon": null,
+          "rare": null
+        },
+        "Alolan Form": {
+          "name": "Muk",
+          "common": "BLACKSLUDGE",
+          "uncommon": null,
+          "rare": null,
+          "inheritedFromBaseForm": true
+        },
+        "PULSE Form": {
+          "name": "Muk",
+          "common": "BLACKSLUDGE",
+          "uncommon": null,
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "SHELLDER": {
+        "Normal Form": {
+          "name": "Shellder",
+          "common": "PEARL",
+          "uncommon": "BIGPEARL",
+          "rare": null
+        }
+      },
+      "CLOYSTER": {
+        "Normal Form": {
+          "name": "Cloyster",
+          "common": "PEARL",
+          "uncommon": "BIGPEARL",
+          "rare": null
+        }
+      },
+      "GASTLY": {
+        "Normal Form": { "name": "Gastly", "common": null, "uncommon": null, "rare": null }
+      },
+      "HAUNTER": {
+        "Normal Form": { "name": "Haunter", "common": null, "uncommon": null, "rare": null }
+      },
+      "GENGAR": {
+        "Normal Form": { "name": "Gengar", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Gengar", "common": null, "uncommon": null, "rare": null }
+      },
+      "ONIX": {
+        "Normal Form": { "name": "Onix", "common": null, "uncommon": null, "rare": null }
+      },
+      "DROWZEE": {
+        "Normal Form": { "name": "Drowzee", "common": null, "uncommon": null, "rare": null }
+      },
+      "HYPNO": {
+        "Normal Form": { "name": "Hypno", "common": null, "uncommon": null, "rare": null },
+        "PULSE Form": { "name": "Hypno", "common": null, "uncommon": null, "rare": null }
+      },
+      "KRABBY": {
+        "Normal Form": { "name": "Krabby", "common": null, "uncommon": null, "rare": null }
+      },
+      "KINGLER": {
+        "Normal Form": { "name": "Kingler", "common": null, "uncommon": null, "rare": null }
+      },
+      "VOLTORB": {
+        "Normal Form": { "name": "Voltorb", "common": null, "uncommon": null, "rare": null }
+      },
+      "ELECTRODE": {
+        "Normal Form": { "name": "Electrode", "common": null, "uncommon": null, "rare": null }
+      },
+      "EXEGGCUTE": {
+        "Normal Form": {
+          "name": "Exeggcute",
+          "common": null,
+          "uncommon": "MAGICALSEED",
+          "rare": null
+        }
+      },
+      "EXEGGUTOR": {
+        "Normal Form": { "name": "Exeggutor", "common": null, "uncommon": null, "rare": null },
+        "Alolan Form": { "name": "Exeggutor", "common": null, "uncommon": null, "rare": null }
+      },
+      "CUBONE": {
+        "Normal Form": {
+          "name": "Cubone",
+          "common": null,
+          "uncommon": "THICKCLUB",
+          "rare": null
+        }
+      },
+      "MAROWAK": {
+        "Normal Form": {
+          "name": "Marowak",
+          "common": null,
+          "uncommon": "THICKCLUB",
+          "rare": null
+        },
+        "Alolan Form": {
+          "name": "Marowak",
+          "common": null,
+          "uncommon": "THICKCLUB",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "HITMONLEE": {
+        "Normal Form": { "name": "Hitmonlee", "common": null, "uncommon": null, "rare": null }
+      },
+      "HITMONCHAN": {
+        "Normal Form": { "name": "Hitmonchan", "common": null, "uncommon": null, "rare": null }
+      },
+      "LICKITUNG": {
+        "Normal Form": {
+          "name": "Lickitung",
+          "common": null,
+          "uncommon": "LAGGINGTAIL",
+          "rare": null
+        }
+      },
+      "KOFFING": {
+        "Normal Form": {
+          "name": "Koffing",
+          "common": null,
+          "uncommon": "SMOKEBALL",
+          "rare": null
+        }
+      },
+      "WEEZING": {
+        "Normal Form": {
+          "name": "Weezing",
+          "common": null,
+          "uncommon": "SMOKEBALL",
+          "rare": null
+        }
+      },
+      "RHYHORN": {
+        "Normal Form": { "name": "Rhyhorn", "common": null, "uncommon": null, "rare": null }
+      },
+      "RHYDON": {
+        "Normal Form": { "name": "Rhydon", "common": null, "uncommon": null, "rare": null }
+      },
+      "CHANSEY": {
+        "Normal Form": {
+          "name": "Chansey",
+          "common": "LUCKYPUNCH",
+          "uncommon": null,
+          "rare": null
+        }
+      },
+      "TANGELA": {
+        "Normal Form": { "name": "Tangela", "common": null, "uncommon": null, "rare": null }
+      },
+      "KANGASKHAN": {
+        "Normal Form": { "name": "Kangaskhan", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Kangaskhan", "common": null, "uncommon": null, "rare": null }
+      },
+      "HORSEA": {
+        "Normal Form": {
+          "name": "Horsea",
+          "common": null,
+          "uncommon": "DRAGONSCALE",
+          "rare": null
+        }
+      },
+      "SEADRA": {
+        "Normal Form": {
+          "name": "Seadra",
+          "common": null,
+          "uncommon": "DRAGONSCALE",
+          "rare": null
+        }
+      },
+      "GOLDEEN": {
+        "Normal Form": {
+          "name": "Goldeen",
+          "common": null,
+          "uncommon": "MYSTICWATER",
+          "rare": null
+        }
+      },
+      "SEAKING": {
+        "Normal Form": {
+          "name": "Seaking",
+          "common": null,
+          "uncommon": "MYSTICWATER",
+          "rare": null
+        }
+      },
+      "STARYU": {
+        "Normal Form": {
+          "name": "Staryu",
+          "common": "STARDUST",
+          "uncommon": "STARPIECE",
+          "rare": null
+        }
+      },
+      "STARMIE": {
+        "Normal Form": {
+          "name": "Starmie",
+          "common": "STARDUST",
+          "uncommon": "STARPIECE",
+          "rare": null
+        }
+      },
+      "MRMIME": {
+        "Normal Form": { "name": "Mr. Mime", "common": null, "uncommon": null, "rare": null },
+        "PULSE Form": { "name": "Mr. Mime", "common": null, "uncommon": null, "rare": null }
+      },
+      "SCYTHER": {
+        "Normal Form": { "name": "Scyther", "common": null, "uncommon": null, "rare": null }
+      },
+      "JYNX": {
+        "Normal Form": { "name": "Jynx", "common": null, "uncommon": null, "rare": null }
+      },
+      "ELECTABUZZ": {
+        "Normal Form": {
+          "name": "Electabuzz",
+          "common": null,
+          "uncommon": "ELECTIRIZER",
+          "rare": null
+        }
+      },
+      "MAGMAR": {
+        "Normal Form": {
+          "name": "Magmar",
+          "common": null,
+          "uncommon": "MAGMARIZER",
+          "rare": null
+        }
+      },
+      "PINSIR": {
+        "Normal Form": { "name": "Pinsir", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Pinsir", "common": null, "uncommon": null, "rare": null }
+      },
+      "TAUROS": {
+        "Normal Form": { "name": "Tauros", "common": null, "uncommon": null, "rare": null }
+      },
+      "MAGIKARP": {
+        "Normal Form": { "name": "Magikarp", "common": null, "uncommon": null, "rare": null }
+      },
+      "GYARADOS": {
+        "Normal Form": { "name": "Gyarados", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Gyarados", "common": null, "uncommon": null, "rare": null }
+      },
+      "LAPRAS": {
+        "Normal Form": {
+          "name": "Lapras",
+          "common": "MYSTICWATER",
+          "uncommon": "MYSTICWATER",
+          "rare": "MYSTICWATER"
+        }
+      },
+      "DITTO": {
+        "Normal Form": {
+          "name": "Ditto",
+          "common": "QUICKPOWDER",
+          "uncommon": "METALPOWDER",
+          "rare": null
+        }
+      },
+      "EEVEE": {
+        "Normal Form": { "name": "Eevee", "common": null, "uncommon": null, "rare": null }
+      },
+      "VAPOREON": {
+        "Normal Form": { "name": "Vaporeon", "common": null, "uncommon": null, "rare": null }
+      },
+      "JOLTEON": {
+        "Normal Form": { "name": "Jolteon", "common": null, "uncommon": null, "rare": null }
+      },
+      "FLAREON": {
+        "Normal Form": { "name": "Flareon", "common": null, "uncommon": null, "rare": null }
+      },
+      "PORYGON": {
+        "Normal Form": { "name": "Porygon", "common": null, "uncommon": null, "rare": null }
+      },
+      "OMANYTE": {
+        "Normal Form": { "name": "Omanyte", "common": null, "uncommon": null, "rare": null }
+      },
+      "OMASTAR": {
+        "Normal Form": { "name": "Omastar", "common": null, "uncommon": null, "rare": null }
+      },
+      "KABUTO": {
+        "Normal Form": { "name": "Kabuto", "common": null, "uncommon": null, "rare": null }
+      },
+      "KABUTOPS": {
+        "Normal Form": { "name": "Kabutops", "common": null, "uncommon": null, "rare": null }
+      },
+      "AERODACTYL": {
+        "Normal Form": { "name": "Aerodactyl", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Aerodactyl", "common": null, "uncommon": null, "rare": null }
+      },
+      "SNORLAX": {
+        "Normal Form": {
+          "name": "Snorlax",
+          "common": "LEFTOVERS",
+          "uncommon": "LEFTOVERS",
+          "rare": "LEFTOVERS"
+        }
+      },
+      "ARTICUNO": {
+        "Normal Form": { "name": "Articuno", "common": null, "uncommon": null, "rare": null }
+      },
+      "ZAPDOS": {
+        "Normal Form": { "name": "Zapdos", "common": null, "uncommon": null, "rare": null }
+      },
+      "MOLTRES": {
+        "Normal Form": { "name": "Moltres", "common": null, "uncommon": null, "rare": null }
+      },
+      "DRATINI": {
+        "Normal Form": {
+          "name": "Dratini",
+          "common": null,
+          "uncommon": "DRAGONSCALE",
+          "rare": null
+        }
+      },
+      "DRAGONAIR": {
+        "Normal Form": {
+          "name": "Dragonair",
+          "common": null,
+          "uncommon": "DRAGONSCALE",
+          "rare": null
+        }
+      },
+      "DRAGONITE": {
+        "Normal Form": {
+          "name": "Dragonite",
+          "common": null,
+          "uncommon": "DRAGONSCALE",
+          "rare": null
+        }
+      },
+      "MEWTWO": {
+        "Normal Form": { "name": "Mewtwo", "common": null, "uncommon": null, "rare": null },
+        "Mega X Form": { "name": "Mewtwo", "common": null, "uncommon": null, "rare": null },
+        "Mega Y Form": { "name": "Mewtwo", "common": null, "uncommon": null, "rare": null }
+      },
+      "MEW": {
+        "Normal Form": {
+          "name": "Mew",
+          "common": "LUMBERRY",
+          "uncommon": "LUMBERRY",
+          "rare": "LUMBERRY"
+        }
+      },
+      "CHIKORITA": {
+        "Normal Form": { "name": "Chikorita", "common": null, "uncommon": null, "rare": null }
+      },
+      "BAYLEEF": {
+        "Normal Form": { "name": "Bayleef", "common": null, "uncommon": null, "rare": null }
+      },
+      "MEGANIUM": {
+        "Normal Form": { "name": "Meganium", "common": null, "uncommon": null, "rare": null }
+      },
+      "CYNDAQUIL": {
+        "Normal Form": { "name": "Cyndaquil", "common": null, "uncommon": null, "rare": null }
+      },
+      "QUILAVA": {
+        "Normal Form": { "name": "Quilava", "common": null, "uncommon": null, "rare": null }
+      },
+      "TYPHLOSION": {
+        "Normal Form": { "name": "Typhlosion", "common": null, "uncommon": null, "rare": null }
+      },
+      "TOTODILE": {
+        "Normal Form": { "name": "Totodile", "common": null, "uncommon": null, "rare": null }
+      },
+      "CROCONAW": {
+        "Normal Form": { "name": "Croconaw", "common": null, "uncommon": null, "rare": null }
+      },
+      "FERALIGATR": {
+        "Normal Form": { "name": "Feraligatr", "common": null, "uncommon": null, "rare": null }
+      },
+      "SENTRET": {
+        "Normal Form": { "name": "Sentret", "common": null, "uncommon": null, "rare": null }
+      },
+      "FURRET": {
+        "Normal Form": { "name": "Furret", "common": null, "uncommon": null, "rare": null }
+      },
+      "HOOTHOOT": {
+        "Normal Form": { "name": "Hoothoot", "common": null, "uncommon": null, "rare": null }
+      },
+      "NOCTOWL": {
+        "Normal Form": { "name": "Noctowl", "common": null, "uncommon": null, "rare": null }
+      },
+      "LEDYBA": {
+        "Normal Form": { "name": "Ledyba", "common": null, "uncommon": null, "rare": null }
+      },
+      "LEDIAN": {
+        "Normal Form": { "name": "Ledian", "common": null, "uncommon": null, "rare": null }
+      },
+      "SPINARAK": {
+        "Normal Form": { "name": "Spinarak", "common": null, "uncommon": null, "rare": null }
+      },
+      "ARIADOS": {
+        "Normal Form": { "name": "Ariados", "common": null, "uncommon": null, "rare": null }
+      },
+      "CROBAT": {
+        "Normal Form": { "name": "Crobat", "common": null, "uncommon": null, "rare": null }
+      },
+      "CHINCHOU": {
+        "Normal Form": {
+          "name": "Chinchou",
+          "common": null,
+          "uncommon": "DEEPSEASCALE",
+          "rare": null
+        }
+      },
+      "LANTURN": {
+        "Normal Form": {
+          "name": "Lanturn",
+          "common": null,
+          "uncommon": "DEEPSEASCALE",
+          "rare": null
+        }
+      },
+      "PICHU": {
+        "Normal Form": { "name": "Pichu", "common": null, "uncommon": null, "rare": null }
+      },
+      "CLEFFA": {
+        "Normal Form": {
+          "name": "Cleffa",
+          "common": null,
+          "uncommon": "MOONSTONE",
+          "rare": null
+        }
+      },
+      "IGGLYBUFF": {
+        "Normal Form": { "name": "Igglybuff", "common": null, "uncommon": null, "rare": null }
+      },
+      "TOGEPI": {
+        "Normal Form": { "name": "Togepi", "common": null, "uncommon": null, "rare": null }
+      },
+      "TOGETIC": {
+        "Normal Form": { "name": "Togetic", "common": null, "uncommon": null, "rare": null }
+      },
+      "NATU": {
+        "Normal Form": { "name": "Natu", "common": null, "uncommon": null, "rare": null }
+      },
+      "XATU": {
+        "Normal Form": { "name": "Xatu", "common": null, "uncommon": null, "rare": null }
+      },
+      "MAREEP": {
+        "Normal Form": { "name": "Mareep", "common": null, "uncommon": null, "rare": null }
+      },
+      "FLAAFFY": {
+        "Normal Form": { "name": "Flaaffy", "common": null, "uncommon": null, "rare": null }
+      },
+      "AMPHAROS": {
+        "Normal Form": { "name": "Ampharos", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Ampharos", "common": null, "uncommon": null, "rare": null }
+      },
+      "BELLOSSOM": {
+        "Normal Form": {
+          "name": "Bellossom",
+          "common": null,
+          "uncommon": "ABSORBBULB",
+          "rare": null
+        }
+      },
+      "MARILL": {
+        "Normal Form": { "name": "Marill", "common": null, "uncommon": null, "rare": null }
+      },
+      "AZUMARILL": {
+        "Normal Form": { "name": "Azumarill", "common": null, "uncommon": null, "rare": null }
+      },
+      "SUDOWOODO": {
+        "Normal Form": { "name": "Sudowoodo", "common": null, "uncommon": null, "rare": null }
+      },
+      "POLITOED": {
+        "Normal Form": {
+          "name": "Politoed",
+          "common": null,
+          "uncommon": "KINGSROCK",
+          "rare": null
+        }
+      },
+      "HOPPIP": {
+        "Normal Form": { "name": "Hoppip", "common": null, "uncommon": null, "rare": null }
+      },
+      "SKIPLOOM": {
+        "Normal Form": { "name": "Skiploom", "common": null, "uncommon": null, "rare": null }
+      },
+      "JUMPLUFF": {
+        "Normal Form": { "name": "Jumpluff", "common": null, "uncommon": null, "rare": null }
+      },
+      "AIPOM": {
+        "Normal Form": { "name": "Aipom", "common": null, "uncommon": null, "rare": null }
+      },
+      "SUNKERN": {
+        "Normal Form": { "name": "Sunkern", "common": null, "uncommon": null, "rare": null }
+      },
+      "SUNFLORA": {
+        "Normal Form": { "name": "Sunflora", "common": null, "uncommon": null, "rare": null }
+      },
+      "YANMA": {
+        "Normal Form": {
+          "name": "Yanma",
+          "common": null,
+          "uncommon": "WIDELENS",
+          "rare": null
+        }
+      },
+      "WOOPER": {
+        "Normal Form": { "name": "Wooper", "common": null, "uncommon": null, "rare": null }
+      },
+      "QUAGSIRE": {
+        "Normal Form": { "name": "Quagsire", "common": null, "uncommon": null, "rare": null }
+      },
+      "ESPEON": {
+        "Normal Form": { "name": "Espeon", "common": null, "uncommon": null, "rare": null }
+      },
+      "UMBREON": {
+        "Normal Form": { "name": "Umbreon", "common": null, "uncommon": null, "rare": null }
+      },
+      "MURKROW": {
+        "Normal Form": { "name": "Murkrow", "common": null, "uncommon": null, "rare": null }
+      },
+      "SLOWKING": {
+        "Normal Form": {
+          "name": "Slowking",
+          "common": null,
+          "uncommon": "KINGSROCK",
+          "rare": null
+        }
+      },
+      "MISDREAVUS": {
+        "Normal Form": { "name": "Misdreavus", "common": null, "uncommon": null, "rare": null },
+        "Aevian Form": { "name": "Misdreavus", "common": null, "uncommon": null, "rare": null }
+      },
+      "UNOWN": {
+        "A": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "B": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "C": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "D": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "E": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "F": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "G": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "H": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "I": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "J": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "K": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "L": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "M": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "N": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "O": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "P": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "Q": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "R": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "S": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "T": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "U": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "V": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "W": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "X": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "Y": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "Z": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "?": { "name": "Unown", "common": null, "uncommon": null, "rare": null },
+        "!": { "name": "Unown", "common": null, "uncommon": null, "rare": null }
+      },
+      "WOBBUFFET": {
+        "Normal Form": { "name": "Wobbuffet", "common": null, "uncommon": null, "rare": null }
+      },
+      "GIRAFARIG": {
+        "Normal Form": { "name": "Girafarig", "common": null, "uncommon": null, "rare": null }
+      },
+      "PINECO": {
+        "Normal Form": { "name": "Pineco", "common": null, "uncommon": null, "rare": null }
+      },
+      "FORRETRESS": {
+        "Normal Form": { "name": "Forretress", "common": null, "uncommon": null, "rare": null }
+      },
+      "DUNSPARCE": {
+        "Normal Form": { "name": "Dunsparce", "common": null, "uncommon": null, "rare": null }
+      },
+      "GLIGAR": {
+        "Normal Form": { "name": "Gligar", "common": null, "uncommon": null, "rare": null }
+      },
+      "STEELIX": {
+        "Normal Form": {
+          "name": "Steelix",
+          "common": null,
+          "uncommon": "METALCOAT",
+          "rare": null
+        },
+        "Mega Form": {
+          "name": "Steelix",
+          "common": null,
+          "uncommon": "METALCOAT",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        },
+        "Gargantuan": {
+          "name": "Steelix",
+          "common": null,
+          "uncommon": "METALCOAT",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "SNUBBULL": {
+        "Normal Form": { "name": "Snubbull", "common": null, "uncommon": null, "rare": null }
+      },
+      "GRANBULL": {
+        "Normal Form": { "name": "Granbull", "common": null, "uncommon": null, "rare": null }
+      },
+      "QWILFISH": {
+        "Normal Form": {
+          "name": "Qwilfish",
+          "common": null,
+          "uncommon": "POISONBARB",
+          "rare": null
+        }
+      },
+      "SCIZOR": {
+        "Normal Form": { "name": "Scizor", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Scizor", "common": null, "uncommon": null, "rare": null }
+      },
+      "SHUCKLE": {
+        "Normal Form": {
+          "name": "Shuckle",
+          "common": "BERRYJUICE",
+          "uncommon": "BERRYJUICE",
+          "rare": "BERRYJUICE"
+        }
+      },
+      "HERACROSS": {
+        "Normal Form": { "name": "Heracross", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Heracross", "common": null, "uncommon": null, "rare": null }
+      },
+      "SNEASEL": {
+        "Normal Form": {
+          "name": "Sneasel",
+          "common": null,
+          "uncommon": "QUICKCLAW",
+          "rare": null
+        }
+      },
+      "TEDDIURSA": {
+        "Normal Form": { "name": "Teddiursa", "common": null, "uncommon": null, "rare": null }
+      },
+      "URSARING": {
+        "Normal Form": { "name": "Ursaring", "common": null, "uncommon": null, "rare": null }
+      },
+      "SLUGMA": {
+        "Normal Form": { "name": "Slugma", "common": null, "uncommon": null, "rare": null }
+      },
+      "MAGCARGO": {
+        "Normal Form": { "name": "Magcargo", "common": null, "uncommon": null, "rare": null }
+      },
+      "SWINUB": {
+        "Normal Form": { "name": "Swinub", "common": null, "uncommon": null, "rare": null }
+      },
+      "PILOSWINE": {
+        "Normal Form": { "name": "Piloswine", "common": null, "uncommon": null, "rare": null }
+      },
+      "CORSOLA": {
+        "Normal Form": {
+          "name": "Corsola",
+          "common": null,
+          "uncommon": "LUMINOUSMOSS",
+          "rare": null
+        }
+      },
+      "REMORAID": {
+        "Normal Form": { "name": "Remoraid", "common": null, "uncommon": null, "rare": null }
+      },
+      "OCTILLERY": {
+        "Normal Form": { "name": "Octillery", "common": null, "uncommon": null, "rare": null }
+      },
+      "DELIBIRD": {
+        "Normal Form": { "name": "Delibird", "common": null, "uncommon": null, "rare": null }
+      },
+      "MANTINE": {
+        "Normal Form": { "name": "Mantine", "common": null, "uncommon": null, "rare": null }
+      },
+      "SKARMORY": {
+        "Normal Form": {
+          "name": "Skarmory",
+          "common": null,
+          "uncommon": "METALCOAT",
+          "rare": null
+        }
+      },
+      "HOUNDOUR": {
+        "Normal Form": { "name": "Houndour", "common": null, "uncommon": null, "rare": null }
+      },
+      "HOUNDOOM": {
+        "Normal Form": { "name": "Houndoom", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Houndoom", "common": null, "uncommon": null, "rare": null }
+      },
+      "KINGDRA": {
+        "Normal Form": {
+          "name": "Kingdra",
+          "common": null,
+          "uncommon": "DRAGONSCALE",
+          "rare": null
+        }
+      },
+      "PHANPY": {
+        "Normal Form": { "name": "Phanpy", "common": null, "uncommon": null, "rare": null }
+      },
+      "DONPHAN": {
+        "Normal Form": { "name": "Donphan", "common": null, "uncommon": null, "rare": null }
+      },
+      "PORYGON2": {
+        "Normal Form": { "name": "Porygon2", "common": null, "uncommon": null, "rare": null }
+      },
+      "STANTLER": {
+        "Normal Form": { "name": "Stantler", "common": null, "uncommon": null, "rare": null }
+      },
+      "SMEARGLE": {
+        "Normal Form": { "name": "Smeargle", "common": null, "uncommon": null, "rare": null }
+      },
+      "TYROGUE": {
+        "Normal Form": { "name": "Tyrogue", "common": null, "uncommon": null, "rare": null }
+      },
+      "HITMONTOP": {
+        "Normal Form": { "name": "Hitmontop", "common": null, "uncommon": null, "rare": null }
+      },
+      "SMOOCHUM": {
+        "Normal Form": { "name": "Smoochum", "common": null, "uncommon": null, "rare": null }
+      },
+      "ELEKID": {
+        "Normal Form": {
+          "name": "Elekid",
+          "common": null,
+          "uncommon": "ELECTIRIZER",
+          "rare": null
+        }
+      },
+      "MAGBY": {
+        "Normal Form": {
+          "name": "Magby",
+          "common": null,
+          "uncommon": "MAGMARIZER",
+          "rare": null
+        }
+      },
+      "MILTANK": {
+        "Normal Form": {
+          "name": "Miltank",
+          "common": "MOOMOOMILK",
+          "uncommon": "MOOMOOMILK",
+          "rare": "MOOMOOMILK"
+        }
+      },
+      "BLISSEY": {
+        "Normal Form": {
+          "name": "Blissey",
+          "common": null,
+          "uncommon": "LUCKYEGG",
+          "rare": null
+        }
+      },
+      "RAIKOU": {
+        "Normal Form": { "name": "Raikou", "common": null, "uncommon": null, "rare": null }
+      },
+      "ENTEI": {
+        "Normal Form": { "name": "Entei", "common": null, "uncommon": null, "rare": null }
+      },
+      "SUICUNE": {
+        "Normal Form": { "name": "Suicune", "common": null, "uncommon": null, "rare": null }
+      },
+      "LARVITAR": {
+        "Normal Form": { "name": "Larvitar", "common": null, "uncommon": null, "rare": null }
+      },
+      "PUPITAR": {
+        "Normal Form": { "name": "Pupitar", "common": null, "uncommon": null, "rare": null }
+      },
+      "TYRANITAR": {
+        "Normal Form": { "name": "Tyranitar", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Tyranitar", "common": null, "uncommon": null, "rare": null }
+      },
+      "LUGIA": {
+        "Normal Form": { "name": "Lugia", "common": null, "uncommon": null, "rare": null }
+      },
+      "HOOH": {
+        "Normal Form": {
+          "name": "Ho-Oh",
+          "common": "SACREDASH",
+          "uncommon": "SACREDASH",
+          "rare": "SACREDASH"
+        }
+      },
+      "CELEBI": {
+        "Normal Form": {
+          "name": "Celebi",
+          "common": "LUMBERRY",
+          "uncommon": "LUMBERRY",
+          "rare": "LUMBERRY"
+        }
+      },
+      "TREECKO": {
+        "Normal Form": { "name": "Treecko", "common": null, "uncommon": null, "rare": null }
+      },
+      "GROVYLE": {
+        "Normal Form": { "name": "Grovyle", "common": null, "uncommon": null, "rare": null }
+      },
+      "SCEPTILE": {
+        "Normal Form": { "name": "Sceptile", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Sceptile", "common": null, "uncommon": null, "rare": null }
+      },
+      "TORCHIC": {
+        "Normal Form": { "name": "Torchic", "common": null, "uncommon": null, "rare": null }
+      },
+      "COMBUSKEN": {
+        "Normal Form": { "name": "Combusken", "common": null, "uncommon": null, "rare": null }
+      },
+      "BLAZIKEN": {
+        "Normal Form": { "name": "Blaziken", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Blaziken", "common": null, "uncommon": null, "rare": null }
+      },
+      "MUDKIP": {
+        "Normal Form": { "name": "Mudkip", "common": null, "uncommon": null, "rare": null }
+      },
+      "MARSHTOMP": {
+        "Normal Form": { "name": "Marshtomp", "common": null, "uncommon": null, "rare": null }
+      },
+      "SWAMPERT": {
+        "Normal Form": { "name": "Swampert", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Swampert", "common": null, "uncommon": null, "rare": null }
+      },
+      "POOCHYENA": {
+        "Normal Form": { "name": "Poochyena", "common": null, "uncommon": null, "rare": null }
+      },
+      "MIGHTYENA": {
+        "Normal Form": { "name": "Mightyena", "common": null, "uncommon": null, "rare": null }
+      },
+      "ZIGZAGOON": {
+        "Normal Form": {
+          "name": "Zigzagoon",
+          "common": "POTION",
+          "uncommon": "REVIVE",
+          "rare": null
+        }
+      },
+      "LINOONE": {
+        "Normal Form": {
+          "name": "Linoone",
+          "common": "POTION",
+          "uncommon": "MAXREVIVE",
+          "rare": null
+        }
+      },
+      "WURMPLE": {
+        "Normal Form": {
+          "name": "Wurmple",
+          "common": "PECHABERRY",
+          "uncommon": "BRIGHTPOWDER",
+          "rare": null
+        }
+      },
+      "SILCOON": {
+        "Normal Form": { "name": "Silcoon", "common": null, "uncommon": null, "rare": null }
+      },
+      "BEAUTIFLY": {
+        "Normal Form": {
+          "name": "Beautifly",
+          "common": null,
+          "uncommon": "SHEDSHELL",
+          "rare": null
+        }
+      },
+      "CASCOON": {
+        "Normal Form": { "name": "Cascoon", "common": null, "uncommon": null, "rare": null }
+      },
+      "DUSTOX": {
+        "Normal Form": {
+          "name": "Dustox",
+          "common": null,
+          "uncommon": "SHEDSHELL",
+          "rare": null
+        }
+      },
+      "LOTAD": {
+        "Normal Form": {
+          "name": "Lotad",
+          "common": null,
+          "uncommon": "MENTALHERB",
+          "rare": null
+        }
+      },
+      "LOMBRE": {
+        "Normal Form": {
+          "name": "Lombre",
+          "common": null,
+          "uncommon": "MENTALHERB",
+          "rare": null
+        }
+      },
+      "LUDICOLO": {
+        "Normal Form": {
+          "name": "Ludicolo",
+          "common": null,
+          "uncommon": "MENTALHERB",
+          "rare": null
+        }
+      },
+      "SEEDOT": {
+        "Normal Form": {
+          "name": "Seedot",
+          "common": null,
+          "uncommon": "POWERHERB",
+          "rare": null
+        }
+      },
+      "NUZLEAF": {
+        "Normal Form": {
+          "name": "Nuzleaf",
+          "common": null,
+          "uncommon": "POWERHERB",
+          "rare": null
+        }
+      },
+      "SHIFTRY": {
+        "Normal Form": {
+          "name": "Shiftry",
+          "common": null,
+          "uncommon": "POWERHERB",
+          "rare": null
+        }
+      },
+      "TAILLOW": {
+        "Normal Form": { "name": "Taillow", "common": null, "uncommon": null, "rare": null }
+      },
+      "SWELLOW": {
+        "Normal Form": { "name": "Swellow", "common": null, "uncommon": null, "rare": null }
+      },
+      "WINGULL": {
+        "Normal Form": {
+          "name": "Wingull",
+          "common": "PRETTYWING",
+          "uncommon": null,
+          "rare": null
+        }
+      },
+      "PELIPPER": {
+        "Normal Form": {
+          "name": "Pelipper",
+          "common": "PRETTYWING",
+          "uncommon": null,
+          "rare": null
+        }
+      },
+      "RALTS": {
+        "Normal Form": { "name": "Ralts", "common": null, "uncommon": null, "rare": null }
+      },
+      "KIRLIA": {
+        "Normal Form": { "name": "Kirlia", "common": null, "uncommon": null, "rare": null }
+      },
+      "GARDEVOIR": {
+        "Normal Form": { "name": "Gardevoir", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Gardevoir", "common": null, "uncommon": null, "rare": null },
+        "Angel Of Death": { "name": "Gardevoir", "common": null, "uncommon": null, "rare": null }
+      },
+      "SURSKIT": {
+        "Normal Form": { "name": "Surskit", "common": "HONEY", "uncommon": null, "rare": null }
+      },
+      "MASQUERAIN": {
+        "Normal Form": {
+          "name": "Masquerain",
+          "common": null,
+          "uncommon": "SILVERPOWDER",
+          "rare": null
+        }
+      },
+      "SHROOMISH": {
+        "Normal Form": {
+          "name": "Shroomish",
+          "common": "TINYMUSHROOM",
+          "uncommon": "BIGMUSHROOM",
+          "rare": null
+        }
+      },
+      "BRELOOM": {
+        "Normal Form": {
+          "name": "Breloom",
+          "common": "TINYMUSHROOM",
+          "uncommon": "BIGMUSHROOM",
+          "rare": null
+        },
+        "Bot": {
+          "name": "Breloom",
+          "common": "TINYMUSHROOM",
+          "uncommon": "BIGMUSHROOM",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "SLAKOTH": {
+        "Normal Form": { "name": "Slakoth", "common": null, "uncommon": null, "rare": null }
+      },
+      "VIGOROTH": {
+        "Normal Form": { "name": "Vigoroth", "common": null, "uncommon": null, "rare": null }
+      },
+      "SLAKING": {
+        "Normal Form": { "name": "Slaking", "common": null, "uncommon": null, "rare": null }
+      },
+      "NINCADA": {
+        "Normal Form": {
+          "name": "Nincada",
+          "common": null,
+          "uncommon": "SOFTSAND",
+          "rare": null
+        }
+      },
+      "NINJASK": {
+        "Normal Form": { "name": "Ninjask", "common": null, "uncommon": null, "rare": null }
+      },
+      "SHEDINJA": {
+        "Normal Form": { "name": "Shedinja", "common": null, "uncommon": null, "rare": null }
+      },
+      "WHISMUR": {
+        "Normal Form": { "name": "Whismur", "common": null, "uncommon": null, "rare": null }
+      },
+      "LOUDRED": {
+        "Normal Form": { "name": "Loudred", "common": null, "uncommon": null, "rare": null }
+      },
+      "EXPLOUD": {
+        "Normal Form": { "name": "Exploud", "common": null, "uncommon": null, "rare": null }
+      },
+      "MAKUHITA": {
+        "Normal Form": {
+          "name": "Makuhita",
+          "common": null,
+          "uncommon": "BLACKBELT",
+          "rare": null
+        }
+      },
+      "HARIYAMA": {
+        "Normal Form": {
+          "name": "Hariyama",
+          "common": null,
+          "uncommon": "KINGSROCK",
+          "rare": null
+        }
+      },
+      "AZURILL": {
+        "Normal Form": { "name": "Azurill", "common": null, "uncommon": null, "rare": null }
+      },
+      "NOSEPASS": {
+        "Normal Form": {
+          "name": "Nosepass",
+          "common": null,
+          "uncommon": "MAGNET",
+          "rare": null
+        }
+      },
+      "SKITTY": {
+        "Normal Form": { "name": "Skitty", "common": null, "uncommon": null, "rare": null }
+      },
+      "DELCATTY": {
+        "Normal Form": { "name": "Delcatty", "common": null, "uncommon": null, "rare": null }
+      },
+      "SABLEYE": {
+        "Normal Form": {
+          "name": "Sableye",
+          "common": null,
+          "uncommon": "WIDELENS",
+          "rare": null
+        },
+        "Mega Form": {
+          "name": "Sableye",
+          "common": null,
+          "uncommon": "WIDELENS",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "MAWILE": {
+        "Normal Form": {
+          "name": "Mawile",
+          "common": null,
+          "uncommon": "IRONBALL",
+          "rare": null
+        },
+        "Mega Form": {
+          "name": "Mawile",
+          "common": null,
+          "uncommon": "IRONBALL",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "ARON": {
+        "Normal Form": {
+          "name": "Aron",
+          "common": null,
+          "uncommon": "HARDSTONE",
+          "rare": null
+        }
+      },
+      "LAIRON": {
+        "Normal Form": {
+          "name": "Lairon",
+          "common": null,
+          "uncommon": "HARDSTONE",
+          "rare": null
+        }
+      },
+      "AGGRON": {
+        "Normal Form": {
+          "name": "Aggron",
+          "common": null,
+          "uncommon": "HARDSTONE",
+          "rare": null
+        },
+        "Mega Form": {
+          "name": "Aggron",
+          "common": null,
+          "uncommon": "HARDSTONE",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "MEDITITE": {
+        "Normal Form": { "name": "Meditite", "common": null, "uncommon": null, "rare": null }
+      },
+      "MEDICHAM": {
+        "Normal Form": { "name": "Medicham", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Medicham", "common": null, "uncommon": null, "rare": null }
+      },
+      "ELECTRIKE": {
+        "Normal Form": { "name": "Electrike", "common": null, "uncommon": null, "rare": null }
+      },
+      "MANECTRIC": {
+        "Normal Form": { "name": "Manectric", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Manectric", "common": null, "uncommon": null, "rare": null }
+      },
+      "PLUSLE": {
+        "Normal Form": {
+          "name": "Plusle",
+          "common": null,
+          "uncommon": "CELLBATTERY",
+          "rare": null
+        }
+      },
+      "MINUN": {
+        "Normal Form": {
+          "name": "Minun",
+          "common": null,
+          "uncommon": "CELLBATTERY",
+          "rare": null
+        }
+      },
+      "VOLBEAT": {
+        "Normal Form": {
+          "name": "Volbeat",
+          "common": null,
+          "uncommon": "BRIGHTPOWDER",
+          "rare": null
+        }
+      },
+      "ILLUMISE": {
+        "Normal Form": {
+          "name": "Illumise",
+          "common": null,
+          "uncommon": "BRIGHTPOWDER",
+          "rare": null
+        }
+      },
+      "ROSELIA": {
+        "Normal Form": {
+          "name": "Roselia",
+          "common": null,
+          "uncommon": "POISONBARB",
+          "rare": null
+        }
+      },
+      "GULPIN": {
+        "Normal Form": {
+          "name": "Gulpin",
+          "common": "ORANBERRY",
+          "uncommon": "SITRUSBERRY",
+          "rare": null
+        }
+      },
+      "SWALOT": {
+        "Normal Form": {
+          "name": "Swalot",
+          "common": "ORANBERRY",
+          "uncommon": "SITRUSBERRY",
+          "rare": null
+        },
+        "PULSE Form": {
+          "name": "Swalot",
+          "common": "ORANBERRY",
+          "uncommon": "SITRUSBERRY",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "CARVANHA": {
+        "Normal Form": {
+          "name": "Carvanha",
+          "common": null,
+          "uncommon": "DEEPSEATOOTH",
+          "rare": null
+        }
+      },
+      "SHARPEDO": {
+        "Normal Form": {
+          "name": "Sharpedo",
+          "common": null,
+          "uncommon": "DEEPSEATOOTH",
+          "rare": null
+        },
+        "Mega Form": {
+          "name": "Sharpedo",
+          "common": null,
+          "uncommon": "DEEPSEATOOTH",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "WAILMER": {
+        "Normal Form": { "name": "Wailmer", "common": null, "uncommon": null, "rare": null }
+      },
+      "WAILORD": {
+        "Normal Form": { "name": "Wailord", "common": null, "uncommon": null, "rare": null }
+      },
+      "NUMEL": {
+        "Normal Form": { "name": "Numel", "common": null, "uncommon": null, "rare": null }
+      },
+      "CAMERUPT": {
+        "Normal Form": { "name": "Camerupt", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Camerupt", "common": null, "uncommon": null, "rare": null },
+        "PULSE Form": { "name": "Camerupt", "common": null, "uncommon": null, "rare": null }
+      },
+      "TORKOAL": {
+        "Normal Form": {
+          "name": "Torkoal",
+          "common": null,
+          "uncommon": "CHARCOAL",
+          "rare": null
+        }
+      },
+      "SPOINK": {
+        "Normal Form": { "name": "Spoink", "common": null, "uncommon": null, "rare": null }
+      },
+      "GRUMPIG": {
+        "Normal Form": { "name": "Grumpig", "common": null, "uncommon": null, "rare": null }
+      },
+      "SPINDA": {
+        "Normal Form": { "name": "Spinda", "common": null, "uncommon": null, "rare": null }
+      },
+      "TRAPINCH": {
+        "Normal Form": {
+          "name": "Trapinch",
+          "common": null,
+          "uncommon": "SOFTSAND",
+          "rare": null
+        }
+      },
+      "VIBRAVA": {
+        "Normal Form": { "name": "Vibrava", "common": null, "uncommon": null, "rare": null }
+      },
+      "FLYGON": {
+        "Normal Form": { "name": "Flygon", "common": null, "uncommon": null, "rare": null }
+      },
+      "CACNEA": {
+        "Normal Form": {
+          "name": "Cacnea",
+          "common": null,
+          "uncommon": "STICKYBARB",
+          "rare": null
+        }
+      },
+      "CACTURNE": {
+        "Normal Form": {
+          "name": "Cacturne",
+          "common": null,
+          "uncommon": "STICKYBARB",
+          "rare": null
+        }
+      },
+      "SWABLU": {
+        "Normal Form": { "name": "Swablu", "common": null, "uncommon": null, "rare": null }
+      },
+      "ALTARIA": {
+        "Normal Form": { "name": "Altaria", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Altaria", "common": null, "uncommon": null, "rare": null }
+      },
+      "ZANGOOSE": {
+        "Normal Form": {
+          "name": "Zangoose",
+          "common": null,
+          "uncommon": "QUICKCLAW",
+          "rare": null
+        }
+      },
+      "SEVIPER": {
+        "Normal Form": {
+          "name": "Seviper",
+          "common": null,
+          "uncommon": "SHEDSHELL",
+          "rare": null
+        }
+      },
+      "LUNATONE": {
+        "Normal Form": {
+          "name": "Lunatone",
+          "common": "STARDUST",
+          "uncommon": "MOONSTONE",
+          "rare": null
+        }
+      },
+      "SOLROCK": {
+        "Normal Form": {
+          "name": "Solrock",
+          "common": "STARDUST",
+          "uncommon": "SUNSTONE",
+          "rare": null
+        }
+      },
+      "BARBOACH": {
+        "Normal Form": { "name": "Barboach", "common": null, "uncommon": null, "rare": null }
+      },
+      "WHISCASH": {
+        "Normal Form": { "name": "Whiscash", "common": null, "uncommon": null, "rare": null }
+      },
+      "CORPHISH": {
+        "Normal Form": { "name": "Corphish", "common": null, "uncommon": null, "rare": null }
+      },
+      "CRAWDAUNT": {
+        "Normal Form": { "name": "Crawdaunt", "common": null, "uncommon": null, "rare": null }
+      },
+      "BALTOY": {
+        "Normal Form": {
+          "name": "Baltoy",
+          "common": null,
+          "uncommon": "LIGHTCLAY",
+          "rare": null
+        }
+      },
+      "CLAYDOL": {
+        "Normal Form": {
+          "name": "Claydol",
+          "common": null,
+          "uncommon": "LIGHTCLAY",
+          "rare": null
+        }
+      },
+      "LILEEP": {
+        "Normal Form": {
+          "name": "Lileep",
+          "common": null,
+          "uncommon": "BIGROOT",
+          "rare": null
+        }
+      },
+      "CRADILY": {
+        "Normal Form": {
+          "name": "Cradily",
+          "common": null,
+          "uncommon": "BIGROOT",
+          "rare": null
+        }
+      },
+      "ANORITH": {
+        "Normal Form": { "name": "Anorith", "common": null, "uncommon": null, "rare": null }
+      },
+      "ARMALDO": {
+        "Normal Form": { "name": "Armaldo", "common": null, "uncommon": null, "rare": null }
+      },
+      "FEEBAS": {
+        "Normal Form": { "name": "Feebas", "common": null, "uncommon": null, "rare": null }
+      },
+      "MILOTIC": {
+        "Normal Form": { "name": "Milotic", "common": null, "uncommon": null, "rare": null }
+      },
+      "CASTFORM": {
+        "Normal Form": {
+          "name": "Castform",
+          "common": "MYSTICWATER",
+          "uncommon": "MYSTICWATER",
+          "rare": "MYSTICWATER"
+        },
+        "Sunny Form": {
+          "name": "Castform",
+          "common": "MYSTICWATER",
+          "uncommon": "MYSTICWATER",
+          "rare": "MYSTICWATER",
+          "inheritedFromBaseForm": true
+        },
+        "Rainy Form": {
+          "name": "Castform",
+          "common": "MYSTICWATER",
+          "uncommon": "MYSTICWATER",
+          "rare": "MYSTICWATER",
+          "inheritedFromBaseForm": true
+        },
+        "Snowy Form": {
+          "name": "Castform",
+          "common": "MYSTICWATER",
+          "uncommon": "MYSTICWATER",
+          "rare": "MYSTICWATER",
+          "inheritedFromBaseForm": true
+        }
+      },
+      "KECLEON": {
+        "Normal Form": { "name": "Kecleon", "common": null, "uncommon": null, "rare": null },
+        "Purple": { "name": "Kecleon", "common": null, "uncommon": null, "rare": null }
+      },
+      "SHUPPET": {
+        "Normal Form": {
+          "name": "Shuppet",
+          "common": null,
+          "uncommon": "SPELLTAG",
+          "rare": null
+        }
+      },
+      "BANETTE": {
+        "Normal Form": {
+          "name": "Banette",
+          "common": null,
+          "uncommon": "SPELLTAG",
+          "rare": null
+        },
+        "Mega Form": {
+          "name": "Banette",
+          "common": null,
+          "uncommon": "SPELLTAG",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "DUSKULL": {
+        "Normal Form": {
+          "name": "Duskull",
+          "common": null,
+          "uncommon": "SPELLTAG",
+          "rare": null
+        }
+      },
+      "DUSCLOPS": {
+        "Normal Form": {
+          "name": "Dusclops",
+          "common": null,
+          "uncommon": "SPELLTAG",
+          "rare": null
+        }
+      },
+      "TROPIUS": {
+        "Normal Form": { "name": "Tropius", "common": null, "uncommon": null, "rare": null }
+      },
+      "CHIMECHO": {
+        "Normal Form": {
+          "name": "Chimecho",
+          "common": null,
+          "uncommon": "CLEANSETAG",
+          "rare": null
+        }
+      },
+      "ABSOL": {
+        "Normal Form": { "name": "Absol", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Absol", "common": null, "uncommon": null, "rare": null }
+      },
+      "WYNAUT": {
+        "Normal Form": { "name": "Wynaut", "common": null, "uncommon": null, "rare": null }
+      },
+      "SNORUNT": {
+        "Normal Form": {
+          "name": "Snorunt",
+          "common": null,
+          "uncommon": "SNOWBALL",
+          "rare": null
+        }
+      },
+      "GLALIE": {
+        "Normal Form": { "name": "Glalie", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Glalie", "common": null, "uncommon": null, "rare": null }
+      },
+      "SPHEAL": {
+        "Normal Form": { "name": "Spheal", "common": null, "uncommon": null, "rare": null }
+      },
+      "SEALEO": {
+        "Normal Form": { "name": "Sealeo", "common": null, "uncommon": null, "rare": null }
+      },
+      "WALREIN": {
+        "Normal Form": { "name": "Walrein", "common": null, "uncommon": null, "rare": null }
+      },
+      "CLAMPERL": {
+        "Normal Form": {
+          "name": "Clamperl",
+          "common": "PEARL",
+          "uncommon": "BIGPEARL",
+          "rare": null
+        }
+      },
+      "HUNTAIL": {
+        "Normal Form": {
+          "name": "Huntail",
+          "common": null,
+          "uncommon": "DEEPSEATOOTH",
+          "rare": null
+        }
+      },
+      "GOREBYSS": {
+        "Normal Form": {
+          "name": "Gorebyss",
+          "common": null,
+          "uncommon": "DEEPSEASCALE",
+          "rare": null
+        }
+      },
+      "RELICANTH": {
+        "Normal Form": {
+          "name": "Relicanth",
+          "common": null,
+          "uncommon": "DEEPSEASCALE",
+          "rare": null
+        }
+      },
+      "LUVDISC": {
+        "Normal Form": {
+          "name": "Luvdisc",
+          "common": "HEARTSCALE",
+          "uncommon": null,
+          "rare": null
+        }
+      },
+      "BAGON": {
+        "Normal Form": {
+          "name": "Bagon",
+          "common": null,
+          "uncommon": "DRAGONFANG",
+          "rare": null
+        }
+      },
+      "SHELGON": {
+        "Normal Form": {
+          "name": "Shelgon",
+          "common": null,
+          "uncommon": "DRAGONFANG",
+          "rare": null
+        }
+      },
+      "SALAMENCE": {
+        "Normal Form": {
+          "name": "Salamence",
+          "common": null,
+          "uncommon": "DRAGONFANG",
+          "rare": null
+        },
+        "Mega Form": {
+          "name": "Salamence",
+          "common": null,
+          "uncommon": "DRAGONFANG",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "BELDUM": {
+        "Normal Form": {
+          "name": "Beldum",
+          "common": null,
+          "uncommon": "METALCOAT",
+          "rare": null
+        }
+      },
+      "METANG": {
+        "Normal Form": {
+          "name": "Metang",
+          "common": null,
+          "uncommon": "METALCOAT",
+          "rare": null
+        }
+      },
+      "METAGROSS": {
+        "Normal Form": {
+          "name": "Metagross",
+          "common": null,
+          "uncommon": "METALCOAT",
+          "rare": null
+        },
+        "Mega Form": {
+          "name": "Metagross",
+          "common": null,
+          "uncommon": "METALCOAT",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "REGIROCK": {
+        "Normal Form": { "name": "Regirock", "common": null, "uncommon": null, "rare": null }
+      },
+      "REGICE": {
+        "Normal Form": { "name": "Regice", "common": null, "uncommon": null, "rare": null }
+      },
+      "REGISTEEL": {
+        "Normal Form": { "name": "Registeel", "common": null, "uncommon": null, "rare": null }
+      },
+      "LATIAS": {
+        "Normal Form": { "name": "Latias", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Latias", "common": null, "uncommon": null, "rare": null }
+      },
+      "LATIOS": {
+        "Normal Form": { "name": "Latios", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Latios", "common": null, "uncommon": null, "rare": null }
+      },
+      "KYOGRE": {
+        "Normal Form": { "name": "Kyogre", "common": null, "uncommon": null, "rare": null },
+        "Primal": { "name": "Kyogre", "common": null, "uncommon": null, "rare": null }
+      },
+      "GROUDON": {
+        "Normal Form": { "name": "Groudon", "common": null, "uncommon": null, "rare": null },
+        "Primal": { "name": "Groudon", "common": null, "uncommon": null, "rare": null }
+      },
+      "RAYQUAZA": {
+        "Normal Form": { "name": "Rayquaza", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Rayquaza", "common": null, "uncommon": null, "rare": null }
+      },
+      "JIRACHI": {
+        "Normal Form": {
+          "name": "Jirachi",
+          "common": "STARPIECE",
+          "uncommon": "STARPIECE",
+          "rare": "STARPIECE"
+        }
+      },
+      "DEOXYS": {
+        "Normal Forme": { "name": "Deoxys", "common": null, "uncommon": null, "rare": null },
+        "Attack Forme": { "name": "Deoxys", "common": null, "uncommon": null, "rare": null },
+        "Defense Forme": { "name": "Deoxys", "common": null, "uncommon": null, "rare": null },
+        "Speed Forme": { "name": "Deoxys", "common": null, "uncommon": null, "rare": null }
+      },
+      "TURTWIG": {
+        "Normal Form": { "name": "Turtwig", "common": null, "uncommon": null, "rare": null }
+      },
+      "GROTLE": {
+        "Normal Form": { "name": "Grotle", "common": null, "uncommon": null, "rare": null }
+      },
+      "TORTERRA": {
+        "Normal Form": { "name": "Torterra", "common": null, "uncommon": null, "rare": null }
+      },
+      "CHIMCHAR": {
+        "Normal Form": { "name": "Chimchar", "common": null, "uncommon": null, "rare": null }
+      },
+      "MONFERNO": {
+        "Normal Form": { "name": "Monferno", "common": null, "uncommon": null, "rare": null }
+      },
+      "INFERNAPE": {
+        "Normal Form": { "name": "Infernape", "common": null, "uncommon": null, "rare": null }
+      },
+      "PIPLUP": {
+        "Normal Form": { "name": "Piplup", "common": null, "uncommon": null, "rare": null }
+      },
+      "PRINPLUP": {
+        "Normal Form": { "name": "Prinplup", "common": null, "uncommon": null, "rare": null }
+      },
+      "EMPOLEON": {
+        "Normal Form": { "name": "Empoleon", "common": null, "uncommon": null, "rare": null }
+      },
+      "STARLY": {
+        "Normal Form": { "name": "Starly", "common": null, "uncommon": null, "rare": null }
+      },
+      "STARAVIA": {
+        "Normal Form": { "name": "Staravia", "common": null, "uncommon": null, "rare": null }
+      },
+      "STARAPTOR": {
+        "Normal Form": { "name": "Staraptor", "common": null, "uncommon": null, "rare": null }
+      },
+      "BIDOOF": {
+        "Normal Form": { "name": "Bidoof", "common": null, "uncommon": null, "rare": null }
+      },
+      "BIBAREL": {
+        "Normal Form": { "name": "Bibarel", "common": null, "uncommon": null, "rare": null }
+      },
+      "KRICKETOT": {
+        "Normal Form": {
+          "name": "Kricketot",
+          "common": null,
+          "uncommon": "METRONOME",
+          "rare": null
+        }
+      },
+      "KRICKETUNE": {
+        "Normal Form": {
+          "name": "Kricketune",
+          "common": null,
+          "uncommon": "METRONOME",
+          "rare": null
+        }
+      },
+      "SHINX": {
+        "Normal Form": { "name": "Shinx", "common": null, "uncommon": null, "rare": null }
+      },
+      "LUXIO": {
+        "Normal Form": { "name": "Luxio", "common": null, "uncommon": null, "rare": null }
+      },
+      "LUXRAY": {
+        "Normal Form": { "name": "Luxray", "common": null, "uncommon": null, "rare": null }
+      },
+      "BUDEW": {
+        "Normal Form": {
+          "name": "Budew",
+          "common": null,
+          "uncommon": "POISONBARB",
+          "rare": null
+        }
+      },
+      "ROSERADE": {
+        "Normal Form": {
+          "name": "Roserade",
+          "common": null,
+          "uncommon": "POISONBARB",
+          "rare": null
+        }
+      },
+      "CRANIDOS": {
+        "Normal Form": { "name": "Cranidos", "common": null, "uncommon": null, "rare": null }
+      },
+      "RAMPARDOS": {
+        "Normal Form": { "name": "Rampardos", "common": null, "uncommon": null, "rare": null }
+      },
+      "SHIELDON": {
+        "Normal Form": { "name": "Shieldon", "common": null, "uncommon": null, "rare": null }
+      },
+      "BASTIODON": {
+        "Normal Form": { "name": "Bastiodon", "common": null, "uncommon": null, "rare": null }
+      },
+      "BURMY": {
+        "Plant Cloak": { "name": "Burmy", "common": null, "uncommon": null, "rare": null },
+        "Sandy Cloak": { "name": "Burmy", "common": null, "uncommon": null, "rare": null },
+        "Trash Cloak": { "name": "Burmy", "common": null, "uncommon": null, "rare": null }
+      },
+      "WORMADAM": {
+        "Plant Cloak": {
+          "name": "Wormadam",
+          "common": null,
+          "uncommon": "SILVERPOWDER",
+          "rare": null
+        },
+        "Sandy Cloak": {
+          "name": "Wormadam",
+          "common": null,
+          "uncommon": "SILVERPOWDER",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        },
+        "Trash Cloak": {
+          "name": "Wormadam",
+          "common": null,
+          "uncommon": "SILVERPOWDER",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "MOTHIM": {
+        "Normal Form": {
+          "name": "Mothim",
+          "common": null,
+          "uncommon": "SILVERPOWDER",
+          "rare": null
+        }
+      },
+      "COMBEE": {
+        "Normal Form": { "name": "Combee", "common": null, "uncommon": "HONEY", "rare": null }
+      },
+      "VESPIQUEN": {
+        "Normal Form": {
+          "name": "Vespiquen",
+          "common": null,
+          "uncommon": "POISONBARB",
+          "rare": null
+        }
+      },
+      "PACHIRISU": {
+        "Normal Form": { "name": "Pachirisu", "common": null, "uncommon": null, "rare": null }
+      },
+      "BUIZEL": {
+        "Normal Form": { "name": "Buizel", "common": null, "uncommon": null, "rare": null }
+      },
+      "FLOATZEL": {
+        "Normal Form": { "name": "Floatzel", "common": null, "uncommon": null, "rare": null }
+      },
+      "CHERUBI": {
+        "Normal Form": {
+          "name": "Cherubi",
+          "common": null,
+          "uncommon": "MIRACLESEED",
+          "rare": null
+        }
+      },
+      "CHERRIM": {
+        "Overcast Form": {
+          "name": "Cherrim",
+          "common": null,
+          "uncommon": "MIRACLESEED",
+          "rare": null
+        },
+        "Sunshine Form": {
+          "name": "Cherrim",
+          "common": null,
+          "uncommon": "MIRACLESEED",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "SHELLOS": {
+        "West Sea": { "name": "Shellos", "common": null, "uncommon": null, "rare": null },
+        "East Sea": { "name": "Shellos", "common": null, "uncommon": null, "rare": null }
+      },
+      "GASTRODON": {
+        "West Sea": { "name": "Gastrodon", "common": null, "uncommon": null, "rare": null },
+        "East Sea": { "name": "Gastrodon", "common": null, "uncommon": null, "rare": null }
+      },
+      "AMBIPOM": {
+        "Normal Form": { "name": "Ambipom", "common": null, "uncommon": null, "rare": null }
+      },
+      "DRIFLOON": {
+        "Normal Form": { "name": "Drifloon", "common": null, "uncommon": null, "rare": null }
+      },
+      "DRIFBLIM": {
+        "Normal Form": { "name": "Drifblim", "common": null, "uncommon": null, "rare": null }
+      },
+      "BUNEARY": {
+        "Normal Form": { "name": "Buneary", "common": null, "uncommon": null, "rare": null }
+      },
+      "LOPUNNY": {
+        "Normal Form": { "name": "Lopunny", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Lopunny", "common": null, "uncommon": null, "rare": null }
+      },
+      "MISMAGIUS": {
+        "Normal Form": { "name": "Mismagius", "common": null, "uncommon": null, "rare": null },
+        "Aevian Form": { "name": "Mismagius", "common": null, "uncommon": null, "rare": null }
+      },
+      "HONCHKROW": {
+        "Normal Form": { "name": "Honchkrow", "common": null, "uncommon": null, "rare": null }
+      },
+      "GLAMEOW": {
+        "Normal Form": { "name": "Glameow", "common": null, "uncommon": null, "rare": null }
+      },
+      "PURUGLY": {
+        "Normal Form": { "name": "Purugly", "common": null, "uncommon": null, "rare": null }
+      },
+      "CHINGLING": {
+        "Normal Form": {
+          "name": "Chingling",
+          "common": null,
+          "uncommon": "CLEANSETAG",
+          "rare": null
+        }
+      },
+      "STUNKY": {
+        "Normal Form": { "name": "Stunky", "common": null, "uncommon": null, "rare": null }
+      },
+      "SKUNTANK": {
+        "Normal Form": { "name": "Skuntank", "common": null, "uncommon": null, "rare": null }
+      },
+      "BRONZOR": {
+        "Normal Form": {
+          "name": "Bronzor",
+          "common": null,
+          "uncommon": "METALCOAT",
+          "rare": null
+        }
+      },
+      "BRONZONG": {
+        "Normal Form": {
+          "name": "Bronzong",
+          "common": null,
+          "uncommon": "METALCOAT",
+          "rare": null
+        }
+      },
+      "BONSLY": {
+        "Normal Form": { "name": "Bonsly", "common": null, "uncommon": null, "rare": null }
+      },
+      "MIMEJR": {
+        "Normal Form": { "name": "Mime Jr.", "common": null, "uncommon": null, "rare": null }
+      },
+      "HAPPINY": {
+        "Normal Form": {
+          "name": "Happiny",
+          "common": "OVALSTONE",
+          "uncommon": null,
+          "rare": null
+        }
+      },
+      "CHATOT": {
+        "Normal Form": {
+          "name": "Chatot",
+          "common": null,
+          "uncommon": "METRONOME",
+          "rare": null
+        }
+      },
+      "SPIRITOMB": {
+        "Normal Form": { "name": "Spiritomb", "common": null, "uncommon": null, "rare": null }
+      },
+      "GIBLE": {
+        "Normal Form": { "name": "Gible", "common": null, "uncommon": null, "rare": null }
+      },
+      "GABITE": {
+        "Normal Form": { "name": "Gabite", "common": null, "uncommon": null, "rare": null }
+      },
+      "GARCHOMP": {
+        "Normal Form": { "name": "Garchomp", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Garchomp", "common": null, "uncommon": null, "rare": null }
+      },
+      "MUNCHLAX": {
+        "Normal Form": {
+          "name": "Munchlax",
+          "common": "LEFTOVERS",
+          "uncommon": "LEFTOVERS",
+          "rare": "LEFTOVERS"
+        }
+      },
+      "RIOLU": {
+        "Normal Form": { "name": "Riolu", "common": null, "uncommon": null, "rare": null }
+      },
+      "LUCARIO": {
+        "Normal Form": { "name": "Lucario", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Lucario", "common": null, "uncommon": null, "rare": null }
+      },
+      "HIPPOPOTAS": {
+        "Normal Form": { "name": "Hippopotas", "common": null, "uncommon": null, "rare": null }
+      },
+      "HIPPOWDON": {
+        "Normal Form": { "name": "Hippowdon", "common": null, "uncommon": null, "rare": null }
+      },
+      "SKORUPI": {
+        "Normal Form": {
+          "name": "Skorupi",
+          "common": null,
+          "uncommon": "POISONBARB",
+          "rare": null
+        }
+      },
+      "DRAPION": {
+        "Normal Form": {
+          "name": "Drapion",
+          "common": null,
+          "uncommon": "POISONBARB",
+          "rare": null
+        }
+      },
+      "CROAGUNK": {
+        "Normal Form": {
+          "name": "Croagunk",
+          "common": null,
+          "uncommon": "BLACKSLUDGE",
+          "rare": null
+        }
+      },
+      "TOXICROAK": {
+        "Normal Form": {
+          "name": "Toxicroak",
+          "common": null,
+          "uncommon": "BLACKSLUDGE",
+          "rare": null
+        }
+      },
+      "CARNIVINE": {
+        "Normal Form": { "name": "Carnivine", "common": null, "uncommon": null, "rare": null }
+      },
+      "FINNEON": {
+        "Normal Form": { "name": "Finneon", "common": null, "uncommon": null, "rare": null }
+      },
+      "LUMINEON": {
+        "Normal Form": { "name": "Lumineon", "common": null, "uncommon": null, "rare": null }
+      },
+      "MANTYKE": {
+        "Normal Form": { "name": "Mantyke", "common": null, "uncommon": null, "rare": null }
+      },
+      "SNOVER": {
+        "Normal Form": {
+          "name": "Snover",
+          "common": null,
+          "uncommon": "NEVERMELTICE",
+          "rare": null
+        }
+      },
+      "ABOMASNOW": {
+        "Normal Form": {
+          "name": "Abomasnow",
+          "common": null,
+          "uncommon": "NEVERMELTICE",
+          "rare": null
+        },
+        "Mega Form": {
+          "name": "Abomasnow",
+          "common": null,
+          "uncommon": "NEVERMELTICE",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "WEAVILE": {
+        "Normal Form": {
+          "name": "Weavile",
+          "common": null,
+          "uncommon": "QUICKCLAW",
+          "rare": null
+        }
+      },
+      "MAGNEZONE": {
+        "Normal Form": {
+          "name": "Magnezone",
+          "common": null,
+          "uncommon": "METALCOAT",
+          "rare": null
+        },
+        "PULSE Form": {
+          "name": "Magnezone",
+          "common": null,
+          "uncommon": "METALCOAT",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "LICKILICKY": {
+        "Normal Form": {
+          "name": "Lickilicky",
+          "common": null,
+          "uncommon": "LAGGINGTAIL",
+          "rare": null
+        }
+      },
+      "RHYPERIOR": {
+        "Normal Form": { "name": "Rhyperior", "common": null, "uncommon": null, "rare": null }
+      },
+      "TANGROWTH": {
+        "Normal Form": { "name": "Tangrowth", "common": null, "uncommon": null, "rare": null },
+        "PULSE C": { "name": "Tangrowth", "common": null, "uncommon": null, "rare": null },
+        "PULSE B": { "name": "Tangrowth", "common": null, "uncommon": null, "rare": null },
+        "PULSE A": { "name": "Tangrowth", "common": null, "uncommon": null, "rare": null }
+      },
+      "ELECTIVIRE": {
+        "Normal Form": {
+          "name": "Electivire",
+          "common": null,
+          "uncommon": "ELECTIRIZER",
+          "rare": null
+        }
+      },
+      "MAGMORTAR": {
+        "Normal Form": {
+          "name": "Magmortar",
+          "common": null,
+          "uncommon": "MAGMARIZER",
+          "rare": null
+        }
+      },
+      "TOGEKISS": {
+        "Normal Form": { "name": "Togekiss", "common": null, "uncommon": null, "rare": null }
+      },
+      "YANMEGA": {
+        "Normal Form": {
+          "name": "Yanmega",
+          "common": null,
+          "uncommon": "WIDELENS",
+          "rare": null
+        }
+      },
+      "LEAFEON": {
+        "Normal Form": { "name": "Leafeon", "common": null, "uncommon": null, "rare": null }
+      },
+      "GLACEON": {
+        "Normal Form": { "name": "Glaceon", "common": null, "uncommon": null, "rare": null },
+        "Mismageon": { "name": "Glaceon", "common": null, "uncommon": null, "rare": null }
+      },
+      "GLISCOR": {
+        "Normal Form": { "name": "Gliscor", "common": null, "uncommon": null, "rare": null }
+      },
+      "MAMOSWINE": {
+        "Normal Form": { "name": "Mamoswine", "common": null, "uncommon": null, "rare": null }
+      },
+      "PORYGONZ": {
+        "Normal Form": { "name": "Porygon-Z", "common": null, "uncommon": null, "rare": null }
+      },
+      "GALLADE": {
+        "Normal Form": { "name": "Gallade", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Gallade", "common": null, "uncommon": null, "rare": null }
+      },
+      "PROBOPASS": {
+        "Normal Form": {
+          "name": "Probopass",
+          "common": null,
+          "uncommon": "MAGNET",
+          "rare": null
+        }
+      },
+      "DUSKNOIR": {
+        "Normal Form": {
+          "name": "Dusknoir",
+          "common": null,
+          "uncommon": "SPELLTAG",
+          "rare": null
+        }
+      },
+      "FROSLASS": {
+        "Normal Form": { "name": "Froslass", "common": null, "uncommon": null, "rare": null }
+      },
+      "ROTOM": {
+        "Rotom": { "name": "Rotom", "common": null, "uncommon": null, "rare": null },
+        "Heat Rotom": { "name": "Rotom", "common": null, "uncommon": null, "rare": null },
+        "Wash Rotom": { "name": "Rotom", "common": null, "uncommon": null, "rare": null },
+        "Frost Rotom": { "name": "Rotom", "common": null, "uncommon": null, "rare": null },
+        "Fan Rotom": { "name": "Rotom", "common": null, "uncommon": null, "rare": null },
+        "Mow Rotom": { "name": "Rotom", "common": null, "uncommon": null, "rare": null }
+      },
+      "UXIE": {
+        "Normal Form": { "name": "Uxie", "common": null, "uncommon": null, "rare": null }
+      },
+      "MESPRIT": {
+        "Normal Form": { "name": "Mesprit", "common": null, "uncommon": null, "rare": null }
+      },
+      "AZELF": {
+        "Normal Form": { "name": "Azelf", "common": null, "uncommon": null, "rare": null }
+      },
+      "DIALGA": {
+        "Normal Form": { "name": "Dialga", "common": null, "uncommon": null, "rare": null }
+      },
+      "PALKIA": {
+        "Normal Form": { "name": "Palkia", "common": null, "uncommon": null, "rare": null }
+      },
+      "HEATRAN": {
+        "Normal Form": { "name": "Heatran", "common": null, "uncommon": null, "rare": null }
+      },
+      "REGIGIGAS": {
+        "Normal Form": { "name": "Regigigas", "common": null, "uncommon": null, "rare": null }
+      },
+      "GIRATINA": {
+        "Altered Forme": { "name": "Giratina", "common": null, "uncommon": null, "rare": null },
+        "Origin Forme": { "name": "Giratina", "common": null, "uncommon": null, "rare": null }
+      },
+      "CRESSELIA": {
+        "Normal Form": { "name": "Cresselia", "common": null, "uncommon": null, "rare": null }
+      },
+      "PHIONE": {
+        "Normal Form": { "name": "Phione", "common": null, "uncommon": null, "rare": null }
+      },
+      "MANAPHY": {
+        "Normal Form": { "name": "Manaphy", "common": null, "uncommon": null, "rare": null }
+      },
+      "DARKRAI": {
+        "Normal Form": { "name": "Darkrai", "common": null, "uncommon": null, "rare": null }
+      },
+      "SHAYMIN": {
+        "Land Forme": {
+          "name": "Shaymin",
+          "common": "LUMBERRY",
+          "uncommon": "LUMBERRY",
+          "rare": "LUMBERRY"
+        },
+        "Sky Forme": {
+          "name": "Shaymin",
+          "common": "LUMBERRY",
+          "uncommon": "LUMBERRY",
+          "rare": "LUMBERRY",
+          "inheritedFromBaseForm": true
+        }
+      },
+      "ARCEUS": {
+        "Normal": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "Fighting": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "Flying": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "Poison": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "Ground": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "Rock": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "Bug": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "Ghost": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "Steel": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "???": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "Fire": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "Water": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "Grass": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "Electric": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "Psychic": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "Ice": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "Dragon": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "Dark": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "Fairy": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "PULSE Normal": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "PULSE Fighting": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "PULSE Flying": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "PULSE Poison": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "PULSE Ground": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "PULSE Rock": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "PULSE Bug": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "PULSE Ghost": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "PULSE Steel": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "PULSE ???": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "PULSE Fire": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "PULSE Water": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "PULSE Grass": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "PULSE Electric": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "PULSE Psychic": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "PULSE Ice": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "PULSE Dragon": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "PULSE Dark": { "name": "Arceus", "common": null, "uncommon": null, "rare": null },
+        "PULSE Fairy": { "name": "Arceus", "common": null, "uncommon": null, "rare": null }
+      },
+      "VICTINI": {
+        "Normal Form": { "name": "Victini", "common": null, "uncommon": null, "rare": null }
+      },
+      "SNIVY": {
+        "Normal Form": { "name": "Snivy", "common": null, "uncommon": null, "rare": null }
+      },
+      "SERVINE": {
+        "Normal Form": { "name": "Servine", "common": null, "uncommon": null, "rare": null }
+      },
+      "SERPERIOR": {
+        "Normal Form": { "name": "Serperior", "common": null, "uncommon": null, "rare": null }
+      },
+      "TEPIG": {
+        "Normal Form": { "name": "Tepig", "common": null, "uncommon": null, "rare": null }
+      },
+      "PIGNITE": {
+        "Normal Form": { "name": "Pignite", "common": null, "uncommon": null, "rare": null }
+      },
+      "EMBOAR": {
+        "Normal Form": { "name": "Emboar", "common": null, "uncommon": null, "rare": null }
+      },
+      "OSHAWOTT": {
+        "Normal Form": { "name": "Oshawott", "common": null, "uncommon": null, "rare": null }
+      },
+      "DEWOTT": {
+        "Normal Form": { "name": "Dewott", "common": null, "uncommon": null, "rare": null }
+      },
+      "SAMUROTT": {
+        "Normal Form": { "name": "Samurott", "common": null, "uncommon": null, "rare": null }
+      },
+      "PATRAT": {
+        "Normal Form": { "name": "Patrat", "common": null, "uncommon": null, "rare": null }
+      },
+      "WATCHOG": {
+        "Normal Form": { "name": "Watchog", "common": null, "uncommon": null, "rare": null }
+      },
+      "LILLIPUP": {
+        "Normal Form": { "name": "Lillipup", "common": null, "uncommon": null, "rare": null }
+      },
+      "HERDIER": {
+        "Normal Form": { "name": "Herdier", "common": null, "uncommon": null, "rare": null }
+      },
+      "STOUTLAND": {
+        "Normal Form": { "name": "Stoutland", "common": null, "uncommon": null, "rare": null }
+      },
+      "PURRLOIN": {
+        "Normal Form": { "name": "Purrloin", "common": null, "uncommon": null, "rare": null }
+      },
+      "LIEPARD": {
+        "Normal Form": { "name": "Liepard", "common": null, "uncommon": null, "rare": null }
+      },
+      "PANSAGE": {
+        "Normal Form": { "name": "Pansage", "common": null, "uncommon": null, "rare": null }
+      },
+      "SIMISAGE": {
+        "Normal Form": { "name": "Simisage", "common": null, "uncommon": null, "rare": null }
+      },
+      "PANSEAR": {
+        "Normal Form": { "name": "Pansear", "common": null, "uncommon": null, "rare": null }
+      },
+      "SIMISEAR": {
+        "Normal Form": { "name": "Simisear", "common": null, "uncommon": null, "rare": null }
+      },
+      "PANPOUR": {
+        "Normal Form": { "name": "Panpour", "common": null, "uncommon": null, "rare": null }
+      },
+      "SIMIPOUR": {
+        "Normal Form": { "name": "Simipour", "common": null, "uncommon": null, "rare": null }
+      },
+      "MUNNA": {
+        "Normal Form": { "name": "Munna", "common": null, "uncommon": null, "rare": null }
+      },
+      "MUSHARNA": {
+        "Normal Form": { "name": "Musharna", "common": null, "uncommon": null, "rare": null }
+      },
+      "PIDOVE": {
+        "Normal Form": { "name": "Pidove", "common": null, "uncommon": null, "rare": null }
+      },
+      "TRANQUILL": {
+        "Normal Form": { "name": "Tranquill", "common": null, "uncommon": null, "rare": null }
+      },
+      "UNFEZANT": {
+        "Normal Form": { "name": "Unfezant", "common": null, "uncommon": null, "rare": null }
+      },
+      "BLITZLE": {
+        "Normal Form": { "name": "Blitzle", "common": null, "uncommon": null, "rare": null }
+      },
+      "ZEBSTRIKA": {
+        "Normal Form": { "name": "Zebstrika", "common": null, "uncommon": null, "rare": null }
+      },
+      "ROGGENROLA": {
+        "Normal Form": {
+          "name": "Roggenrola",
+          "common": "EVERSTONE",
+          "uncommon": "HARDSTONE",
+          "rare": null
+        }
+      },
+      "BOLDORE": {
+        "Normal Form": {
+          "name": "Boldore",
+          "common": "EVERSTONE",
+          "uncommon": "HARDSTONE",
+          "rare": null
+        }
+      },
+      "GIGALITH": {
+        "Normal Form": {
+          "name": "Gigalith",
+          "common": "EVERSTONE",
+          "uncommon": "HARDSTONE",
+          "rare": null
+        }
+      },
+      "WOOBAT": {
+        "Normal Form": { "name": "Woobat", "common": null, "uncommon": null, "rare": null }
+      },
+      "SWOOBAT": {
+        "Normal Form": { "name": "Swoobat", "common": null, "uncommon": null, "rare": null }
+      },
+      "DRILBUR": {
+        "Normal Form": { "name": "Drilbur", "common": null, "uncommon": null, "rare": null }
+      },
+      "EXCADRILL": {
+        "Normal Form": { "name": "Excadrill", "common": null, "uncommon": null, "rare": null }
+      },
+      "AUDINO": {
+        "Normal Form": {
+          "name": "Audino",
+          "common": "ORANBERRY",
+          "uncommon": "SITRUSBERRY",
+          "rare": null
+        },
+        "Mega Form": {
+          "name": "Audino",
+          "common": "ORANBERRY",
+          "uncommon": "SITRUSBERRY",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "TIMBURR": {
+        "Normal Form": { "name": "Timburr", "common": null, "uncommon": null, "rare": null }
+      },
+      "GURDURR": {
+        "Normal Form": { "name": "Gurdurr", "common": null, "uncommon": null, "rare": null }
+      },
+      "CONKELDURR": {
+        "Normal Form": { "name": "Conkeldurr", "common": null, "uncommon": null, "rare": null }
+      },
+      "TYMPOLE": {
+        "Normal Form": { "name": "Tympole", "common": null, "uncommon": null, "rare": null }
+      },
+      "PALPITOAD": {
+        "Normal Form": { "name": "Palpitoad", "common": null, "uncommon": null, "rare": null }
+      },
+      "SEISMITOAD": {
+        "Normal Form": { "name": "Seismitoad", "common": null, "uncommon": null, "rare": null }
+      },
+      "THROH": {
+        "Normal Form": {
+          "name": "Throh",
+          "common": null,
+          "uncommon": "BLACKBELT",
+          "rare": null
+        },
+        "DEEP Form": {
+          "name": "Throh",
+          "common": null,
+          "uncommon": "BLACKBELT",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "SAWK": {
+        "Normal Form": {
+          "name": "Sawk",
+          "common": null,
+          "uncommon": "BLACKBELT",
+          "rare": null
+        },
+        "DEEZ Form": {
+          "name": "Sawk",
+          "common": null,
+          "uncommon": "BLACKBELT",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "SEWADDLE": {
+        "Normal Form": {
+          "name": "Sewaddle",
+          "common": null,
+          "uncommon": "MENTALHERB",
+          "rare": null
+        }
+      },
+      "SWADLOON": {
+        "Normal Form": {
+          "name": "Swadloon",
+          "common": null,
+          "uncommon": "MENTALHERB",
+          "rare": null
+        }
+      },
+      "LEAVANNY": {
+        "Normal Form": {
+          "name": "Leavanny",
+          "common": null,
+          "uncommon": "MENTALHERB",
+          "rare": null
+        }
+      },
+      "VENIPEDE": {
+        "Normal Form": {
+          "name": "Venipede",
+          "common": null,
+          "uncommon": "POISONBARB",
+          "rare": null
+        }
+      },
+      "WHIRLIPEDE": {
+        "Normal Form": {
+          "name": "Whirlipede",
+          "common": null,
+          "uncommon": "POISONBARB",
+          "rare": null
+        }
+      },
+      "SCOLIPEDE": {
+        "Normal Form": {
+          "name": "Scolipede",
+          "common": null,
+          "uncommon": "POISONBARB",
+          "rare": null
+        }
+      },
+      "COTTONEE": {
+        "Normal Form": {
+          "name": "Cottonee",
+          "common": null,
+          "uncommon": "ABSORBBULB",
+          "rare": null
+        }
+      },
+      "WHIMSICOTT": {
+        "Normal Form": {
+          "name": "Whimsicott",
+          "common": null,
+          "uncommon": "ABSORBBULB",
+          "rare": null
+        }
+      },
+      "PETILIL": {
+        "Normal Form": {
+          "name": "Petilil",
+          "common": null,
+          "uncommon": "ABSORBBULB",
+          "rare": null
+        }
+      },
+      "LILLIGANT": {
+        "Normal Form": {
+          "name": "Lilligant",
+          "common": null,
+          "uncommon": "ABSORBBULB",
+          "rare": null
+        }
+      },
+      "BASCULIN": {
+        "Red-Striped": {
+          "name": "Basculin",
+          "common": null,
+          "uncommon": "DEEPSEATOOTH",
+          "rare": null
+        },
+        "Blue-Striped": {
+          "name": "Basculin",
+          "common": null,
+          "uncommon": "DEEPSEASCALE",
+          "rare": null
+        }
+      },
+      "SANDILE": {
+        "Normal Form": {
+          "name": "Sandile",
+          "common": null,
+          "uncommon": "BLACKGLASSES",
+          "rare": null
+        }
+      },
+      "KROKOROK": {
+        "Normal Form": {
+          "name": "Krokorok",
+          "common": null,
+          "uncommon": "BLACKGLASSES",
+          "rare": null
+        }
+      },
+      "KROOKODILE": {
+        "Normal Form": {
+          "name": "Krookodile",
+          "common": "BLACKGLASSES",
+          "uncommon": null,
+          "rare": null
+        }
+      },
+      "DARUMAKA": {
+        "Normal Form": { "name": "Darumaka", "common": null, "uncommon": null, "rare": null }
+      },
+      "DARMANITAN": {
+        "Standard Mode": { "name": "Darmanitan", "common": null, "uncommon": null, "rare": null },
+        "Zen Mode": { "name": "Darmanitan", "common": null, "uncommon": null, "rare": null }
+      },
+      "MARACTUS": {
+        "Normal Form": {
+          "name": "Maractus",
+          "common": null,
+          "uncommon": "MIRACLESEED",
+          "rare": null
+        }
+      },
+      "DWEBBLE": {
+        "Normal Form": {
+          "name": "Dwebble",
+          "common": null,
+          "uncommon": "HARDSTONE",
+          "rare": null
+        }
+      },
+      "CRUSTLE": {
+        "Normal Form": {
+          "name": "Crustle",
+          "common": null,
+          "uncommon": "HARDSTONE",
+          "rare": null
+        }
+      },
+      "SCRAGGY": {
+        "Normal Form": {
+          "name": "Scraggy",
+          "common": null,
+          "uncommon": "SHEDSHELL",
+          "rare": null
+        }
+      },
+      "SCRAFTY": {
+        "Normal Form": {
+          "name": "Scrafty",
+          "common": null,
+          "uncommon": "SHEDSHELL",
+          "rare": null
+        }
+      },
+      "SIGILYPH": {
+        "Normal Form": { "name": "Sigilyph", "common": null, "uncommon": null, "rare": null }
+      },
+      "YAMASK": {
+        "Normal Form": {
+          "name": "Yamask",
+          "common": null,
+          "uncommon": "SPELLTAG",
+          "rare": null
+        }
+      },
+      "COFAGRIGUS": {
+        "Normal Form": {
+          "name": "Cofagrigus",
+          "common": null,
+          "uncommon": "SPELLTAG",
+          "rare": null
+        }
+      },
+      "TIRTOUGA": {
+        "Normal Form": { "name": "Tirtouga", "common": null, "uncommon": null, "rare": null }
+      },
+      "CARRACOSTA": {
+        "Normal Form": { "name": "Carracosta", "common": null, "uncommon": null, "rare": null }
+      },
+      "ARCHEN": {
+        "Normal Form": { "name": "Archen", "common": null, "uncommon": null, "rare": null }
+      },
+      "ARCHEOPS": {
+        "Normal Form": { "name": "Archeops", "common": null, "uncommon": null, "rare": null }
+      },
+      "TRUBBISH": {
+        "Normal Form": {
+          "name": "Trubbish",
+          "common": null,
+          "uncommon": "SILKSCARF",
+          "rare": null
+        }
+      },
+      "GARBODOR": {
+        "Normal Form": {
+          "name": "Garbodor",
+          "common": "SILKSCARF",
+          "uncommon": "BLACKSLUDGE",
+          "rare": null
+        },
+        "PULSE Form": {
+          "name": "Garbodor",
+          "common": "SILKSCARF",
+          "uncommon": "BLACKSLUDGE",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "ZORUA": {
+        "Normal Form": { "name": "Zorua", "common": null, "uncommon": null, "rare": null }
+      },
+      "ZOROARK": {
+        "Normal Form": { "name": "Zoroark", "common": null, "uncommon": null, "rare": null }
+      },
+      "MINCCINO": {
+        "Normal Form": { "name": "Minccino", "common": null, "uncommon": null, "rare": null }
+      },
+      "CINCCINO": {
+        "Normal Form": { "name": "Cinccino", "common": null, "uncommon": null, "rare": null },
+        "Meech": { "name": "Cinccino", "common": null, "uncommon": null, "rare": null }
+      },
+      "GOTHITA": {
+        "Normal Form": { "name": "Gothita", "common": null, "uncommon": null, "rare": null }
+      },
+      "GOTHORITA": {
+        "Normal Form": { "name": "Gothorita", "common": null, "uncommon": null, "rare": null }
+      },
+      "GOTHITELLE": {
+        "Normal Form": { "name": "Gothitelle", "common": null, "uncommon": null, "rare": null }
+      },
+      "SOLOSIS": {
+        "Normal Form": { "name": "Solosis", "common": null, "uncommon": null, "rare": null }
+      },
+      "DUOSION": {
+        "Normal Form": { "name": "Duosion", "common": null, "uncommon": null, "rare": null }
+      },
+      "REUNICLUS": {
+        "Normal Form": { "name": "Reuniclus", "common": null, "uncommon": null, "rare": null }
+      },
+      "DUCKLETT": {
+        "Normal Form": { "name": "Ducklett", "common": null, "uncommon": null, "rare": null }
+      },
+      "SWANNA": {
+        "Normal Form": { "name": "Swanna", "common": null, "uncommon": null, "rare": null }
+      },
+      "VANILLITE": {
+        "Normal Form": {
+          "name": "Vanillite",
+          "common": null,
+          "uncommon": "NEVERMELTICE",
+          "rare": null
+        }
+      },
+      "VANILLISH": {
+        "Normal Form": {
+          "name": "Vanillish",
+          "common": null,
+          "uncommon": "NEVERMELTICE",
+          "rare": null
+        }
+      },
+      "VANILLUXE": {
+        "Normal Form": {
+          "name": "Vanilluxe",
+          "common": "NEVERMELTICE",
+          "uncommon": null,
+          "rare": null
+        }
+      },
+      "DEERLING": {
+        "Spring Form": { "name": "Deerling", "common": null, "uncommon": null, "rare": null },
+        "Summer Form": { "name": "Deerling", "common": null, "uncommon": null, "rare": null },
+        "Autumn Form": { "name": "Deerling", "common": null, "uncommon": null, "rare": null },
+        "Winter Form": { "name": "Deerling", "common": null, "uncommon": null, "rare": null }
+      },
+      "SAWSBUCK": {
+        "Spring Form": { "name": "Sawsbuck", "common": null, "uncommon": null, "rare": null },
+        "Summer Form": { "name": "Sawsbuck", "common": null, "uncommon": null, "rare": null },
+        "Autumn Form": { "name": "Sawsbuck", "common": null, "uncommon": null, "rare": null },
+        "Winter Form": { "name": "Sawsbuck", "common": null, "uncommon": null, "rare": null }
+      },
+      "EMOLGA": {
+        "Normal Form": { "name": "Emolga", "common": null, "uncommon": null, "rare": null }
+      },
+      "KARRABLAST": {
+        "Normal Form": { "name": "Karrablast", "common": null, "uncommon": null, "rare": null }
+      },
+      "ESCAVALIER": {
+        "Normal Form": { "name": "Escavalier", "common": null, "uncommon": null, "rare": null }
+      },
+      "FOONGUS": {
+        "Normal Form": {
+          "name": "Foongus",
+          "common": "TINYMUSHROOM",
+          "uncommon": "BIGMUSHROOM",
+          "rare": null
+        }
+      },
+      "AMOONGUSS": {
+        "Normal Form": {
+          "name": "Amoonguss",
+          "common": "TINYMUSHROOM",
+          "uncommon": "BIGMUSHROOM",
+          "rare": null
+        }
+      },
+      "FRILLISH": {
+        "Normal Form": { "name": "Frillish", "common": null, "uncommon": null, "rare": null }
+      },
+      "JELLICENT": {
+        "Normal Form": { "name": "Jellicent", "common": null, "uncommon": null, "rare": null }
+      },
+      "ALOMOMOLA": {
+        "Normal Form": { "name": "Alomomola", "common": null, "uncommon": null, "rare": null }
+      },
+      "JOLTIK": {
+        "Normal Form": { "name": "Joltik", "common": null, "uncommon": null, "rare": null }
+      },
+      "GALVANTULA": {
+        "Normal Form": { "name": "Galvantula", "common": null, "uncommon": null, "rare": null }
+      },
+      "FERROSEED": {
+        "Normal Form": {
+          "name": "Ferroseed",
+          "common": null,
+          "uncommon": "STICKYBARB",
+          "rare": null
+        }
+      },
+      "FERROTHORN": {
+        "Normal Form": {
+          "name": "Ferrothorn",
+          "common": null,
+          "uncommon": "STICKYBARB",
+          "rare": null
+        }
+      },
+      "KLINK": {
+        "Normal Form": { "name": "Klink", "common": null, "uncommon": null, "rare": null }
+      },
+      "KLANG": {
+        "Normal Form": { "name": "Klang", "common": null, "uncommon": null, "rare": null }
+      },
+      "KLINKLANG": {
+        "Normal Form": { "name": "Klinklang", "common": null, "uncommon": null, "rare": null }
+      },
+      "TYNAMO": {
+        "Normal Form": { "name": "Tynamo", "common": null, "uncommon": null, "rare": null }
+      },
+      "EELEKTRIK": {
+        "Normal Form": { "name": "Eelektrik", "common": null, "uncommon": null, "rare": null }
+      },
+      "EELEKTROSS": {
+        "Normal Form": { "name": "Eelektross", "common": null, "uncommon": null, "rare": null }
+      },
+      "ELGYEM": {
+        "Normal Form": { "name": "Elgyem", "common": null, "uncommon": null, "rare": null }
+      },
+      "BEHEEYEM": {
+        "Normal Form": { "name": "Beheeyem", "common": null, "uncommon": null, "rare": null }
+      },
+      "LITWICK": {
+        "Normal Form": { "name": "Litwick", "common": null, "uncommon": null, "rare": null }
+      },
+      "LAMPENT": {
+        "Normal Form": { "name": "Lampent", "common": null, "uncommon": null, "rare": null }
+      },
+      "CHANDELURE": {
+        "Normal Form": { "name": "Chandelure", "common": null, "uncommon": null, "rare": null }
+      },
+      "AXEW": {
+        "Normal Form": { "name": "Axew", "common": null, "uncommon": null, "rare": null }
+      },
+      "FRAXURE": {
+        "Normal Form": { "name": "Fraxure", "common": null, "uncommon": null, "rare": null }
+      },
+      "HAXORUS": {
+        "Normal Form": { "name": "Haxorus", "common": null, "uncommon": null, "rare": null }
+      },
+      "CUBCHOO": {
+        "Normal Form": { "name": "Cubchoo", "common": null, "uncommon": null, "rare": null }
+      },
+      "BEARTIC": {
+        "Normal Form": { "name": "Beartic", "common": null, "uncommon": null, "rare": null }
+      },
+      "CRYOGONAL": {
+        "Normal Form": {
+          "name": "Cryogonal",
+          "common": null,
+          "uncommon": "NEVERMELTICE",
+          "rare": null
+        }
+      },
+      "SHELMET": {
+        "Normal Form": { "name": "Shelmet", "common": null, "uncommon": null, "rare": null }
+      },
+      "ACCELGOR": {
+        "Normal Form": { "name": "Accelgor", "common": null, "uncommon": null, "rare": null }
+      },
+      "STUNFISK": {
+        "Normal Form": {
+          "name": "Stunfisk",
+          "common": null,
+          "uncommon": "SOFTSAND",
+          "rare": null
+        }
+      },
+      "MIENFOO": {
+        "Normal Form": { "name": "Mienfoo", "common": null, "uncommon": null, "rare": null }
+      },
+      "MIENSHAO": {
+        "Normal Form": { "name": "Mienshao", "common": null, "uncommon": null, "rare": null }
+      },
+      "DRUDDIGON": {
+        "Normal Form": {
+          "name": "Druddigon",
+          "common": null,
+          "uncommon": "DRAGONFANG",
+          "rare": null
+        }
+      },
+      "GOLETT": {
+        "Normal Form": {
+          "name": "Golett",
+          "common": null,
+          "uncommon": "LIGHTCLAY",
+          "rare": null
+        }
+      },
+      "GOLURK": {
+        "Normal Form": {
+          "name": "Golurk",
+          "common": null,
+          "uncommon": "LIGHTCLAY",
+          "rare": null
+        }
+      },
+      "PAWNIARD": {
+        "Normal Form": { "name": "Pawniard", "common": null, "uncommon": null, "rare": null }
+      },
+      "BISHARP": {
+        "Normal Form": { "name": "Bisharp", "common": null, "uncommon": null, "rare": null }
+      },
+      "BOUFFALANT": {
+        "Normal Form": { "name": "Bouffalant", "common": null, "uncommon": null, "rare": null }
+      },
+      "RUFFLET": {
+        "Normal Form": { "name": "Rufflet", "common": null, "uncommon": null, "rare": null }
+      },
+      "BRAVIARY": {
+        "Normal Form": { "name": "Braviary", "common": null, "uncommon": null, "rare": null }
+      },
+      "VULLABY": {
+        "Normal Form": { "name": "Vullaby", "common": null, "uncommon": null, "rare": null }
+      },
+      "MANDIBUZZ": {
+        "Normal Form": { "name": "Mandibuzz", "common": null, "uncommon": null, "rare": null }
+      },
+      "HEATMOR": {
+        "Normal Form": { "name": "Heatmor", "common": null, "uncommon": null, "rare": null }
+      },
+      "DURANT": {
+        "Normal Form": { "name": "Durant", "common": null, "uncommon": null, "rare": null }
+      },
+      "DEINO": {
+        "Normal Form": { "name": "Deino", "common": null, "uncommon": null, "rare": null }
+      },
+      "ZWEILOUS": {
+        "Normal Form": { "name": "Zweilous", "common": null, "uncommon": null, "rare": null }
+      },
+      "HYDREIGON": {
+        "Normal Form": { "name": "Hydreigon", "common": null, "uncommon": null, "rare": null }
+      },
+      "LARVESTA": {
+        "Normal Form": { "name": "Larvesta", "common": null, "uncommon": null, "rare": null }
+      },
+      "VOLCARONA": {
+        "Normal Form": {
+          "name": "Volcarona",
+          "common": "SILVERPOWDER",
+          "uncommon": "SILVERPOWDER",
+          "rare": "SILVERPOWDER"
+        }
+      },
+      "COBALION": {
+        "Normal Form": { "name": "Cobalion", "common": null, "uncommon": null, "rare": null }
+      },
+      "TERRAKION": {
+        "Normal Form": { "name": "Terrakion", "common": null, "uncommon": null, "rare": null }
+      },
+      "VIRIZION": {
+        "Normal Form": { "name": "Virizion", "common": null, "uncommon": null, "rare": null }
+      },
+      "TORNADUS": {
+        "Incarnate Forme": { "name": "Tornadus", "common": null, "uncommon": null, "rare": null },
+        "Therian Forme": { "name": "Tornadus", "common": null, "uncommon": null, "rare": null }
+      },
+      "THUNDURUS": {
+        "Incarnate Forme": { "name": "Thundurus", "common": null, "uncommon": null, "rare": null },
+        "Therian Forme": { "name": "Thundurus", "common": null, "uncommon": null, "rare": null }
+      },
+      "RESHIRAM": {
+        "Normal Form": { "name": "Reshiram", "common": null, "uncommon": null, "rare": null }
+      },
+      "ZEKROM": {
+        "Normal Form": { "name": "Zekrom", "common": null, "uncommon": null, "rare": null }
+      },
+      "LANDORUS": {
+        "Incarnate Forme": { "name": "Landorus", "common": null, "uncommon": null, "rare": null },
+        "Therian Forme": { "name": "Landorus", "common": null, "uncommon": null, "rare": null }
+      },
+      "KYUREM": {
+        "Kyurem": { "name": "Kyurem", "common": null, "uncommon": null, "rare": null },
+        "White Kyurem": { "name": "Kyurem", "common": null, "uncommon": null, "rare": null },
+        "Black Kyurem": { "name": "Kyurem", "common": null, "uncommon": null, "rare": null }
+      },
+      "KELDEO": {
+        "Ordinary Form": { "name": "Keldeo", "common": null, "uncommon": null, "rare": null },
+        "Resolute Form": { "name": "Keldeo", "common": null, "uncommon": null, "rare": null }
+      },
+      "MELOETTA": {
+        "Aria Forme": {
+          "name": "Meloetta",
+          "common": "STARPIECE",
+          "uncommon": "STARPIECE",
+          "rare": "STARPIECE"
+        },
+        "Pirouette Forme": {
+          "name": "Meloetta",
+          "common": "STARPIECE",
+          "uncommon": "STARPIECE",
+          "rare": "STARPIECE",
+          "inheritedFromBaseForm": true
+        }
+      },
+      "GENESECT": {
+        "Normal Form": { "name": "Genesect", "common": null, "uncommon": null, "rare": null },
+        "Shock Drive": { "name": "Genesect", "common": null, "uncommon": null, "rare": null },
+        "Burn Drive": { "name": "Genesect", "common": null, "uncommon": null, "rare": null },
+        "Chill Drive": { "name": "Genesect", "common": null, "uncommon": null, "rare": null },
+        "Douse Drive": { "name": "Genesect", "common": null, "uncommon": null, "rare": null }
+      },
+      "CHESPIN": {
+        "Normal Form": { "name": "Chespin", "common": null, "uncommon": null, "rare": null }
+      },
+      "QUILLADIN": {
+        "Normal Form": { "name": "Quilladin", "common": null, "uncommon": null, "rare": null }
+      },
+      "CHESNAUGHT": {
+        "Normal Form": { "name": "Chesnaught", "common": null, "uncommon": null, "rare": null }
+      },
+      "FENNEKIN": {
+        "Normal Form": { "name": "Fennekin", "common": null, "uncommon": null, "rare": null }
+      },
+      "BRAIXEN": {
+        "Normal Form": { "name": "Braixen", "common": null, "uncommon": null, "rare": null }
+      },
+      "DELPHOX": {
+        "Normal Form": { "name": "Delphox", "common": null, "uncommon": null, "rare": null }
+      },
+      "FROAKIE": {
+        "Normal Form": { "name": "Froakie", "common": null, "uncommon": null, "rare": null }
+      },
+      "FROGADIER": {
+        "Normal Form": { "name": "Frogadier", "common": null, "uncommon": null, "rare": null }
+      },
+      "GRENINJA": {
+        "Normal Form": { "name": "Greninja", "common": null, "uncommon": null, "rare": null },
+        "Battle Bond Form": { "name": "Greninja", "common": null, "uncommon": null, "rare": null }
+      },
+      "BUNNELBY": {
+        "Normal Form": { "name": "Bunnelby", "common": null, "uncommon": null, "rare": null }
+      },
+      "DIGGERSBY": {
+        "Normal Form": { "name": "Diggersby", "common": null, "uncommon": null, "rare": null }
+      },
+      "FLETCHLING": {
+        "Normal Form": { "name": "Fletchling", "common": null, "uncommon": null, "rare": null }
+      },
+      "FLETCHINDER": {
+        "Normal Form": {
+          "name": "Fletchinder",
+          "common": null,
+          "uncommon": null,
+          "rare": null
+        }
+      },
+      "TALONFLAME": {
+        "Normal Form": { "name": "Talonflame", "common": null, "uncommon": null, "rare": null }
+      },
+      "SCATTERBUG": {
+        "Normal Form": { "name": "Scatterbug", "common": null, "uncommon": null, "rare": null }
+      },
+      "SPEWPA": {
+        "Normal Form": { "name": "Spewpa", "common": null, "uncommon": null, "rare": null }
+      },
+      "VIVILLON": {
+        "Normal Form": { "name": "Vivillon", "common": null, "uncommon": null, "rare": null }
+      },
+      "LITLEO": {
+        "Normal Form": { "name": "Litleo", "common": null, "uncommon": null, "rare": null }
+      },
+      "PYROAR": {
+        "Normal Form": { "name": "Pyroar", "common": null, "uncommon": null, "rare": null }
+      },
+      "FLABEBE": {
+        "Red Flower": { "name": "Flabébé", "common": null, "uncommon": null, "rare": null },
+        "Yellow Flower": { "name": "Flabébé", "common": null, "uncommon": null, "rare": null },
+        "Orange Flower": { "name": "Flabébé", "common": null, "uncommon": null, "rare": null },
+        "Blue Flower": { "name": "Flabébé", "common": null, "uncommon": null, "rare": null },
+        "White Flower": { "name": "Flabébé", "common": null, "uncommon": null, "rare": null }
+      },
+      "FLOETTE": {
+        "Red Flower": { "name": "Floette", "common": null, "uncommon": null, "rare": null },
+        "Yellow Flower": { "name": "Floette", "common": null, "uncommon": null, "rare": null },
+        "Orange Flower": { "name": "Floette", "common": null, "uncommon": null, "rare": null },
+        "Blue Flower": { "name": "Floette", "common": null, "uncommon": null, "rare": null },
+        "White Flower": { "name": "Floette", "common": null, "uncommon": null, "rare": null }
+      },
+      "FLORGES": {
+        "Red Flower": { "name": "Florges", "common": null, "uncommon": null, "rare": null },
+        "Yellow Flower": { "name": "Florges", "common": null, "uncommon": null, "rare": null },
+        "Orange Flower": { "name": "Florges", "common": null, "uncommon": null, "rare": null },
+        "Blue Flower": { "name": "Florges", "common": null, "uncommon": null, "rare": null },
+        "White Flower": { "name": "Florges", "common": null, "uncommon": null, "rare": null }
+      },
+      "SKIDDO": {
+        "Normal Form": { "name": "Skiddo", "common": null, "uncommon": null, "rare": null }
+      },
+      "GOGOAT": {
+        "Normal Form": { "name": "Gogoat", "common": null, "uncommon": null, "rare": null }
+      },
+      "PANCHAM": {
+        "Normal Form": {
+          "name": "Pancham",
+          "common": null,
+          "uncommon": "MENTALHERB",
+          "rare": null
+        }
+      },
+      "PANGORO": {
+        "Normal Form": {
+          "name": "Pangoro",
+          "common": null,
+          "uncommon": "MENTALHERB",
+          "rare": null
+        }
+      },
+      "FURFROU": {
+        "Natural Form": { "name": "Furfrou", "common": null, "uncommon": null, "rare": null },
+        "Star Trim": { "name": "Furfrou", "common": null, "uncommon": null, "rare": null },
+        "Heart Trim": { "name": "Furfrou", "common": null, "uncommon": null, "rare": null },
+        "Pharaoh Trim": { "name": "Furfrou", "common": null, "uncommon": null, "rare": null },
+        "Matron Trim": { "name": "Furfrou", "common": null, "uncommon": null, "rare": null },
+        "Dandy Trim": { "name": "Furfrou", "common": null, "uncommon": null, "rare": null },
+        "Kabuki Trim": { "name": "Furfrou", "common": null, "uncommon": null, "rare": null },
+        "La Reine Trim": { "name": "Furfrou", "common": null, "uncommon": null, "rare": null },
+        "Debutante Trim": { "name": "Furfrou", "common": null, "uncommon": null, "rare": null },
+        "Diamond Trim": { "name": "Furfrou", "common": null, "uncommon": null, "rare": null }
+      },
+      "ESPURR": {
+        "Normal Form": { "name": "Espurr", "common": null, "uncommon": null, "rare": null }
+      },
+      "MEOWSTIC": {
+        "Male": { "name": "Meowstic", "common": null, "uncommon": null, "rare": null },
+        "Female": { "name": "Meowstic", "common": null, "uncommon": null, "rare": null }
+      },
+      "HONEDGE": {
+        "Normal Form": { "name": "Honedge", "common": null, "uncommon": null, "rare": null }
+      },
+      "DOUBLADE": {
+        "Normal Form": { "name": "Doublade", "common": null, "uncommon": null, "rare": null }
+      },
+      "AEGISLASH": {
+        "Shield Forme": { "name": "Aegislash", "common": null, "uncommon": null, "rare": null },
+        "Blade Forme": { "name": "Aegislash", "common": null, "uncommon": null, "rare": null },
+        "Crystal Forme": { "name": "Aegislash", "common": null, "uncommon": null, "rare": null }
+      },
+      "SPRITZEE": {
+        "Normal Form": { "name": "Spritzee", "common": null, "uncommon": null, "rare": null }
+      },
+      "AROMATISSE": {
+        "Normal Form": { "name": "Aromatisse", "common": null, "uncommon": null, "rare": null }
+      },
+      "SWIRLIX": {
+        "Normal Form": { "name": "Swirlix", "common": null, "uncommon": null, "rare": null }
+      },
+      "SLURPUFF": {
+        "Normal Form": { "name": "Slurpuff", "common": null, "uncommon": null, "rare": null }
+      },
+      "INKAY": {
+        "Normal Form": { "name": "Inkay", "common": null, "uncommon": null, "rare": null }
+      },
+      "MALAMAR": {
+        "Normal Form": { "name": "Malamar", "common": null, "uncommon": null, "rare": null }
+      },
+      "BINACLE": {
+        "Normal Form": { "name": "Binacle", "common": null, "uncommon": null, "rare": null }
+      },
+      "BARBARACLE": {
+        "Normal Form": { "name": "Barbaracle", "common": null, "uncommon": null, "rare": null }
+      },
+      "SKRELP": {
+        "Normal Form": { "name": "Skrelp", "common": null, "uncommon": null, "rare": null }
+      },
+      "DRAGALGE": {
+        "Normal Form": { "name": "Dragalge", "common": null, "uncommon": null, "rare": null }
+      },
+      "CLAUNCHER": {
+        "Normal Form": { "name": "Clauncher", "common": null, "uncommon": null, "rare": null }
+      },
+      "CLAWITZER": {
+        "Normal Form": { "name": "Clawitzer", "common": null, "uncommon": null, "rare": null },
+        "PULSE Form": { "name": "Clawitzer", "common": null, "uncommon": null, "rare": null }
+      },
+      "HELIOPTILE": {
+        "Normal Form": { "name": "Helioptile", "common": null, "uncommon": null, "rare": null }
+      },
+      "HELIOLISK": {
+        "Normal Form": { "name": "Heliolisk", "common": null, "uncommon": null, "rare": null }
+      },
+      "TYRUNT": {
+        "Normal Form": { "name": "Tyrunt", "common": null, "uncommon": null, "rare": null }
+      },
+      "TYRANTRUM": {
+        "Normal Form": { "name": "Tyrantrum", "common": null, "uncommon": null, "rare": null }
+      },
+      "AMAURA": {
+        "Normal Form": { "name": "Amaura", "common": null, "uncommon": null, "rare": null }
+      },
+      "AURORUS": {
+        "Normal Form": { "name": "Aurorus", "common": null, "uncommon": null, "rare": null }
+      },
+      "SYLVEON": {
+        "Normal Form": { "name": "Sylveon", "common": null, "uncommon": null, "rare": null }
+      },
+      "HAWLUCHA": {
+        "Normal Form": {
+          "name": "Hawlucha",
+          "common": null,
+          "uncommon": "KINGSROCK",
+          "rare": null
+        }
+      },
+      "DEDENNE": {
+        "Normal Form": { "name": "Dedenne", "common": null, "uncommon": null, "rare": null }
+      },
+      "CARBINK": {
+        "Normal Form": { "name": "Carbink", "common": null, "uncommon": null, "rare": null }
+      },
+      "GOOMY": {
+        "Normal Form": {
+          "name": "Goomy",
+          "common": null,
+          "uncommon": "SHEDSHELL",
+          "rare": null
+        }
+      },
+      "SLIGGOO": {
+        "Normal Form": {
+          "name": "Sliggoo",
+          "common": null,
+          "uncommon": "SHEDSHELL",
+          "rare": null
+        }
+      },
+      "GOODRA": {
+        "Normal Form": { "name": "Goodra", "common": null, "uncommon": null, "rare": null }
+      },
+      "KLEFKI": {
+        "Normal Form": { "name": "Klefki", "common": null, "uncommon": null, "rare": null }
+      },
+      "PHANTUMP": {
+        "Normal Form": { "name": "Phantump", "common": null, "uncommon": null, "rare": null }
+      },
+      "TREVENANT": {
+        "Normal Form": { "name": "Trevenant", "common": null, "uncommon": null, "rare": null }
+      },
+      "PUMPKABOO": {
+        "Normal Form": {
+          "name": "Pumpkaboo",
+          "common": null,
+          "uncommon": "MIRACLESEED",
+          "rare": null
+        },
+        "Small": {
+          "name": "Pumpkaboo",
+          "common": null,
+          "uncommon": "MIRACLESEED",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "GOURGEIST": {
+        "Normal Form": {
+          "name": "Gourgeist",
+          "common": null,
+          "uncommon": "MIRACLESEED",
+          "rare": null
+        },
+        "Small": {
+          "name": "Gourgeist",
+          "common": null,
+          "uncommon": "MIRACLESEED",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "BERGMITE": {
+        "Normal Form": { "name": "Bergmite", "common": null, "uncommon": null, "rare": null }
+      },
+      "AVALUGG": {
+        "Normal Form": { "name": "Avalugg", "common": null, "uncommon": null, "rare": null },
+        "PULSE Form": { "name": "Avalugg", "common": null, "uncommon": null, "rare": null }
+      },
+      "NOIBAT": {
+        "Normal Form": { "name": "Noibat", "common": null, "uncommon": null, "rare": null }
+      },
+      "NOIVERN": {
+        "Normal Form": { "name": "Noivern", "common": null, "uncommon": null, "rare": null }
+      },
+      "XERNEAS": {
+        "Normal Form": { "name": "Xerneas", "common": null, "uncommon": null, "rare": null }
+      },
+      "YVELTAL": {
+        "Normal Form": { "name": "Yveltal", "common": null, "uncommon": null, "rare": null }
+      },
+      "ZYGARDE": {
+        "50% Forme": { "name": "Zygarde", "common": null, "uncommon": null, "rare": null },
+        "10% Forme": { "name": "Zygarde", "common": null, "uncommon": null, "rare": null },
+        "Complete Forme": { "name": "Zygarde", "common": null, "uncommon": null, "rare": null }
+      },
+      "DIANCIE": {
+        "Normal Form": { "name": "Diancie", "common": null, "uncommon": null, "rare": null },
+        "Mega Form": { "name": "Diancie", "common": null, "uncommon": null, "rare": null }
+      },
+      "HOOPA": {
+        "Hoopa Confined": { "name": "Hoopa", "common": null, "uncommon": null, "rare": null },
+        "Hoopa Unbound": { "name": "Hoopa", "common": null, "uncommon": null, "rare": null }
+      },
+      "VOLCANION": {
+        "Normal Form": { "name": "Volcanion", "common": null, "uncommon": null, "rare": null }
+      },
+      "ROWLET": {
+        "Normal Form": { "name": "Rowlet", "common": null, "uncommon": null, "rare": null }
+      },
+      "DARTRIX": {
+        "Normal Form": { "name": "Dartrix", "common": null, "uncommon": null, "rare": null }
+      },
+      "DECIDUEYE": {
+        "Normal Form": { "name": "Decidueye", "common": null, "uncommon": null, "rare": null }
+      },
+      "LITTEN": {
+        "Normal Form": { "name": "Litten", "common": null, "uncommon": null, "rare": null }
+      },
+      "TORRACAT": {
+        "Normal Form": { "name": "Torracat", "common": null, "uncommon": null, "rare": null }
+      },
+      "INCINEROAR": {
+        "Normal Form": { "name": "Incineroar", "common": null, "uncommon": null, "rare": null }
+      },
+      "POPPLIO": {
+        "Normal Form": { "name": "Popplio", "common": null, "uncommon": null, "rare": null }
+      },
+      "BRIONNE": {
+        "Normal Form": { "name": "Brionne", "common": null, "uncommon": null, "rare": null }
+      },
+      "PRIMARINA": {
+        "Normal Form": { "name": "Primarina", "common": null, "uncommon": null, "rare": null }
+      },
+      "PIKIPEK": {
+        "Normal Form": {
+          "name": "Pikipek",
+          "common": null,
+          "uncommon": "ORANBERRY",
+          "rare": null
+        }
+      },
+      "TRUMBEAK": {
+        "Normal Form": {
+          "name": "Trumbeak",
+          "common": null,
+          "uncommon": "SITRUSBERRY",
+          "rare": null
+        }
+      },
+      "TOUCANNON": {
+        "Normal Form": {
+          "name": "Toucannon",
+          "common": null,
+          "uncommon": "RAWSTBERRY",
+          "rare": null
+        }
+      },
+      "YUNGOOS": {
+        "Normal Form": {
+          "name": "Yungoos",
+          "common": null,
+          "uncommon": "PECHABERRY",
+          "rare": null
+        }
+      },
+      "GUMSHOOS": {
+        "Normal Form": {
+          "name": "Gumshoos",
+          "common": null,
+          "uncommon": "PECHABERRY",
+          "rare": null
+        }
+      },
+      "GRUBBIN": {
+        "Normal Form": { "name": "Grubbin", "common": null, "uncommon": null, "rare": null }
+      },
+      "CHARJABUG": {
+        "Normal Form": {
+          "name": "Charjabug",
+          "common": null,
+          "uncommon": "CELLBATTERY",
+          "rare": null
+        }
+      },
+      "VIKAVOLT": {
+        "Normal Form": { "name": "Vikavolt", "common": null, "uncommon": null, "rare": null }
+      },
+      "CRABRAWLER": {
+        "Normal Form": {
+          "name": "Crabrawler",
+          "common": null,
+          "uncommon": "ASPEARBERRY",
+          "rare": null
+        }
+      },
+      "CRABOMINABLE": {
+        "Normal Form": {
+          "name": "Crabominable",
+          "common": null,
+          "uncommon": "CHERIBERRY",
+          "rare": null
+        }
+      },
+      "ORICORIO": {
+        "Baile Style": {
+          "name": "Oricorio",
+          "common": null,
+          "uncommon": "HONEY",
+          "rare": null
+        },
+        "Pom-Pom Style": {
+          "name": "Oricorio",
+          "common": null,
+          "uncommon": "HONEY",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        },
+        "Pa'u Style": {
+          "name": "Oricorio",
+          "common": null,
+          "uncommon": "HONEY",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        },
+        "Sensu Style": {
+          "name": "Oricorio",
+          "common": null,
+          "uncommon": "HONEY",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "CUTIEFLY": {
+        "Normal Form": {
+          "name": "Cutiefly",
+          "common": null,
+          "uncommon": "HONEY",
+          "rare": null
+        }
+      },
+      "RIBOMBEE": {
+        "Normal Form": {
+          "name": "Ribombee",
+          "common": null,
+          "uncommon": "HONEY",
+          "rare": null
+        }
+      },
+      "ROCKRUFF": {
+        "Normal Form": { "name": "Rockruff", "common": null, "uncommon": null, "rare": null }
+      },
+      "LYCANROC": {
+        "Midday Form": { "name": "Lycanroc", "common": null, "uncommon": null, "rare": null },
+        "Midnight Form": { "name": "Lycanroc", "common": null, "uncommon": null, "rare": null },
+        "Dusk Form": { "name": "Lycanroc", "common": null, "uncommon": null, "rare": null }
+      },
+      "WISHIWASHI": {
+        "Solo Form": { "name": "Wishiwashi", "common": null, "uncommon": null, "rare": null },
+        "School Form": { "name": "Wishiwashi", "common": null, "uncommon": null, "rare": null }
+      },
+      "MAREANIE": {
+        "Normal Form": {
+          "name": "Mareanie",
+          "common": null,
+          "uncommon": "POISONBARB",
+          "rare": null
+        }
+      },
+      "TOXAPEX": {
+        "Normal Form": {
+          "name": "Toxapex",
+          "common": null,
+          "uncommon": "POISONBARB",
+          "rare": null
+        }
+      },
+      "MUDBRAY": {
+        "Normal Form": {
+          "name": "Mudbray",
+          "common": null,
+          "uncommon": "LIGHTCLAY",
+          "rare": null
+        }
+      },
+      "MUDSDALE": {
+        "Normal Form": {
+          "name": "Mudsdale",
+          "common": null,
+          "uncommon": "LIGHTCLAY",
+          "rare": null
+        }
+      },
+      "DEWPIDER": {
+        "Normal Form": {
+          "name": "Dewpider",
+          "common": null,
+          "uncommon": "MYSTICWATER",
+          "rare": null
+        }
+      },
+      "ARAQUANID": {
+        "Normal Form": {
+          "name": "Araquanid",
+          "common": null,
+          "uncommon": "MYSTICWATER",
+          "rare": null
+        }
+      },
+      "FOMANTIS": {
+        "Normal Form": {
+          "name": "Fomantis",
+          "common": null,
+          "uncommon": "MIRACLESEED",
+          "rare": null
+        }
+      },
+      "LURANTIS": {
+        "Normal Form": {
+          "name": "Lurantis",
+          "common": null,
+          "uncommon": "MIRACLESEED",
+          "rare": null
+        }
+      },
+      "MORELULL": {
+        "Normal Form": {
+          "name": "Morelull",
+          "common": "TINYMUSHROOM",
+          "uncommon": "BIGMUSHROOM",
+          "rare": null
+        }
+      },
+      "SHIINOTIC": {
+        "Normal Form": {
+          "name": "Shiinotic",
+          "common": "TINYMUSHROOM",
+          "uncommon": "BIGMUSHROOM",
+          "rare": null
+        }
+      },
+      "SALANDIT": {
+        "Normal Form": {
+          "name": "Salandit",
+          "common": null,
+          "uncommon": "SMOKEBALL",
+          "rare": null
+        }
+      },
+      "SALAZZLE": {
+        "Normal Form": {
+          "name": "Salazzle",
+          "common": null,
+          "uncommon": "SMOKEBALL",
+          "rare": null
+        }
+      },
+      "STUFFUL": {
+        "Normal Form": { "name": "Stufful", "common": null, "uncommon": null, "rare": null }
+      },
+      "BEWEAR": {
+        "Normal Form": { "name": "Bewear", "common": null, "uncommon": null, "rare": null }
+      },
+      "BOUNSWEET": {
+        "Normal Form": {
+          "name": "Bounsweet",
+          "common": null,
+          "uncommon": "ELEMENTALSEED",
+          "rare": null
+        }
+      },
+      "STEENEE": {
+        "Normal Form": {
+          "name": "Steenee",
+          "common": null,
+          "uncommon": "ELEMENTALSEED",
+          "rare": null
+        }
+      },
+      "TSAREENA": {
+        "Normal Form": {
+          "name": "Tsareena",
+          "common": null,
+          "uncommon": "ELEMENTALSEED",
+          "rare": null
+        }
+      },
+      "COMFEY": {
+        "Normal Form": {
+          "name": "Comfey",
+          "common": null,
+          "uncommon": "ELEMENTALSEED",
+          "rare": null
+        }
+      },
+      "ORANGURU": {
+        "Normal Form": { "name": "Oranguru", "common": null, "uncommon": null, "rare": null }
+      },
+      "PASSIMIAN": {
+        "Normal Form": { "name": "Passimian", "common": null, "uncommon": null, "rare": null }
+      },
+      "WIMPOD": {
+        "Normal Form": { "name": "Wimpod", "common": null, "uncommon": null, "rare": null }
+      },
+      "GOLISOPOD": {
+        "Normal Form": { "name": "Golisopod", "common": null, "uncommon": null, "rare": null }
+      },
+      "SANDYGAST": {
+        "Normal Form": {
+          "name": "Sandygast",
+          "common": null,
+          "uncommon": "SPELLTAG",
+          "rare": null
+        }
+      },
+      "PALOSSAND": {
+        "Normal Form": {
+          "name": "Palossand",
+          "common": null,
+          "uncommon": "SPELLTAG",
+          "rare": null
+        }
+      },
+      "PYUKUMUKU": {
+        "Normal Form": { "name": "Pyukumuku", "common": null, "uncommon": null, "rare": null }
+      },
+      "TYPENULL": {
+        "Normal Form": { "name": "Type: Null", "common": null, "uncommon": null, "rare": null }
+      },
+      "SILVALLY": {
+        "Normal": { "name": "Silvally", "common": null, "uncommon": null, "rare": null },
+        "Fighting": { "name": "Silvally", "common": null, "uncommon": null, "rare": null },
+        "Flying": { "name": "Silvally", "common": null, "uncommon": null, "rare": null },
+        "Poison": { "name": "Silvally", "common": null, "uncommon": null, "rare": null },
+        "Ground": { "name": "Silvally", "common": null, "uncommon": null, "rare": null },
+        "Rock": { "name": "Silvally", "common": null, "uncommon": null, "rare": null },
+        "Bug": { "name": "Silvally", "common": null, "uncommon": null, "rare": null },
+        "Ghost": { "name": "Silvally", "common": null, "uncommon": null, "rare": null },
+        "Steel": { "name": "Silvally", "common": null, "uncommon": null, "rare": null },
+        "???": { "name": "Silvally", "common": null, "uncommon": null, "rare": null },
+        "Fire": { "name": "Silvally", "common": null, "uncommon": null, "rare": null },
+        "Water": { "name": "Silvally", "common": null, "uncommon": null, "rare": null },
+        "Grass": { "name": "Silvally", "common": null, "uncommon": null, "rare": null },
+        "Electric": { "name": "Silvally", "common": null, "uncommon": null, "rare": null },
+        "Psychic": { "name": "Silvally", "common": null, "uncommon": null, "rare": null },
+        "Ice": { "name": "Silvally", "common": null, "uncommon": null, "rare": null },
+        "Dragon": { "name": "Silvally", "common": null, "uncommon": null, "rare": null },
+        "Dark": { "name": "Silvally", "common": null, "uncommon": null, "rare": null },
+        "Fairy": { "name": "Silvally", "common": null, "uncommon": null, "rare": null },
+        "Dev": { "name": "Silvally", "common": null, "uncommon": null, "rare": null }
+      },
+      "MINIOR": {
+        "Red Core": {
+          "name": "Minior",
+          "common": null,
+          "uncommon": "STARPIECE",
+          "rare": null
+        },
+        "Blue Core": {
+          "name": "Minior",
+          "common": null,
+          "uncommon": "STARPIECE",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        },
+        "Green Core": {
+          "name": "Minior",
+          "common": null,
+          "uncommon": "STARPIECE",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        },
+        "Indigo Core": {
+          "name": "Minior",
+          "common": null,
+          "uncommon": "STARPIECE",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        },
+        "Orange Core": {
+          "name": "Minior",
+          "common": null,
+          "uncommon": "STARPIECE",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        },
+        "Yellow Core": {
+          "name": "Minior",
+          "common": null,
+          "uncommon": "STARPIECE",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        },
+        "Violet Core": {
+          "name": "Minior",
+          "common": null,
+          "uncommon": "STARPIECE",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        },
+        "Meteor Form": {
+          "name": "Minior",
+          "common": null,
+          "uncommon": "STARPIECE",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "KOMALA": {
+        "Normal Form": { "name": "Komala", "common": null, "uncommon": null, "rare": null }
+      },
+      "TURTONATOR": {
+        "Normal Form": {
+          "name": "Turtonator",
+          "common": null,
+          "uncommon": "CHARCOAL",
+          "rare": null
+        }
+      },
+      "TOGEDEMARU": {
+        "Normal Form": {
+          "name": "Togedemaru",
+          "common": null,
+          "uncommon": "ELEMENTALSEED",
+          "rare": null
+        }
+      },
+      "MIMIKYU": {
+        "Disguised Form": {
+          "name": "Mimikyu",
+          "common": null,
+          "uncommon": "CHESTOBERRY",
+          "rare": null
+        },
+        "Busted Form": {
+          "name": "Mimikyu",
+          "common": null,
+          "uncommon": "CHESTOBERRY",
+          "rare": null,
+          "inheritedFromBaseForm": true
+        }
+      },
+      "BRUXISH": {
+        "Normal Form": {
+          "name": "Bruxish",
+          "common": null,
+          "uncommon": "RAZORFANG",
+          "rare": null
+        }
+      },
+      "DRAMPA": {
+        "Normal Form": {
+          "name": "Drampa",
+          "common": null,
+          "uncommon": "PERSIMBERRY",
+          "rare": null
+        }
+      },
+      "DHELMISE": {
+        "Normal Form": { "name": "Dhelmise", "common": null, "uncommon": null, "rare": null }
+      },
+      "JANGMOO": {
+        "Normal Form": {
+          "name": "Jangmo-o",
+          "common": null,
+          "uncommon": "RAZORCLAW",
+          "rare": null
+        }
+      },
+      "HAKAMOO": {
+        "Normal Form": {
+          "name": "Hakamo-o",
+          "common": null,
+          "uncommon": "RAZORCLAW",
+          "rare": null
+        }
+      },
+      "KOMMOO": {
+        "Normal Form": {
+          "name": "Kommo-o",
+          "common": "RAZORCLAW",
+          "uncommon": null,
+          "rare": null
+        }
+      },
+      "TAPUKOKO": {
+        "Normal Form": { "name": "Tapu Koko", "common": null, "uncommon": null, "rare": null }
+      },
+      "TAPULELE": {
+        "Normal Form": { "name": "Tapu Lele", "common": null, "uncommon": null, "rare": null }
+      },
+      "TAPUBULU": {
+        "Normal Form": { "name": "Tapu Bulu", "common": null, "uncommon": null, "rare": null }
+      },
+      "TAPUFINI": {
+        "Normal Form": { "name": "Tapu Fini", "common": null, "uncommon": null, "rare": null }
+      },
+      "COSMOG": {
+        "Normal Form": { "name": "Cosmog", "common": null, "uncommon": null, "rare": null }
+      },
+      "COSMOEM": {
+        "Normal Form": { "name": "Cosmoem", "common": null, "uncommon": null, "rare": null }
+      },
+      "SOLGALEO": {
+        "Normal Form": { "name": "Solgaleo", "common": null, "uncommon": null, "rare": null }
+      },
+      "LUNALA": {
+        "Normal Form": { "name": "Lunala", "common": null, "uncommon": null, "rare": null }
+      },
+      "NIHILEGO": {
+        "Normal Form": { "name": "Nihilego", "common": null, "uncommon": null, "rare": null }
+      },
+      "BUZZWOLE": {
+        "Normal Form": { "name": "Buzzwole", "common": null, "uncommon": null, "rare": null }
+      },
+      "PHEROMOSA": {
+        "Normal Form": { "name": "Pheromosa", "common": null, "uncommon": null, "rare": null }
+      },
+      "XURKITREE": {
+        "Normal Form": { "name": "Xurkitree", "common": null, "uncommon": null, "rare": null }
+      },
+      "CELESTEELA": {
+        "Normal Form": { "name": "Celesteela", "common": null, "uncommon": null, "rare": null }
+      },
+      "KARTANA": {
+        "Normal Form": { "name": "Kartana", "common": null, "uncommon": null, "rare": null }
+      },
+      "GUZZLORD": {
+        "Normal Form": { "name": "Guzzlord", "common": null, "uncommon": null, "rare": null }
+      },
+      "NECROZMA": {
+        "Necrozma": { "name": "Necrozma", "common": null, "uncommon": null, "rare": null },
+        "Dusk Mane": { "name": "Necrozma", "common": null, "uncommon": null, "rare": null },
+        "Dawn Wings": { "name": "Necrozma", "common": null, "uncommon": null, "rare": null },
+        "Ultra Necrozma": { "name": "Necrozma", "common": null, "uncommon": null, "rare": null }
+      },
+      "MAGEARNA": {
+        "Normal Form": { "name": "Magearna", "common": null, "uncommon": null, "rare": null }
+      },
+      "MARSHADOW": {
+        "Normal Form": { "name": "Marshadow", "common": null, "uncommon": null, "rare": null }
+      },
+      "POIPOLE": {
+        "Normal Form": { "name": "Poipole", "common": null, "uncommon": null, "rare": null }
+      },
+      "NAGANADEL": {
+        "Normal Form": { "name": "Naganadel", "common": null, "uncommon": null, "rare": null }
+      },
+      "STAKATAKA": {
+        "Normal Form": { "name": "Stakataka", "common": null, "uncommon": null, "rare": null }
+      },
+      "BLACEPHALON": {
+        "Normal Form": {
+          "name": "Blacephalon",
+          "common": null,
+          "uncommon": null,
+          "rare": null
+        }
+      },
+      "ZERAORA": {
+        "Normal Form": { "name": "Zeraora", "common": null, "uncommon": null, "rare": null }
+      }
+    }
+  }
+}

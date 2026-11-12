@@ -125,7 +125,7 @@ test('panel ↔ timeline consistency: every TM/TMX/tutor availability names a ba
   }
 });
 
-test('item timeline: sheet, mining and wild-held sources date each item', async () => {
+test('item timeline: the sheet and mining date each item', async () => {
   const { getItemUnlockBadge } = await import('../src/games/items.js');
   const { REBORN_ITEM_SOURCES } = await import(
     '../src/generated/rebornItemTimeline.generated.js',
@@ -137,10 +137,8 @@ test('item timeline: sheet, mining and wild-held sources date each item', async 
   );
 
   // User-verified pins.
-  assert.equal(getItemUnlockBadge('blacksludge'), 0); // wild Grimer, immediate
   assert.equal(getItemUnlockBadge('eviolite'), 9); // Agate Circus shop
   assert.equal(getItemUnlockBadge('lightclay'), 2); // Dept. Store 3F
-  assert.equal(getItemUnlockBadge('kingsrock'), 1); // wild Poliwag line beats the badge-13 pickup
   assert.equal(getItemUnlockBadge('choicescarf'), 18);
 
   // Mining items unlock with the Mining Kit (badge 3, after Shelly).

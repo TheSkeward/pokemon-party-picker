@@ -13,10 +13,22 @@ import {
 const obtainedOrder = (row) =>
   row.supply[0]?.badge ?? Number.MAX_SAFE_INTEGER;
 
-// The source that restocks an item, if its supply reaches one.
-const restockOf = (row) => {
+// How each kind of restocking source (games/item-sources.js) reads in a
+// cell, and what a search for it matches.
+const RESTOCK_WORDS = {
+  shop: 'shop',
+  wild: 'wild',
+  mining: 'mining',
+  pickup: 'Pickup',
+  regrow: 'regrows',
+  gift: 'gift',
+};
+
+// The word for the source that restocks an item, '' if its supply reaches
+// none.
+const restockWordOf = (row) => {
   const last = row.supply.at(-1);
-  return last?.copies === Infinity ? last.source : null;
+  return last?.copies === Infinity ? RESTOCK_WORDS[last.source.kind] : '';
 };
 
 /**
@@ -81,8 +93,8 @@ export function buildItemUsageRows(table) {
  * @param {!Array<!ItemUsageRow>} rows
  * @param {{search: (string|undefined), sortBy: (string|undefined),
  *     sortDir: (string|undefined)}=} options The search text matches an
- *     item's name anywhere, or the start of the kind of source that
- *     restocks it ("shop", "wild", "mining").
+ *     item's name anywhere, or the start of the word for the source that
+ *     restocks it ("shop", "wild", "pickup").
  * @return {!Array<!ItemUsageRow>} The rows that match the search, sorted.
  */
 export function selectItemUsageRows(rows, { search = '', sortBy, sortDir } = {}) {
@@ -90,7 +102,7 @@ export function selectItemUsageRows(rows, { search = '', sortBy, sortDir } = {})
   const matches = rows.filter((row) =>
     !query ||
     row.name.toLowerCase().includes(query) ||
-    Boolean(restockOf(row)?.kind.startsWith(query)));
+    (query && restockWordOf(row).toLowerCase().startsWith(query)));
   return sortRows(matches, ITEM_USAGE_TABLE, { sortBy, sortDir });
 }
 
@@ -132,7 +144,7 @@ export function renderItemUsageTable(container, table, state, options = {}) {
         <h2>Item Usage</h2>
         <p>${rows.length} items shown, from the sets of ${table.pokemon} Pokémon in ${escapeHtml(options.familyLabel || 'this game')}.</p>
         <p>On all sets is the share of a Pokémon's sets that hold the item, averaged over every Pokémon, each counted equally. Top item for counts the Pokémon that hold it more than any other item.</p>
-        <p>Obtained counts the copies this game hands out, by the badge each turns up after, up to the first source that restocks the item: a shop, a wild holder, mining, Pickup, regrowth or a gift that repeats. An item a battle uses up is listed only from a source that restocks it. Blank means the game's item data tracks no source.</p>
+        <p>Obtained counts the copies this game hands out, by the badge each turns up after, up to the first source that restocks the item: a shop or prize counter, a wild holder, mining, Pickup, a berry plot or a gift that repeats. An item a battle uses up is listed only from a source that restocks it. Blank means the game's item data tracks no source.</p>
       </div></div>
       <table class="usage-table item-usage-table static-rows"><thead>${renderHeaderRow(COLUMNS, tableState)}</thead><tbody>
         ${rows.map(renderRow).join('')}
@@ -159,5 +171,5 @@ function renderStep(step) {
 
 function stepNote({ copies, source }) {
   if (copies == null) return '';
-  return copies === Infinity ? source.kind : `×${copies}`;
+  return copies === Infinity ? RESTOCK_WORDS[source.kind] : `×${copies}`;
 }

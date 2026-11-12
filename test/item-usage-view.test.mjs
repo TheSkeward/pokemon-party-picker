@@ -81,6 +81,11 @@ test('the item table searches and sorts, untracked items last', () => {
     'Damp Rock',
   ]);
   assert.deepEqual(names(selectItemUsageRows(rows, { search: 'single' })), []);
+  const planted = { id: 'f', name: 'Figy Berry', supply: [restock('regrow', 13)], carry: 0.1, top: 0 };
+  assert.deepEqual(
+    names(selectItemUsageRows([...rows, planted], { search: 'Regrows' })),
+    ['Figy Berry'],
+  );
 });
 
 test("a row names the item and the game's supply of it", async () => {
@@ -91,20 +96,21 @@ test("a row names the item and the game's supply of it", async () => {
   const row = (id) => built.find((entry) => entry.id === id);
   const supply = (id) => row(id).supply.map(({ badge, copies, source }) =>
     [badge, copies, source.kind]);
-  // Reborn hands out one Leftovers after badge 13 and sells it from 17.
+  // Reborn hands out one Life Orb after badge 16 and sells it from 17.
   assert.deepEqual(
-    { ...row('leftovers'), supply: supply('leftovers') },
+    { ...row('lifeorb'), supply: supply('lifeorb') },
     {
-      id: 'leftovers',
-      name: 'Leftovers',
-      supply: [[13, 1, 'single'], [17, Infinity, 'shop']],
+      id: 'lifeorb',
+      name: 'Life Orb',
+      supply: [[16, 1, 'single'], [17, Infinity, 'shop']],
       uncounted: false,
-      carry: table.items.leftovers.carry,
-      top: table.items.leftovers.top,
+      carry: table.items.lifeorb.carry,
+      top: table.items.lifeorb.top,
     },
   );
-  // A one-off pickup has nothing to restock it.
-  assert.deepEqual(supply('assaultvest'), [[14, 1, 'single']]);
+  // One Assault Vest until the post-game point counter.
+  assert.deepEqual(
+    supply('assaultvest'), [[14, 1, 'single'], [18, Infinity, 'shop']]);
   // Mined from the badge the Mining Kit arrives, but sold a badge sooner.
   assert.deepEqual(supply('lightclay'), [[2, Infinity, 'shop']]);
   // Reborn replaces the terrain seeds, so its data tracks none.

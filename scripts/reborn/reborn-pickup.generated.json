@@ -1,0 +1,286 @@
+{
+  "game": "Pokemon Reborn",
+  "version": "19.5.43",
+  "source": "Scripts/Field.rb + Scripts/Reborn/SystemConstants.rb + items.dat",
+  "data": {
+    "itemNames": {
+      "ABILITYCAPSULE": "Ability Capsule",
+      "BIGNUGGET": "Big Nugget",
+      "BLASTPOWDER": "Blast Powder",
+      "BLUEMIC": "Blue Moon Ice Cream",
+      "CHOCOLATEIC": "Choc Ice Cream",
+      "DUSKBALL": "Dusk Ball",
+      "ETHER": "Ether",
+      "FULLRESTORE": "Full Restore",
+      "GREATBALL": "Great Ball",
+      "HEARTSCALE": "Heart Scale",
+      "HONEY": "Honey",
+      "LEFTOVERS": "Leftovers",
+      "LUCKYEGG": "Lucky Egg",
+      "MAXREPEL": "Max Repel",
+      "NUGGET": "Nugget",
+      "ORANBERRY": "Oran Berry",
+      "POKESNAX": "PokéSnax",
+      "PPUP": "PP Up",
+      "RARECANDY": "Rare Candy",
+      "REVIVE": "Revive",
+      "SACREDASH": "Sacred Ash",
+      "SNOWBALL": "Snowball",
+      "STRAWBIC": "Berry Ice Cream",
+      "SUPERREPEL": "Super Repel",
+      "ULTRAPOTION": "Ultra Potion"
+    },
+    "source": { "file": "Scripts/Field.rb", "line": 1464, "endLine": 1493 },
+    "trigger": {
+      "chancePercent": 10,
+      "when": "after each battle won, for every party Pokémon with Pickup that is not an egg and holds nothing; the item goes to the Bag, or is held if the Bag cannot take it",
+      "source": { "file": "Scripts/Field.rb", "line": 1467 },
+      "runSource": { "file": "Scripts/Field.rb", "line": 1496, "endLine": 1584 }
+    },
+    "levelRule": {
+      "rule": "bracket = (min(100, level) - 1) / 10",
+      "source": { "file": "Scripts/Field.rb", "line": 1479 }
+    },
+    "slotOdds": {
+      "values": [30, 10, 10, 10, 10, 10, 10, 4, 4, 1, 1],
+      "source": { "file": "Scripts/Field.rb", "line": 1475 }
+    },
+    "lists": {
+      "PickupNormal": {
+        "values": [
+          "ORANBERRY",
+          "GREATBALL",
+          "SUPERREPEL",
+          "POKESNAX",
+          "CHOCOLATEIC",
+          "BLASTPOWDER",
+          "DUSKBALL",
+          "ULTRAPOTION",
+          "MAXREPEL",
+          "FULLRESTORE",
+          "REVIVE",
+          "ETHER",
+          "PPUP",
+          "HEARTSCALE",
+          "ABILITYCAPSULE",
+          "HEARTSCALE",
+          "BIGNUGGET",
+          "SACREDASH"
+        ],
+        "source": {
+          "file": "Scripts/Reborn/SystemConstants.rb",
+          "line": 424,
+          "endLine": 443
+        }
+      },
+      "PickupRare": {
+        "values": [
+          "NUGGET",
+          "STRAWBIC",
+          "NUGGET",
+          "RARECANDY",
+          "BLUEMIC",
+          "RARECANDY",
+          "BLUEMIC",
+          "BIGNUGGET",
+          "LEFTOVERS",
+          "LUCKYEGG",
+          "LEFTOVERS"
+        ],
+        "source": {
+          "file": "Scripts/Reborn/SystemConstants.rb",
+          "line": 445,
+          "endLine": 457
+        }
+      }
+    },
+    "table": [
+      {
+        "minLevel": 1,
+        "maxLevel": 10,
+        "slots": [
+          { "item": "ORANBERRY", "chance": 30 },
+          { "item": "GREATBALL", "chance": 10 },
+          { "item": "SUPERREPEL", "chance": 10 },
+          { "item": "POKESNAX", "chance": 10 },
+          { "item": "CHOCOLATEIC", "chance": 10 },
+          { "item": "BLASTPOWDER", "chance": 10 },
+          { "item": "DUSKBALL", "chance": 10 },
+          { "item": "ULTRAPOTION", "chance": 4 },
+          { "item": "MAXREPEL", "chance": 4 },
+          { "item": "NUGGET", "chance": 1 },
+          { "item": "STRAWBIC", "chance": 1 }
+        ]
+      },
+      {
+        "minLevel": 11,
+        "maxLevel": 20,
+        "slots": [
+          { "item": "GREATBALL", "chance": 30 },
+          { "item": "SUPERREPEL", "chance": 10 },
+          { "item": "POKESNAX", "chance": 10 },
+          { "item": "CHOCOLATEIC", "chance": 10 },
+          { "item": "BLASTPOWDER", "chance": 10 },
+          { "item": "DUSKBALL", "chance": 10 },
+          { "item": "ULTRAPOTION", "chance": 10 },
+          { "item": "MAXREPEL", "chance": 4 },
+          { "item": "FULLRESTORE", "chance": 4 },
+          { "item": "STRAWBIC", "chance": 1 },
+          { "item": "NUGGET", "chance": 1 }
+        ]
+      },
+      {
+        "minLevel": 21,
+        "maxLevel": 30,
+        "slots": [
+          { "item": "SUPERREPEL", "chance": 30 },
+          { "item": "POKESNAX", "chance": 10 },
+          { "item": "CHOCOLATEIC", "chance": 10 },
+          { "item": "BLASTPOWDER", "chance": 10 },
+          { "item": "DUSKBALL", "chance": 10 },
+          { "item": "ULTRAPOTION", "chance": 10 },
+          { "item": "MAXREPEL", "chance": 10 },
+          { "item": "FULLRESTORE", "chance": 4 },
+          { "item": "REVIVE", "chance": 4 },
+          { "item": "NUGGET", "chance": 1 },
+          { "item": "RARECANDY", "chance": 1 }
+        ]
+      },
+      {
+        "minLevel": 31,
+        "maxLevel": 40,
+        "slots": [
+          { "item": "POKESNAX", "chance": 30 },
+          { "item": "CHOCOLATEIC", "chance": 10 },
+          { "item": "BLASTPOWDER", "chance": 10 },
+          { "item": "DUSKBALL", "chance": 10 },
+          { "item": "ULTRAPOTION", "chance": 10 },
+          { "item": "MAXREPEL", "chance": 10 },
+          { "item": "FULLRESTORE", "chance": 10 },
+          { "item": "REVIVE", "chance": 4 },
+          { "item": "ETHER", "chance": 4 },
+          { "item": "RARECANDY", "chance": 1 },
+          { "item": "BLUEMIC", "chance": 1 }
+        ]
+      },
+      {
+        "minLevel": 41,
+        "maxLevel": 50,
+        "slots": [
+          { "item": "CHOCOLATEIC", "chance": 30 },
+          { "item": "BLASTPOWDER", "chance": 10 },
+          { "item": "DUSKBALL", "chance": 10 },
+          { "item": "ULTRAPOTION", "chance": 10 },
+          { "item": "MAXREPEL", "chance": 10 },
+          { "item": "FULLRESTORE", "chance": 10 },
+          { "item": "REVIVE", "chance": 10 },
+          { "item": "ETHER", "chance": 4 },
+          { "item": "PPUP", "chance": 4 },
+          { "item": "BLUEMIC", "chance": 1 },
+          { "item": "RARECANDY", "chance": 1 }
+        ]
+      },
+      {
+        "minLevel": 51,
+        "maxLevel": 60,
+        "slots": [
+          { "item": "BLASTPOWDER", "chance": 30 },
+          { "item": "DUSKBALL", "chance": 10 },
+          { "item": "ULTRAPOTION", "chance": 10 },
+          { "item": "MAXREPEL", "chance": 10 },
+          { "item": "FULLRESTORE", "chance": 10 },
+          { "item": "REVIVE", "chance": 10 },
+          { "item": "ETHER", "chance": 10 },
+          { "item": "PPUP", "chance": 4 },
+          { "item": "HEARTSCALE", "chance": 4 },
+          { "item": "RARECANDY", "chance": 1 },
+          { "item": "BLUEMIC", "chance": 1 }
+        ]
+      },
+      {
+        "minLevel": 61,
+        "maxLevel": 70,
+        "slots": [
+          { "item": "DUSKBALL", "chance": 30 },
+          { "item": "ULTRAPOTION", "chance": 10 },
+          { "item": "MAXREPEL", "chance": 10 },
+          { "item": "FULLRESTORE", "chance": 10 },
+          { "item": "REVIVE", "chance": 10 },
+          { "item": "ETHER", "chance": 10 },
+          { "item": "PPUP", "chance": 10 },
+          { "item": "HEARTSCALE", "chance": 4 },
+          { "item": "ABILITYCAPSULE", "chance": 4 },
+          { "item": "BLUEMIC", "chance": 1 },
+          { "item": "BIGNUGGET", "chance": 1 }
+        ]
+      },
+      {
+        "minLevel": 71,
+        "maxLevel": 80,
+        "slots": [
+          { "item": "ULTRAPOTION", "chance": 30 },
+          { "item": "MAXREPEL", "chance": 10 },
+          { "item": "FULLRESTORE", "chance": 10 },
+          { "item": "REVIVE", "chance": 10 },
+          { "item": "ETHER", "chance": 10 },
+          { "item": "PPUP", "chance": 10 },
+          { "item": "HEARTSCALE", "chance": 10 },
+          { "item": "ABILITYCAPSULE", "chance": 4 },
+          { "item": "HEARTSCALE", "chance": 4 },
+          { "item": "BIGNUGGET", "chance": 1 },
+          { "item": "LEFTOVERS", "chance": 1 }
+        ]
+      },
+      {
+        "minLevel": 81,
+        "maxLevel": 90,
+        "slots": [
+          { "item": "MAXREPEL", "chance": 30 },
+          { "item": "FULLRESTORE", "chance": 10 },
+          { "item": "REVIVE", "chance": 10 },
+          { "item": "ETHER", "chance": 10 },
+          { "item": "PPUP", "chance": 10 },
+          { "item": "HEARTSCALE", "chance": 10 },
+          { "item": "ABILITYCAPSULE", "chance": 10 },
+          { "item": "HEARTSCALE", "chance": 4 },
+          { "item": "BIGNUGGET", "chance": 4 },
+          { "item": "LEFTOVERS", "chance": 1 },
+          { "item": "LUCKYEGG", "chance": 1 }
+        ]
+      },
+      {
+        "minLevel": 91,
+        "maxLevel": 100,
+        "slots": [
+          { "item": "FULLRESTORE", "chance": 30 },
+          { "item": "REVIVE", "chance": 10 },
+          { "item": "ETHER", "chance": 10 },
+          { "item": "PPUP", "chance": 10 },
+          { "item": "HEARTSCALE", "chance": 10 },
+          { "item": "ABILITYCAPSULE", "chance": 10 },
+          { "item": "HEARTSCALE", "chance": 10 },
+          { "item": "BIGNUGGET", "chance": 4 },
+          { "item": "SACREDASH", "chance": 4 },
+          { "item": "LUCKYEGG", "chance": 1 },
+          { "item": "LEFTOVERS", "chance": 1 }
+        ]
+      }
+    ],
+    "relatedAbilities": [
+      {
+        "ability": "HONEYGATHER",
+        "item": "HONEY",
+        "chancePercent": "5 + ((pkmn.level - 1) / 10) * 5",
+        "when": "after each battle won, holder not an egg and holding nothing",
+        "source": { "file": "Scripts/Field.rb", "line": 1589, "endLine": 1590 }
+      },
+      {
+        "ability": "BALLFETCH",
+        "item": "SNOWBALL",
+        "chancePercent": 100,
+        "when": "after each battle won on the Snowy Mountain field, holder not an egg and holding nothing",
+        "source": { "file": "Scripts/Field.rb", "line": 1585 }
+      }
+    ]
+  }
+}

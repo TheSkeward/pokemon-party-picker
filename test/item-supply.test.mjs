@@ -108,15 +108,25 @@ test('every Berry and Gem is a consumable, and the boosters are not', () => {
 test("Reborn's supply follows its sources", () => {
   const supply = (id) => getItemSupply(id).map(({ badge, copies, source }) =>
     [badge, copies, source.kind]);
-  // One Leftovers from an NPC, then the shop.
-  assert.deepEqual(supply('leftovers'), [
-    [13, 1, 'single'], [17, Infinity, 'shop'],
+  // One Life Orb from an item ball, then the shop.
+  assert.deepEqual(supply('lifeorb'), [
+    [16, 1, 'single'], [17, Infinity, 'shop'],
   ]);
   // The hidden Focus Sash at badge 2 is one battle's worth; the shop counts.
   assert.deepEqual(supply('focussash'), [[17, Infinity, 'shop']]);
   assert.equal(getItemUnlockBadge('focussash'), 17);
-  // No shop sells an Assault Vest: the one copy is all there is.
-  assert.deepEqual(supply('assaultvest'), [[14, 1, 'single']]);
+  // A Pickup holder at level 71 finds Leftovers, two badges before the one
+  // an NPC gives.
+  assert.deepEqual(supply('leftovers'), [[11, Infinity, 'pickup']]);
+  // The Aventurine Woods' Sitrus tree gives the berry and the plot to
+  // regrow it in; a Lansat Berry is first had at badge 14.
+  assert.deepEqual(supply('sitrusberry'), [[7, Infinity, 'regrow']]);
+  assert.deepEqual(supply('lansatberry'), [[14, Infinity, 'regrow']]);
+  // An Oran Berry is sold a badge after Pickup first finds one.
+  assert.deepEqual(supply('oranberry'), [[0, Infinity, 'pickup']]);
+  // One Assault Vest until the post-game point counter.
+  assert.deepEqual(
+    supply('assaultvest'), [[14, 1, 'single'], [18, Infinity, 'shop']]);
   assert.deepEqual(supply('notanitem'), []);
   assert.equal(getItemUnlockBadge('notanitem'), null);
   for (const [id, source] of renewableSources()) {
