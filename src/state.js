@@ -13,6 +13,12 @@ export const DEFAULT_STATE = {
   selectedPokemon: null,
   resolverQuery: '',
   resolverSelectedPokemon: null,
+  moveSearch: '',
+  moveSortBy: 'prior',
+  moveSortDir: 'desc',
+  // Below ten learners a move's share is a few Pokémon's habit, not a
+  // pattern, and the signature moves crowd the top of the table.
+  moveMinLearners: 10,
 };
 
 let currentState = { ...DEFAULT_STATE };

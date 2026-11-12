@@ -5,7 +5,6 @@ import { dex } from './games/dex.js';
 const LEAD_SMOOTHING_K = 200;
 
 const jsonCache = new Map();
-const aggregateMovesetCache = new Map();
 const resolverSummaryCache = new Map();
 const resolverIndexCache = new Map();
 
@@ -53,21 +52,33 @@ export async function loadFormatData(formatId) {
  *     none (404).
  */
 export async function loadAggregateMovesets(formatId) {
-  if (aggregateMovesetCache.has(formatId)) {
-    return aggregateMovesetCache.get(formatId);
-  }
-  const response = await fetch(
-    dataUrl(`aggregate-movesets/${formatId}.json`),
-  );
+  return loadOptionalJson(dataUrl(`aggregate-movesets/${formatId}.json`));
+}
+
+/**
+ * A family's move usage table (scripts/build-move-prior.mjs): for each
+ * move, the share of its learners' sets that run it, how many Pokémon learn
+ * it, and the share of all the family's sets that run it.
+ * @param {string} family
+ * @return {!Promise<?Object>} The table, or null when the family has none
+ *     (404).
+ */
+export async function loadMoveUsage(family) {
+  return loadOptionalJson(dataUrl(`move-prior/${family}.json`));
+}
+
+// A file some formats and families do not have: its 404 is an answer, null,
+// and is cached like any other.
+async function loadOptionalJson(url) {
+  if (jsonCache.has(url)) return jsonCache.get(url);
+  const response = await fetch(url);
   if (response.status === 404) {
-    aggregateMovesetCache.set(formatId, null);
+    jsonCache.set(url, null);
     return null;
   }
-  if (!response.ok) {
-    throw new Error(`Failed to load movesets for ${formatId}`);
-  }
+  if (!response.ok) throw new Error(`Failed to load ${url}`);
   const data = await response.json();
-  aggregateMovesetCache.set(formatId, data);
+  jsonCache.set(url, data);
   return data;
 }
 

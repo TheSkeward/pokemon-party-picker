@@ -1,4 +1,8 @@
-const FOCUSABLE_INPUT_IDS = new Set(['search-input', 'resolver-query-input']);
+const FOCUSABLE_INPUT_IDS = new Set([
+  'search-input',
+  'resolver-query-input',
+  'move-search-input',
+]);
 
 /**
  * Captures which tracked search input has focus so a full re-render can hand

@@ -8,15 +8,21 @@ import {
   loadAvailability,
   loadFormatData,
   loadFormatsIndex,
+  loadMoveUsage,
   loadPokemonIndex,
 } from './data';
-import { activateGameForFamily, orderFamilies } from './games/registry.js';
+import {
+  activateGameForFamily,
+  gameForFamily,
+  orderFamilies,
+} from './games/registry.js';
 import { applyGameTheme } from './app/theme.js';
 import { loadManifest } from './manifest.js';
 import { bindAppEvents } from './app/app-events';
 import { renderBrowserPage } from './app/browser-page';
 import { captureFocusState, restoreFocusState } from './app/focus-state';
 import { renderFatalAppError, renderAppShell } from './app/app-shell-view';
+import { renderMovesPage } from './app/moves-page';
 import { renderResolverPage } from './app/resolver-page';
 import { readStateFromUrl, writeStateToUrl } from './router';
 import { DEFAULT_STATE, getState, replaceState, setState } from './state';
@@ -27,6 +33,7 @@ import { startUpdateNotifier } from './update-notifier';
 
 const app = document.querySelector('#app');
 const DESC_SORT_FIELDS = new Set(['usage', 'rawCount', 'leadTendency']);
+const MOVE_DESC_SORT_FIELDS = new Set(['prior', 'learners', 'carry']);
 const LITERAL_RESOLVE_LIMIT = 25;
 const RESOLVER_INPUT_DEBOUNCE_MS = 300;
 
@@ -36,6 +43,8 @@ let availability = null;
 let pokemonIndex = [];
 let browserMovesetData = null;
 let browserMovesetKey = null;
+let moveUsage = null;
+let moveUsageKey = null;
 let resolverResults = [];
 let resolverLoadingState = { loading: false, message: '' };
 let syncGeneration = 0;
@@ -65,6 +74,7 @@ async function init() {
   await loadManifest();
 
   await ensureBrowserMovesetData();
+  await ensureMoveUsageData();
 
   resolverResults = await computeResolverResults();
 
@@ -109,6 +119,17 @@ async function ensureBrowserMovesetData() {
   browserMovesetKey = state.format;
 }
 
+// The move table is one small file per family, fetched the first time the
+// Move Usage view shows that family.
+async function ensureMoveUsageData() {
+  const state = getState();
+
+  if (state.view !== 'moves' || moveUsageKey === state.family) return;
+
+  moveUsage = await loadMoveUsage(state.family);
+  moveUsageKey = state.family;
+}
+
 async function computeResolverResults() {
   const state = getState();
 
@@ -139,6 +160,16 @@ function renderApp() {
     });
   } else if (state.view === 'pool') {
     renderPoolPage(pageRoot);
+  } else if (state.view === 'moves') {
+    // Named as the family's tab names it: the game, then the family.
+    const family =
+      availability?.familyConfigs?.[state.family]?.label || state.family;
+    const game = gameForFamily(state.family);
+    renderMovesPage(pageRoot, {
+      familyLabel: game ? `${game.shortLabel} · ${family}` : family,
+      moveUsage,
+      state,
+    });
   } else {
     renderBrowserPage(pageRoot, {
       browserMovesetData,
@@ -165,6 +196,9 @@ function bindEvents() {
     onBrowserPokemonClick: handleBrowserPokemonClick,
     onFamilyChange: handleFamilyChange,
     onFormatChange: handleFormatChange,
+    onMoveMinLearners: handleMoveMinLearners,
+    onMoveSearchInput: handleMoveSearchInput,
+    onMoveSort: handleMoveSort,
     onResolverPokemonClick: handleResolverPokemonClick,
     onResolverQueryInput: handleResolverQueryInput,
     onSearchInput: handleSearchInput,
@@ -247,6 +281,35 @@ async function handleSort(nextSortBy) {
         : 'asc';
 
   setState({ sortBy: nextSortBy, sortDir: nextSortDir });
+
+  await sync({ recomputeResolverResults: false });
+}
+
+// The move table's controls shape that table only.
+async function handleMoveSort(nextSortBy) {
+  const state = getState();
+  const nextSortDir =
+    state.moveSortBy === nextSortBy
+      ? state.moveSortDir === 'asc'
+        ? 'desc'
+        : 'asc'
+      : MOVE_DESC_SORT_FIELDS.has(nextSortBy)
+        ? 'desc'
+        : 'asc';
+
+  setState({ moveSortBy: nextSortBy, moveSortDir: nextSortDir });
+
+  await sync({ recomputeResolverResults: false });
+}
+
+async function handleMoveSearchInput(moveSearch) {
+  setState({ moveSearch });
+
+  await sync({ recomputeResolverResults: false });
+}
+
+async function handleMoveMinLearners(value) {
+  setState({ moveMinLearners: Number(value) });
 
   await sync({ recomputeResolverResults: false });
 }
@@ -335,6 +398,7 @@ async function sync(options = {}) {
   const generation = ++syncGeneration;
 
   await ensureBrowserMovesetData();
+  await ensureMoveUsageData();
 
   let nextResolverResults = resolverResults;
 

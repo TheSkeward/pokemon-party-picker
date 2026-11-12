@@ -281,12 +281,22 @@ button:hover {
   background: color-mix(in srgb, var(--fill-focus) 30%, transparent);
 }
 .usage-browser-table tbody tr:nth-child(odd),
-.resolver-results-table tbody tr:nth-child(odd) {
+.resolver-results-table tbody tr:nth-child(odd),
+.move-usage-table tbody tr:nth-child(odd) {
   background: color-mix(in srgb, var(--hairline) 18%, transparent);
 }
 .usage-browser-table tbody tr:nth-child(odd):hover,
-.resolver-results-table tbody tr:nth-child(odd):hover {
+.resolver-results-table tbody tr:nth-child(odd):hover,
+.move-usage-table tbody tr:nth-child(odd):hover {
   background: color-mix(in srgb, var(--hairline) 45%, transparent);
+}
+/* A move row opens nothing. */
+.move-usage-table tbody tr {
+  cursor: default;
+}
+.move-usage-table th:nth-child(n + 4),
+.move-usage-table td:nth-child(n + 4) {
+  text-align: right;
 }
 .usage-browser-table tbody tr.selected,
 .resolver-results-table tbody tr.selected {

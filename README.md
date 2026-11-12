@@ -51,6 +51,9 @@ https://theskeward.github.io/pokemon-party-picker/
   coverage, defensive profile, confidence, and level-cap investment.
 - Look up observed set details for a Pokemon or evolutionary line.
 - Browse the underlying usage data.
+- See how often each move is run by the Pokemon that can learn it (Move
+  Usage), each learner counted equally, beside how many learn it and how
+  often it appears across all sets.
 
 ## Games
 

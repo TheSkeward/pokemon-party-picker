@@ -1,8 +1,12 @@
 import { DEFAULT_STATE } from './state';
+import {
+  MIN_LEARNER_CHOICES,
+  MOVE_SORT_FIELDS,
+} from './views/move-usage-view';
 
 const VALID_SORT_FIELDS = new Set(['rank', 'name', 'usage', 'rawCount', 'leadTendency']);
 const VALID_SORT_DIRS = new Set(['asc', 'desc']);
-const VALID_VIEWS = new Set(['resolver', 'pool', 'browser']);
+const VALID_VIEWS = new Set(['resolver', 'pool', 'browser', 'moves']);
 
 /**
  * @return {!Object} App state from the URL query params; missing or invalid
@@ -23,6 +27,10 @@ export function readStateFromUrl() {
     selectedPokemon: params.get('pokemon') || DEFAULT_STATE.selectedPokemon,
     resolverQuery: params.get('resolverQuery') || DEFAULT_STATE.resolverQuery,
     resolverSelectedPokemon: params.get('resolverPokemon') || DEFAULT_STATE.resolverSelectedPokemon,
+    moveSearch: params.get('moveSearch') || DEFAULT_STATE.moveSearch,
+    moveSortBy: MOVE_SORT_FIELDS.includes(params.get('moveSortBy')) ? params.get('moveSortBy') : DEFAULT_STATE.moveSortBy,
+    moveSortDir: VALID_SORT_DIRS.has(params.get('moveSortDir')) ? params.get('moveSortDir') : DEFAULT_STATE.moveSortDir,
+    moveMinLearners: MIN_LEARNER_CHOICES.includes(Number(params.get('minLearners'))) ? Number(params.get('minLearners')) : DEFAULT_STATE.moveMinLearners,
   };
 }
 
@@ -33,11 +41,16 @@ export function writeStateToUrl(state) {
   params.set('view', state.view);
   params.set('family', state.family);
 
-  // Only the pool view's own params belong in a pool URL. format drives the
-  // usage browser and resolverQuery/... the resolver — writing them from
-  // the pool view would just fossilize whatever the other views last showed
-  // into every shared link.
-  if (state.view !== 'pool') {
+  // Only a view's own params belong in its URL. format drives the usage
+  // browser and resolverQuery/... the resolver — writing them from the pool
+  // or the move table would just fossilize whatever the other views last
+  // showed into every shared link.
+  if (state.view === 'moves') {
+    if (state.moveSearch) params.set('moveSearch', state.moveSearch);
+    if (state.moveSortBy !== DEFAULT_STATE.moveSortBy) params.set('moveSortBy', state.moveSortBy);
+    if (state.moveSortDir !== DEFAULT_STATE.moveSortDir) params.set('moveSortDir', state.moveSortDir);
+    if (state.moveMinLearners !== DEFAULT_STATE.moveMinLearners) params.set('minLearners', String(state.moveMinLearners));
+  } else if (state.view !== 'pool') {
     params.set('format', state.format);
 
     if (state.search) params.set('search', state.search);
