@@ -20,6 +20,12 @@ const { loadLegalMoveData, lockedMoveIdsFor } = await import(
 );
 const { lockedMovesByPokemonId, unknownMoveLocks, withPoolAnnotations } =
   await import('../src/teamBuilder/input-groups.js');
+const { SCORING_DEFAULTS } = await import(
+  '../src/teamBuilder/scoring-constants.js',
+);
+const { renderTeamAnalysisPanel } = await import(
+  '../src/teamBuilder/team-analysis-view.js',
+);
 
 const at = (badge, levelCap) => ({
   ...progressionAt({ badge, levelCap }),
@@ -262,4 +268,79 @@ test('a locked self-KO move seats, since the lock is the record', async () => {
     assert.equal(ids(build)[0], 'explosion', build.buildKey);
     assert.deepEqual(lockedIds(build), ['explosion'], build.buildKey);
   }
+});
+
+test('a lock learned by holding an evolution seats in every build, uncharged', async () => {
+  // Shellos evolves at 30 and learns Recover at 46; Gastrodon not until 54.
+  // Unlocked, Recover is the delayed build's move and pays for sixteen
+  // levels of Shellos.
+  const progression = at(5, 50);
+  const plain = bestChoice(
+    await runPool({ pool: ['Gastrodon'], progression }), 'Gastrodon',
+  );
+  assert.ok(!ids(plain).includes('recover'), ids(plain));
+
+  const pool = ['Gastrodon {Recover}'];
+  const result = await runPool({ pool, progression });
+  const locked = bestChoice(result, 'Gastrodon');
+  for (const build of builds(locked)) {
+    assert.equal(ids(build)[0], 'recover', build.buildKey);
+    assert.notEqual(build.buildKey, 'delayed');
+    const proof = build.legalityProfile.legalityProof;
+    assert.ok(!proof.buildFriction, build.buildKey);
+    assert.deepEqual(proof.delayedMoves, [{
+      name: 'Recover',
+      source: 'Level 46 (Shellos)',
+      heldLevels: 16,
+      locked: true,
+    }], build.buildKey);
+  }
+
+  // The card says the set assumes the hold, since no cost does.
+  const root = { innerHTML: '', isConnected: true, querySelectorAll: () => [] };
+  const { pokemonIndex } = await loadShared();
+  await renderTeamAnalysisPanel(root, {
+    family: 'singles',
+    poolQuery: pool.join('\n'),
+    progression,
+    team: result.team,
+    lines: result.lines,
+    pokemonIndex,
+  });
+  const label = root.innerHTML.match(/class="team-set-build"[^>]*>([^<]*)</);
+  assert.ok(label, 'the card names the build');
+  assert.match(label[1], /Recover held from Shellos to 46$/);
+});
+
+test('a held move past a locked hold pays only for the levels beyond it', async () => {
+  // Wartortle evolves at 36, learns Rain Dance at 45 and Hydro Pump at 49.
+  const perLevel = SCORING_DEFAULTS.DELAYED_EVO_FRICTION_PER_LEVEL;
+  const delayedProof = async (entry) => {
+    const blastoise = bestChoice(
+      await runPool({ pool: [entry], progression: at(5, 50) }), 'Blastoise',
+    );
+    const delayed = builds(blastoise)
+      .find((build) => build.buildKey === 'delayed');
+    assert.ok(delayed, `${entry} offers a delayed build`);
+    return delayed.legalityProfile.legalityProof;
+  };
+
+  // Thirteen levels for Hydro Pump: 1 + 2 + … + 13 units.
+  const plain = await delayedProof('Blastoise');
+  assert.equal(plain.heldLevels, 13);
+  assert.equal(plain.buildFriction, 91 * perLevel);
+
+  // The lock holds the first nine, so Hydro Pump pays 10 + 11 + 12 + 13.
+  const locked = await delayedProof('Blastoise {Rain Dance}');
+  assert.equal(locked.heldLevels, 13);
+  assert.equal(locked.buildFriction, 46 * perLevel);
+  assert.deepEqual(locked.delayedMoves, [
+    {
+      name: 'Rain Dance',
+      source: 'Level 45 (Wartortle)',
+      heldLevels: 9,
+      locked: true,
+    },
+    { name: 'Hydro Pump', source: 'Level 49 (Wartortle)', heldLevels: 13 },
+  ]);
 });

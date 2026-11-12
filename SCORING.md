@@ -253,7 +253,14 @@ than passing a verdict on it. A lock the cap still blocks waits for its
 route and holds no seat meanwhile, so the record's next move keeps the
 set full until the lock is learnable; one the game never teaches the line
 is reported, not seated. A locked self-KO
-move seats, since the lock is the record. The readiness ramp counts no
+move seats, since the lock is the record. A lock learned only by holding an
+evolution back seats in every build and its hold is not charged: the hold
+cost prices a choice the optimizer is weighing, and the player has already
+made this one, often on a Pokémon that has since evolved. Charging it had
+left `Gastrodon {Recover}` without Recover, sixteen levels of Shellos
+outweighing the move the player had asked for. Another held move in the same
+set pays only for the levels past the lock's, and the card names the hold
+the set assumes. The readiness ramp counts no
 lock: it measures how far the mon is toward the set its usage describes,
 and a lock is the player's canon, not the ladder's, so locking moves the
 score only through the set it builds. Counting locks there had let two

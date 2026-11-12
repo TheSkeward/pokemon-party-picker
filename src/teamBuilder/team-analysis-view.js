@@ -574,11 +574,42 @@ function renderSetCard(profile) {
   `;
 }
 
+// The locked moves of a set that are learned only before evolving, as
+// "Recover held from Shellos to 46". The optimizer seats such a lock without
+// charging the hold (resolveCandidateBuilds), so the card is where the
+// player learns the set assumes it.
+function lockedHoldNote(profile) {
+  const holdOf = (move) => {
+    const sources = move.availableSources || [];
+    return move.locked && sources.length &&
+        sources.every((source) => source.delayedEvolution)
+      ? sources[0]
+      : null;
+  };
+  const held = (profile.recommendedMoves || []).filter(holdOf);
+  if (!held.length) return '';
+  const names = held.map((move) => move.name).join(', ');
+  const longest = held
+    .map(holdOf)
+    .sort((a, b) => (b.heldLevels || 0) - (a.heldLevels || 0))[0];
+  return longest.learnerName && longest.level
+    ? `${names} held from ${longest.learnerName} to ${longest.level}`
+    : `${names} held from before evolving`;
+}
+
 // Names the build when it is not the standard set, with the canonical moves
 // the set line calls ready that this build left out, so the card never
-// contradicts the readiness line beneath it without saying why.
+// contradicts the readiness line beneath it without saying why. A standard
+// set is named only when a lock makes it hold an evolution.
 function renderBuildLabel(profile) {
-  if (!profile.buildKey || profile.buildKey === 'default') return '';
+  const hold = lockedHoldNote(profile);
+  if (!profile.buildKey || profile.buildKey === 'default') {
+    if (!hold) return '';
+    const title =
+      'A locked move is learned only before evolving, so the set assumes ' +
+      'the evolution was held for it.';
+    return `<span class="team-set-build" title="${escapeHtml(title)}">${escapeHtml(`Standard set · ${hold}`)}</span>`;
+  }
   const carried = new Set(
     (profile.recommendedMoves || []).map((move) => move.id),
   );
@@ -593,8 +624,10 @@ function renderBuildLabel(profile) {
   const title = traded.length
     ? `An alternative to the standard set, chosen for the team; it leaves out ${traded.join(' and ')}.`
     : 'An alternative to the standard set, chosen for the team; it keeps every canonical move available now.';
-  const text = traded.length ? `${label} · without ${traded.join(', ')}` : label;
-  return `<span class="team-set-build" title="${escapeHtml(title)}">${escapeHtml(text)}</span>`;
+  const parts = [label];
+  if (traded.length) parts.push(`without ${traded.join(', ')}`);
+  if (hold) parts.push(hold);
+  return `<span class="team-set-build" title="${escapeHtml(title)}">${escapeHtml(parts.join(' · '))}</span>`;
 }
 
 // One line of truth about the competitive set: how much of it exists yet and

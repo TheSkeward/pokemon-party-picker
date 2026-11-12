@@ -466,11 +466,15 @@ async function buildMemberLegalMoveEntry({
   const realizedIds = new Set(
     (row.legalityProfile?.recommendedMoves || []).map((move) => move.id),
   );
+  const lockedMoveIds = lockedMoveIdsFor(memberProgression, battleSpeciesId);
   const buildPool = realizedIds.size
     ? moves.filter((move) => realizedIds.has(move.id))
     : moves.filter(
       (move) =>
-        (realized.includeDelayed || !move.delayedEvolution) &&
+        // A locked move's hold is taken, so it belongs to every build
+        // (resolveCandidateBuilds).
+        (realized.includeDelayed || !move.delayedEvolution ||
+          lockedMoveIds.includes(move.id)) &&
         !realized.withoutTms.some((tmId) => needsOnlyTm(move, tmId)),
     );
 
@@ -481,7 +485,7 @@ async function buildMemberLegalMoveEntry({
     holdReachableMoveIds: new Set(
       moves.filter((move) => move.delayedEvolution).map((move) => move.id),
     ),
-    lockedMoveIds: lockedMoveIdsFor(memberProgression, battleSpeciesId),
+    lockedMoveIds,
     representativeName: row.name,
     attackerStats,
     levelCap: progression.levelCap,

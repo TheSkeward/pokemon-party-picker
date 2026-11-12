@@ -312,7 +312,9 @@ const MAX_RESULT_CACHE = 400;
 // v91: the score context no longer names a data slice (the set and
 // resolver indexes hold one, every month aggregated); records keyed with
 // one are retired.
-const RESULT_CACHE_VERSION = '91';
+// v92: a locked move that needs an evolution held seats in every build and
+// its hold is not charged; lines with such a lock change sets and scores.
+const RESULT_CACHE_VERSION = '92';
 
 // Hydrate the in-memory memo from persisted results once, lazily. optimize()
 // awaits this before consulting the memo so a reload-then-same-pool is a hit.
@@ -1600,10 +1602,33 @@ async function resolveCandidateBuilds({
   // A singles family never recommends or scores a partner-only move.
   const moves = getAvailableMoves(legalMoveData, memberProgression)
     .filter((move) => !isInertInFamily(move.id, family));
-  const naturalMoves = moves.filter((move) => !move.delayedEvolution);
-  const delayedMoves = moves.filter((move) => move.delayedEvolution);
   // The pool's move locks for this line, seated first in every build.
   const lockedMoveIds = lockedMoveIdsFor(memberProgression, battleSpeciesId);
+  // A move learned only by holding an evolution back is offered in a build
+  // of its own and charged for the hold. A locked one is no longer a choice
+  // to price: the player has taken the hold, or took it on a Pokémon that
+  // has since evolved. It is an ordinary move of every build, and the
+  // levels it holds are free to any other held move.
+  const lockedIds = new Set(lockedMoveIds);
+  const heldByLock = (move) =>
+    Boolean(move.delayedEvolution) && lockedIds.has(move.id);
+  const delayedSourceOf = (move) =>
+    (move.availableSources || []).find((s) => s.delayedEvolution) ||
+    move.availableSources?.[0] || {};
+  const heldLevelsOf = (move) => delayedSourceOf(move).heldLevels || 1;
+  const describeHeld = (move) => ({
+    name: move.name,
+    source: delayedSourceOf(move).label || 'delayed evolution',
+    heldLevels: heldLevelsOf(move),
+  });
+  const naturalMoves = moves.filter(
+    (move) => !move.delayedEvolution || heldByLock(move),
+  );
+  const delayedMoves = moves.filter(
+    (move) => move.delayedEvolution && !heldByLock(move),
+  );
+  const lockHeldMoves = moves.filter(heldByLock);
+  const lockHeldLevels = Math.max(0, ...lockHeldMoves.map(heldLevelsOf));
 
   // Ability: a user annotation ("Froakie (Torrent)") pins the caught mon's real
   // ability; otherwise assume its primary competitive ability and measure
@@ -1722,6 +1747,20 @@ async function resolveCandidateBuilds({
     profile.setReadiness = setReadiness;
     profile.singleCopyTms = singleCopyTmsOf(profile.recommendedMoves || []);
     profile.consumedItems = contestedItems;
+    // The proof still says which seated locks needed an evolution held,
+    // though nothing is charged for them.
+    const seated = new Set(
+      (profile.recommendedMoves || []).map((move) => move.id),
+    );
+    const seatedLockHolds = lockHeldMoves.filter((move) => seated.has(move.id));
+    if (seatedLockHolds.length) {
+      profile.legalityProof.heldLevels = Math.max(
+        ...seatedLockHolds.map(heldLevelsOf),
+      );
+      profile.legalityProof.delayedMoves = seatedLockHolds.map(
+        (move) => ({ ...describeHeld(move), locked: true }),
+      );
+    }
     return profile;
   };
   // A move whose only route is the given single-copy TM.
@@ -1845,27 +1884,26 @@ async function resolveCandidateBuilds({
       if (usedDelayed.length) {
         // The hold lasts until the latest delayed move is learned; its cost
         // is per level held (scoring-constants.js).
-        const delayedSourceOf = (move) =>
-          (move.availableSources || []).find((s) => s.delayedEvolution) ||
-          move.availableSources?.[0] || {};
         const heldLevels = Math.max(
           1,
-          ...usedDelayed.map((move) => delayedSourceOf(move).heldLevels || 1),
+          lockHeldLevels,
+          ...usedDelayed.map(heldLevelsOf),
         );
         // The k-th level held costs k units: the unevolved body falls further
         // behind its evolved form for every level the hold lasts, so a long
-        // hold costs far more than a short one.
+        // hold costs far more than a short one. The levels a lock already
+        // holds are not charged again.
+        const holdUnits = (levels) => levels * (levels + 1) / 2;
         const friction =
           tunable('DELAYED_EVO_FRICTION_PER_LEVEL') *
-          heldLevels * (heldLevels + 1) / 2;
+          (holdUnits(heldLevels) - holdUnits(lockHeldLevels));
         delayedProfile.frictionCost += friction;
         delayedProfile.legalityProof.buildFriction = friction;
         delayedProfile.legalityProof.heldLevels = heldLevels;
-        delayedProfile.legalityProof.delayedMoves = usedDelayed.map((move) => ({
-          name: move.name,
-          source: delayedSourceOf(move).label || 'delayed evolution',
-          heldLevels: delayedSourceOf(move).heldLevels || 1,
-        }));
+        delayedProfile.legalityProof.delayedMoves = [
+          ...(delayedProfile.legalityProof.delayedMoves || []),
+          ...usedDelayed.map(describeHeld),
+        ];
         const longest = usedDelayed
           .map(delayedSourceOf)
           .sort((a, b) => (b.heldLevels || 0) - (a.heldLevels || 0))[0];

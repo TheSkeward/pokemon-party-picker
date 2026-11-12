@@ -36,7 +36,9 @@ https://theskeward.github.io/pokemon-party-picker/
   Psychic}`): they are that Pokemon's own canonical moves, seated first in
   every set the optimizer builds for it and scored as such. Fewer than four
   leaves the rest to the recommendation; a lock the game cannot teach yet
-  waits, and the readiness line says when it arrives.
+  waits, and the readiness line says when it arrives. A lock learned only
+  before evolving (`Gastrodon {Recover}`) is taken as already held: it
+  seats at no cost and the card names the hold.
 - The pool is written back alphabetized after each optimize: plain entries
   share comma-joined lines, and an entry with an ability or a move lock
   stands on its own line.

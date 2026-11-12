@@ -202,8 +202,9 @@ export function explainSeatedChoice(choice, team, confidenceEntry) {
   if (delayed.length) {
     lines.push(
       `Requires delayed evolution for ${delayed
-        .map((move) => `${move.name} (${move.source})`)
-        .join(', ')} — K ${profile.legalityProof.buildFriction}.`,
+        .map((move) =>
+          `${move.name} (${move.source}${move.locked ? ', locked' : ''})`)
+        .join(', ')} — K ${profile.legalityProof.buildFriction || 0}.`,
     );
   }
   const blocked = profile.legalityProof?.blockedEvolutions || [];
