@@ -294,9 +294,13 @@ button:hover {
 .move-usage-table tbody tr {
   cursor: default;
 }
-.move-usage-table th:nth-child(n + 4),
-.move-usage-table td:nth-child(n + 4) {
+.move-usage-table th:nth-child(n + 5),
+.move-usage-table td:nth-child(n + 5) {
   text-align: right;
+}
+/* "TM34 badge 5" stays on one line; two routes may wrap between them. */
+.move-route {
+  white-space: nowrap;
 }
 .usage-browser-table tbody tr.selected,
 .resolver-results-table tbody tr.selected {

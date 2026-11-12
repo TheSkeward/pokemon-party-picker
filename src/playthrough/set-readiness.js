@@ -26,7 +26,7 @@ import {
   getUnlockBadge,
 } from '../games/schedule.js';
 import { lockedMoveIdsFor, receivedForm } from './legal-moves.js';
-import { mechanics, moveSources } from '../games/legality.js';
+import { mechanics, teachingRoutesByMove } from '../games/legality.js';
 import { fixedMoveDamage } from '../teamBuilder/damage-model.js';
 import { getMoveMetaById } from '../move-meta.js';
 import { toId } from '../utils/ids.js';
@@ -43,36 +43,11 @@ function isLevelScalingMove(moveId) {
   return low != null && low !== fixedMoveDamage(moveId, 100);
 }
 
-// moveId -> earliest badge any TM/TMX/tutor teaches it ("After Badge NN"),
-// built per game from its move-source tables.
-const MACHINE_BADGES = new WeakMap();
-function machineBadgeByMove() {
-  const sources = moveSources();
-  let map = MACHINE_BADGES.get(sources);
-  if (map) return map;
-  map = new Map();
-  // The earliest machine or tutor route per move, with the label the card
-  // names it by ("TM04", "TMX7", "Tutor").
-  const note = (moveId, badge, label) => {
-    if (badge == null) return;
-    const current = map.get(moveId);
-    if (!current || badge < current.badge) map.set(moveId, { badge, label });
-  };
-  const badgeOf = (text) => {
-    if (/^From the start/i.test(String(text || ''))) return 0;
-    const match = /Badge\s+(\d+)/i.exec(String(text || ''));
-    return match ? Number.parseInt(match[1], 10) : null;
-  };
-  for (const option of [...sources.tmOptions, ...sources.tmxOptions]) {
-    note(toId(option.move), badgeOf(option.available), option.code);
-  }
-  for (const group of sources.tutorGroups) {
-    for (const option of group.options || []) {
-      note(option.id, badgeOf(option.available || group.available), 'Tutor');
-    }
-  }
-  MACHINE_BADGES.set(sources, map);
-  return map;
+// The earliest machine or tutor that teaches a move at a known badge, with
+// the label the card names it by ("TM04", "TMX7", "Tutor").
+function earliestTeachingRoute(moveId) {
+  const [first] = teachingRoutesByMove().get(moveId) || [];
+  return first && first.badge != null ? first : null;
 }
 
 // Badge 0's checkpoint id is "start" (cap 20), not "badge-0".
@@ -233,7 +208,7 @@ export function computeSetReadiness({
       // moves of its ≤1 learnset, never the relist catalog above them.
       Boolean(raw.sources?.levelOneRelist);
     if (raw.sources?.tm || raw.sources?.tmx || raw.sources?.tutor) {
-      const route = machineBadgeByMove().get(id);
+      const route = earliestTeachingRoute(id);
       if (route) {
         candidates.push({
           cap: capOfBadge(route.badge) ?? 100,

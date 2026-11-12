@@ -54,8 +54,9 @@ https://theskeward.github.io/pokemon-party-picker/
 - Look up observed set details for a Pokemon or evolutionary line.
 - Browse the underlying usage data.
 - See how often each move is run by the Pokemon that can learn it (Move
-  Usage), each learner counted equally, beside how many learn it and how
-  often it appears across all sets.
+  Usage), each learner counted equally, beside the TM or tutor that teaches
+  it and the badge it opens after, how many learn it and how often it
+  appears across all sets.
 
 ## Games
 
