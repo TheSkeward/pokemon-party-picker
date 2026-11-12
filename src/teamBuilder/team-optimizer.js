@@ -387,8 +387,12 @@ export async function optimizeTeamFromPool({
 
   // Met levels ("Munna@14") gate a line's level-1 moves and move locks
   // ("Meowstic {Thunder Wave}") fix its sets, so both ride the progression
-  // into every legality pass below and into its signature.
-  progression = withPoolAnnotations(progression, query, pokemonIndex);
+  // into every legality pass below and into its signature. They are read
+  // from the pool and the donor box together, as the item step, the
+  // analysis, the legal-moves panel and the availability list read them: a
+  // donor met past its level-1 moves cannot hand them on either.
+  const ownedQuery = withDonors(query, donorQuery);
+  progression = withPoolAnnotations(progression, ownedQuery, pokemonIndex);
   // Locked move names no move in the game answers to, for the input
   // report; they key nothing, so a memo hit reports them too.
   const ignoredMoveLocks = unknownMoveLocks(query, pokemonIndex);
@@ -396,7 +400,7 @@ export async function optimizeTeamFromPool({
     await buildMoveTransferContexts({
       pokemonIndex,
       progression,
-      query: withDonors(query, donorQuery),
+      query: ownedQuery,
     });
 
   const progressionSig = stableStringify(progression);

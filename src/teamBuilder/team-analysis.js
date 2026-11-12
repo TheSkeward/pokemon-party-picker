@@ -818,6 +818,14 @@ export async function getTeamItemContext(
   progression = {},
   breedingOptions = {},
 ) {
+  // The same annotated progression the optimizer and the panel use, so the
+  // three read one set of legal moves and this step shares the optimizer's
+  // move-transfer contexts.
+  progression = withPoolAnnotations(
+    progression,
+    breedingOptions.query,
+    breedingOptions.pokemonIndex,
+  );
   const { breedingContext, sketchContext } =
     await buildMoveTransferContexts({
       ...breedingOptions,
