@@ -16,9 +16,8 @@
  * moves no cap, but it is what opens Kanto and the Battle Frontier.
  *
  * `unlocks` names what first becomes obtainable at a checkpoint: the Route 34
- * Day Care once Ilex Forest opens, the Blackthorn move relearner on arrival,
- * and the headline competitive items (the full item timeline is
- * hgss/items.js; the badges here agree with it).
+ * Day Care once Ilex Forest opens and the Blackthorn move relearner on
+ * arrival. Held items are timed in hgss/items.js.
  */
 
 /** @type {!Array<!Object>} */
@@ -26,13 +25,12 @@ export const HGSS_PROGRESSION_CHECKPOINTS = [
   { id: 'start', badges: 0, label: 'No badges', detail: 'Game start', levelCap: 10, unlocks: {} },
   {
     id: 'badge-1', badges: 1, label: 'Zephyr Badge (Falkner)', levelCap: 20,
-    unlocks: { items: ['lifeorb'] }, // Ruins of Alph, behind the Flash puzzle
+    unlocks: {},
   },
   {
     id: 'badge-2', badges: 2, label: 'Hive Badge (Bugsy)', levelCap: 30,
     unlocks: {
       flags: ['daycareUnlocked'], // Route 34 Day Care
-      items: ['quickclaw', 'powerherb'], // National Park, Route 34
     },
   },
   { id: 'badge-3', badges: 3, label: 'Plain Badge (Whitney)', levelCap: 30, unlocks: {} },
@@ -40,7 +38,7 @@ export const HGSS_PROGRESSION_CHECKPOINTS = [
   { id: 'badge-5', badges: 5, label: 'Storm Badge (Chuck)', levelCap: 70, unlocks: {} },
   {
     id: 'badge-6', badges: 6, label: 'Mineral Badge (Jasmine)', levelCap: 70,
-    unlocks: { items: ['choicespecs'] }, // Lake of Rage
+    unlocks: {},
   },
   {
     id: 'badge-7', badges: 7, label: 'Glacier Badge (Pryce)', levelCap: 70,
@@ -52,13 +50,13 @@ export const HGSS_PROGRESSION_CHECKPOINTS = [
   {
     id: 'champion', badges: 8, postgame: 1, short: 'Champion',
     label: 'Champion (Kanto and the Battle Frontier open)', levelCap: 100,
-    unlocks: { items: ['choiceband', 'choicescarf', 'focussash'] },
+    unlocks: {},
   },
   { id: 'badge-9', badges: 9, label: 'Thunder Badge (Lt. Surge)', levelCap: 100, unlocks: {} },
   { id: 'badge-10', badges: 10, label: 'Marsh Badge (Sabrina)', levelCap: 100, unlocks: {} },
   {
     id: 'badge-11', badges: 11, label: 'Cascade Badge (Misty)', levelCap: 100,
-    unlocks: { items: ['leftovers'] }, // the Route 11 Snorlax
+    unlocks: {},
   },
   { id: 'badge-12', badges: 12, label: 'Rainbow Badge (Erika)', levelCap: 100, unlocks: {} },
   { id: 'badge-13', badges: 13, label: 'Soul Badge (Janine)', levelCap: 100, unlocks: {} },
@@ -66,6 +64,6 @@ export const HGSS_PROGRESSION_CHECKPOINTS = [
   { id: 'badge-15', badges: 15, label: 'Volcano Badge (Blaine)', levelCap: 100, unlocks: {} },
   {
     id: 'badge-16', badges: 16, label: 'Earth Badge (Blue)', levelCap: 100,
-    unlocks: { items: ['expertbelt'] }, // Mt. Silver Cave
+    unlocks: {},
   },
 ];

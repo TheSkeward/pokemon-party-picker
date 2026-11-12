@@ -16,9 +16,9 @@
  * `unlocks` on a checkpoint lists what FIRST becomes obtainable there:
  *   - access: evolution-access keys (EVOLUTION_ACCESS_FIELDS) — areas reached
  *   - flags:  boolean progression fields (daycare, relearner, HP changer)
- *   - items:  headline competitive held items (normalized item ids)
  * Mechanic-style access keys (friendship, party-condition, other-locations)
- * have no schedule entry: they are available from the start.
+ * have no schedule entry: they are available from the start. Held items are
+ * timed by their sources (scripts/build-item-timeline.mjs).
  *
  * Notes against the walkthrough:
  *   - Corey and Kiki award no badge ("No gym badge or TM is awarded to you
@@ -37,13 +37,12 @@ export const REBORN_PROGRESSION_CHECKPOINTS = [
     id: 'badge-1', badges: 1, label: 'Volt Badge (Julia)', levelCap: 25,
     unlocks: {
       flags: ['daycareUnlocked'], // Onyx warehouse: freeing the real daycare couple
-      items: ['quickclaw'],
     },
   },
   {
     id: 'badge-2', badges: 2, label: 'Canopy Badge (Florinia)', levelCap: 35,
     // Stone access is per-stone, timed by the item timeline.
-    unlocks: { items: ['focussash'] },
+    unlocks: {},
   },
   {
     id: 'badge-3', badges: 3, label: 'Cocoon Badge (Shelly)', levelCap: 40,
@@ -64,7 +63,6 @@ export const REBORN_PROGRESSION_CHECKPOINTS = [
     unlocks: {
       access: ['evoAccessMossyRock'], // burning field chamber above the Railnet
       flags: ['moveRelearnerUnlocked'], // House Key returned in Onyx Ward
-      items: ['weaknesspolicy'],
     },
   },
   { id: 'badge-6', badges: 6, label: 'Rime Badge (Serra)', levelCap: 55, unlocks: {} },
@@ -72,7 +70,6 @@ export const REBORN_PROGRESSION_CHECKPOINTS = [
     id: 'badge-7', badges: 7, label: 'Standard Badge (Noel)', levelCap: 60,
     unlocks: {
       access: ['evoAccessIcyRock'], // Ametrine ice puzzle
-      items: ['metalcoat'],
     },
   },
   { id: 'badge-8', badges: 8, label: 'Millenium Badge (Radomus)', levelCap: 65, unlocks: {} },
@@ -80,28 +77,27 @@ export const REBORN_PROGRESSION_CHECKPOINTS = [
     id: 'badge-9', badges: 9, label: 'Eclipse Badge (Luna)', levelCap: 70,
     unlocks: {
       flags: ['hiddenPowerTypeChangerUnlocked'], // Agate Circus NPC
-      items: ['eviolite'], // Agate Circus general goods
     },
   },
   {
     id: 'badge-10', badges: 10, label: 'Strike Badge (Samson)', levelCap: 70,
-    unlocks: { items: ['reapercloth'] },
+    unlocks: {},
   },
   {
     id: 'badge-11', badges: 11, label: 'Cinder Badge (Charlotte)', levelCap: 75,
-    unlocks: { items: ['magmarizer'] },
+    unlocks: {},
   },
   {
     id: 'badge-12', badges: 12, label: 'Gravity Badge (Terra)', levelCap: 75,
-    unlocks: { items: ['razorfang'] },
+    unlocks: {},
   },
   {
     id: 'badge-13', badges: 13, label: 'Suspension Badge (Ciel)', levelCap: 80,
-    unlocks: { items: ['expertbelt', 'leftovers'] },
+    unlocks: {},
   },
   {
     id: 'badge-14', badges: 14, label: 'Amaranth Badge (Adrienn)', levelCap: 85,
-    unlocks: { items: ['choiceband', 'choicespecs', 'assaultvest'] },
+    unlocks: {},
   },
   {
     id: 'badge-15', badges: 15, label: 'Alloy Badge (Titania)', levelCap: 90,
@@ -111,12 +107,12 @@ export const REBORN_PROGRESSION_CHECKPOINTS = [
   },
   {
     id: 'badge-16', badges: 16, label: 'Torrent Badge (Amaria)', levelCap: 90,
-    unlocks: { items: ['lifeorb', 'muscleband'] },
+    unlocks: {},
   },
   { id: 'badge-17', badges: 17, label: 'Geode Badge (Hardy)', levelCap: 95, unlocks: {} },
   {
     id: 'badge-18', badges: 18, label: 'Treasure Badge (Labyrinth)', levelCap: 100,
-    unlocks: { items: ['choicescarf'] },
+    unlocks: {},
   },
   // Post-game: no badges, silent cap raises per quest arc.
   { id: 'post-1', badges: 18, postgame: 1, label: 'Post: A Whole New World', levelCap: 105, unlocks: {} },

@@ -13,9 +13,8 @@
  * an honor system (the user's choice); the "No cap" option turns them off.
  *
  * `unlocks` names what first becomes obtainable at a checkpoint: the PWT's
- * Move Reminder once Driftveil opens, the Route 3 Day Care after the
- * Champion, and the headline competitive items (the full item timeline is
- * b2w2/items.js; the badges here agree with it).
+ * Move Reminder once Driftveil opens and the Route 3 Day Care after the
+ * Champion. Held items are timed in b2w2/items.js.
  */
 
 /** @type {!Array<!Object>} */
@@ -24,18 +23,17 @@ export const B2W2_PROGRESSION_CHECKPOINTS = [
   { id: 'badge-1', badges: 1, label: 'Basic Badge (Cheren)', levelCap: 20, unlocks: {} },
   {
     id: 'badge-2', badges: 2, label: 'Toxic Badge (Roxie)', levelCap: 30,
-    unlocks: { items: ['leftovers', 'eviolite'] }, // Castelia Sewers, Castelia City
+    unlocks: {},
   },
   { id: 'badge-3', badges: 3, label: 'Insect Badge (Burgh)', levelCap: 40, unlocks: {} },
   {
     id: 'badge-4', badges: 4, label: 'Bolt Badge (Elesa)', levelCap: 50,
-    unlocks: { items: ['airballoon'] }, // Driftveil City
+    unlocks: {},
   },
   {
     id: 'badge-5', badges: 5, label: 'Quake Badge (Clay)', levelCap: 60,
     unlocks: {
       flags: ['moveRelearnerUnlocked'], // Pokémon World Tournament
-      items: ['rockyhelmet'], // Pokémon World Tournament
     },
   },
   { id: 'badge-6', badges: 6, label: 'Jet Badge (Skyla)', levelCap: 70, unlocks: {} },
@@ -48,7 +46,6 @@ export const B2W2_PROGRESSION_CHECKPOINTS = [
     label: 'Champion (the rest of Unova opens)', levelCap: 100,
     unlocks: {
       flags: ['daycareUnlocked'], // Route 3
-      items: ['lifeorb', 'choiceband', 'choicescarf', 'choicespecs', 'focussash'],
     },
   },
 ];

@@ -11,10 +11,29 @@ import {
 } from '../src/playthrough/progression.js';
 import { renderProgressionPanel } from '../src/playthrough/progression-view.js';
 import { getRenewablyObtainableItems } from '../src/games/items.js';
-import {
-  REBORN_MINING_ITEM_BADGES,
-  REBORN_SHOP_ITEM_BADGES,
-} from '../src/generated/rebornItemTimeline.generated.js';
+import { RENEWABLE_SOURCE_KINDS } from '../src/games/item-sources.js';
+import { REBORN_ITEM_SOURCES } from '../src/generated/rebornItemTimeline.generated.js';
+
+// Item id -> the badge its first source of the kind opens at.
+const badgesOfKind = (kind) => Object.fromEntries(
+  Object.entries(REBORN_ITEM_SOURCES).flatMap(([id, sources]) => {
+    const badges = sources
+      .filter((source) => source.kind === kind)
+      .map((source) => source.badge);
+    return badges.length ? [[id, Math.min(...badges)]] : [];
+  }),
+);
+const REBORN_SHOP_ITEM_BADGES = badgesOfKind('shop');
+const REBORN_MINING_ITEM_BADGES = badgesOfKind('mining');
+
+// The badge an item first restocks at by any source but the mining rocks.
+const restocksElsewhereAt = (id) => Math.min(
+  Infinity,
+  ...REBORN_ITEM_SOURCES[id]
+    .filter((source) =>
+      source.kind !== 'mining' && RENEWABLE_SOURCE_KINDS.has(source.kind))
+    .map((source) => source.badge),
+);
 
 test('addOwnedItems raises, clamps, and never lowers', () => {
   const base = { ownedItems: { leftovers: 2, choiceband: 6 } };
@@ -73,7 +92,7 @@ test('mining items join the renewable 6+ list at badge 3', () => {
   const atThreeIds = new Set(atThree.map((item) => item.id));
 
   for (const id of Object.keys(REBORN_MINING_ITEM_BADGES)) {
-    if ((REBORN_SHOP_ITEM_BADGES[id] ?? Infinity) > 2) {
+    if (restocksElsewhereAt(id) > 2) {
       assert.ok(!atTwo.has(id), `${id} must not be renewable before badge 3`);
     }
     assert.ok(atThreeIds.has(id), `${id} must be renewable at badge 3`);

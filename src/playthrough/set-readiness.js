@@ -20,11 +20,8 @@
  * This annotates the analysis display; it feeds no scoring input.
  */
 
-import {
-  getCheckpoint,
-  getItemUnlockBadge,
-  getUnlockBadge,
-} from '../games/schedule.js';
+import { getItemUnlockBadge } from '../games/items.js';
+import { getCheckpoint, getUnlockBadge } from '../games/schedule.js';
 import { lockedMoveIdsFor, receivedForm } from './legal-moves.js';
 import { mechanics, teachingRoutesByMove } from '../games/legality.js';
 import { fixedMoveDamage } from '../teamBuilder/damage-model.js';

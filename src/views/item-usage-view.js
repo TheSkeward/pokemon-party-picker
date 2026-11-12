@@ -1,6 +1,6 @@
 import { escapeAttr, escapeHtml } from '../utils/html.js';
 import { dex } from '../games/dex.js';
-import { getItemSource } from '../games/items.js';
+import { getItemSources, getItemSupply } from '../games/items.js';
 import {
   badgePhrase,
   renderHeaderRow,
@@ -8,9 +8,16 @@ import {
   sortRows,
 } from './table-parts.js';
 
-// The badge an item first turns up after; an item the game does not track
-// sorts past every badge.
-const obtainedOrder = (row) => row.source?.badge ?? Number.MAX_SAFE_INTEGER;
+// The badge an item's supply starts at; an item with none sorts past every
+// badge.
+const obtainedOrder = (row) =>
+  row.supply[0]?.badge ?? Number.MAX_SAFE_INTEGER;
+
+// The source that restocks an item, if its supply reaches one.
+const restockOf = (row) => {
+  const last = row.supply.at(-1);
+  return last?.copies === Infinity ? last.source : null;
+};
 
 /**
  * The Usage Data page's item table: a family's held items by the share of
@@ -28,7 +35,7 @@ export const ITEM_USAGE_TABLE = {
   },
   descSortFields: new Set(['carry', 'top']),
   defaultSort: { sortBy: 'carry', sortDir: 'desc' },
-  blank: { obtained: (row) => !row.source },
+  blank: { obtained: (row) => !row.supply.length },
   tieBreak: (a, b) => b.carry - a.carry || a.name.localeCompare(b.name),
 };
 
@@ -40,10 +47,11 @@ const COLUMNS = [
 ];
 
 /**
- * `source` is where the active game hands the item out (games/items.js),
- * null when the game tracks none.
- * @typedef {{id: string, name: string, source: ?Object, carry: number,
- *     top: number}}
+ * `supply` is how the active game's stock of the item grows
+ * (games/items.js), empty when nothing counts; `uncounted` says the game
+ * does list sources, all of them single copies of a consumable.
+ * @typedef {{id: string, name: string, supply: !Array<!Object>,
+ *     uncounted: boolean, carry: number, top: number}}
  */
 let ItemUsageRow;
 
@@ -51,26 +59,30 @@ let ItemUsageRow;
  * @param {?{items: !Object<string, !Object>}} table A family's item usage
  *     table (scripts/build-item-usage.mjs).
  * @return {!Array<!ItemUsageRow>} One row per item, named and given its
- *     source from the active game's data. An item that game's catalog does
+ *     supply from the active game's data. An item that game's catalog does
  *     not know keeps its id.
  */
 export function buildItemUsageRows(table) {
   const names = dex().heldItemsById;
-  return Object.entries(table?.items || {}).map(([id, entry]) => ({
-    id,
-    name: names[id]?.name || id,
-    source: getItemSource(id),
-    carry: entry.carry || 0,
-    top: entry.top || 0,
-  }));
+  return Object.entries(table?.items || {}).map(([id, entry]) => {
+    const supply = getItemSupply(id);
+    return {
+      id,
+      name: names[id]?.name || id,
+      supply,
+      uncounted: !supply.length && getItemSources(id).length > 0,
+      carry: entry.carry || 0,
+      top: entry.top || 0,
+    };
+  });
 }
 
 /**
  * @param {!Array<!ItemUsageRow>} rows
  * @param {{search: (string|undefined), sortBy: (string|undefined),
  *     sortDir: (string|undefined)}=} options The search text matches an
- *     item's name anywhere, or the start of its restocking source ("shop",
- *     "mining").
+ *     item's name anywhere, or the start of the kind of source that
+ *     restocks it ("shop", "wild", "mining").
  * @return {!Array<!ItemUsageRow>} The rows that match the search, sorted.
  */
 export function selectItemUsageRows(rows, { search = '', sortBy, sortDir } = {}) {
@@ -78,7 +90,7 @@ export function selectItemUsageRows(rows, { search = '', sortBy, sortDir } = {})
   const matches = rows.filter((row) =>
     !query ||
     row.name.toLowerCase().includes(query) ||
-    Boolean(row.source?.renewable?.kind.startsWith(query)));
+    Boolean(restockOf(row)?.kind.startsWith(query)));
   return sortRows(matches, ITEM_USAGE_TABLE, { sortBy, sortDir });
 }
 
@@ -91,7 +103,7 @@ export function renderItemUsageControls(container, state) {
   container.innerHTML = `
     <section class="panel">
       <div class="toolbar">
-        ${renderSearchField(state.tables[ITEM_USAGE_TABLE.id], 'Leftovers, Berry, Shop')}
+        ${renderSearchField(state.tables[ITEM_USAGE_TABLE.id], 'Leftovers, Berry, Shop, Wild')}
       </div>
     </section>`;
 }
@@ -120,7 +132,7 @@ export function renderItemUsageTable(container, table, state, options = {}) {
         <h2>Item Usage</h2>
         <p>${rows.length} items shown, from the sets of ${table.pokemon} Pokémon in ${escapeHtml(options.familyLabel || 'this game')}.</p>
         <p>On all sets is the share of a Pokémon's sets that hold the item, averaged over every Pokémon, each counted equally. Top item for counts the Pokémon that hold it more than any other item.</p>
-        <p>Obtained names the badge the item is first available after in this game, then the shop or mining that restocks it. Blank means the game's item data does not track it.</p>
+        <p>Obtained counts the copies this game hands out, by the badge each turns up after, up to the first source that restocks the item: a shop, a wild holder, mining, Pickup, regrowth or a gift that repeats. An item a battle uses up is listed only from a source that restocks it. Blank means the game's item data tracks no source.</p>
       </div></div>
       <table class="usage-table item-usage-table static-rows"><thead>${renderHeaderRow(COLUMNS, tableState)}</thead><tbody>
         ${rows.map(renderRow).join('')}
@@ -129,22 +141,23 @@ export function renderItemUsageTable(container, table, state, options = {}) {
 }
 
 function renderRow(row) {
-  return `<tr><td>${escapeHtml(row.name)}</td><td>${renderSource(row.source)}</td><td>${row.carry.toFixed(2)}%</td><td>${row.top}</td></tr>`;
+  return `<tr><td>${escapeHtml(row.name)}</td><td>${renderSupply(row)}</td><td>${row.carry.toFixed(2)}%</td><td>${row.top}</td></tr>`;
 }
 
-// "badge 13 shop from 17": when the item first turns up, then what restocks
-// it and, if that opens later, when. How it first turns up is the tooltip:
-// the timeline's wording runs from "npc" to a list of routes.
-function renderSource(source) {
-  if (!source) return '';
-  const restock = restockPhrase(source);
-  const title = source.via ? `First source: ${source.via}` : '';
-  return `<span class="table-source" title="${escapeAttr(title)}">${badgePhrase(source.badge)}${restock ? ` <span class="muted">${escapeHtml(restock)}</span>` : ''}</span>`;
+function renderSupply(row) {
+  if (row.uncounted) return '<span class="muted">single copies only</span>';
+  return row.supply.map(renderStep).join(', ');
 }
 
-function restockPhrase({ badge, renewable }) {
-  if (!renewable) return '';
-  return renewable.badge > badge
-    ? `${renewable.kind} from ${renewable.badge}`
-    : renewable.kind;
+// "badge 13 ×1" for a copy, "badge 17 shop" for the source that restocks,
+// a bare "badge 11" where the copies are not audited. The item data's words
+// for the source are the tooltip: they run from "npc" to a list of routes.
+function renderStep(step) {
+  const note = stepNote(step);
+  return `<span class="table-source" title="${escapeAttr(step.source.via)}">${badgePhrase(step.badge)}${note ? ` <span class="muted">${escapeHtml(note)}</span>` : ''}</span>`;
+}
+
+function stepNote({ copies, source }) {
+  if (copies == null) return '';
+  return copies === Infinity ? source.kind : `×${copies}`;
 }

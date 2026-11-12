@@ -1,17 +1,20 @@
 /**
- * @fileoverview Generates src/generated/rebornItemTimeline.generated.js: the
- * badge count at which each held item first becomes obtainable, merged from
- * three sources (earliest wins):
+ * @fileoverview Generates src/generated/rebornItemTimeline.generated.js:
+ * every held item's sources in Pokémon Reborn, each with its kind and the
+ * badge count it opens at (src/games/item-sources.js). The sources come
+ * from:
  *
  *  1. site-data/data/reborn-item-availability.extracted.json — extracted from
  *     the community "Pokemon Reborn Ep19 Items & Services Guide" spreadsheet
  *     (All Items Locations + Shops + Arcade Lottery tabs), with the sheet's
  *     fight order mapped to badge counts (Corey/Kiki/Saphira award no badge;
- *     post-game tiers collapse to badge 18).
- *  2. The same file's Mining Items tab: everything minable unlocks with the
- *     Mining Kit (Grand Stairway hiker, badge 3 — right after Shelly).
- *  3. WILD_HELD below (user-curated): items carried by wild Pokémon are
- *     obtainable as soon as the holder is catchable. Only entries with a
+ *     post-game tiers collapse to badge 18). Its `items` map keeps each
+ *     item's earliest row, a single copy unless the row is the shop or the
+ *     mining rocks; its `shopItems` map is the renewable shop stock.
+ *  2. The same file's Mining Items tab: everything minable restocks from the
+ *     Mining Kit on (Grand Stairway hiker, badge 3 — right after Shelly).
+ *  3. WILD_HELD below (user-curated): an item a wild Pokémon carries
+ *     restocks from the badge its holder is catchable. Only entries with a
  *     confidently-known holder timing are listed; corrections are one-line
  *     edits.
  *
@@ -22,10 +25,8 @@ import { readFileSync, writeFileSync } from 'node:fs';
 
 const MINING_KIT_BADGE = 3;
 
-// item id -> { badge, holder } — the earliest confidently-known wild holder.
-// Rule: an item not findable earlier is findable at the point where its wild
-// holder is catchable (e.g. Grimer is catchable immediately, so Black Sludge
-// is available pre-Julia).
+// item id -> { badge, holder } — the earliest confidently-known wild holder
+// (e.g. Grimer is catchable immediately, so Black Sludge restocks pre-Julia).
 const WILD_HELD = {
   blacksludge: { badge: 0, holder: 'Grimer (Opal/Peridot, immediate)' },
   metronome: { badge: 0, holder: 'Kricketot (Lower Peridot, immediate)' },
@@ -53,6 +54,11 @@ const SHOP_STOCK = {
   aspearberry: 1,
 };
 
+// The sheet's source labels for a row that is the shop or the mining rocks
+// themselves, which the renewable sources below already carry.
+const SHOP_LABEL = 'Shop';
+const MINING_LABEL = 'Mining Rock';
+
 const toId = (name) =>
   String(name || '')
     .toLowerCase()
@@ -73,51 +79,14 @@ const knownIds = new Set([
   ...REBORN_EXTRA_INVENTORY_ITEMS.map((item) => item.id),
 ]);
 
-const table = new Map();
-const note = (id, badge, via) => {
-  if (!knownIds.has(id)) return;
-  const current = table.get(id);
-  if (!current || badge < current.badge) table.set(id, { badge, via });
-};
-
-for (const [name, entry] of Object.entries(extracted.items)) {
-  note(toId(name), entry.badges, entry.source.toLowerCase());
-}
-for (const name of extracted.miningItems) {
-  note(toId(name), MINING_KIT_BADGE, 'mining');
-}
-for (const [id, entry] of Object.entries(WILD_HELD)) {
-  note(id, entry.badge, `wild ${entry.holder}`);
-}
-
-const sorted = [...table.entries()].sort(([a], [b]) => a.localeCompare(b));
-const lines = sorted.map(
-  ([id, { badge, via }]) =>
-    `  ${id}: { badge: ${badge}, via: ${JSON.stringify(via)} },`,
-);
-
-// Preserve the mining source independently of the earliest-obtainable table:
-// a mineable item may have an earlier one-off pickup, but it is still renewable
-// once the Mining Kit is available.
-const miningTable = new Map();
-for (const name of extracted.miningItems) {
-  const id = toId(name);
-  if (knownIds.has(id)) miningTable.set(id, MINING_KIT_BADGE);
-}
-const miningSorted = [...miningTable.entries()].sort(([a], [b]) =>
-  a.localeCompare(b),
-);
-const miningLines =
-  miningSorted.map(([id, badge]) => `  ${id}: ${badge},`);
-
-// Shop-sourced held items (renewable: buy as many as needed once the shop is
-// reachable), from the extraction's shopItems map — built from the Shops tab
-// directly, so an item with an earlier one-off pickup keeps its shop row.
-// An entry with `until` would be a stock window that permanently closes; the
-// current sheet has none (every windowed mart row chains into a permanent
-// seller), and the simple id -> badge table below can't express one, so
-// surface it loudly rather than silently promise expired stock forever.
-const shopTable = new Map();
+// Shop stock (renewable: buy as many as needed once the shop is reachable),
+// from the extraction's shopItems map — built from the Shops tab directly,
+// so an item with an earlier one-off pickup keeps its shop row. An entry
+// with `until` would be a stock window that permanently closes; the current
+// sheet has none (every windowed mart row chains into a permanent seller),
+// and a source has no closing badge to express one, so surface it loudly
+// rather than silently promise expired stock forever.
+const shopBadges = new Map();
 for (const [name, entry] of Object.entries(extracted.shopItems)) {
   const id = toId(name);
   if (!knownIds.has(id)) continue;
@@ -126,55 +95,79 @@ for (const [name, entry] of Object.entries(extracted.shopItems)) {
       `[item-timeline] WARNING: shop window for ${name} closes at badge ${entry.until}; expiry is unmodeled — item will read as purchasable forever`,
     );
   }
-  const current = shopTable.get(id);
-  if (current == null || entry.badge < current) shopTable.set(id, entry.badge);
+  const current = shopBadges.get(id);
+  if (current == null || entry.badge < current) shopBadges.set(id, entry.badge);
 }
 for (const [id, badge] of Object.entries(SHOP_STOCK)) {
   if (!knownIds.has(id)) continue;
-  const current = shopTable.get(id);
+  const current = shopBadges.get(id);
   if (current == null) {
     console.warn(`[item-timeline] SHOP_STOCK ${id} missing from sheet shopItems`);
   } else if (current !== badge) {
     console.warn(`[item-timeline] SHOP_STOCK ${id} badge ${badge} disagrees with sheet ${current}`);
   }
-  if (current == null || badge < current) shopTable.set(id, badge);
+  if (current == null || badge < current) shopBadges.set(id, badge);
 }
-const shopSorted = [...shopTable.entries()].sort(([a], [b]) =>
-  a.localeCompare(b),
-);
-const shopLines = shopSorted.map(([id, badge]) => `  ${id}: ${badge},`);
+
+const sources = new Map();
+const add = (id, source) => {
+  if (!knownIds.has(id)) return;
+  sources.set(id, [...(sources.get(id) || []), source]);
+};
+
+// A shop row the shop stock does not carry is a one-time purchase.
+for (const [name, entry] of Object.entries(extracted.items)) {
+  const id = toId(name);
+  if (entry.source === MINING_LABEL) continue;
+  if (entry.source === SHOP_LABEL && shopBadges.get(id) <= entry.badges) {
+    continue;
+  }
+  add(id, {
+    kind: 'single',
+    badge: entry.badges,
+    count: 1,
+    via: entry.source.toLowerCase(),
+  });
+}
+for (const [id, badge] of shopBadges) {
+  add(id, { kind: 'shop', badge, via: '' });
+}
+for (const name of extracted.miningItems) {
+  add(toId(name), { kind: 'mining', badge: MINING_KIT_BADGE, via: '' });
+}
+for (const [id, entry] of Object.entries(WILD_HELD)) {
+  add(id, { kind: 'wild', badge: entry.badge, via: entry.holder });
+}
+
+const byBadge = (a, b) => a.badge - b.badge || a.kind.localeCompare(b.kind);
+const lines = [...sources.entries()]
+  .sort(([a], [b]) => a.localeCompare(b))
+  .map(([id, list]) => {
+    const entries = [...list].sort(byBadge).map((source) =>
+      `    ${JSON.stringify(source)},`);
+    return `  ${id}: [\n${entries.join('\n')}\n  ],`;
+  });
 
 writeFileSync(
   'src/generated/rebornItemTimeline.generated.js',
   `// AUTO-GENERATED by scripts/build-item-timeline.mjs — do not edit by hand.
-// The badge count at which each held item first becomes obtainable in
-// Pokemon Reborn. ${extracted.provenance}
-// Mining items unlock with the Mining Kit (badge ${MINING_KIT_BADGE}); wild-held entries
-// (user-curated holders) unlock when the holder is catchable.
-export const REBORN_ITEM_UNLOCK_BADGES = {
+// Every held item's sources in Pokemon Reborn, each with its kind and the
+// badge count it opens at (src/games/item-sources.js). ${extracted.provenance}
+// Mining restocks from the Mining Kit (badge ${MINING_KIT_BADGE}); a wild-held item
+// (user-curated holders) restocks from the badge its holder is catchable.
+export const REBORN_ITEM_SOURCES = {
 ${lines.join('\n')}
-};
-
-// Mineable inventory items (renewable by mining-rock resets), by the badge at
-// which the Mining Kit becomes available. Kept separate from earliest unlocks
-// so an earlier one-off copy does not hide the later renewable source.
-export const REBORN_MINING_ITEM_BADGES = {
-${miningLines.join('\n')}
-};
-
-// Held items purchasable from shops (renewable), by the badge the shop
-// opens at. Drives the inventory panel's one-click "purchasable now" sync.
-export const REBORN_SHOP_ITEM_BADGES = {
-${shopLines.join('\n')}
 };
 `,
 );
 
-console.log(`[item-timeline] ${shopSorted.length} shop items marked renewable`);
-console.log(`[item-timeline] ${miningSorted.length} mining items marked renewable`);
-
+const count = (kind) =>
+  [...sources.values()].filter((list) =>
+    list.some((source) => source.kind === kind)).length;
 console.log(
-  `[item-timeline] ${sorted.length} held items timed (of ${knownIds.size} known ids)`,
+  `[item-timeline] ${sources.size} held items sourced (of ${knownIds.size} known ids): ` +
+  `${count('single')} with a single copy, ${count('shop')} in shops, ` +
+  `${count('mining')} mined, ${count('wild')} wild-held`,
 );
 const unknown = Object.keys(extracted.items).filter(
   (name) => !knownIds.has(toId(name)),

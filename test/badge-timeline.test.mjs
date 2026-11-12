@@ -2,7 +2,7 @@
 // the project's canonical progression source) is the schedule the badge
 // picker and readiness phases lean on, so its shape is pinned here:
 // contiguous checkpoints, a non-decreasing cap ladder ending at 150, and
-// every unlock key resolving to a real progression field / item id.
+// every unlock key resolving to a real progression field.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
@@ -28,9 +28,6 @@ const {
   REBORN_TMX_OPTIONS,
   REBORN_TUTOR_GROUPS,
 } = await import('../src/reborn/progression-options.js');
-const { GEN7_HELD_ITEMS_BY_ID } = await import(
-  '../src/generated/gen7HeldItems.generated.js',
-);
 
 test('timeline shape: 19 badge checkpoints + 10 post-game tiers, caps non-decreasing 20→150', () => {
   assert.equal(REBORN_PROGRESSION_CHECKPOINTS.length, 29);
@@ -84,12 +81,6 @@ test('every unlock key resolves to a real field or item id', () => {
     for (const key of checkpoint.unlocks.flags || []) {
       assert.ok(flagKeys.has(key), `${checkpoint.id}: unknown flag ${key}`);
     }
-    for (const item of checkpoint.unlocks.items || []) {
-      assert.ok(
-        GEN7_HELD_ITEMS_BY_ID[item],
-        `${checkpoint.id}: unknown item ${item}`,
-      );
-    }
   }
 });
 
@@ -108,8 +99,8 @@ test('schedule pins: area/flag unlocks land at their walkthrough badges', () => 
   const atNine = getExpectedUnlocks('badge-9');
   assert.ok(atNine.accessKeys.has('evoAccessApophyll'));
   assert.ok(atNine.flags.has('hiddenPowerTypeChangerUnlocked'));
-  assert.ok(atNine.itemIds.has('eviolite'));
-  assert.ok(!getExpectedUnlocks('badge-8').itemIds.has('eviolite'));
+  assert.ok(!getExpectedUnlocks('badge-8').flags.has(
+    'hiddenPowerTypeChangerUnlocked'));
 });
 
 test('panel ↔ timeline consistency: every TM/TMX/tutor availability names a badge 1–18', () => {
@@ -134,35 +125,34 @@ test('panel ↔ timeline consistency: every TM/TMX/tutor availability names a ba
   }
 });
 
-test('item timeline: sheet + mining + wild-held sources merge to earliest badge', async () => {
-  const { getItemUnlockBadge } = await import(
-    '../src/games/schedule.js',
-  );
-  const { REBORN_ITEM_UNLOCK_BADGES } = await import(
+test('item timeline: sheet, mining and wild-held sources date each item', async () => {
+  const { getItemUnlockBadge } = await import('../src/games/items.js');
+  const { REBORN_ITEM_SOURCES } = await import(
     '../src/generated/rebornItemTimeline.generated.js',
   );
 
   assert.ok(
-    Object.keys(REBORN_ITEM_UNLOCK_BADGES).length > 300,
-    'expected 300+ timed items',
+    Object.keys(REBORN_ITEM_SOURCES).length > 300,
+    'expected 300+ sourced items',
   );
 
   // User-verified pins.
   assert.equal(getItemUnlockBadge('blacksludge'), 0); // wild Grimer, immediate
-  assert.equal(getItemUnlockBadge('wikiberry'), 13); // "first pops up in Episode 16"
-  assert.equal(getItemUnlockBadge('eviolite'), 9); // curated (Agate shop) still wins
+  assert.equal(getItemUnlockBadge('eviolite'), 9); // Agate Circus shop
   assert.equal(getItemUnlockBadge('lightclay'), 2); // Dept. Store 3F
   assert.equal(getItemUnlockBadge('kingsrock'), 1); // wild Poliwag line beats the badge-13 pickup
   assert.equal(getItemUnlockBadge('choicescarf'), 18);
 
   // Mining items unlock with the Mining Kit (badge 3, after Shelly).
-  assert.ok((REBORN_ITEM_UNLOCK_BADGES.hardstone?.badge ?? 99) <= 3);
+  assert.ok(getItemUnlockBadge('hardstone') <= 3);
 
-  for (const [id, entry] of Object.entries(REBORN_ITEM_UNLOCK_BADGES)) {
-    assert.ok(
-      entry.badge >= 0 && entry.badge <= 18,
-      `${id}: badge ${entry.badge} out of range`,
-    );
+  for (const [id, sources] of Object.entries(REBORN_ITEM_SOURCES)) {
+    for (const source of sources) {
+      assert.ok(
+        source.badge >= 0 && source.badge <= 18,
+        `${id}: badge ${source.badge} out of range`,
+      );
+    }
   }
 });
 

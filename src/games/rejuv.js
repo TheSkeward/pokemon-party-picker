@@ -12,6 +12,7 @@
  * exist in the game data (scripts/rejuv/) but the usage prior and the move
  * tables are the generation's, so nothing can score them.
  */
+import { unauditedItemSources } from './item-sources.js';
 import { EVOLUTION_STONE_FIELDS } from '../reborn/evolution-access.js';
 import {
   GEN7_TERRAIN_SEEDS,
@@ -68,7 +69,6 @@ export const REJUV_GAME = Object.freeze({
   families: Object.freeze(['gen9natdexsingles', 'gen9natdexdoubles']),
   schedule: Object.freeze({
     checkpoints: REJUV_PROGRESSION_CHECKPOINTS,
-    itemUnlockBadges: REJUV_ITEM_UNLOCK_BADGES,
   }),
   moveSources: Object.freeze({
     tmOptions: REJUV_TM_OPTIONS,
@@ -90,8 +90,9 @@ export const REJUV_GAME = Object.freeze({
   // Magical) and the full set of type gems, priced with the same proxies;
   // its Rift Seed has no counterpart and is not modeled. No mining.
   items: Object.freeze({
-    shopItemBadges: REJUV_SHOP_ITEM_BADGES,
-    miningItemBadges: Object.freeze({}),
+    // First-obtainable badges and shop stock, not yet typed by source.
+    sources: unauditedItemSources(
+      REJUV_ITEM_UNLOCK_BADGES, REJUV_SHOP_ITEM_BADGES),
     extraInventoryItems: REJUV_EXTRA_INVENTORY_ITEMS,
     hiddenInventoryItemIds: HIDDEN_INVENTORY_ITEM_IDS,
     inventoryMigration: TERRAIN_SEED_MIGRATION,

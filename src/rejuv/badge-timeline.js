@@ -14,10 +14,11 @@
  *
  * `unlocks` names what first becomes obtainable at a checkpoint, timed by
  * the walkthrough chapter in which it is first reached: the evolution
- * access gates (rejuv/evolution-access in games/rejuv.js), the relearner,
- * and the headline held items. Timing is "the badge held when that chapter
- * begins", so a pickup late in a chapter may be a badge earlier than it
- * really is; nothing here claims a pickup before it exists.
+ * access gates (rejuv/evolution-access in games/rejuv.js) and the
+ * relearner. Timing is "the badge held when that chapter begins", so an
+ * unlock late in a chapter may be a badge earlier than it really is;
+ * nothing here claims one before it exists. Held items are timed in
+ * rejuv/items.js.
  *
  * Notes against the walkthrough:
  *   - The Glacier Badge is handed over by Kreiss in Kristiline Town after
@@ -53,7 +54,7 @@ export const REJUV_PROGRESSION_CHECKPOINTS = [
   },
   {
     id: 'badge-2', badges: 2, label: 'Diamond Punch Badge (Keta)', levelCap: 30,
-    unlocks: { items: ['protectivepads'] }, // Chrysalis Manor
+    unlocks: {},
   },
   {
     id: 'badge-3', badges: 3, label: 'Normality Badge (Marianette)', levelCap: 35,
@@ -81,7 +82,6 @@ export const REJUV_PROGRESSION_CHECKPOINTS = [
     unlocks: {
       flags: ['moveRelearnerUnlocked'],
       access: ['evoAccessMossyRock', 'evoAccessIcyRock', 'evoAccessColdSpots'],
-      items: ['weaknesspolicy', 'luckyegg'],
     },
   },
   {
@@ -94,7 +94,6 @@ export const REJUV_PROGRESSION_CHECKPOINTS = [
     // (magnetic field), Razor Claw, Prism Scale, the 75-cell Safety Goggles.
     unlocks: {
       access: ['evoAccessMagneticField'],
-      items: ['safetygoggles', 'razorclaw'],
     },
   },
   {
@@ -109,7 +108,7 @@ export const REJUV_PROGRESSION_CHECKPOINTS = [
   },
   {
     id: 'badge-10', badges: 10, label: 'Rose Badge (Flora or Florin)', levelCap: 70,
-    unlocks: { items: ['mirrorherb'] }, // Grand Dream City, Festival Plaza tutors
+    unlocks: {},
   },
   {
     id: 'badge-11', badges: 11, label: 'Trickery Badge (Magenta & Neon)', levelCap: 75,

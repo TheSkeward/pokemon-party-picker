@@ -1,6 +1,6 @@
 // The Item Usage table: a family's item usage table (built from its set
-// index) joined with the game's held-item names and item sources, then cut
-// by the search and sorted.
+// index) joined with the game's held-item names and each item's supply,
+// then cut by the search and sorted.
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
@@ -8,18 +8,21 @@ import { computeItemUsage } from '../scripts/item-usage/compute.mjs';
 import { loadShared } from './helpers/harness.mjs';
 
 const { loadItemUsage } = await import('../src/data.js');
-const { getItemSource } = await import('../src/games/items.js');
 const { buildItemUsageRows, selectItemUsageRows } = await import(
   '../src/views/item-usage-view.js',
 );
 
-const source = (badge, renewable = null) => ({ badge, via: '', renewable });
+// One supply step: a counted copy, or the source that restocks.
+const copy = (badge, copies) =>
+  ({ badge, copies, source: { kind: 'single', badge, via: '' } });
+const restock = (kind, badge) =>
+  ({ badge, copies: Infinity, source: { kind, badge, via: '' } });
 const rows = [
-  { id: 'a', name: 'Assault Vest', source: source(14), carry: 3, top: 20 },
-  { id: 'b', name: 'Berry Juice', source: null, carry: 3, top: 25 },
-  { id: 'c', name: 'Choice Scarf', source: source(18, { kind: 'shop', badge: 18 }), carry: 7, top: 80 },
-  { id: 'd', name: 'Damp Rock', source: source(3, { kind: 'mining', badge: 3 }), carry: 1, top: 2 },
-  { id: 'e', name: 'Electric Seed', source: null, carry: 0.5, top: 0 },
+  { id: 'a', name: 'Assault Vest', supply: [copy(14, 1)], carry: 3, top: 20 },
+  { id: 'b', name: 'Berry Juice', supply: [], carry: 3, top: 25 },
+  { id: 'c', name: 'Choice Scarf', supply: [copy(16, 1), restock('shop', 18)], carry: 7, top: 80 },
+  { id: 'd', name: 'Damp Rock', supply: [restock('mining', 3)], carry: 1, top: 2 },
+  { id: 'e', name: 'Electric Seed', supply: [], carry: 0.5, top: 0 },
 ];
 const names = (selected) => selected.map((row) => row.name);
 
@@ -54,7 +57,7 @@ test('the item table searches and sorts, untracked items last', () => {
     ['Choice Scarf', 'Berry Juice', 'Assault Vest', 'Damp Rock',
       'Electric Seed'],
   );
-  // Earliest badge first. Items the game does not track go last in both
+  // Earliest first copy first. Items with no supply go last in both
   // directions, most held first.
   assert.deepEqual(
     names(selectItemUsageRows(rows, { sortBy: 'obtained', sortDir: 'asc' })),
@@ -66,7 +69,8 @@ test('the item table searches and sorts, untracked items last', () => {
     ['Choice Scarf', 'Assault Vest', 'Damp Rock', 'Berry Juice',
       'Electric Seed'],
   );
-  // A search reads the name anywhere and the start of what restocks it.
+  // A search reads the name anywhere and the start of the kind of source
+  // that restocks it; a single copy is not one.
   assert.deepEqual(names(selectItemUsageRows(rows, { search: ' ce ' })), [
     'Choice Scarf', 'Berry Juice',
   ]);
@@ -76,37 +80,36 @@ test('the item table searches and sorts, untracked items last', () => {
   assert.deepEqual(names(selectItemUsageRows(rows, { search: 'min' })), [
     'Damp Rock',
   ]);
+  assert.deepEqual(names(selectItemUsageRows(rows, { search: 'single' })), []);
 });
 
-test("a row names the item and the game's source for it", async () => {
+test("a row names the item and the game's supply of it", async () => {
   await loadShared();
   const table = await loadItemUsage('singles');
   const built = buildItemUsageRows(table);
   assert.equal(built.length, Object.keys(table.items).length);
   const row = (id) => built.find((entry) => entry.id === id);
+  const supply = (id) => row(id).supply.map(({ badge, copies, source }) =>
+    [badge, copies, source.kind]);
   // Reborn hands out one Leftovers after badge 13 and sells it from 17.
-  assert.deepEqual(row('leftovers'), {
-    id: 'leftovers',
-    name: 'Leftovers',
-    source: {
-      badge: 13,
-      via: 'npc',
-      renewable: { kind: 'shop', badge: 17 },
+  assert.deepEqual(
+    { ...row('leftovers'), supply: supply('leftovers') },
+    {
+      id: 'leftovers',
+      name: 'Leftovers',
+      supply: [[13, 1, 'single'], [17, Infinity, 'shop']],
+      uncounted: false,
+      carry: table.items.leftovers.carry,
+      top: table.items.leftovers.top,
     },
-    carry: table.items.leftovers.carry,
-    top: table.items.leftovers.top,
-  });
+  );
   // A one-off pickup has nothing to restock it.
-  assert.deepEqual(row('assaultvest').source, {
-    badge: 14, via: 'poké ball', renewable: null,
-  });
+  assert.deepEqual(supply('assaultvest'), [[14, 1, 'single']]);
   // Mined from the badge the Mining Kit arrives, but sold a badge sooner.
-  assert.deepEqual(row('lightclay').source, {
-    badge: 2, via: 'shop', renewable: { kind: 'shop', badge: 2 },
-  });
+  assert.deepEqual(supply('lightclay'), [[2, Infinity, 'shop']]);
   // Reborn replaces the terrain seeds, so its data tracks none.
-  assert.equal(row('electricseed').source, null);
-  assert.equal(getItemSource('notanitem'), null);
+  assert.deepEqual(supply('electricseed'), []);
+  assert.equal(row('electricseed').uncounted, false);
   // A family with no table is an answer, not an error.
   assert.equal(await loadItemUsage('no-such-family'), null);
 });

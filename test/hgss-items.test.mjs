@@ -17,13 +17,13 @@ import {
   HGSS_ITEM_UNLOCK_BADGES,
   HGSS_SHOP_ITEM_BADGES,
 } from '../src/hgss/items.js';
-import { HGSS_PROGRESSION_CHECKPOINTS } from '../src/hgss/schedule.js';
 import { GEN4_PROGRESSION_SPECIES } from '../src/generated/gen4ProgressionSpecies.generated.js';
 import { GEN4_HELD_ITEMS_BY_ID } from '../src/generated/gen4HeldItems.generated.js';
 import { GEN7_HELD_ITEMS_BY_ID } from '../src/generated/gen7HeldItems.generated.js';
 
-const { getItemUnlockBadge } = await import('../src/games/schedule.js');
-const { getRenewablyObtainableItems } = await import('../src/games/items.js');
+const { getItemUnlockBadge, getRenewablyObtainableItems } = await import(
+  '../src/games/items.js',
+);
 const { toId } = await import('../src/utils/ids.js');
 
 function withHgss(fn) {
@@ -82,16 +82,7 @@ test('every timeline and shop id is a real item', () => {
   }
 });
 
-test('checkpoint headline items agree with the timeline', () => {
-  for (const checkpoint of HGSS_PROGRESSION_CHECKPOINTS) {
-    for (const id of checkpoint.unlocks.items || []) {
-      assert.equal(
-        HGSS_ITEM_UNLOCK_BADGES[id]?.badge,
-        checkpoint.badges,
-        `${id} on ${checkpoint.id}`,
-      );
-    }
-  }
+test('headline items arrive at their badges', () => {
   withHgss(() => {
     assert.equal(getItemUnlockBadge('lifeorb'), 1);
     assert.equal(getItemUnlockBadge('choicespecs'), 6);

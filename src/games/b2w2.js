@@ -7,6 +7,7 @@
  * Its data paths and saved-state keys are namespaced by game id. Item
  * content is curated by hand in b2w2/items.js.
  */
+import { unauditedItemSources } from './item-sources.js';
 import { EVOLUTION_STONE_FIELDS } from '../reborn/evolution-access.js';
 import { B2W2_PROGRESSION_CHECKPOINTS } from '../b2w2/schedule.js';
 import {
@@ -55,7 +56,6 @@ export const B2W2_GAME = Object.freeze({
   families: Object.freeze(['gen5singles', 'gen5doubles']),
   schedule: Object.freeze({
     checkpoints: B2W2_PROGRESSION_CHECKPOINTS,
-    itemUnlockBadges: B2W2_ITEM_UNLOCK_BADGES,
   }),
   moveSources: Object.freeze({
     tmOptions: B2W2_TM_OPTIONS,
@@ -78,8 +78,9 @@ export const B2W2_GAME = Object.freeze({
   // the Driftveil Market, the Battle Subway and PWT prize counters, and the
   // Black City / White Forest stores.
   items: Object.freeze({
-    shopItemBadges: B2W2_SHOP_ITEM_BADGES,
-    miningItemBadges: Object.freeze({}),
+    // First-obtainable badges and shop stock, not yet typed by source.
+    sources: unauditedItemSources(
+      B2W2_ITEM_UNLOCK_BADGES, B2W2_SHOP_ITEM_BADGES),
     extraInventoryItems: B2W2_EXTRA_INVENTORY_ITEMS,
     hiddenInventoryItemIds: new Set(),
     inventoryMigration: Object.freeze({}),

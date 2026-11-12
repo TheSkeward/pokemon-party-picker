@@ -10,11 +10,7 @@
  * existing player's saved pool and progression. New games namespace both by
  * game id.
  */
-import {
-  REBORN_ITEM_UNLOCK_BADGES,
-  REBORN_MINING_ITEM_BADGES,
-  REBORN_SHOP_ITEM_BADGES,
-} from '../generated/rebornItemTimeline.generated.js';
+import { REBORN_ITEM_SOURCES } from '../generated/rebornItemTimeline.generated.js';
 import { REBORN_PROGRESSION_CHECKPOINTS } from '../reborn/badge-timeline.js';
 import {
   REBORN_TM_OPTIONS,
@@ -55,10 +51,9 @@ export const REBORN_GAME = Object.freeze({
   // activates the game that claims it.
   families: Object.freeze(['singles', 'doubles']),
   // The progression timeline (games/schedule.js reads it): checkpoints in
-  // play order plus the generated first-obtainable badge per held item.
+  // play order.
   schedule: Object.freeze({
     checkpoints: REBORN_PROGRESSION_CHECKPOINTS,
-    itemUnlockBadges: REBORN_ITEM_UNLOCK_BADGES,
   }),
   // Machine and tutor tables with pickup timing (games/legality.js), and
   // what the game calls its HM-like machines.
@@ -82,14 +77,14 @@ export const REBORN_GAME = Object.freeze({
     hiddenPowerTypeChanger: true,
     reusableTms: true,
   }),
-  // Item content (games/items.js): renewable sources by first badge, the
-  // game-only inventory items, the held items the game replaces (hidden from
-  // the picker; saved counts migrate), curated evolution-item availability,
-  // and the proxies that price game-original items (SCORING.md, "Borrowed
-  // priors"): field seeds from Gen 7 terrain-seed usage, gems from Z-Crystals.
+  // Item content (games/items.js): every held item's sources, each with
+  // its kind and badge (games/item-sources.js), the game-only inventory
+  // items, the held items the game replaces (hidden from the picker; saved
+  // counts migrate), curated evolution-item availability, and the proxies
+  // that price game-original items (SCORING.md, "Borrowed priors"): field
+  // seeds from Gen 7 terrain-seed usage, gems from Z-Crystals.
   items: Object.freeze({
-    shopItemBadges: REBORN_SHOP_ITEM_BADGES,
-    miningItemBadges: REBORN_MINING_ITEM_BADGES,
+    sources: REBORN_ITEM_SOURCES,
     extraInventoryItems: REBORN_EXTRA_INVENTORY_ITEMS,
     hiddenInventoryItemIds: HIDDEN_INVENTORY_ITEM_IDS,
     inventoryMigration: TERRAIN_SEED_MIGRATION,

@@ -17,15 +17,15 @@ import {
 await loadGame('b2w2');
 
 const { dex } = await import('../src/games/dex.js');
-const { getCheckpoints, getItemUnlockBadge } = await import(
-  '../src/games/schedule.js',
-);
+const { getCheckpoints } = await import('../src/games/schedule.js');
 const { loadSavedProgression } = await import('../src/playthrough/progression.js');
 const { mechanics, moveSources } = await import('../src/games/legality.js');
 const { getEvolutionRequirement } = await import(
   '../src/playthrough/evolution-requirements.js',
 );
-const { getRenewablyObtainableItems } = await import('../src/games/items.js');
+const { getItemUnlockBadge, getRenewablyObtainableItems } = await import(
+  '../src/games/items.js',
+);
 const { toId } = await import('../src/utils/ids.js');
 const { resolveBuildAbilities } = await import(
   '../src/teamBuilder/ability-path.js',
@@ -36,7 +36,6 @@ const {
   B2W2_ITEM_UNLOCK_BADGES,
   B2W2_SHOP_ITEM_BADGES,
 } = await import('../src/b2w2/items.js');
-const { B2W2_PROGRESSION_CHECKPOINTS } = await import('../src/b2w2/schedule.js');
 const { GEN5_PROGRESSION_SPECIES } = await import(
   '../src/generated/gen5ProgressionSpecies.generated.js',
 );
@@ -263,16 +262,7 @@ test('every B2W2 timeline and shop id is a real item', () => {
   }
 });
 
-test('B2W2 checkpoint headline items agree with the timeline', () => {
-  for (const checkpoint of B2W2_PROGRESSION_CHECKPOINTS) {
-    for (const id of checkpoint.unlocks.items || []) {
-      assert.equal(
-        B2W2_ITEM_UNLOCK_BADGES[id]?.badge,
-        checkpoint.badges,
-        `${id} on ${checkpoint.id}`,
-      );
-    }
-  }
+test('B2W2 headline items arrive at their badges', () => {
   withB2w2(() => {
     assert.equal(getItemUnlockBadge('leftovers'), 2);
     assert.equal(getItemUnlockBadge('eviolite'), 2);

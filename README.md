@@ -57,8 +57,8 @@ https://theskeward.github.io/pokemon-party-picker/
   Pokemon that can learn it, each learner counted equally, beside the TM or
   tutor that teaches it and the badge it opens after. The item table shows
   how often each item is held, each Pokemon counted equally, and how many
-  Pokemon hold it above any other, beside the badge the game first hands it
-  out after and the shop or mining that restocks it.
+  Pokemon hold it above any other, beside the game's supply of it: each
+  copy by the badge it turns up after, then the source that restocks it.
 
 ## Games
 
@@ -76,6 +76,14 @@ game's own data: Reborn's and Rejuvenation's from their mons.dat (the
 Rejuvenation extracts and their map onto the Gen 9 dex are committed under
 `scripts/rejuv/`), a mainline game's from `@pkmn/dex` with the game's
 level-up lists taken from Bulbapedia where its generation's games differ.
+
+Held items are timed by supply. A source that restocks an item makes it
+unlimited from its badge: a shop or prize counter, a wild Pokemon that
+holds it, mining, Pickup, regrowth, or a gift that repeats. Before that,
+each one-per-save copy counts singly. An item a battle uses up (a Berry, a
+Gem, Focus Sash) counts only from a restocking source, since one copy is
+one battle's worth. Reborn's sources are typed this way; the other games
+record a first source and shop stock until they are audited the same way.
 
 The usage prior is per generation, not per game: competitive play describes
 a mainline game well enough that only Reborn, whose mechanics stray far from

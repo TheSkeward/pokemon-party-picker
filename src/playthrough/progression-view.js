@@ -6,10 +6,13 @@ import { accessFields, isAccessOpen } from '../games/evolution.js';
 import {
   getCheckpoint,
   getCheckpoints,
-  getItemUnlockBadge,
   getUnlockBadge,
 } from '../games/schedule.js';
-import { gameItems, getRenewablyObtainableItems } from '../games/items.js';
+import {
+  gameItems,
+  getItemUnlockBadge,
+  getRenewablyObtainableItems,
+} from '../games/items.js';
 import { MAX_TRACKED_ITEM_COUNT, MAX_OPPONENT_TYPE_BIAS } from './progression';
 import { analysisTypes } from './type-chart.js';
 import { badgeStyle, getTypeColor } from '../move-meta';

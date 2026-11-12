@@ -1,9 +1,10 @@
 /**
  * @fileoverview The active game's progression schedule: its checkpoints
  * (badge count, level cap, what first becomes obtainable there) and the
- * badge at which an item or access key first arrives. Reads the descriptor's
+ * badge at which an access key or flag first arrives. Reads the descriptor's
  * `schedule`, so every game supplies its own timeline in one shape (see
- * reborn/badge-timeline.js for the Reborn data and its conventions).
+ * reborn/badge-timeline.js for the Reborn data and its conventions). Held
+ * items are timed by their sources (games/items.js).
  */
 import { getActiveGame } from './registry.js';
 
@@ -68,19 +69,16 @@ export function getCheckpointOrdinal(id) {
  * Everything the schedule expects to be obtainable once the given checkpoint
  * is reached (cumulative through that checkpoint).
  * @param {?string} id Checkpoint id; unknown ids yield empty sets.
- * @return {{accessKeys: Set<string>, flags: Set<string>, itemIds: Set<string>}}
+ * @return {{accessKeys: Set<string>, flags: Set<string>}}
  */
 export function getExpectedUnlocks(id) {
   const ordinal = getCheckpointOrdinal(id);
-  const expected =
-    { accessKeys: new Set(), flags: new Set(), itemIds: new Set() };
+  const expected = { accessKeys: new Set(), flags: new Set() };
   if (ordinal < 0) return expected;
   for (const checkpoint of getCheckpoints().slice(0, ordinal + 1)) {
     for (const key of checkpoint.unlocks.access || []) expected.accessKeys.add(
       key);
     for (const key of checkpoint.unlocks.flags || []) expected.flags.add(key);
-    for (const item of checkpoint.unlocks.items || []) expected.itemIds.add(
-      item);
   }
   return expected;
 }
@@ -101,31 +99,6 @@ export function getUnlockBadge(key) {
     }
   }
   return null;
-}
-
-/**
- * When and how a held item first becomes obtainable; null when nothing
- * tracks it (treat as timing-unknown, not unobtainable). Curated checkpoint
- * entries win the badge; the schedule's item table covers the rest. `via`
- * is the item table's words for the source (a shop, a place, a wild
- * holder), '' for an item only a checkpoint lists.
- * @param {string} itemId Normalized item id.
- * @return {?{badge: number, via: string}}
- */
-export function getItemUnlock(itemId) {
-  const tracked = getActiveGame().schedule.itemUnlockBadges[itemId] || null;
-  const curated = getCheckpoints().find((checkpoint) =>
-    (checkpoint.unlocks.items || []).includes(itemId));
-  if (!curated) return tracked;
-  return { badge: curated.badges, via: tracked?.via || '' };
-}
-
-/**
- * @param {string} itemId Normalized item id.
- * @return {?number} The badge count of getItemUnlock.
- */
-export function getItemUnlockBadge(itemId) {
-  return getItemUnlock(itemId)?.badge ?? null;
 }
 
 /**

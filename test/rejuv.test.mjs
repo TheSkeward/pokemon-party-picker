@@ -18,11 +18,11 @@ import {
 await loadGame('rejuv');
 
 const { dex } = await import('../src/games/dex.js');
-const { getCheckpoints, getItemUnlockBadge } = await import(
-  '../src/games/schedule.js',
-);
+const { getCheckpoints } = await import('../src/games/schedule.js');
 const { mechanics, moveSources } = await import('../src/games/legality.js');
-const { getRenewablyObtainableItems } = await import('../src/games/items.js');
+const { getItemUnlockBadge, getRenewablyObtainableItems } = await import(
+  '../src/games/items.js',
+);
 const { REJUV_PROGRESSION_CHECKPOINTS } = await import(
   '../src/rejuv/badge-timeline.js',
 );

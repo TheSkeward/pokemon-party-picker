@@ -6,6 +6,7 @@
  * data paths and saved-state keys are namespaced by game id. Item content
  * is curated by hand in hgss/items.js.
  */
+import { unauditedItemSources } from './item-sources.js';
 import { EVOLUTION_STONE_FIELDS } from '../reborn/evolution-access.js';
 import { HGSS_PROGRESSION_CHECKPOINTS } from '../hgss/schedule.js';
 import {
@@ -50,7 +51,6 @@ export const HGSS_GAME = Object.freeze({
   families: Object.freeze(['gen4singles', 'gen4doubles']),
   schedule: Object.freeze({
     checkpoints: HGSS_PROGRESSION_CHECKPOINTS,
-    itemUnlockBadges: HGSS_ITEM_UNLOCK_BADGES,
   }),
   moveSources: Object.freeze({
     tmOptions: HGSS_TM_OPTIONS,
@@ -71,8 +71,9 @@ export const HGSS_GAME = Object.freeze({
   // No mining, no replaced items, no game-original held items; the shops are
   // the Athlete Shop, the Game Corners, and the Frontier's BP counter.
   items: Object.freeze({
-    shopItemBadges: HGSS_SHOP_ITEM_BADGES,
-    miningItemBadges: Object.freeze({}),
+    // First-obtainable badges and shop stock, not yet typed by source.
+    sources: unauditedItemSources(
+      HGSS_ITEM_UNLOCK_BADGES, HGSS_SHOP_ITEM_BADGES),
     extraInventoryItems: HGSS_EXTRA_INVENTORY_ITEMS,
     hiddenInventoryItemIds: new Set(),
     inventoryMigration: Object.freeze({}),
