@@ -24,12 +24,38 @@ import { getActiveGame } from '../games/registry.js';
 // inputs, and the underlying analysis (per-member legal-move entries, damage
 // tables, bench swaps) is the most expensive thing on the page — so memo the
 // build by input signature and re-paint from it. This also stops the panel
-// flashing back to its "Checking..." placeholder on every re-render.
+// flashing back to its "Checking..." placeholder on every re-render. The
+// order the picks are shown in is not an input: the analysis is built for
+// the picks in signature order, so re-sorting the team table repaints the
+// cards from the memo instead of rebuilding it.
 let analysisMemo = { key: null, promise: null };
 
 /**
+ * What the analysis reads of one pick. A progression edit first renders the
+ * old build under the new rules, and re-optimization can keep the
+ * species/build key but replace its moves; the completed set must not reuse
+ * that interim, incomplete analysis, so the moves are part of it.
+ * @param {!Object} member
+ * @return {string}
+ */
+function memberSignature(member) {
+  return JSON.stringify([
+    member.pokemonId,
+    member.inputPokemonId || '',
+    member.buildKey || '',
+    member.legalityProfile?.assumedAbility || '',
+    member.legalityProfile?.targetAbility || '',
+    member.legalityProfile?.preMegaAbility || '',
+    member.legalityProfile?.inputAbility || '',
+    Boolean(member.legalityProfile?.abilityKnown),
+    (member.legalityProfile?.recommendedMoves || []).map((move) => move.id),
+  ]);
+}
+
+/**
  * Renders the team-analysis panel into `root` (cleared for an empty team),
- * memoizing the underlying analysis by input signature.
+ * memoizing the underlying analysis by input signature. The set cards follow
+ * the order of `team`.
  * @param {?Element} root
  */
 export function renderTeamAnalysisPanel(root, {
@@ -48,21 +74,16 @@ export function renderTeamAnalysisPanel(root, {
     return;
   }
 
+  // The caller's order only places the cards.
+  const signed = team
+    .map((member) => ({ member, signature: memberSignature(member) }))
+    .sort((a, b) =>
+      a.signature < b.signature ? -1 : a.signature > b.signature ? 1 : 0);
+  const analysed = signed.map((entry) => entry.member);
+  const cardOrder = team.map((member) => analysed.indexOf(member));
+
   const memoKey = JSON.stringify([
-    // A progression edit first renders the old build under the new rules.
-    // Re-optimization can keep the species/build key but replace its moves;
-    // the completed set must not reuse that interim, incomplete analysis.
-    team.map((member) => [
-      member.pokemonId,
-      member.inputPokemonId || '',
-      member.buildKey || '',
-      member.legalityProfile?.assumedAbility || '',
-      member.legalityProfile?.targetAbility || '',
-      member.legalityProfile?.preMegaAbility || '',
-      member.legalityProfile?.inputAbility || '',
-      Boolean(member.legalityProfile?.abilityKnown),
-      (member.legalityProfile?.recommendedMoves || []).map((move) => move.id),
-    ]),
+    signed.map((entry) => entry.signature),
     itemAssignments || null,
     progression || null,
     family || '',
@@ -76,7 +97,7 @@ export function renderTeamAnalysisPanel(root, {
     const memo = {
       key: memoKey,
       settled: false,
-      promise: buildTeamAnalysis(team, progression, {
+      promise: buildTeamAnalysis(analysed, progression, {
         family,
         itemAssignments,
         lines,
@@ -116,8 +137,12 @@ export function renderTeamAnalysisPanel(root, {
     // started on the same root and must be the one that paints last.
     if (!root.isConnected || analysisMemo !== memo) return;
     if (analysis) {
-      root.innerHTML = renderAnalysis(analysis);
-      wirePokepasteCopy(root, analysis);
+      const shown = {
+        ...analysis,
+        profiles: cardOrder.map((index) => analysis.profiles[index]),
+      };
+      root.innerHTML = renderAnalysis(shown);
+      wirePokepasteCopy(root, shown);
     } else {
       root.innerHTML = `
         <section class="panel reborn-team-analysis-panel">

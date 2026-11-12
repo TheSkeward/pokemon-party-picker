@@ -237,8 +237,6 @@ function handleResolverQueryInput(resolverQuery) {
 }
 
 async function handleSort(nextSortBy) {
-  clearPendingResolverDebounce();
-
   const state = getState();
   const nextSortDir =
     state.sortBy === nextSortBy
@@ -251,7 +249,9 @@ async function handleSort(nextSortBy) {
 
   setState({ sortBy: nextSortBy, sortDir: nextSortDir });
 
-  await sync();
+  // The sort only reorders the usage table. A Set Lookup recompute that is
+  // still pending is left to run on its own timer.
+  await sync({ recomputeResolverResults: false });
 }
 
 async function handleBrowserPokemonClick(pokemonId) {

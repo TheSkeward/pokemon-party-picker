@@ -58,7 +58,6 @@ test('Cut removal refreshes realized moves even when the team and build keys sta
   };
   const options = {
     family: 'singles',
-    selection: 'all',
     poolQuery: pool.join('\n'),
     progression,
     itemAssignments: Object.fromEntries(before.team.map((row) => [
@@ -107,4 +106,53 @@ test('Cut removal refreshes realized moves even when the team and build keys sta
   assert.equal(root.innerHTML, settledHtml);
   await repeated;
   assert.equal(root.innerHTML, settledHtml);
+});
+
+test('re-sorting the team moves the set cards without rebuilding the analysis', async () => {
+  const pool = ['Patrat', 'Purrloin', 'Stunky'];
+  const progression = {
+    checkpoint: 'badge-1',
+    levelCap: '25',
+    moveRelearnerUnlocked: false,
+    daycareUnlocked: false,
+    availableTmIds: [],
+    availableTmxIds: [],
+    availableTutorMoveIds: [],
+    ownedItems: {},
+  };
+  const { team } = await runPool({ pool, progression });
+  const cardId = (row) => row.legalityProfile.fieldedId || row.pokemonId;
+  const cardOrder = (html) =>
+    [...html.matchAll(/data-set-card="([^"]+)"/g)].map((match) => match[1]);
+  const root = {
+    innerHTML: '',
+    isConnected: true,
+    querySelectorAll: () => [],
+  };
+  const options = {
+    family: 'singles',
+    poolQuery: pool.join('\n'),
+    progression,
+  };
+
+  await renderTeamAnalysisPanel(root, { ...options, team });
+  const settledHtml = root.innerHTML;
+  assert.deepEqual(cardOrder(settledHtml), team.map(cardId));
+
+  const resorted = [...team].reverse();
+  const repainted = renderTeamAnalysisPanel(root, {
+    ...options,
+    team: resorted,
+  });
+  // A rebuild would have put the loading placeholder up before returning.
+  assert.equal(root.innerHTML, settledHtml);
+  await repainted;
+  assert.deepEqual(cardOrder(root.innerHTML), resorted.map(cardId));
+  for (const row of team) {
+    assert.deepEqual(
+      displayedSet(root.innerHTML, cardId(row)),
+      displayedSet(settledHtml, cardId(row)),
+      cardId(row),
+    );
+  }
 });
