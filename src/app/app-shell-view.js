@@ -36,7 +36,6 @@ export function renderAppShell(app, state, families) {
         <button class="view-tab ${state.view === 'resolver' ? 'active' : ''}" data-app-view="resolver">Set Lookup</button>
         <button class="view-tab ${state.view === 'pool' ? 'active' : ''}" data-app-view="pool">Team Builder</button>
         <button class="view-tab ${state.view === 'browser' ? 'active' : ''}" data-app-view="browser">Usage Data</button>
-        <button class="view-tab ${state.view === 'moves' ? 'active' : ''}" data-app-view="moves">Move Usage</button>
       </nav>
 
       <section id="page-root" class="page-stack"></section>

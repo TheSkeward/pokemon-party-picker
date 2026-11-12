@@ -52,11 +52,13 @@ https://theskeward.github.io/pokemon-party-picker/
 - Inspect legal current moves, recommended sets, breeding chains, item picks,
   coverage, defensive profile, confidence, and level-cap investment.
 - Look up observed set details for a Pokemon or evolutionary line.
-- Browse the underlying usage data.
-- See how often each move is run by the Pokemon that can learn it (Move
-  Usage), each learner counted equally, beside the TM or tutor that teaches
-  it and the badge it opens after, how many learn it and how often it
-  appears across all sets.
+- Browse the underlying usage data (Usage Data), a table each for Pokemon,
+  moves and items. The move table shows how often each move is run by the
+  Pokemon that can learn it, each learner counted equally, beside the TM or
+  tutor that teaches it and the badge it opens after. The item table shows
+  how often each item is held, each Pokemon counted equally, and how many
+  Pokemon hold it above any other, beside the badge the game first hands it
+  out after and the shop or mining that restocks it.
 
 ## Games
 

@@ -6,7 +6,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-const { renderControls } = await import('../src/views/controls-view.js');
+const { renderPokemonUsageControls } = await import(
+  '../src/views/pokemon-usage-view.js',
+);
 const { renderResolverControls } = await import(
   '../src/views/resolver-controls-view.js',
 );
@@ -16,7 +18,7 @@ test('the usage pages render no month picker and the state holds no month', () =
   const formats = [{ id: 'gen7ou', label: 'OU', family: 'singles' }];
   const state = { ...DEFAULT_STATE, family: 'singles', format: 'gen7ou' };
   const controls = { innerHTML: '' };
-  renderControls(controls, state, formats);
+  renderPokemonUsageControls(controls, state, formats);
   assert.ok(controls.innerHTML.includes('id="format-select"'));
   assert.ok(!/month/i.test(controls.innerHTML));
   const resolver = { innerHTML: '' };

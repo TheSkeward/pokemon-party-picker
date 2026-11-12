@@ -8,6 +8,7 @@ import {
   loadAvailability,
   loadFormatData,
   loadFormatsIndex,
+  loadItemUsage,
   loadMoveUsage,
   loadPokemonIndex,
 } from './data';
@@ -22,18 +23,31 @@ import { bindAppEvents } from './app/app-events';
 import { renderBrowserPage } from './app/browser-page';
 import { captureFocusState, restoreFocusState } from './app/focus-state';
 import { renderFatalAppError, renderAppShell } from './app/app-shell-view';
-import { renderMovesPage } from './app/moves-page';
 import { renderResolverPage } from './app/resolver-page';
 import { readStateFromUrl, writeStateToUrl } from './router';
-import { DEFAULT_STATE, getState, replaceState, setState } from './state';
+import {
+  DEFAULT_STATE,
+  getState,
+  replaceState,
+  setState,
+  setTableState,
+} from './state';
+import { ITEM_USAGE_TABLE } from './views/item-usage-view';
+import { MOVE_USAGE_TABLE } from './views/move-usage-view';
+import { POKEMON_USAGE_TABLE } from './views/pokemon-usage-view';
+import { nextSort } from './views/table-parts';
+import { usageTableById } from './views/usage-tables';
 import { mountPoolOptimizer } from './pool-widget';
 import { computeResolverRepresentativeResults } from './resolver/representatives';
 import { createPrecomputedSetDetailsLoader } from './setDetails/precomputed-set-details';
 import { startUpdateNotifier } from './update-notifier';
 
 const app = document.querySelector('#app');
-const DESC_SORT_FIELDS = new Set(['usage', 'rawCount', 'leadTendency']);
-const MOVE_DESC_SORT_FIELDS = new Set(['prior', 'learners', 'carry']);
+// The usage tables that read one small file per family, and its loader.
+const FAMILY_TABLE_LOADERS = {
+  [MOVE_USAGE_TABLE.id]: loadMoveUsage,
+  [ITEM_USAGE_TABLE.id]: loadItemUsage,
+};
 const LITERAL_RESOLVE_LIMIT = 25;
 const RESOLVER_INPUT_DEBOUNCE_MS = 300;
 
@@ -43,8 +57,7 @@ let availability = null;
 let pokemonIndex = [];
 let browserMovesetData = null;
 let browserMovesetKey = null;
-let moveUsage = null;
-let moveUsageKey = null;
+let familyTable = null;
 let resolverResults = [];
 let resolverLoadingState = { loading: false, message: '' };
 let syncGeneration = 0;
@@ -74,7 +87,7 @@ async function init() {
   await loadManifest();
 
   await ensureBrowserMovesetData();
-  await ensureMoveUsageData();
+  await ensureFamilyTableData();
 
   resolverResults = await computeResolverResults();
 
@@ -102,12 +115,16 @@ function ensureValidFamilyAndFormat() {
   }
 }
 
-// The browser's moveset panel reads the format's aggregate, fetched once
-// per format and only while a Pokémon is selected on the browser view.
+// The Pokémon table's moveset panel reads the format's aggregate, fetched
+// once per format and only while that table shows a selected Pokémon.
 async function ensureBrowserMovesetData() {
   const state = getState();
 
-  if (state.view !== 'browser' || !state.selectedPokemon) {
+  if (
+    state.view !== 'browser' ||
+    state.usageTable !== POKEMON_USAGE_TABLE.id ||
+    !state.selectedPokemon
+  ) {
     browserMovesetData = null;
     browserMovesetKey = null;
     return;
@@ -119,15 +136,17 @@ async function ensureBrowserMovesetData() {
   browserMovesetKey = state.format;
 }
 
-// The move table is one small file per family, fetched the first time the
-// Move Usage view shows that family.
-async function ensureMoveUsageData() {
+// The open usage table's per-family file, null for a table without one.
+// data.js caches each file, so asking again on every sync costs nothing.
+async function ensureFamilyTableData() {
   const state = getState();
+  const load =
+    state.view === 'browser' ? FAMILY_TABLE_LOADERS[state.usageTable] : null;
+  const table = load ? await load(state.family) : null;
 
-  if (state.view !== 'moves' || moveUsageKey === state.family) return;
-
-  moveUsage = await loadMoveUsage(state.family);
-  moveUsageKey = state.family;
+  // A load the state moved on from would hand one table another's file; the
+  // sync that moved the state loads its own.
+  if (getState() === state) familyTable = table;
 }
 
 async function computeResolverResults() {
@@ -160,20 +179,16 @@ function renderApp() {
     });
   } else if (state.view === 'pool') {
     renderPoolPage(pageRoot);
-  } else if (state.view === 'moves') {
+  } else {
     // Named as the family's tab names it: the game, then the family.
     const family =
       availability?.familyConfigs?.[state.family]?.label || state.family;
     const game = gameForFamily(state.family);
-    renderMovesPage(pageRoot, {
-      familyLabel: game ? `${game.shortLabel} · ${family}` : family,
-      moveUsage,
-      state,
-    });
-  } else {
     renderBrowserPage(pageRoot, {
       browserMovesetData,
       dataset,
+      familyLabel: game ? `${game.shortLabel} · ${family}` : family,
+      familyTable,
       formatsIndex,
       state,
     });
@@ -197,12 +212,11 @@ function bindEvents() {
     onFamilyChange: handleFamilyChange,
     onFormatChange: handleFormatChange,
     onMoveMinLearners: handleMoveMinLearners,
-    onMoveSearchInput: handleMoveSearchInput,
-    onMoveSort: handleMoveSort,
     onResolverPokemonClick: handleResolverPokemonClick,
     onResolverQueryInput: handleResolverQueryInput,
     onSearchInput: handleSearchInput,
     onSort: handleSort,
+    onUsageTableChange: handleUsageTableChange,
     onViewChange: handleViewChange,
   });
 }
@@ -239,9 +253,18 @@ async function handleViewChange(nextView) {
   await sync({ recomputeResolverResults: false });
 }
 
-// The format, the search text and the sort (below) shape the usage table
-// only. The Set Lookup results read none of them, so these handlers skip
-// that recompute and leave one that is still pending to run on its timer.
+// The usage table, its format, search text, sort and learner floor (below)
+// shape the Usage Data page only. The Set Lookup results read none of them,
+// so these handlers skip that recompute and leave one that is still pending
+// to run on its timer.
+async function handleUsageTableChange(usageTable) {
+  if (usageTable === getState().usageTable) return;
+
+  setState({ usageTable });
+
+  await sync({ recomputeResolverResults: false });
+}
+
 async function handleFormatChange(format) {
   dataset = await loadFormatData(format);
 
@@ -250,8 +273,9 @@ async function handleFormatChange(format) {
   await sync({ recomputeResolverResults: false });
 }
 
+// The search text and the sort are the open table's.
 async function handleSearchInput(search) {
-  setState({ search });
+  setTableState(getState().usageTable, { search });
 
   await sync({ recomputeResolverResults: false });
 }
@@ -269,41 +293,11 @@ function handleResolverQueryInput(resolverQuery) {
   resolverDebounceTimer = setTimeout(() => sync(), RESOLVER_INPUT_DEBOUNCE_MS);
 }
 
-async function handleSort(nextSortBy) {
+async function handleSort(field) {
   const state = getState();
-  const nextSortDir =
-    state.sortBy === nextSortBy
-      ? state.sortDir === 'asc'
-        ? 'desc'
-        : 'asc'
-      : DESC_SORT_FIELDS.has(nextSortBy)
-        ? 'desc'
-        : 'asc';
+  const table = usageTableById(state.usageTable);
 
-  setState({ sortBy: nextSortBy, sortDir: nextSortDir });
-
-  await sync({ recomputeResolverResults: false });
-}
-
-// The move table's controls shape that table only.
-async function handleMoveSort(nextSortBy) {
-  const state = getState();
-  const nextSortDir =
-    state.moveSortBy === nextSortBy
-      ? state.moveSortDir === 'asc'
-        ? 'desc'
-        : 'asc'
-      : MOVE_DESC_SORT_FIELDS.has(nextSortBy)
-        ? 'desc'
-        : 'asc';
-
-  setState({ moveSortBy: nextSortBy, moveSortDir: nextSortDir });
-
-  await sync({ recomputeResolverResults: false });
-}
-
-async function handleMoveSearchInput(moveSearch) {
-  setState({ moveSearch });
+  setTableState(table.id, nextSort(table, state.tables[table.id], field));
 
   await sync({ recomputeResolverResults: false });
 }
@@ -324,6 +318,7 @@ async function handleBrowserPokemonClick(pokemonId) {
     selectedPokemon: state.selectedPokemon === pokemonId ? null : pokemonId,
     resolverSelectedPokemon: null,
     view: 'browser',
+    usageTable: POKEMON_USAGE_TABLE.id,
   });
 
   await sync({ recomputeResolverResults: false });
@@ -398,7 +393,7 @@ async function sync(options = {}) {
   const generation = ++syncGeneration;
 
   await ensureBrowserMovesetData();
-  await ensureMoveUsageData();
+  await ensureFamilyTableData();
 
   let nextResolverResults = resolverResults;
 

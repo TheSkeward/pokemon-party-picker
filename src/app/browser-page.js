@@ -4,19 +4,65 @@ import {
   getDatasetLabel,
   getMovesetEntry,
 } from '../data';
-import { renderControls } from '../views/controls-view';
+import { escapeAttr, escapeHtml } from '../utils/html.js';
+import {
+  ITEM_USAGE_TABLE,
+  renderItemUsageControls,
+  renderItemUsageTable,
+} from '../views/item-usage-view';
+import {
+  MOVE_USAGE_TABLE,
+  renderMoveUsageControls,
+  renderMoveUsageTable,
+} from '../views/move-usage-view';
 import { renderMovesetPanel } from '../views/moveset-view';
-import { renderTable } from '../views/table-view';
+import {
+  POKEMON_USAGE_TABLE,
+  renderPokemonUsageControls,
+  renderPokemonUsageTable,
+} from '../views/pokemon-usage-view';
+import { USAGE_TABLES } from '../views/usage-tables';
+
+const TABLE_RENDERERS = {
+  [POKEMON_USAGE_TABLE.id]: renderPokemonTable,
+  [MOVE_USAGE_TABLE.id]: renderMoveTable,
+  [ITEM_USAGE_TABLE.id]: renderItemTable,
+};
 
 /**
- * Renders the Usage Data page (controls, usage table, moveset panel) into
- * `pageRoot`, replacing its contents. The table and the panel aggregate
- * every month the format's data holds.
+ * Renders the Usage Data page into `pageRoot`, replacing its contents: a
+ * tab per usage table, then the open table with its controls.
  * @param {!Element} pageRoot
  * @param {{browserMovesetData: ?Object, dataset: !Object,
- *     formatsIndex: !Array<!Object>, state: !Object}} context
+ *     familyLabel: string, familyTable: ?Object,
+ *     formatsIndex: !Array<!Object>, state: !Object}} context `familyTable`
+ *     is the open table's per-family data, null when it has none or the
+ *     table reads the format's `dataset` instead.
  */
 export function renderBrowserPage(pageRoot, context) {
+  const { state } = context;
+  const tabs = USAGE_TABLES.map((table) =>
+    `<button class="view-tab ${table.id === state.usageTable ? 'active' : ''}" data-usage-table="${escapeAttr(table.id)}">${escapeHtml(table.label)}</button>`);
+
+  pageRoot.innerHTML = `
+    <nav class="view-tabs usage-table-tabs" aria-label="Usage table">
+      ${tabs.join('\n      ')}
+    </nav>
+    <section id="controls-root"></section>
+    <main id="content-root"></main>
+    <section id="details-root"></section>
+  `;
+
+  TABLE_RENDERERS[state.usageTable](
+    document.querySelector('#controls-root'),
+    document.querySelector('#content-root'),
+    context,
+  );
+}
+
+// The Pokémon table and its moveset panel aggregate every month the
+// format's data holds.
+function renderPokemonTable(controlsRoot, contentRoot, context) {
   const { browserMovesetData, dataset, formatsIndex, state } = context;
 
   const rows = getAggregateRows(dataset);
@@ -28,19 +74,9 @@ export function renderBrowserPage(pageRoot, context) {
   );
   const span = describeDatasetMonths(dataset);
 
-  pageRoot.innerHTML = `
-    <section id="controls-root"></section>
-    <main id="content-root"></main>
-    <section id="details-root"></section>
-  `;
+  renderPokemonUsageControls(controlsRoot, state, formatsIndex);
 
-  renderControls(
-    document.querySelector('#controls-root'),
-    state,
-    formatsIndex,
-  );
-
-  renderTable(document.querySelector('#content-root'), rows, state, {
+  renderPokemonUsageTable(contentRoot, rows, state, {
     selectionLabel: getDatasetLabel(dataset),
   });
 
@@ -55,4 +91,18 @@ export function renderBrowserPage(pageRoot, context) {
     stitched: false,
     status: null,
   });
+}
+
+function renderMoveTable(controlsRoot, contentRoot, context) {
+  const { familyLabel, familyTable, state } = context;
+
+  renderMoveUsageControls(controlsRoot, state);
+  renderMoveUsageTable(contentRoot, familyTable, state, { familyLabel });
+}
+
+function renderItemTable(controlsRoot, contentRoot, context) {
+  const { familyLabel, familyTable, state } = context;
+
+  renderItemUsageControls(controlsRoot, state);
+  renderItemUsageTable(contentRoot, familyTable, state, { familyLabel });
 }

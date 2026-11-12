@@ -6,6 +6,12 @@ import {
   getMoveMetaById,
   getTypeColor,
 } from '../move-meta';
+import {
+  badgePhrase,
+  renderHeaderRow,
+  renderSearchField,
+  sortRows,
+} from './table-parts.js';
 
 /**
  * The learner floors the page offers. A move few Pokémon learn reports a few
@@ -19,24 +25,39 @@ export const MIN_LEARNER_CHOICES = [1, 5, 10, 20, 50];
 const taughtOrder = (row) =>
   row.taught[0]?.badge ?? Number.MAX_SAFE_INTEGER;
 
-const SORTERS = {
-  name: (a, b) => a.name.localeCompare(b.name),
-  type: (a, b) => a.type.localeCompare(b.type),
-  category: (a, b) => a.category.localeCompare(b.category),
-  taught: (a, b) => taughtOrder(a) - taughtOrder(b),
-  prior: (a, b) => a.prior - b.prior,
-  learners: (a, b) => a.learners - b.learners,
-  carry: (a, b) => a.carry - b.carry,
+/**
+ * The Usage Data page's move table: a family's moves by how often their
+ * learners run them. Equal values put the move more Pokémon learn first,
+ * then go by name.
+ * @const {!UsageTable}
+ */
+export const MOVE_USAGE_TABLE = {
+  id: 'moves',
+  label: 'Moves',
+  sorters: {
+    name: (a, b) => a.name.localeCompare(b.name),
+    type: (a, b) => a.type.localeCompare(b.type),
+    category: (a, b) => a.category.localeCompare(b.category),
+    taught: (a, b) => taughtOrder(a) - taughtOrder(b),
+    prior: (a, b) => a.prior - b.prior,
+    learners: (a, b) => a.learners - b.learners,
+    carry: (a, b) => a.carry - b.carry,
+  },
+  descSortFields: new Set(['prior', 'learners', 'carry']),
+  defaultSort: { sortBy: 'prior', sortDir: 'desc' },
+  blank: { taught: (row) => !row.taught.length },
+  tieBreak: (a, b) => b.learners - a.learners || a.name.localeCompare(b.name),
 };
 
-// Columns a row may leave empty. An empty row goes last in either
-// direction, so reversing the sort never leads with the blanks.
-const IS_BLANK = {
-  taught: (row) => !row.taught.length,
-};
-
-/** @const {!Array<string>} The columns the table sorts by. */
-export const MOVE_SORT_FIELDS = Object.keys(SORTERS);
+const COLUMNS = [
+  ['name', 'Move'],
+  ['type', 'Type'],
+  ['category', 'Category'],
+  ['taught', 'Taught by'],
+  ['prior', 'Run by learners'],
+  ['learners', 'Learners'],
+  ['carry', 'On all sets'],
+];
 
 /**
  * `taught` holds the machines and tutors that teach the move in the active
@@ -85,36 +106,28 @@ export function buildMoveUsageRows(table) {
  *     The search text matches a move's name anywhere, or the start of its
  *     type, its category or a route's label ("tm", "tutor").
  * @return {!Array<!MoveUsageRow>} The rows at or above the learner floor
- *     that match the search, sorted. Equal values put the move more Pokémon
- *     learn first, then go by name.
+ *     that match the search, sorted.
  */
 export function selectMoveUsageRows(rows, {
   search = '',
-  sortBy = 'prior',
-  sortDir = 'desc',
+  sortBy,
+  sortDir,
   minLearners = 1,
 } = {}) {
   const query = search.trim().toLowerCase();
-  const sorter = SORTERS[sortBy] || SORTERS.prior;
-  const direction = sortDir === 'asc' ? 1 : -1;
-  const isBlank = IS_BLANK[sortBy] || (() => false);
-  return rows
+  const matches = rows
     .filter((row) => row.learners >= minLearners)
     .filter((row) =>
       !query ||
       row.name.toLowerCase().includes(query) ||
       row.type.toLowerCase().startsWith(query) ||
       row.category.toLowerCase().startsWith(query) ||
-      row.taught.some((route) => route.label.toLowerCase().startsWith(query)))
-    .sort((a, b) =>
-      isBlank(a) - isBlank(b) ||
-      sorter(a, b) * direction ||
-      b.learners - a.learners ||
-      a.name.localeCompare(b.name));
+      row.taught.some((route) => route.label.toLowerCase().startsWith(query)));
+  return sortRows(matches, MOVE_USAGE_TABLE, { sortBy, sortDir });
 }
 
 /**
- * Search and learner-floor toolbar for the Move Usage page.
+ * Learner-floor and search toolbar for the move table.
  * @param {!Element} container
  * @param {!Object} state
  */
@@ -122,16 +135,17 @@ export function renderMoveUsageControls(container, state) {
   container.innerHTML = `
     <section class="panel">
       <div class="toolbar">
-        <label><span>Search</span><input id="move-search-input" type="search" value="${escapeHtml(state.moveSearch)}" placeholder="Rapid Spin, Fairy, Status, TM" /></label>
         <label><span>Learners at least</span><select id="move-min-learners-select">
           ${MIN_LEARNER_CHOICES.map((count) => `<option value="${count}" ${count === state.moveMinLearners ? 'selected' : ''}>${count}</option>`).join('')}
         </select></label>
+        ${renderSearchField(state.tables[MOVE_USAGE_TABLE.id], 'Rapid Spin, Fairy, Status, TM')}
       </div>
     </section>`;
 }
 
 /**
- * Move usage table, filtered and sorted by the state's move fields.
+ * Move usage table, filtered and sorted by the table's state and the
+ * learner floor.
  * @param {!Element} container
  * @param {?{pokemon: number, moves: !Object<string, !Object>}} table Null
  *     when the family has no table.
@@ -146,10 +160,9 @@ export function renderMoveUsageTable(container, table, state, options = {}) {
       </section>`;
     return;
   }
+  const tableState = state.tables[MOVE_USAGE_TABLE.id];
   const rows = selectMoveUsageRows(buildMoveUsageRows(table), {
-    search: state.moveSearch,
-    sortBy: state.moveSortBy,
-    sortDir: state.moveSortDir,
+    ...tableState,
     minLearners: state.moveMinLearners,
   });
   container.innerHTML = `
@@ -160,7 +173,7 @@ export function renderMoveUsageTable(container, table, state, options = {}) {
         <p>Run by learners is the share of a learner's sets that run the move, averaged over every Pokémon that can learn it, each counted equally. On all sets averages over every Pokémon, learner or not.</p>
         <p>Taught by names the machine or tutor that teaches the move in this game, and the badge it opens after.</p>
       </div></div>
-      <table class="usage-table move-usage-table"><thead><tr>${renderHeaderCell('name', 'Move', state)}${renderHeaderCell('type', 'Type', state)}${renderHeaderCell('category', 'Category', state)}${renderHeaderCell('taught', 'Taught by', state)}${renderHeaderCell('prior', 'Run by learners', state)}${renderHeaderCell('learners', 'Learners', state)}${renderHeaderCell('carry', 'On all sets', state)}</tr></thead><tbody>
+      <table class="usage-table move-usage-table static-rows"><thead>${renderHeaderRow(COLUMNS, tableState)}</thead><tbody>
         ${rows.map(renderRow).join('')}
       </tbody></table>
     </section>`;
@@ -176,21 +189,10 @@ function renderRow(row) {
 function renderRoute(route) {
   const when = badgePhrase(route.badge);
   const title = [route.available, route.location].filter(Boolean).join(' · ');
-  return `<span class="move-route" title="${escapeAttr(title)}">${escapeHtml(route.label)}${when ? ` <span class="muted">${when}</span>` : ''}</span>`;
-}
-
-function badgePhrase(badge) {
-  if (badge == null) return '';
-  return badge === 0 ? 'start' : `badge ${badge}`;
+  return `<span class="table-source" title="${escapeAttr(title)}">${escapeHtml(route.label)}${when ? ` <span class="muted">${when}</span>` : ''}</span>`;
 }
 
 function renderBadge(text, color) {
   if (!text) return '';
   return `<span class="move-badge" style="${badgeStyle(color)}">${escapeHtml(text)}</span>`;
-}
-
-function renderHeaderCell(field, label, state) {
-  const isActive = state.moveSortBy === field;
-  const arrow = !isActive ? '' : state.moveSortDir === 'asc' ? ' ↑' : ' ↓';
-  return `<th><button class="sort-button ${isActive ? 'active' : ''}" data-move-sort-by="${field}">${label}${arrow}</button></th>`;
 }

@@ -151,6 +151,10 @@ header h1 {
   flex-direction: column;
   gap: 6px;
 }
+/* A toolbar's only control takes the whole row. */
+.toolbar label:only-child {
+  grid-column: 1 / -1;
+}
 .toolbar span,
 .panel-header p {
   color: var(--text-muted);
@@ -185,6 +189,11 @@ button:hover {
 }
 .secondary-tabs {
   margin-bottom: 20px;
+}
+/* The Usage Data page's table tabs sit in the page stack, which spaces
+   them. */
+.usage-table-tabs {
+  margin-bottom: 0;
 }
 .view-tab,
 .moves-filter-clear {
@@ -282,24 +291,26 @@ button:hover {
 }
 .usage-browser-table tbody tr:nth-child(odd),
 .resolver-results-table tbody tr:nth-child(odd),
-.move-usage-table tbody tr:nth-child(odd) {
+.static-rows tbody tr:nth-child(odd) {
   background: color-mix(in srgb, var(--hairline) 18%, transparent);
 }
 .usage-browser-table tbody tr:nth-child(odd):hover,
 .resolver-results-table tbody tr:nth-child(odd):hover,
-.move-usage-table tbody tr:nth-child(odd):hover {
+.static-rows tbody tr:nth-child(odd):hover {
   background: color-mix(in srgb, var(--hairline) 45%, transparent);
 }
-/* A move row opens nothing. */
-.move-usage-table tbody tr {
+/* A move or item row opens nothing. */
+.static-rows tbody tr {
   cursor: default;
 }
 .move-usage-table th:nth-child(n + 5),
-.move-usage-table td:nth-child(n + 5) {
+.move-usage-table td:nth-child(n + 5),
+.item-usage-table th:nth-child(n + 3),
+.item-usage-table td:nth-child(n + 3) {
   text-align: right;
 }
-/* "TM34 badge 5" stays on one line; two routes may wrap between them. */
-.move-route {
+/* "TM34 badge 5" stays on one line; two sources may wrap between them. */
+.table-source {
   white-space: nowrap;
 }
 .usage-browser-table tbody tr.selected,

@@ -1,4 +1,6 @@
 import { getActiveGame } from './games/registry.js';
+import { defaultTableState } from './views/table-parts.js';
+import { USAGE_TABLES } from './views/usage-tables.js';
 
 /** @const {!Object} */
 export const DEFAULT_STATE = {
@@ -7,15 +9,15 @@ export const DEFAULT_STATE = {
   // browser format (main.js re-validates both against the usage data).
   family: getActiveGame().families[0],
   format: 'gen7anythinggoes',
-  search: '',
-  sortBy: 'rank',
-  sortDir: 'asc',
+  // The Usage Data page's open table, and each table's own search and sort
+  // (views/usage-tables.js), kept while another table shows.
+  usageTable: USAGE_TABLES[0].id,
+  tables: Object.fromEntries(
+    USAGE_TABLES.map((table) => [table.id, defaultTableState(table)]),
+  ),
   selectedPokemon: null,
   resolverQuery: '',
   resolverSelectedPokemon: null,
-  moveSearch: '',
-  moveSortBy: 'prior',
-  moveSortDir: 'desc',
   // Below ten learners a move's share is a few Pokémon's habit, not a
   // pattern, and the signature moves crowd the top of the table.
   moveMinLearners: 10,
@@ -39,4 +41,16 @@ export function replaceState(nextState) {
  */
 export function setState(patch) {
   currentState = { ...currentState, ...patch };
+}
+
+/**
+ * Shallow-merges patch into one Usage Data table's search and sort.
+ * @param {string} tableId
+ * @param {!Object} patch
+ */
+export function setTableState(tableId, patch) {
+  const { tables } = currentState;
+  setState({
+    tables: { ...tables, [tableId]: { ...tables[tableId], ...patch } },
+  });
 }

@@ -18,6 +18,12 @@ export function bindAppEvents(handlers) {
     });
   });
 
+  document.querySelectorAll('[data-usage-table]').forEach((button) => {
+    button.addEventListener('click', () => {
+      handlers.onUsageTableChange(button.dataset.usageTable);
+    });
+  });
+
   document
     .querySelector('#format-select')
     ?.addEventListener('change', (event) => {
@@ -43,22 +49,10 @@ export function bindAppEvents(handlers) {
   });
 
   document
-    .querySelector('#move-search-input')
-    ?.addEventListener('input', (event) => {
-      handlers.onMoveSearchInput(event.target.value);
-    });
-
-  document
     .querySelector('#move-min-learners-select')
     ?.addEventListener('change', (event) => {
       handlers.onMoveMinLearners(event.target.value);
     });
-
-  document.querySelectorAll('[data-move-sort-by]').forEach((button) => {
-    button.addEventListener('click', () => {
-      handlers.onMoveSort(button.dataset.moveSortBy);
-    });
-  });
 
   document.querySelectorAll('[data-pokemon-id]').forEach((row) => {
     row.addEventListener('click', () => {

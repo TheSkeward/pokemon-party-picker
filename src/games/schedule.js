@@ -104,20 +104,28 @@ export function getUnlockBadge(key) {
 }
 
 /**
- * The badge count at which a held item first becomes obtainable; null when
- * nothing tracks it (treat as timing-unknown, not unobtainable). Curated
- * checkpoint entries win; the schedule's generated item table covers the
- * rest.
+ * When and how a held item first becomes obtainable; null when nothing
+ * tracks it (treat as timing-unknown, not unobtainable). Curated checkpoint
+ * entries win the badge; the schedule's item table covers the rest. `via`
+ * is the item table's words for the source (a shop, a place, a wild
+ * holder), '' for an item only a checkpoint lists.
  * @param {string} itemId Normalized item id.
- * @return {?number}
+ * @return {?{badge: number, via: string}}
+ */
+export function getItemUnlock(itemId) {
+  const tracked = getActiveGame().schedule.itemUnlockBadges[itemId] || null;
+  const curated = getCheckpoints().find((checkpoint) =>
+    (checkpoint.unlocks.items || []).includes(itemId));
+  if (!curated) return tracked;
+  return { badge: curated.badges, via: tracked?.via || '' };
+}
+
+/**
+ * @param {string} itemId Normalized item id.
+ * @return {?number} The badge count of getItemUnlock.
  */
 export function getItemUnlockBadge(itemId) {
-  for (const checkpoint of getCheckpoints()) {
-    if ((checkpoint.unlocks.items || []).includes(itemId)) {
-      return checkpoint.badges;
-    }
-  }
-  return getActiveGame().schedule.itemUnlockBadges[itemId]?.badge ?? null;
+  return getItemUnlock(itemId)?.badge ?? null;
 }
 
 /**

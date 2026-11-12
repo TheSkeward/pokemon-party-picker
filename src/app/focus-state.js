@@ -1,7 +1,6 @@
 const FOCUSABLE_INPUT_IDS = new Set([
   'search-input',
   'resolver-query-input',
-  'move-search-input',
 ]);
 
 /**

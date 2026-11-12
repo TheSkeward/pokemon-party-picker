@@ -67,6 +67,18 @@ export async function loadMoveUsage(family) {
   return loadOptionalJson(dataUrl(`move-prior/${family}.json`));
 }
 
+/**
+ * A family's item usage table (scripts/build-item-usage.mjs): for each held
+ * item, the share of all the family's sets that hold it and how many
+ * Pokémon hold it more than any other item.
+ * @param {string} family
+ * @return {!Promise<?Object>} The table, or null when the family has none
+ *     (404).
+ */
+export async function loadItemUsage(family) {
+  return loadOptionalJson(dataUrl(`item-usage/${family}.json`));
+}
+
 // A file some formats and families do not have: its 404 is an answer, null,
 // and is cached like any other.
 async function loadOptionalJson(url) {
