@@ -65,6 +65,18 @@ test('an event is dated by its badge switches and episode variables', () => {
     badge([{ script: 'pbTrainerBattle(:CAMPER,"Billy","",false,0)' }]), 0);
   assert.equal(
     badge([{ badges: 5 }, { script: 'pbDoubleTrainerBattle(:A,"B",0)' }]), 5);
+  assert.equal(badge([{ script: '$Trainer.numbadges>=3' }]), 3);
+  // The clock is the same at every badge count: a stand open by day, a
+  // visitor of the weekend.
+  assert.equal(
+    badge([
+      { switch: 14, name: 's:PBDayNight.isDay?(pbGetTimeNow)' },
+      { switch: 30, name: 's:!pbIsWeekday(-1,2,4,6)' },
+    ]),
+    0,
+  );
+  // Any other script switch is as undated as a quest's.
+  assert.equal(badge([{ switch: 31, name: 's:pbGet(5)==2' }]), null);
   // A quest switch, an item check or a counter is no badge: undated.
   assert.equal(badge([{ switch: 2012, name: 'Blacksteam Case' }]), null);
   assert.equal(

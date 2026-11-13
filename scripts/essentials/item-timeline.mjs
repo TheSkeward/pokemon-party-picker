@@ -73,8 +73,10 @@ let ItemListing;
  * points without limit, each with the badge it is reached at. `currencies`
  * gives, for each currency a mart takes, the badge count from which it can
  * be earned again and again; a currency left out is one that cannot, or
- * that nothing dates, and what it buys is left out. `listing` is null for
- * a game without one.
+ * that nothing dates, and what it buys is left out. `unusedMapName` is the
+ * name a game leaves on the maps it no longer uses, whose copies are left
+ * out; null for a game whose dated-map records say which maps are never
+ * entered. `listing` is null for a game without one.
  * @typedef {{
  *   knownIds: !Set<string>,
  *   extracts: {itemEvents: !Object, wildItems: !Object,
@@ -88,6 +90,7 @@ let ItemListing;
  *   berryPlotBadge: number,
  *   pointCounters: !Array<{mapId: number, badge: number}>,
  *   currencies: !Object<string, number>,
+ *   unusedMapName: ?string,
  *   listing: ?ItemListing,
  * }}
  */
@@ -244,7 +247,7 @@ export function buildItemSources(game, warn = () => {}) {
       Object.keys(listedItems).find((name) => itemId(name) === id)];
     const dated = [];
     for (const copy of copies) {
-      if (copy.mapName === 'REMOVED') continue;
+      if (copy.mapName === game.unusedMapName) continue;
       const reached = reachBadge(copy.mapId);
       const gate = conditionBadge(copy.conditions, game.dating);
       if (reached == null || gate == null || reached < (first?.badges ?? 0)) {

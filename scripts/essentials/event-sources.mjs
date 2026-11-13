@@ -55,13 +55,24 @@ const FACING_CONDITION = 6;
 // time beyond reaching the trainer.
 const BATTLE_CALL = /^pb(Double)?TrainerBattle\(/;
 
+// A script that asks for a badge count outright.
+const BADGE_COUNT = /^\$Trainer\.numbadges\s*>=\s*(\d+)$/;
+
+// A switch the engine works out from the clock each time it is read: the
+// time of day or the day of the week, which every badge count sees.
+const CLOCK_SWITCH = /^s:!?(PBDayNight\.|pbIsWeekday\()/;
+
 // The badge one condition implies: its own for a badge count asked
 // outright, 0 for one that gates nothing in time (a confirmation, a price,
-// a negation, a facing test, a counter at zero, a battle to win), null for
-// one this cannot date.
+// a negation, a facing test, a counter at zero, a battle to win, the time
+// of day), null for one this cannot date.
 function badgeOfCondition(condition, dating) {
   if (condition.badges != null) return condition.badges;
-  if (condition.script != null && BATTLE_CALL.test(condition.script)) return 0;
+  if (condition.script != null) {
+    if (BATTLE_CALL.test(condition.script)) return 0;
+    const count = BADGE_COUNT.exec(condition.script.trim());
+    return count ? Number(count[1]) : null;
+  }
   if (
     condition.choice != null || condition.money != null ||
     condition.not != null || condition.selfSwitch != null ||
@@ -69,7 +80,10 @@ function badgeOfCondition(condition, dating) {
   ) {
     return 0;
   }
-  if (condition.switch != null) return dating.switchBadge(condition.name);
+  if (condition.switch != null) {
+    return CLOCK_SWITCH.test(condition.name || '')
+      ? 0 : dating.switchBadge(condition.name);
+  }
   if (condition.variable != null) {
     const floor = condition.atLeast ?? condition.value;
     const lowerBound = condition.atLeast != null ||
@@ -338,7 +352,7 @@ const SOLD_ONCE = /^!(\$game_switches\[self\.item\]|searchItem\(self\.item\))$/;
 // an event page would carry; `script` for one this does not read, which
 // nothing then dates.
 function rowCondition(text, markers) {
-  const badges = /^\$Trainer\.numbadges\s*>=\s*(\d+)$/.exec(text);
+  const badges = BADGE_COUNT.exec(text);
   if (badges) return { badges: Number(badges[1]) };
   const off = /^\$game_switches\[(\d+)\]\s*==\s*false$/.exec(text);
   if (off) {

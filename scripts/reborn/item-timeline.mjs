@@ -86,6 +86,7 @@ export function rebornItemTimeline() {
       pointCounters: [POINT_COUNTER],
       // The listing's shop table dates the shops.
       currencies: {},
+      unusedMapName: 'REMOVED',
       listing: {
         items: sheet.items,
         shopItems: sheet.shopItems,
