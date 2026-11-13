@@ -246,34 +246,42 @@ function renderAnalysis(analysis) {
 
       <div class="team-analysis-grid">
         ${renderSummaryCard({
+          // Counted without a verdict: a shared weakness a teammate covers
+          // is ordinary, and the next tile says whether one is not.
           label: 'Shared Weaknesses',
           value: sharedWeaknesses.length,
           detail: sharedWeaknesses.length
-            ? sharedWeaknesses.slice(0, 3).map((entry) => entry.type).join(', ')
+            ? listSome(sharedWeaknesses.map((entry) => entry.type), 3)
             : 'No type hits 2+ picks super effectively.',
         })}
         ${renderSummaryCard({
           label: 'Weaknesses with no switch-in',
           value: uncoveredWeaknesses.length,
+          tone: uncoveredWeaknesses.length ? 'warn' : 'ok',
           detail: uncoveredWeaknesses.length
-            ? uncoveredWeaknesses.slice(0, 3).map((entry) => entry.type).join(', ')
+            ? listSome(uncoveredWeaknesses.map((entry) => entry.type), 3)
             : 'Every shared weakness has a resist or immunity.',
         })}
         ${renderSummaryCard({
           label: 'Picks with a STAB attack',
           value: `${analysis.members.length - analysis.offensive.missingStabMembers.length}/${analysis.members.length}`,
+          tone: analysis.offensive.missingStabMembers.length ? 'warn' : 'ok',
           detail: analysis.offensive.missingStabMembers.length
-            ? `No STAB yet: ${analysis.offensive.missingStabMembers
-              .slice(0, 3)
-              .map((entry) => entry.member.name)
-              .join(', ')}.`
+            ? `No STAB yet: ${listSome(
+              analysis.offensive.missingStabMembers
+                .map((entry) => entry.member.name),
+              3,
+            )}.`
             : 'Every pick has a recommended damaging STAB move.',
         })}
         ${renderSummaryCard({
           label: 'Types with no SE answer',
           value: analysis.offensive.missingSuperEffectiveTargets.length,
+          tone: analysis.offensive.missingSuperEffectiveTargets.length
+            ? 'warn'
+            : 'ok',
           detail: analysis.offensive.missingSuperEffectiveTargets.length
-            ? analysis.offensive.missingSuperEffectiveTargets.slice(0, 4).join(', ')
+            ? listSome(analysis.offensive.missingSuperEffectiveTargets, 4)
             : 'The team can hit every type super effectively.',
         })}
       </div>
@@ -436,18 +444,18 @@ function renderRealTeamMember(member, availability = null) {
   return `
     <div class="team-set-card${warning ? ' warning' : ''}">
       <div class="team-set-head">
-        <strong>${escapeHtml(member.species)}</strong>
+        <h4>${escapeHtml(member.species)}</h4>
         ${status ? `<small class="team-real-team-member-status">${escapeHtml(status)}</small>` : ''}
       </div>
       <div class="team-set-meta">${metaParts.join(' · ')}</div>
       ${evs ? `<div class="team-set-evs">${escapeHtml(evs)}</div>` : ''}
-      <div class="team-set-moves">
+      <ul class="team-set-moves">
         ${(member.moves || [])
           .map((name, index) =>
             renderRealTeamMove(name, missingMoveIndexes.has(index)),
           )
           .join('')}
-      </div>
+      </ul>
     </div>
   `;
 }
@@ -457,10 +465,10 @@ function renderRealTeamMove(name, unavailable = false) {
   const facts = describeMoveMeta(meta);
 
   return `
-    <div class="team-set-move${unavailable ? ' unavailable' : ''}">
+    <li class="team-set-move${unavailable ? ' unavailable' : ''}">
       ${renderTypeBadge(meta?.type || 'Normal')}
       <span class="team-set-move-name"${facts ? ` title="${escapeHtml(facts)}"` : ''}>${escapeHtml(name)}</span>
-    </div>
+    </li>
   `;
 }
 
@@ -543,8 +551,13 @@ function renderSetCard(profile) {
     eventual ? `→ ${eventual} later` : null,
   ].filter(Boolean);
   const natureTip = set.nature ? describeNature(set.nature) : '';
+  // An item the player cannot have yet says so where it is named: the
+  // headline is otherwise read as what to equip today.
+  const itemAhead = set.item && set.itemAheadBadge != null
+    ? `<span class="team-set-ahead" title="${escapeAttr(`Not obtainable before ${badgeCount(set.itemAheadBadge)}`)}">${escapeHtml(`${set.item} (${badgeCount(set.itemAheadBadge)})`)}</span>`
+    : null;
   const metaParts = [
-    escapeHtml(set.item || 'No item recommended'),
+    itemAhead || escapeHtml(set.item || 'No item recommended'),
     set.ability
       ? escapeHtml(formatAbilityPath(set.ability, set.targetAbility)) : null,
     set.level ? escapeHtml(`Lv ${set.level}`) : null,
@@ -571,20 +584,14 @@ function renderSetCard(profile) {
     <div class="team-set-card ${profile.bestStabMove ? '' : 'warning'}" data-set-card="${escapeHtml(profile.fieldedId || profile.currentId || '')}">
       <div class="team-set-head">
         <span>
-          <strong>${escapeHtml(profile.currentName)}</strong>
+          <h4>${escapeHtml(profile.currentName)}</h4>
           ${renderBuildLabel(profile)}
         </span>
         ${subParts.length ? `<small>${escapeHtml(subParts.join(' · '))}</small>` : ''}
       </div>
       <div class="team-set-meta">${metaParts.join(' · ')}</div>
       ${evs ? `<div class="team-set-evs"${statsTip ? ` title="${escapeHtml(statsTip)}"` : ''}>${escapeHtml(evs)}</div>` : ''}
-      <div class="team-set-moves">
-        ${
-          moves.length
-            ? moves.map(renderSetMove).join('')
-            : `<small class="muted">No legal damaging moves available yet.</small>`
-        }
-      </div>
+      ${renderSetMoves(moves, 'No legal damaging moves available yet.')}
       ${renderSetReadiness(profile.setReadiness, profile)}
       ${renderDonorInterimGuides(profile.donorInterimGuides)}
       <div class="team-set-foot">
@@ -693,14 +700,19 @@ function renderSetReadiness(readiness, profile = null) {
       parts.push(`item ${readiness.item.detail}`);
     else parts.push('item ?');
   }
-  const complete = !readiness.pendingPickups && readiness.fullAtCap == null;
   parts.push(
     readiness.pendingPickups
       ? 'pickups pending'
-      : complete
+      : readiness.fullAtCap == null
         ? 'complete now'
         : `full at cap ${readiness.fullAtCap}`,
   );
+  // A set still assembling is the ordinary state of a playthrough, so the
+  // line is plain. Only what the player can act on today stands out:
+  // something already obtainable that has not been picked up.
+  const partsHtml = parts.map((part) => (part === 'pickups pending'
+    ? `<span class="team-set-pending">${part}</span>`
+    : escapeHtml(part)));
 
   // Listed as the builder seats them: the locks first, then the record's
   // moves, each saying why it is or is not in the set above.
@@ -733,8 +745,8 @@ function renderSetReadiness(readiness, profile = null) {
     .join('\n');
 
   return `
-    <div class="team-set-readiness${complete ? ' is-complete' : ''}" title="${escapeHtml(tooltip)}">
-      <small>Competitive set: ${escapeHtml(parts.join(' · '))}</small>
+    <div class="team-set-readiness" title="${escapeHtml(tooltip)}">
+      <small>Competitive set: ${partsHtml.join(' · ')}</small>
     </div>
     ${interim}
   `;
@@ -766,29 +778,33 @@ function renderDonorInterimGuides(guides) {
           <summary title="${escapeAttr(chainTip)}"><small>Interim donor: ${escapeHtml(
             guide.donorName,
           )}${escapeHtml(capNote)}${escapeHtml(fieldedNote)} — supplies ${escapeHtml(forText)}</small></summary>
-          <div class="team-set-moves">
-            ${
-              guide.moves.length
-                ? guide.moves.map(renderSetMove).join('')
-                : `<small class="muted">No usable damaging moves at the current cap.</small>`
-            }
-          </div>
+          ${renderSetMoves(
+            guide.moves, 'No usable damaging moves at the current cap.')}
         </details>
       `;
     })
     .join('');
 }
 
+// A set's moves as a list, or the note that stands for an empty one.
+function renderSetMoves(moves, emptyNote) {
+  return moves.length
+    ? `<ul class="team-set-moves">${moves.map(renderSetMove).join('')}</ul>`
+    : `<p class="team-set-moves-empty muted">${escapeHtml(emptyNote)}</p>`;
+}
+
+const badgeCount = (badges) => `${badges} badge${badges === 1 ? '' : 's'}`;
+
 function renderSetMove(move) {
   const facts = describeMoveMeta(getMoveMeta(move.name));
   const sourceTitle = move.sourceTitle || move.sourceLabel || 'Legal';
   return `
-    <div class="team-set-move">
+    <li class="team-set-move">
       ${renderTypeBadge(move.type)}
       <span class="team-set-move-name"${facts ? ` title="${escapeHtml(facts)}"` : ''}>${escapeHtml(move.name)}${move.standsInFor ? ` <small class="team-set-move-standin" title="${escapeAttr(`Stands in for ${move.standsInFor.name}, a move of this set that cannot be learned yet`)}">for ${escapeHtml(move.standsInFor.name)}</small>` : ''}${move.locked ? ' <small class="team-set-move-lock" title="Locked in the pool: this move is in every set built for the line">locked</small>' : ''}</span>
       <span class="team-set-move-dmg"${move.damageSteps?.length ? ` title="${escapeAttr(move.damageSteps.join('\n'))}"` : ''}>${escapeHtml(formatDamage(move))}</span>
       <span class="team-set-move-src" title="${escapeAttr(sourceTitle)}">${escapeHtml(move.sourceLabel || 'Legal')}</span>
-    </div>
+    </li>
   `;
 }
 
@@ -797,13 +813,44 @@ function formatEvs(evs) {
   return line ? `EVs: ${line}` : '';
 }
 
-function renderSummaryCard({ detail, label, value }) {
+// The first few names of a list, saying how many it leaves out, so a count
+// beside it is never larger than what the reader can see accounted for.
+function listSome(names, limit) {
+  const shown = names.slice(0, limit).join(', ');
+  return names.length > limit
+    ? `${shown} +${names.length - limit} more`
+    : shown;
+}
+
+// A tile's figure is coloured only where it is a verdict (`tone`: 'ok' or
+// 'warn'); its detail line says the same in words.
+function renderSummaryCard({ detail, label, tone = '', value }) {
   return `
     <div class="team-analysis-summary-card">
       <span>${escapeHtml(label)}</span>
-      <strong>${escapeHtml(value)}</strong>
+      <strong${tone ? ` class="is-${tone}"` : ''}>${escapeHtml(value)}</strong>
       <p>${escapeHtml(detail)}</p>
     </div>
+  `;
+}
+
+// A table of the analysis: a real one, so a screen reader reads it row by
+// row under its column names. `headers` are shown only where the cells do
+// not say what they are (`showHeaders`). The roles are spelled out because
+// the rows are laid out as grids on a narrow screen, which can cost a
+// table its meaning.
+function renderAnalysisTable({ label, headers, rows, showHeaders = false }) {
+  return `
+    <table class="team-analysis-table" role="table" aria-label="${escapeAttr(label)}">
+      <thead role="rowgroup"${showHeaders ? '' : ' class="visually-hidden"'}>
+        <tr role="row">
+          ${headers.map((header) => `<th role="columnheader" scope="col">${escapeHtml(header)}</th>`).join('')}
+        </tr>
+      </thead>
+      <tbody role="rowgroup">
+        ${rows.join('')}
+      </tbody>
+    </table>
   `;
 }
 
@@ -813,8 +860,10 @@ function renderDefensiveRows(sharedWeaknesses, sturdySwitchTypes) {
       <h4>Shared weaknesses</h4>
       ${
         sharedWeaknesses.length
-          ? sharedWeaknesses
-            .map((entry) =>
+          ? renderAnalysisTable({
+            label: 'Shared weaknesses',
+            headers: ['Attacking type', 'Weak', 'Cover', 'Picks'],
+            rows: sharedWeaknesses.map((entry) =>
               renderDefenseTypeRow(entry, {
                 primary: `${entry.weak.length} weak`,
                 secondary:
@@ -822,8 +871,8 @@ function renderDefensiveRows(sharedWeaknesses, sturdySwitchTypes) {
                       ? `${entry.immune.length} immune`
                       : `${entry.resist.length} resist`,
               }),
-            )
-            .join('')
+            ),
+          })
           : `<p class="muted">No shared weaknesses across the current picks.</p>`
       }
     </div>
@@ -832,16 +881,17 @@ function renderDefensiveRows(sharedWeaknesses, sturdySwitchTypes) {
       <h4>Resists and immunities</h4>
       ${
         sturdySwitchTypes.length
-          ? sturdySwitchTypes
-            .slice(0, 8)
-            .map((entry) =>
+          ? renderAnalysisTable({
+            label: 'Resists and immunities',
+            headers: ['Attacking type', 'Cover', 'Weak', 'Picks'],
+            rows: sturdySwitchTypes.slice(0, 8).map((entry) =>
               renderDefenseTypeRow(entry, {
                 primary: `${getCoverCount(entry)} cover`,
                 secondary:
                     entry.weak.length > 0 ? `${entry.weak.length} weak` : 'no weak',
               }),
-            )
-            .join('')
+            ),
+          })
           : `<p class="muted">No attack type has multiple resists or immunities.</p>`
       }
     </div>
@@ -850,12 +900,12 @@ function renderDefensiveRows(sharedWeaknesses, sturdySwitchTypes) {
 
 function renderDefenseTypeRow(entry, { primary, secondary }) {
   return `
-    <div class="team-analysis-row">
-      ${renderTypeBadge(entry.type)}
-      <strong>${escapeHtml(primary)}</strong>
-      <span>${escapeHtml(secondary)}</span>
-      <small>${escapeHtml(formatDefenseNames(entry))}</small>
-    </div>
+    <tr role="row">
+      <td role="cell">${renderTypeBadge(entry.type)}</td>
+      <td role="cell"><strong>${escapeHtml(primary)}</strong></td>
+      <td role="cell">${escapeHtml(secondary)}</td>
+      <td role="cell"><small>${escapeHtml(formatDefenseNames(entry))}</small></td>
+    </tr>
   `;
 }
 
@@ -879,7 +929,12 @@ function renderCoverageSummary(offensive) {
       <p class="muted team-analysis-hint">Types you can only hit super effectively with a weak move.</p>
       ${
         weakestHits.length
-          ? weakestHits.map(renderCoverageTargetRow).join('')
+          ? renderAnalysisTable({
+            label: 'Thinnest super-effective answers',
+            headers: ['Target', 'Damage', 'With', 'Move'],
+            rows: weakestHits.map(renderCoverageTargetRow),
+            showHeaders: true,
+          })
           : `<p class="muted">No super-effective recommended hits are available yet.</p>`
       }
     </div>
@@ -890,16 +945,16 @@ function renderCoverageTargetRow(entry) {
   const best = entry.best;
 
   return `
-    <div class="team-analysis-row ${best ? '' : 'warning'}">
-      ${renderTypeBadge(entry.type)}
-      <strong>${best ? formatPower(best.estimatedDamage) : 'none'}</strong>
-      <span>${best ? escapeHtml(best.attackType) : 'missing'}</span>
-      <small>${
+    <tr role="row"${best ? '' : ' class="warning"'}>
+      <td role="cell">${renderTypeBadge(entry.type)}</td>
+      <td role="cell"><strong>${best ? formatPower(best.estimatedDamage) : 'none'}</strong></td>
+      <td role="cell">${best ? escapeHtml(best.attackType) : 'missing'}</td>
+      <td role="cell"><small>${
         best
           ? escapeHtml(`${best.moveName} from ${best.memberName}`)
           : 'No recommended super-effective hit'
-      }</small>
-    </div>
+      }</small></td>
+    </tr>
   `;
 }
 
@@ -911,6 +966,8 @@ function formatPower(value) {
 
 function formatDamage(move) {
   if (!move) return '';
+  // A status move deals none by design; "0 dmg" would read as a dud.
+  if (move.category === 'Status') return 'status';
 
   const damage = Number.isFinite(move.estimatedDamage)
     ? `${formatPower(move.estimatedDamage)} dmg`

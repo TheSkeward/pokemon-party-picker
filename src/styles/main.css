@@ -1712,8 +1712,16 @@ html {
   gap: 0.5rem;
 }
 
-.team-set-head strong {
+/* A card's name is a heading so the cards can be moved between, and looks
+   like the name it is rather than a section label. */
+.team-set-head h4 {
+  display: inline;
+  margin: 0;
+  color: var(--text);
   font-size: var(--type-m);
+  font-weight: 700;
+  font-variant-caps: normal;
+  letter-spacing: 0;
 }
 
 .team-set-head small {
@@ -1746,6 +1754,12 @@ html {
   color: var(--text);
 }
 
+/* An item the set names that the player cannot have yet. */
+.team-set-ahead {
+  color: var(--text-muted);
+  cursor: help;
+}
+
 .team-set-evs {
   font-size: var(--type-s);
   color: var(--text-muted);
@@ -1755,7 +1769,14 @@ html {
 .team-set-moves {
   display: grid;
   gap: 0.25rem;
-  margin-top: 0.15rem;
+  margin: 0.15rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.team-set-moves-empty {
+  margin: 0.15rem 0 0;
+  font-size: var(--type-s);
 }
 
 .team-set-move {
@@ -1807,17 +1828,18 @@ html {
   margin-top: 0.1rem;
 }
 
-/* Phase 1 readiness line: caution-gold while the competitive set is still
-   assembling, muted once complete. Hover for the per-element breakdown. */
+/* The readiness line: plain, since a set still assembling is the ordinary
+   state of a playthrough. Only a pickup the player can make today takes
+   the caution colour. Hover for the per-element breakdown. */
 .team-set-readiness {
   font-size: var(--type-s);
-  color: var(--state-warn);
+  color: var(--text-muted);
   margin-top: 0.15rem;
   cursor: help;
 }
 
-.team-set-readiness.is-complete {
-  color: var(--text-muted);
+.team-set-pending {
+  color: var(--state-warn);
 }
 
 /* The interim note under the readiness line: informational, so muted. */
@@ -1942,6 +1964,14 @@ html {
   font-variant-numeric: tabular-nums;
 }
 
+.team-analysis-summary-card strong.is-ok {
+  color: var(--state-ok);
+}
+
+.team-analysis-summary-card strong.is-warn {
+  color: var(--state-warn);
+}
+
 .team-analysis-summary-card p {
   margin: 0;
   color: var(--text-muted);
@@ -1959,27 +1989,47 @@ html {
   margin-top: 0.75rem;
 }
 
-.team-analysis-row {
-  display: grid;
-  grid-template-columns: 5.75rem 4.5rem 4.5rem minmax(0, 1fr);
-  gap: 0.5rem;
-  align-items: center;
-  border-top: 1px solid var(--hairline);
-  border-radius: var(--radius);
-  padding: 0.55rem 0;
+/* A table of the analysis: a type, a figure, a second figure, and the
+   picks or the move behind them, which take the width that is left. */
+.team-analysis-table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.team-analysis-row.warning {
-  background: color-mix(in srgb, var(--state-warn) 8%, transparent);
-}
-
-.team-analysis-row span:not(.move-badge),
-.team-analysis-row small {
+.team-analysis-table th {
+  padding: 0 var(--space-2) var(--space-1) 0;
   color: var(--text-muted);
+  font-size: var(--type-s);
+  font-weight: 600;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.06em;
+  text-align: left;
 }
 
-.team-analysis-row small {
-  min-width: 0;
+.team-analysis-table td {
+  border-top: 1px solid var(--hairline);
+  padding: 0.55rem var(--space-2) 0.55rem 0;
+  color: var(--text-muted);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.team-analysis-table td:first-child {
+  width: 5.75rem;
+}
+
+.team-analysis-table td:last-child {
+  width: 100%;
+  padding-right: 0;
+  white-space: normal;
+}
+
+.team-analysis-table td strong {
+  color: var(--text);
+}
+
+.team-analysis-table tr.warning {
+  background: color-mix(in srgb, var(--state-warn) 8%, transparent);
 }
 
 .team-analysis-type-badge {
@@ -2006,12 +2056,33 @@ html {
     grid-template-columns: 1fr;
   }
 
-  .team-analysis-row {
+  /* On a narrow screen a row keeps its type and two figures on one line
+     and gives the picks or the move a line of their own. */
+  .team-analysis-table tbody tr {
+    display: grid;
     grid-template-columns: 5.75rem 1fr 1fr;
+    align-items: center;
+    border-top: 1px solid var(--hairline);
+    padding: 0.4rem 0;
   }
 
-  .team-analysis-row small {
+  .team-analysis-table td {
+    border-top: 0;
+    padding: 0.15rem var(--space-2) 0.15rem 0;
+  }
+
+  .team-analysis-table td:last-child {
     grid-column: 1 / -1;
+  }
+
+  /* The column names cannot sit over a row laid out this way; they stay
+     for a screen reader. */
+  .team-analysis-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
   }
 }
 

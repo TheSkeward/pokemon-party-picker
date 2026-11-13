@@ -47,6 +47,7 @@ import {
   CANONICAL_SET_SIZE,
   canonicalMoveIds,
   computeSetReadiness,
+  itemAheadBadge,
 } from '../playthrough/set-readiness.js';
 import { teamMemberKey } from './item-recommendations.js';
 import { selectObservedSet } from './observed-sets.js';
@@ -123,7 +124,7 @@ export async function buildTeamAnalysis(
         profile: entry.profile,
         topSet: entry.topSet,
         assignedItem,
-        levelCap: progression.levelCap,
+        progression,
       });
       return entry;
     }),
@@ -250,7 +251,7 @@ async function preferSelectedTeamSketchRoutes({
       profile: entry.profile,
       topSet: entry.topSet,
       assignedItem,
-      levelCap: progression.levelCap,
+      progression,
     });
     rebuilt[index] = entry;
   }
@@ -1143,7 +1144,7 @@ function assumedInvestment(member, moves, levelCap, investmentSide) {
 }
 
 function buildRecommendedSet(
-  { member, profile, topSet, assignedItem, levelCap }) {
+  { member, profile, topSet, assignedItem, progression }) {
   // The card shows the build the scoring priced: the competitive spread when
   // the set follows it, and that spread mirrored to the other attacking side
   // when the mon was priced there (an interim mon fielding stopgaps).
@@ -1155,16 +1156,18 @@ function buildRecommendedSet(
     ? mirrorSpreadSide(topSet.spread)
     : topSet.spread;
   const parsed = spread ? parseSpread(spread) : null;
+  const item = assignedItem?.name || topSet.item || null;
 
   return {
     species: member.name,
     representativeName: member.representativeName || '',
-    item: assignedItem?.name || topSet.item || null,
+    item,
+    itemAheadBadge: itemAheadBadge(item, progression),
     ability: topSet.ability || null,
     targetAbility: profile.targetAbility || null,
     nature: parsed?.nature ? capitalize(parsed.nature) : null,
     evs: parsed?.evs || null,
-    level: normalizeLevel(levelCap),
+    level: normalizeLevel(progression.levelCap),
     moves: (profile.recommendedMoves || []).map((entry) => entry.name),
   };
 }

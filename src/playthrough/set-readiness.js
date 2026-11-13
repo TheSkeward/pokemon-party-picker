@@ -21,7 +21,11 @@
  */
 
 import { getItemUnlockBadge } from '../games/items.js';
-import { getUnlockBadge, levelCapAtBadges } from '../games/schedule.js';
+import {
+  badgesHeldOf,
+  getUnlockBadge,
+  levelCapAtBadges,
+} from '../games/schedule.js';
 import { lockedMoveIdsFor, receivedForm } from './legal-moves.js';
 import { mechanics, teachingRoutesByMove } from '../games/legality.js';
 import { fixedMoveDamage } from '../teamBuilder/damage-model.js';
@@ -49,6 +53,22 @@ function earliestTeachingRoute(moveId) {
 
 const badgePhrase = (badge) =>
   badge === 0 ? 'from the start' : `@${badge} badge${badge === 1 ? '' : 's'}`;
+
+/**
+ * The badge count at which an item first comes, when that is still ahead
+ * of the player: they hold none and have fewer badges. Null when they
+ * hold one, can already get one, or its timing or theirs is not known.
+ * @param {?string} itemName
+ * @param {!Object} progression
+ * @return {?number}
+ */
+export function itemAheadBadge(itemName, progression) {
+  const itemId = toId(itemName || '');
+  if (!itemId || (progression.ownedItems || {})[itemId] > 0) return null;
+  const badge = getItemUnlockBadge(itemId);
+  const held = badgesHeldOf(progression);
+  return badge != null && held != null && badge > held ? badge : null;
+}
 
 /**
  * The canonical competitive set: the pool's locked moves in their order,
