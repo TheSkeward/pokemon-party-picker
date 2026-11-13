@@ -5,6 +5,13 @@
  * `schedule`, so every game supplies its own timeline in one shape (see
  * reborn/badge-timeline.js for the Reborn data and its conventions). Held
  * items are timed by their sources (games/items.js).
+ *
+ * A timeline need not have a checkpoint for every badge count (a game may
+ * hand two badges over together), so a badge count is looked up by the
+ * first checkpoint that reaches it, never by building an id. When a
+ * timeline drops a checkpoint, the descriptor's `schedule.retired` maps the
+ * old id to the one that stands for it now, so a save made on it carries
+ * over.
  */
 import { getActiveGame } from './registry.js';
 
@@ -54,6 +61,32 @@ export function badgesHeldOf(progression) {
  */
 export function getCheckpoint(id) {
   return indexOf().get(String(id || ''))?.checkpoint || null;
+}
+
+/**
+ * The checkpoint a saved id stands for: the timeline's own, or the
+ * replacement of one the timeline has retired.
+ * @param {?string} id
+ * @return {?Object} Null for ids the timeline never had.
+ */
+export function getSavedCheckpoint(id) {
+  const key = String(id || '');
+  const { retired } = getActiveGame().schedule;
+  return getCheckpoint(key) ||
+    (retired && Object.hasOwn(retired, key)
+      ? getCheckpoint(retired[key])
+      : null);
+}
+
+/**
+ * The level cap in force once a badge count is held: that of the first
+ * checkpoint with at least that many badges.
+ * @param {number} badges
+ * @return {?number} Null past the timeline's last badge.
+ */
+export function levelCapAtBadges(badges) {
+  const reached = getCheckpoints().find((entry) => entry.badges >= badges);
+  return reached ? reached.levelCap : null;
 }
 
 /**

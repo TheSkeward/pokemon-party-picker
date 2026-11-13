@@ -22,7 +22,10 @@ import {
   TERRAIN_SEED_MIGRATION,
 } from '../reborn/reborn-seeds.js';
 import { TYPE_GEMS } from '../reborn/type-gems.js';
-import { REJUV_PROGRESSION_CHECKPOINTS } from '../rejuv/badge-timeline.js';
+import {
+  REJUV_PROGRESSION_CHECKPOINTS,
+  REJUV_RETIRED_CHECKPOINTS,
+} from '../rejuv/badge-timeline.js';
 import {
   REJUV_EVOLUTION_ITEM_AVAILABILITY,
   REJUV_EXTRA_INVENTORY_ITEMS,
@@ -69,6 +72,7 @@ export const REJUV_GAME = Object.freeze({
   families: Object.freeze(['gen9natdexsingles', 'gen9natdexdoubles']),
   schedule: Object.freeze({
     checkpoints: REJUV_PROGRESSION_CHECKPOINTS,
+    retired: REJUV_RETIRED_CHECKPOINTS,
   }),
   moveSources: Object.freeze({
     tmOptions: REJUV_TM_OPTIONS,
@@ -145,7 +149,7 @@ export const REJUV_GAME = Object.freeze({
     promotedTmMoves: Object.freeze([]),
     notes: Object.freeze([
       "Move legality comes from Rejuvenation's own data (mons.dat, V14.0): its level-up lists, egg moves, and machine and tutor compatibility, resolved onto the Gen 9 dex.",
-      'Level caps are the game\'s hard caps: 18 before the first badge, then 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 85, 90, 90, 100, 100 by badge count.',
+      'Level caps are the game\'s hard caps: 18 before the first badge, then 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 85, 90, 90, 100, 100 by badge count. The sixteenth and seventeenth badges are awarded together.',
       'Cut, Fly, Surf, Strength, Waterfall, and Dive are HMs; TMs are reusable.',
       "Machine and tutor timing follows BIGJRA's walkthrough by the chapter each is first reached; the game's own shop conditions gate the shop-sold ones.",
       "Rejuvenation's own moves (Poison Sweep, Stacking Shot, Deluge, Arenite Wall, Irritation, Slash and Burn, Mud Barrage, Magma Drift) and its Aevian, Rift, and original species are outside the Gen 9 tables and are not planned for.",

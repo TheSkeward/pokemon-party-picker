@@ -21,7 +21,7 @@
  */
 
 import { getItemUnlockBadge } from '../games/items.js';
-import { getCheckpoint, getUnlockBadge } from '../games/schedule.js';
+import { getUnlockBadge, levelCapAtBadges } from '../games/schedule.js';
 import { lockedMoveIdsFor, receivedForm } from './legal-moves.js';
 import { mechanics, teachingRoutesByMove } from '../games/legality.js';
 import { fixedMoveDamage } from '../teamBuilder/damage-model.js';
@@ -46,11 +46,6 @@ function earliestTeachingRoute(moveId) {
   const [first] = teachingRoutesByMove().get(moveId) || [];
   return first && first.badge != null ? first : null;
 }
-
-// Badge 0's checkpoint id is "start" (cap 20), not "badge-0".
-const capOfBadge = (badge) =>
-  getCheckpoint(badge === 0 ? 'start' : `badge-${badge}`)?.levelCap ??
-  null;
 
 const badgePhrase = (badge) =>
   badge === 0 ? 'from the start' : `@${badge} badge${badge === 1 ? '' : 's'}`;
@@ -208,7 +203,7 @@ export function computeSetReadiness({
       const route = earliestTeachingRoute(id);
       if (route) {
         candidates.push({
-          cap: capOfBadge(route.badge) ?? 100,
+          cap: levelCapAtBadges(route.badge) ?? 100,
           detail: `${route.label} ${badgePhrase(route.badge)}`,
         });
       }
@@ -226,7 +221,7 @@ export function computeSetReadiness({
         };
       }
       candidates.push({
-        cap: capOfBadge(badge) ?? 100,
+        cap: levelCapAtBadges(badge) ?? 100,
         detail: `level 1 move it arrived without — relearner ${badgePhrase(badge)}`,
       });
     }
@@ -284,7 +279,7 @@ export function computeSetReadiness({
     } else {
       const badge = getItemUnlockBadge(itemId);
       if (badge != null) {
-        capNeeds.push(capOfBadge(badge) ?? 100);
+        capNeeds.push(levelCapAtBadges(badge) ?? 100);
         item = {
           name: itemName,
           status: 'later',

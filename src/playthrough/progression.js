@@ -6,7 +6,7 @@ import { mechanics, moveSources } from '../games/legality.js';
 import { gameItems } from '../games/items.js';
 import { analysisTypes } from './type-chart.js';
 import { accessFields } from '../games/evolution.js';
-import { getCheckpoint } from '../games/schedule.js';
+import { getCheckpoint, getSavedCheckpoint } from '../games/schedule.js';
 import { getActiveGame } from '../games/registry.js';
 import { readSavedState } from '../games/saved-state.js';
 import { FULL_SUPPLY } from '../games/item-sources.js';
@@ -90,7 +90,7 @@ export function clearSavedProgression() {
  * Canonicalizes any progression-shaped input (saved state, legacy saves,
  * mid-edit objects) into the schema of DEFAULT_PROGRESSION: unknown
  * checkpoints/options drop out, counts and biases clamp to their caps, and
- * legacy fields (free-text option lists) migrate.
+ * legacy fields (free-text option lists, retired checkpoints) migrate.
  * Every mutator below funnels its result through this, so persisted state
  * is normalized by construction.
  * @param {Object=} progression
@@ -98,13 +98,7 @@ export function clearSavedProgression() {
  */
 export function normalizeProgression(progression = {}) {
   return {
-    // The badge/post-game checkpoint the player selected (badge-timeline.js).
-    // The level cap it derives is written into levelCap, which stays the
-    // single field every consumer reads.
-    checkpoint: getCheckpoint(progression.checkpoint)
-      ? String(progression.checkpoint)
-      : '',
-    levelCap: normalizeStoredLevelCap(progression.levelCap),
+    ...normalizeCheckpoint(progression),
     moveRelearnerUnlocked: Boolean(progression.moveRelearnerUnlocked),
     daycareUnlocked: Boolean(progression.daycareUnlocked),
     // A game with no Type Changer has nothing to unlock.
@@ -135,6 +129,21 @@ export function normalizeProgression(progression = {}) {
     // Team slots: how many of the six the optimizer may fill (an egg in the
     // party takes one). Stored only when fewer than six, for the same reason.
     ...normalizeTeamSlots(progression.teamSlots),
+  };
+}
+
+// The badge/post-game checkpoint the player selected (badge-timeline.js)
+// and the level cap it derives, which stays the single field every consumer
+// reads. A save on a checkpoint the timeline has since retired moves to the
+// one that replaced it, cap included.
+function normalizeCheckpoint(progression) {
+  const saved = String(progression.checkpoint || '');
+  const checkpoint = getSavedCheckpoint(saved);
+  return {
+    checkpoint: checkpoint ? checkpoint.id : '',
+    levelCap: checkpoint && checkpoint.id !== saved
+      ? String(checkpoint.levelCap)
+      : normalizeStoredLevelCap(progression.levelCap),
   };
 }
 

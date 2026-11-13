@@ -1,6 +1,6 @@
 // Rejuvenation is the second Essentials game on the registry: a Gen 9 dex
 // with the National Dex prior, its own learnsets resolved through the
-// committed dex map, eighteen hard level caps, reusable machines, the Link
+// committed dex map, the game's hard level caps, reusable machines, the Link
 // Heart, and Reborn's field seeds and gems. These pin the descriptor, its
 // curated tables, and the data built from the game's extracts.
 import test from 'node:test';
@@ -18,7 +18,12 @@ import {
 await loadGame('rejuv');
 
 const { dex } = await import('../src/games/dex.js');
-const { getCheckpoints } = await import('../src/games/schedule.js');
+const { getCheckpoints, levelCapAtBadges } = await import(
+  '../src/games/schedule.js',
+);
+const { normalizeProgression } = await import(
+  '../src/playthrough/progression.js',
+);
 const { mechanics, moveSources } = await import('../src/games/legality.js');
 const { getExpectedItemChanges, getItemUnlockBadge } = await import(
   '../src/games/items.js',
@@ -73,23 +78,35 @@ test('rejuv is registered on the Gen 9 dex with the National Dex families', () =
 });
 
 test('the schedule is the eighteen badges with the game\'s hard caps', () => {
+  // The game hands the two Fairy Tale badges over together, so no
+  // checkpoint holds sixteen; Sigil Pearl comes last.
+  const badges = [
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 18,
+  ];
   const caps = [
-    18, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 85, 90, 90, 100,
-    100,
+    18, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 85, 90, 100, 100,
   ];
   const checkpoints = REJUV_PROGRESSION_CHECKPOINTS;
-  assert.equal(checkpoints.length, caps.length);
+  assert.deepEqual(checkpoints.map((c) => c.badges), badges);
   assert.deepEqual(checkpoints.map((c) => c.levelCap), caps);
-  assert.deepEqual(checkpoints.map((c) => c.badges), caps.map((_, i) => i));
   withRejuv(() => {
     assert.equal(getCheckpoints()[1].label, 'PoisonHeart Badge (Venam)');
-    // The game hands the two Fairy Tale badges over together and Sigil
-    // Pearl last.
     assert.deepEqual(getCheckpoints().slice(16).map((c) => c.label), [
-      'Fairy Tale: Beginnings Badge (Allen)',
-      'Fairy Tale: Endings Badge (Alice)',
+      'Fairy Tale Badges (Allen & Alice)',
       'Sigil Pearl Badge (Damien)',
     ]);
+    // Something dated to the sixteenth badge waits for the pair.
+    assert.equal(levelCapAtBadges(15), 90);
+    assert.equal(levelCapAtBadges(16), 100);
+    assert.equal(levelCapAtBadges(19), null);
+    // A save from when sixteen was a checkpoint moves to the pair, cap
+    // included; an id the timeline never had still clears.
+    const moved = normalizeProgression({ checkpoint: 'badge-16', levelCap: '90' });
+    assert.equal(moved.checkpoint, 'badge-17');
+    assert.equal(moved.levelCap, '100');
+    const unknown = normalizeProgression({ checkpoint: 'badge-19', levelCap: '90' });
+    assert.equal(unknown.checkpoint, '');
+    assert.equal(unknown.levelCap, '90');
     assert.equal(getItemUnlockBadge('linkheart'), 1);
     assert.equal(getItemUnlockBadge('safetygoggles'), 7);
   });

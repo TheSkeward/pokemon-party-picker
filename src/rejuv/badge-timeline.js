@@ -1,21 +1,19 @@
 /**
  * @fileoverview The Rejuvenation progression timeline, in the shape
  * games/schedule.js reads (see reborn/badge-timeline.js for the field
- * conventions). Eighteen badge checkpoints: the fifteen of BIGJRA's
- * walkthrough (bigjra.github.io/rejuvenation, V13.5 chapters 1 to 15, in the
- * order the story awards them) and V14's three, in the order the game's
- * own events hand them over: Allen and Alice give Fairy Tale: Beginnings
- * and Fairy Tale: Endings one after the other on a single page (map 661
- * event 142), and Sigil Pearl follows the fight with Damien (map 637 event
- * 130). So the count held goes 15, 17, 18: sixteen badges are never held
- * on their own.
+ * conventions). Eighteen badges at seventeen checkpoints: the fifteen of
+ * BIGJRA's walkthrough (bigjra.github.io/rejuvenation, V13.5 chapters 1 to
+ * 15, in the order the story awards them) and V14's three, in the order the
+ * game's own events hand them over. Allen and Alice give Fairy Tale:
+ * Beginnings and Fairy Tale: Endings one after the other on a single page
+ * (map 661 event 142), so the count held goes from 15 to 17 and the pair is
+ * one checkpoint: a player never stands at sixteen. Sigil Pearl follows the
+ * fight with Damien (map 637 event 130).
  *
  * Level caps are the game's: LEVELCAPS in Scripts/Rejuv/SystemConstants.rb
  * (V14.0) is indexed by badge count, 18 before the first badge and 100 from
  * the seventeenth, and the game enforces it (a hard cap, not an honor
- * system). Pyramid Point and Sigil Pearl raise no cap. Nor does the
- * sixteenth badge by the table, but it comes with the seventeenth, so the
- * Fairy Tale pair takes the cap from 90 to 100.
+ * system). Pyramid Point and Sigil Pearl raise no cap.
  *
  * `unlocks` names what first becomes obtainable at a checkpoint, timed by
  * the walkthrough chapter in which it is first reached: the evolution
@@ -37,7 +35,7 @@
  *     controls when you reach it.
  */
 
-/** The timeline, in play order: game start then 18 badge checkpoints. */
+/** The timeline, in play order: game start then 17 badge checkpoints. */
 export const REJUV_PROGRESSION_CHECKPOINTS = [
   {
     id: 'start', badges: 0, label: 'No badges', detail: 'Game start', levelCap: 18,
@@ -134,7 +132,15 @@ export const REJUV_PROGRESSION_CHECKPOINTS = [
   },
   // V14: the league's last three seats. The first two are handed over
   // together, so a player holds fifteen badges and then seventeen.
-  { id: 'badge-16', badges: 16, label: 'Fairy Tale: Beginnings Badge (Allen)', levelCap: 90, unlocks: {} },
-  { id: 'badge-17', badges: 17, label: 'Fairy Tale: Endings Badge (Alice)', levelCap: 100, unlocks: {} },
+  { id: 'badge-17', badges: 17, label: 'Fairy Tale Badges (Allen & Alice)', levelCap: 100, unlocks: {} },
   { id: 'badge-18', badges: 18, label: 'Sigil Pearl Badge (Damien)', levelCap: 100, unlocks: {} },
 ];
+
+/**
+ * Checkpoint ids this timeline once had, each with the id that stands for
+ * it now (games/schedule.js). Sixteen badges were a checkpoint until the
+ * award page showed the game never leaves a player there.
+ */
+export const REJUV_RETIRED_CHECKPOINTS = Object.freeze({
+  'badge-16': 'badge-17',
+});
