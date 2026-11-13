@@ -49,8 +49,9 @@ import { applyGameTheme } from './app/theme.js';
 import { renderLegalMovesPanel } from './playthrough/legal-moves-view';
 import { renderTeamAnalysisPanel } from './teamBuilder/team-analysis-view';
 import { getCurrentSpeciesForChoice } from './playthrough/current-species.js';
+import { evolutionItemsAbove } from './playthrough/evolution-requirements.js';
 import {
-  addOwnedItems,
+  clearOwnedItems,
   applyCheckpoint,
   clearSavedProgression,
   loadSavedProgression,
@@ -58,6 +59,7 @@ import {
   saveProgression,
   setOpponentTypeBias,
   setOwnedItemCount,
+  setOwnedItemCounts,
   setProgressionOptions,
   updateProgressionField,
   updateProgressionOption,
@@ -67,8 +69,7 @@ import { toId } from './utils/ids.js';
 import { bindPersistentDetails } from './utils/details-state.js';
 import {
   gameItems,
-  getEvolutionItemIds,
-  getRenewablyObtainableItems,
+  getExpectedItemChanges,
 } from './games/items.js';
 import { buildPoolAvailabilityText } from './teamBuilder/availability-export';
 import { withPoolAnnotations } from './teamBuilder/input-groups';
@@ -129,6 +130,9 @@ export function mountPoolOptimizer(container, options = {}) {
     teamSortDir: getParam('teamSortDir') || loadSavedTeamSortDir() || 'desc',
     result: null,
     resultProgressionKey: '',
+    // The evolution items the result's lines can spend
+    // (evolutionItemsAbove): the owned items the result depends on.
+    resultEvolutionItemIds: new Set(),
     // Where the current run is (optimize-phase.js). The view switches on it.
     phase: OptimizePhase.IDLE,
     statusMessage: '',
@@ -241,7 +245,7 @@ export function mountPoolOptimizer(container, options = {}) {
       // Snapshot the inputs this run is actually computed against — stamping
       // from live state after the await would let an edit made mid-optimize
       // mark the old-input result as fresh.
-      const runProgressionKey = getProgressionKey(state.progression);
+      const runProgression = state.progression;
 
       const result = await optimizeTeamFromPool({
         availability,
@@ -258,7 +262,13 @@ export function mountPoolOptimizer(container, options = {}) {
       });
       if (runToken !== optimizeRunToken) return;
       state.result = result;
-      state.resultProgressionKey = runProgressionKey;
+      state.resultEvolutionItemIds = evolutionItemsAbove(
+        result.lines
+          .filter((line) => !line.unresolved)
+          .map((line) => line.inputName),
+      );
+      state.resultProgressionKey =
+        getProgressionKey(runProgression, state.resultEvolutionItemIds);
       const meta = state.result.telemetryMeta;
       if (meta) {
         phases.setup = meta.setupMs;
@@ -976,25 +986,37 @@ export function mountPoolOptimizer(container, options = {}) {
       });
 
     app
-      .querySelector('[data-renewable-sync-button]')
+      .querySelector('[data-expected-sync-button]')
       ?.addEventListener('click', () => {
         const badges =
           getCheckpoint(state.progression.checkpoint)?.badges ?? null;
-        const renewable = getRenewablyObtainableItems(
+        const changes = getExpectedItemChanges(
           badges,
           state.progression.ownedItems || {},
-          MAX_TRACKED_ITEM_COUNT,
         );
-        if (!renewable.length) return;
-        state.progression = addOwnedItems(
+        if (!changes.length) return;
+        state.progression = setOwnedItemCounts(
           state.progression,
-          Object.fromEntries(
-            renewable.map((item) => [item.id, MAX_TRACKED_ITEM_COUNT]),
-          ),
+          Object.fromEntries(changes.map((item) => [item.id, item.count])),
         );
         finishOwnedItemsEdit(
-          `Added ${renewable.length} renewable item${renewable.length === 1 ? '' : 's'} at 6+.`,
+          `Set ${changes.length} item${changes.length === 1 ? '' : 's'} to the expected count.`,
         );
+      });
+
+    app
+      .querySelector('[data-owned-items-clear-button]')
+      ?.addEventListener('click', () => {
+        const tracked =
+          Object.keys(state.progression.ownedItems || {}).length;
+        if (
+          !tracked ||
+          !window.confirm(`Remove all ${tracked} held items from the list?`)
+        ) {
+          return;
+        }
+        state.progression = clearOwnedItems(state.progression);
+        finishOwnedItemsEdit(`Removed ${tracked} held items.`);
       });
 
     app.querySelectorAll('[data-owned-item-count]').forEach((control) => {
@@ -1706,7 +1728,8 @@ export function mountPoolOptimizer(container, options = {}) {
     return Boolean(
       state.result &&
         state.resultProgressionKey &&
-        state.resultProgressionKey !== getProgressionKey(state.progression),
+        state.resultProgressionKey !== getProgressionKey(
+          state.progression, state.resultEvolutionItemIds),
     );
   }
 
@@ -1845,16 +1868,18 @@ function waitForPaint() {
   });
 }
 
-function getProgressionKey(progression) {
+function getProgressionKey(progression, usedEvolutionItemIds) {
   // Ordinary owned items drive item recommendations (recomputed every render),
   // not the team optimization, so they must not flag an optimized team as
   // stale. Owned EVOLUTION items are the exception: they zero evolution
-  // friction and override access gates, so adding/removing one must
-  // re-optimize.
+  // friction and override access gates, and a copy evolves one candidate,
+  // so a change in how many are owned must re-optimize. Only the ones a
+  // line of the pool can spend: a Fire Stone changes nothing for a pool
+  // with nothing to use it on.
   const { ownedItems, ...rest } = progression || {};
   const evolutionItems = {};
-  for (const id of getEvolutionItemIds()) {
-    if (ownedItems?.[id] > 0) evolutionItems[id] = true;
+  for (const id of usedEvolutionItemIds) {
+    if (ownedItems?.[id] > 0) evolutionItems[id] = ownedItems[id];
   }
   // Key-order independent: plain JSON.stringify is insertion-order sensitive,
   // and progression objects are built by several helpers — two equal

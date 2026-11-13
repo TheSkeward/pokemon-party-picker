@@ -9,6 +9,7 @@ import { accessFields } from '../games/evolution.js';
 import { getCheckpoint } from '../games/schedule.js';
 import { getActiveGame } from '../games/registry.js';
 import { readSavedState } from '../games/saved-state.js';
+import { FULL_SUPPLY } from '../games/item-sources.js';
 import { toId as normalizeSearch } from '../utils/ids.js';
 
 // Per-game: each game's playthrough progression is its own saved state (the
@@ -16,9 +17,10 @@ import { toId as normalizeSearch } from '../utils/ids.js';
 const progressionStorageKey = () => getActiveGame().storage.progression;
 
 /**
- * Highest tracked held-item quantity; the picker treats this as "6 or more".
+ * Highest tracked held-item quantity: a full supply, which the picker shows
+ * as "6 or more".
  */
-export const MAX_TRACKED_ITEM_COUNT = 6;
+export const MAX_TRACKED_ITEM_COUNT = FULL_SUPPLY;
 
 /**
  * Strongest opponent-type bias the team builder will weight toward (0 = off).
@@ -235,25 +237,34 @@ export function withoutOwnedItems(progression, itemIds) {
 }
 
 /**
- * Bulk inventory merge (shop sync / batch adds): raises each item to the
- * given count, never LOWERING one — re-running a sync can't shrink a stack
- * the player recorded by hand. Counts clamp to the tracking cap.
+ * Sets several owned items' counts at once, each as setOwnedItemCount
+ * would: clamped to MAX_TRACKED_ITEM_COUNT, a count of 0 or less removing
+ * the item. Items not named keep their counts.
  * @param {Object} progression
- * @param {Object<string, number>=} counts Item id -> target count.
+ * @param {!Object<string, number>} counts Item id -> the count to set.
  * @return {Object} The normalized progression.
  */
-export function addOwnedItems(progression, counts = {}) {
+export function setOwnedItemCounts(progression, counts = {}) {
   const owned = { ...(progression.ownedItems || {}) };
   for (const [itemId, count] of Object.entries(counts)) {
     const id = String(itemId || '').trim();
     const parsed = Number.parseInt(count, 10);
-    if (!id || !Number.isFinite(parsed) || parsed <= 0) continue;
-    owned[id] = Math.min(
-      MAX_TRACKED_ITEM_COUNT,
-      Math.max(owned[id] || 0, parsed),
-    );
+    if (!id) continue;
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      delete owned[id];
+    } else {
+      owned[id] = Math.min(MAX_TRACKED_ITEM_COUNT, parsed);
+    }
   }
   return normalizeProgression({ ...progression, ownedItems: owned });
+}
+
+/**
+ * @param {Object} progression
+ * @return {Object} The normalized progression with no owned items.
+ */
+export function clearOwnedItems(progression) {
+  return normalizeProgression({ ...progression, ownedItems: {} });
 }
 
 /**

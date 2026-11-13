@@ -10,8 +10,8 @@ import {
 } from '../games/schedule.js';
 import {
   gameItems,
+  getExpectedItemChanges,
   getItemUnlockBadge,
-  getRenewablyObtainableItems,
 } from '../games/items.js';
 import { MAX_TRACKED_ITEM_COUNT, MAX_OPPONENT_TYPE_BIAS } from './progression';
 import { analysisTypes } from './type-chart.js';
@@ -293,43 +293,51 @@ function renderItemInventory(ownedItems, badges) {
         <button type="button" data-item-add-button>Add</button>
       </div>
 
-      ${renderRenewablyObtainableItems(ownedItems, badges)}
+      ${renderExpectedItems(ownedItems, badges, ownedIds.length)}
 
       <div class="item-inventory-list">${ownedRows}</div>
     </details>
   `;
 }
 
-// One-click renewable-item sync: badge-timed shops and mining rewards that are
-// reachable now but untracked, with a single "add all as 6+".
-function renderRenewablyObtainableItems(ownedItems, badges) {
-  const renewable = getRenewablyObtainableItems(
-    badges,
-    ownedItems,
-    MAX_TRACKED_ITEM_COUNT,
-  );
-  if (!renewable.length) return '';
+// "6+" for a full supply, the count below it.
+const countLabel = (count) =>
+  (count >= MAX_TRACKED_ITEM_COUNT ? `${MAX_TRACKED_ITEM_COUNT}+` : `${count}`);
 
-  const names = renewable
-    .map((item) => `<span class="item-shop-name">${escapeHtml(item.name)}</span>`)
+// The inventory's two bulk actions: set every item the game's data expects
+// by this badge to its expected count, and remove everything. The items the
+// sync would change are listed beneath, each with its count now and after.
+function renderExpectedItems(ownedItems, badges, trackedCount) {
+  const changes = getExpectedItemChanges(badges, ownedItems);
+  const syncLabel = changes.length
+    ? `Set ${changes.length} item${changes.length === 1 ? '' : 's'} to expected`
+    : 'Matches the expected counts';
+  const list = changes
+    .map((item) => `<span class="item-expected-name">${escapeHtml(item.name)} ${item.owned ? `${countLabel(item.owned)} → ` : ''}${countLabel(item.count)}</span>`)
     .join(', ');
 
   return `
-    <details class="item-shop-sync" ${detailsStateAttrs('renewable-sync', false)}>
-      <summary>
-        <span>Renewably obtainable at your badge, below 6+</span>
-        <span class="progression-option-count">${renewable.length}</span>
-      </summary>
-      <p class="muted item-shop-hint">
-        Shop stock and mining rewards timed by the community item guide.
-        Untracked and partially stocked items are included; adding at 6+ means
-        "I can obtain as many as I need".
-      </p>
-      <button type="button" data-renewable-sync-button>
-        Add all ${renewable.length} as 6+
+    <div class="item-inventory-actions">
+      <button type="button" data-expected-sync-button ${changes.length ? '' : 'disabled'}>
+        ${syncLabel}
       </button>
-      <p class="item-shop-list">${names}</p>
-    </details>
+      <button type="button" data-owned-items-clear-button ${trackedCount ? '' : 'disabled'}>
+        Remove all
+      </button>
+    </div>
+    ${changes.length ? `<details class="item-expected" ${detailsStateAttrs('expected-items', false)}>
+      <summary>
+        <span>Differs from the expected count at your badge</span>
+        <span class="progression-option-count">${changes.length}</span>
+      </summary>
+      <p class="muted item-expected-hint">
+        The expected count is what the game has handed out by your badge:
+        its single copies, what the mining rocks yield on average, and 6+
+        once a shop, a wild holder or another source restocks the item.
+        Items the game's data does not expect yet are left as they are.
+      </p>
+      <p class="item-expected-list">${list}</p>
+    </details>` : ''}
   `;
 }
 

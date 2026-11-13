@@ -79,10 +79,14 @@ level-up lists taken from Bulbapedia where its generation's games differ.
 
 Held items are timed by supply. A source that restocks an item makes it
 unlimited from its badge: a shop or prize counter, a wild Pokemon that
-holds it, mining, Pickup, regrowth, or a gift that repeats. Before that,
-each one-per-save copy counts singly. An item a battle uses up (a Berry, a
-Gem, Focus Sash) counts only from a restocking source, since one copy is
-one battle's worth. Reborn's sources are typed this way; the other games
+holds it, Pickup, regrowth, or a gift that repeats. Before that its copies
+are counted: each one-per-save copy, and what the mining rocks reached so
+far yield on average, since a rock is dug once. Six copies equip a team
+and count as unlimited; so does one Z-Crystal, which stays in the Bag when
+it is given to hold. An item a battle uses up (a Berry, a Gem, Focus Sash)
+counts only from a restocking source, since one copy is one battle's
+worth. The held-item list can be set to the counts expected at the current
+badge in one step. Reborn's sources are typed this way; the other games
 record a first source and shop stock until they are audited the same way.
 
 The usage prior is per generation, not per game: competitive play describes

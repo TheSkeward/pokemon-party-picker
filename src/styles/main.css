@@ -876,23 +876,31 @@ html {
   font-size: 0.8em;
 }
 
-.item-shop-sync {
+/* The inventory's bulk actions: one wrapping row above the list. */
+.item-inventory-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 10px;
+}
+
+.item-expected {
   margin: 0 0 10px;
   padding: 6px 10px;
   border: 1px solid var(--hairline);
   border-radius: var(--radius);
 }
 
-.item-shop-sync summary {
+.item-expected summary {
   cursor: pointer;
 }
 
-.item-shop-hint {
+.item-expected-hint {
   margin: 6px 0;
   font-size: 0.85em;
 }
 
-.item-shop-list {
+.item-expected-list {
   margin: 8px 0 4px;
   font-size: 0.85em;
   line-height: 1.5;

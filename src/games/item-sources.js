@@ -9,12 +9,14 @@
  * One way a game hands out a held item. `badge` is the badge count the
  * source opens at and `via` the item data's words for it (a place, a
  * holder, a shop). `kind` is one of:
- *   - 'single': a one-per-save copy (an item ball, a hidden item, a gift),
- *     `count` of them at that badge;
+ *   - a counted kind, which adds `count` copies at that badge: 'single'
+ *     (one-per-save copies: an item ball, a hidden item, a gift) and
+ *     'mining' (the copies the mining rocks reached by that badge yield on
+ *     average; a rock is dug once, so they do not restock);
  *   - a renewable kind, which restocks without limit: 'shop' (shops, prize
  *     counters, exchanges), 'wild' (held by a catchable wild Pokémon),
- *     'mining', 'pickup' (the Pickup ability), 'regrow' (planted berries,
- *     respawning finds), 'gift' (a gift that repeats);
+ *     'pickup' (the Pickup ability), 'regrow' (planted berries, finds that
+ *     come back), 'gift' (a gift that repeats);
  *   - 'unaudited': the first source of an item in a game whose sources are
  *     not typed yet. The item is obtainable from that badge; whether it
  *     restocks, and how many copies exist, is not recorded.
@@ -26,8 +28,9 @@ let ItemSource;
 /**
  * One step in a held item's supply: from `badge` on, the player can hold
  * `copies` of it, which `source` brought to that count. `copies` is
- * Infinity from the first source that restocks the item, and null where the
- * source is unaudited and the count unknown.
+ * Infinity once the supply is full (a source restocks the item, or
+ * FULL_SUPPLY copies are counted), and null where the source is unaudited
+ * and the count unknown.
  * @typedef {{badge: number, copies: ?number, source: !ItemSource}}
  */
 let SupplyStep;
@@ -36,16 +39,22 @@ let SupplyStep;
 export const RENEWABLE_SOURCE_KINDS = new Set([
   'shop',
   'wild',
-  'mining',
   'pickup',
   'regrow',
   'gift',
 ]);
 
 /**
+ * The copies that equip a whole team. Past it a count stops mattering, as
+ * it does once a source restocks the item.
+ * @const {number}
+ */
+export const FULL_SUPPLY = 6;
+
+/**
  * @param {!Array<!ItemSource>} sources
  * @return {!Array<!ItemSource>} A copy, earliest badge first and a
- *     renewable source ahead of a single copy at the same badge.
+ *     renewable source ahead of a counted one at the same badge.
  */
 export function orderItemSources(sources) {
   const rank = (source) => (RENEWABLE_SOURCE_KINDS.has(source.kind) ? 0 : 1);
@@ -54,18 +63,22 @@ export function orderItemSources(sources) {
 }
 
 /**
- * How a held item's supply grows: each one-per-save copy in turn, then the
- * first source that restocks it, past which copies stop mattering. A battle
- * uses a consumable up (games/consumables.js), so its single copies are not
- * counted and its supply starts at the restocking source.
+ * How a held item's supply grows: the counted copies in turn, until a
+ * source restocks it or FULL_SUPPLY of them are had, past which copies stop
+ * mattering. How the item is spent (games/item-use.js) decides what a
+ * counted copy is worth: nothing for a consumable, whose supply starts at
+ * the restocking source, and a full supply for a shared item.
  * @param {!Array<!ItemSource>} sources The item's sources, in
  *     orderItemSources order.
- * @param {boolean} consumable
+ * @param {{consumable: (boolean|undefined),
+ *     shared: (boolean|undefined)}=} use
  * @return {!Array<!SupplyStep>} In badge order, copies that turn up at one
  *     badge as one step under the first of their sources; empty when no
  *     source counts.
  */
-export function itemSupply(sources, consumable) {
+export function itemSupply(
+  sources, { consumable = false, shared = false } = {},
+) {
   const steps = [];
   let copies = 0;
   for (const source of sources) {
@@ -77,12 +90,16 @@ export function itemSupply(sources, consumable) {
       steps.push({ badge: source.badge, copies: null, source });
     } else if (!consumable) {
       copies += source.count ?? 1;
+      const full = shared || copies >= FULL_SUPPLY;
       const last = steps.at(-1);
       if (last?.badge === source.badge && last.copies != null) {
-        last.copies = copies;
+        last.copies = full ? Infinity : copies;
       } else {
-        steps.push({ badge: source.badge, copies, source });
+        steps.push({
+          badge: source.badge, copies: full ? Infinity : copies, source,
+        });
       }
+      if (full) break;
     }
   }
   return steps;

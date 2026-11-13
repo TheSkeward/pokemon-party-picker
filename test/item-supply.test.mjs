@@ -1,23 +1,22 @@
-// An item's supply (games/item-sources.js): single copies of an item a
-// battle does not use up count one by one until a source restocks it; a
-// consumable counts only from a restocking source.
+// An item's supply (games/item-sources.js): the copies of an item a battle
+// does not use up count one by one until a source restocks it or there are
+// six; a consumable counts only from a restocking source.
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import { Dex } from '@pkmn/dex';
 
-import { isConsumableItem } from '../src/games/consumables.js';
+import { isConsumableItem, isSharedItem } from '../src/games/item-use.js';
 import {
+  FULL_SUPPLY,
   itemSupply,
   orderItemSources,
-  RENEWABLE_SOURCE_KINDS,
   unauditedItemSources,
 } from '../src/games/item-sources.js';
 import {
   getItemSources,
   getItemSupply,
   getItemUnlockBadge,
-  renewableSources,
 } from '../src/games/items.js';
 
 const single = (badge, count, via = '') =>
@@ -25,8 +24,8 @@ const single = (badge, count, via = '') =>
 const renewable = (kind, badge, via = '') => ({ kind, badge, via });
 
 // [badge, copies, kind] per step of the supply the sources add up to.
-const steps = (sources, consumable = false) =>
-  itemSupply(orderItemSources(sources), consumable)
+const steps = (sources, consumable = false, shared = false) =>
+  itemSupply(orderItemSources(sources), { consumable, shared })
     .map(({ badge, copies, source }) => [badge, copies, source.kind]);
 
 test('single copies count up until a source restocks the item', () => {
@@ -52,6 +51,43 @@ test('single copies count up until a source restocks the item', () => {
     [[0, Infinity, 'wild']],
   );
   assert.deepEqual(steps([]), []);
+});
+
+test('six counted copies are a full supply, mined or found', () => {
+  const mined = (badge, count) =>
+    ({ kind: 'mining', badge, count, via: 'mining rocks, on average' });
+  assert.equal(FULL_SUPPLY, 6);
+  // One from an NPC, then what the rocks yield: full at the badge the count
+  // reaches six, and nothing after it matters.
+  assert.deepEqual(
+    steps([
+      single(2, 1, 'npc'), mined(3, 1), mined(4, 3), mined(7, 1),
+      mined(8, 1), renewable('shop', 13),
+    ]),
+    [
+      [2, 1, 'single'], [3, 2, 'mining'], [4, 5, 'mining'],
+      [7, Infinity, 'mining'],
+    ],
+  );
+  // A shop that opens first fills the supply before the count does.
+  assert.deepEqual(
+    steps([mined(4, 1), mined(8, 1), renewable('shop', 5)]),
+    [[4, 1, 'mining'], [5, Infinity, 'shop']],
+  );
+  // Copies at one badge that pass six are one full step.
+  assert.deepEqual(
+    steps([single(3, 2), mined(3, 3), mined(4, 4)]),
+    [[3, 5, 'single'], [4, Infinity, 'mining']],
+  );
+  // A battle uses a consumable up, however many are mined.
+  assert.deepEqual(steps([mined(3, 6)], true), []);
+  // A Z-Crystal stays in the Bag when one is given to hold: the first copy
+  // equips the whole team.
+  assert.ok(isSharedItem('flyiniumz') && !isSharedItem('leftovers'));
+  assert.deepEqual(
+    steps([single(14, 1, 'poké ball'), single(18, 1)], false, true),
+    [[14, Infinity, 'single']],
+  );
 });
 
 test('a consumable counts only from a source that restocks it', () => {
@@ -148,8 +184,15 @@ test("Reborn's supply follows its sources", () => {
   assert.match(metronomeHolder.via, /^Chatot \(5%\), Chrysolia Forest/);
   assert.deepEqual(supply('notanitem'), []);
   assert.equal(getItemUnlockBadge('notanitem'), null);
-  for (const [id, source] of renewableSources()) {
-    assert.ok(RENEWABLE_SOURCE_KINDS.has(source.kind), id);
-    assert.equal(getItemSupply(id).at(-1).source, source, id);
-  }
+  // A Dusk Stone: one mined and one placed by badge 3, then the rocks,
+  // full at badge 7, six badges before the shop sells one.
+  assert.deepEqual(supply('duskstone'), [
+    [3, 2, 'mining'], [4, 5, 'mining'], [7, Infinity, 'mining'],
+  ]);
+  // A Plate averages four copies by the post-game, where the rocks of the
+  // Cauldron of the Future come back.
+  assert.deepEqual(supply('earthplate'), [
+    [4, 1, 'mining'], [8, 2, 'mining'], [14, 3, 'mining'],
+    [18, Infinity, 'regrow'],
+  ]);
 });

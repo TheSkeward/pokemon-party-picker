@@ -21,7 +21,7 @@ import { GEN4_PROGRESSION_SPECIES } from '../src/generated/gen4ProgressionSpecie
 import { GEN4_HELD_ITEMS_BY_ID } from '../src/generated/gen4HeldItems.generated.js';
 import { GEN7_HELD_ITEMS_BY_ID } from '../src/generated/gen7HeldItems.generated.js';
 
-const { getItemUnlockBadge, getRenewablyObtainableItems } = await import(
+const { getExpectedItemChanges, getItemUnlockBadge } = await import(
   '../src/games/items.js',
 );
 const { toId } = await import('../src/utils/ids.js');
@@ -93,9 +93,9 @@ test('headline items arrive at their badges', () => {
 
 test('the inventory sync offers the Athlete Shop and Game Corner at two badges', () => {
   withHgss(() => {
-    const ids = getRenewablyObtainableItems(2).map((item) => item.id);
+    const ids = getExpectedItemChanges(2).map((item) => item.id);
     assert.ok(ids.includes('metalcoat') && ids.includes('widelens'));
     assert.ok(!ids.includes('choicescarf'));
-    assert.ok(getRenewablyObtainableItems(8).some((item) => item.id === 'choicescarf'));
+    assert.ok(getExpectedItemChanges(8).some((item) => item.id === 'choicescarf'));
   });
 });

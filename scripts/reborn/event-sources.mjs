@@ -6,8 +6,7 @@
  * builder feeds it the extracts, the tests feed it fixtures.
  */
 
-const toId = (text) =>
-  String(text || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+import { itemId } from './item-id.mjs';
 
 /**
  * The kinds of give that place a copy on a map, and what each is called.
@@ -147,7 +146,7 @@ export function placedCopies(itemEvents) {
         ...(page?.conditions || []),
         ...(give.within || []),
       ].filter((condition) => condition.selfSwitch == null);
-      const id = toId(itemEvents.itemNames[give.item] || give.item);
+      const id = itemId(itemEvents.itemNames[give.item] || give.item);
       const current = byItem.get(id);
       if (!current || conditions.length < current.conditions.length) {
         byItem.set(id, {
@@ -185,7 +184,7 @@ export function missedShopStock(itemEvents, shopBadgeOf, reachBadgeOf) {
     for (const give of event.gives) {
       if (give.kind !== 'mart') continue;
       const ids = (give.stock || []).map((symbol) =>
-        toId(itemEvents.itemNames[symbol] || symbol));
+        itemId(itemEvents.itemNames[symbol] || symbol));
       const known = ids.map(shopBadgeOf).filter((badge) => badge != null);
       if (!known.length) continue;
       const badge = Math.max(...known, reachBadgeOf(event.mapId) ?? 0);
@@ -235,4 +234,87 @@ export function mapReachBadges(maps, encounterBadges, mapSwitchBadges) {
     }
     return badge;
   };
+}
+
+/**
+ * The digs the mining rocks allow, by the badge each rock is reached.
+ * @param {{events: !Array<!Object>}} itemEvents The item-events extract. A
+ *     rock is an event with mining gives: one dig each, the second needing
+ *     Blast Powder.
+ * @param {function(number): ?number} reachBadgeOf Map id -> the badge count
+ *     the map is reached at; null when nothing dates it.
+ * @param {number} kitBadge The badge count the Mining Kit is had from.
+ * @return {{digs: !Map<number, number>, comesBack: !Array<{badge: number,
+ *     mapName: string}>, undated: number}} `digs` counts the digs of the
+ *     rocks that are dug once and gone, by badge; `comesBack` lists the
+ *     maps whose rocks return each time the map reloads; `undated` counts
+ *     the rocks on maps nothing dates, which are left out.
+ */
+export function miningDigs(itemEvents, reachBadgeOf, kitBadge) {
+  const digs = new Map();
+  const comesBack = new Map();
+  let undated = 0;
+  for (const event of itemEvents.events) {
+    const gives = event.gives.filter((give) => give.kind === 'mining');
+    if (!gives.length) continue;
+    const reached = reachBadgeOf(event.mapId);
+    if (reached == null) {
+      undated++;
+      continue;
+    }
+    const badge = Math.max(reached, kitBadge);
+    if (gives.some((give) => give.repeat === 'mapReload')) {
+      comesBack.set(event.mapName, { badge, mapName: event.mapName });
+    } else {
+      digs.set(badge, (digs.get(badge) || 0) + gives.length);
+    }
+  }
+  return { digs, comesBack: [...comesBack.values()], undated };
+}
+
+/**
+ * The steps by which the copies of a mined item rise, on average.
+ * @param {number} perDig The copies of the item one dig yields on average.
+ * @param {!Map<number, number>} digsByBadge The digs that open at each
+ *     badge.
+ * @param {number} cap The count past which copies stop mattering.
+ * @return {!Array<{badge: number, count: number}>} In badge order, each
+ *     badge at which the whole copies expected from the digs so far rise,
+ *     with how many they rise by; nothing past `cap` copies in all.
+ */
+export function expectedCopySteps(perDig, digsByBadge, cap) {
+  const steps = [];
+  let digs = 0;
+  let copies = 0;
+  const badges = [...digsByBadge.keys()].sort((a, b) => a - b);
+  for (const badge of badges) {
+    if (copies >= cap) break;
+    digs += digsByBadge.get(badge);
+    // A sum of dig counts times a weight ratio can land a hair under a
+    // whole number.
+    const whole = Math.min(cap, Math.floor(digs * perDig + 1e-9));
+    if (whole > copies) {
+      steps.push({ badge, count: whole - copies });
+      copies = whole;
+    }
+  }
+  return steps;
+}
+
+/**
+ * @param {{itemNames: !Object<string, string>, events: !Array<!Object>,
+ *     scriptRules: {defaultMart: {tiers: !Array<{stock:
+ *     !Array<string>}>}}}} itemEvents The item-events extract.
+ * @return {!Set<string>} The id of every item some mart in the game files
+ *     sells: the marts on the maps and the badge-tiered default mart.
+ */
+export function martStock(itemEvents) {
+  const symbols = [
+    ...itemEvents.scriptRules.defaultMart.tiers.flatMap((tier) => tier.stock),
+    ...itemEvents.events.flatMap((event) =>
+      event.gives.flatMap((give) =>
+        (give.kind === 'mart' ? give.stock || [] : []))),
+  ];
+  return new Set(symbols.map((symbol) =>
+    itemId(itemEvents.itemNames[symbol] || symbol)));
 }

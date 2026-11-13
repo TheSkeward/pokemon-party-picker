@@ -8,10 +8,14 @@ import test from 'node:test';
 import {
   badgeSwitchBadge,
   conditionBadge,
+  expectedCopySteps,
   mapReachBadges,
+  martStock,
+  miningDigs,
   missedShopStock,
   placedCopies,
 } from '../scripts/reborn/event-sources.mjs';
+import { itemId } from '../scripts/reborn/item-id.mjs';
 import { getItemSources, getItemSupply } from '../src/games/items.js';
 
 test('an event is dated by its badge switches and episode variables', () => {
@@ -175,6 +179,63 @@ test('stock the shop table lacks opens with what it is sold beside', () => {
   });
 });
 
+test('mined copies rise with the digs the rocks reached allow', () => {
+  const dig = (repeat = 'once') => ({ kind: 'mining', repeat });
+  const rock = (mapId, mapName, gives) => ({ mapId, mapName, gives });
+  const itemEvents = {
+    events: [
+      // Reached before the Mining Kit: dug from the badge the kit comes.
+      rock(1, 'Opal Ward', [dig(), dig()]),
+      rock(2, 'Grand Stairway', [dig(), dig()]),
+      // One dig only, and a rock a puzzle re-arms counts like any other.
+      rock(3, 'Route 2', [dig()]),
+      rock(3, 'Route 2', [dig('resetByEvent'), dig()]),
+      // Rocks that return with the map restock; an undated map's are left
+      // out; an item ball is no rock.
+      rock(4, 'Cauldron', [dig('mapReload')]),
+      rock(4, 'Cauldron', [dig('mapReload')]),
+      rock(5, 'Nowhere', [dig(), dig()]),
+      rock(1, 'Opal Ward', [{ kind: 'itemBall', repeat: 'once' }]),
+    ],
+  };
+  const reach = { 1: 0, 2: 3, 3: 9, 4: 18 };
+  const rocks = miningDigs(itemEvents, (mapId) => reach[mapId] ?? null, 3);
+  assert.deepEqual([...rocks.digs], [[3, 4], [9, 3]]);
+  assert.deepEqual(rocks.comesBack, [{ badge: 18, mapName: 'Cauldron' }]);
+  assert.equal(rocks.undated, 1);
+
+  // A quarter of a copy per dig: one whole copy from the first four digs,
+  // none more until the next whole one.
+  const digs = new Map([[3, 4], [4, 2], [9, 3], [12, 20]]);
+  assert.deepEqual(expectedCopySteps(0.25, digs, 6), [
+    { badge: 3, count: 1 }, { badge: 9, count: 1 }, { badge: 12, count: 4 },
+  ]);
+  // Nothing is counted past the cap, and a rare item may never reach one.
+  assert.deepEqual(expectedCopySteps(1, digs, 6), [
+    { badge: 3, count: 4 }, { badge: 4, count: 2 },
+  ]);
+  assert.deepEqual(expectedCopySteps(0.01, digs, 6), []);
+});
+
+test('a mart sells what the game files stock, under the catalog id', () => {
+  // The game writes "Poké Ball"; the catalog id has no accent to drop.
+  assert.equal(itemId('Poké Ball'), 'pokeball');
+  assert.equal(itemId("King's Rock"), 'kingsrock');
+  const sold = martStock({
+    itemNames: { POKEBALL: 'Poké Ball', BIGROOT: 'Big Root' },
+    scriptRules: { defaultMart: { tiers: [{ stock: ['POKEBALL'] }] } },
+    events: [
+      {
+        gives: [
+          { kind: 'mart', stock: ['BIGROOT', 'SCOPELENS'] },
+          { kind: 'gift', item: 'PIXIEPLATE' },
+        ],
+      },
+    ],
+  });
+  assert.deepEqual([...sold].sort(), ['bigroot', 'pokeball', 'scopelens']);
+});
+
 test("Reborn's marts and maps supply what the guide's tables lack", () => {
   const supply = (id) => getItemSupply(id).map(({ badge, copies, source }) =>
     [badge, copies, source.kind]);
@@ -187,12 +248,16 @@ test("Reborn's marts and maps supply what the guide's tables lack", () => {
   });
   assert.deepEqual(supply('luckypunch'), [[8, Infinity, 'shop']]);
   assert.deepEqual(supply('timerball'), [[1, Infinity, 'shop']]);
+  // The guide files a Pixie Plate under its shops, but no mart in the game
+  // sells one: an NPC gives it, once.
+  assert.ok(!shop('pixieplate'));
   // The game's mining table has the Heat Rock the guide's list leaves out.
   assert.ok(getItemSources('heatrock')
     .some((source) => source.kind === 'mining' && source.badge === 3));
-  // Hidden Link Stones add copies before the shop sells them.
-  const linkStones = supply('linkstone');
-  assert.deepEqual(linkStones[0], [3, 2, 'single']);
-  assert.deepEqual(linkStones.at(-1), [13, Infinity, 'shop']);
-  assert.ok(linkStones.length > 3);
+  // Hidden Link Stones add up to a full supply a badge before the shop
+  // sells them.
+  assert.deepEqual(supply('linkstone'), [
+    [3, 2, 'single'], [5, 3, 'single'], [7, 4, 'single'], [9, 5, 'single'],
+    [12, Infinity, 'single'],
+  ]);
 });

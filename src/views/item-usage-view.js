@@ -1,5 +1,6 @@
 import { escapeAttr, escapeHtml } from '../utils/html.js';
 import { dex } from '../games/dex.js';
+import { FULL_SUPPLY } from '../games/item-sources.js';
 import { getItemSources, getItemSupply } from '../games/items.js';
 import {
   badgePhrase,
@@ -18,17 +19,16 @@ const obtainedOrder = (row) =>
 const RESTOCK_WORDS = {
   shop: 'shop',
   wild: 'wild',
-  mining: 'mining',
   pickup: 'Pickup',
   regrow: 'regrows',
   gift: 'gift',
 };
 
 // The word for the source that restocks an item, '' if its supply reaches
-// none.
+// none: a supply can also fill by count.
 const restockWordOf = (row) => {
   const last = row.supply.at(-1);
-  return last?.copies === Infinity ? RESTOCK_WORDS[last.source.kind] : '';
+  return (last?.copies === Infinity && RESTOCK_WORDS[last.source.kind]) || '';
 };
 
 /**
@@ -144,7 +144,7 @@ export function renderItemUsageTable(container, table, state, options = {}) {
         <h2>Item Usage</h2>
         <p>${rows.length} items shown, from the sets of ${table.pokemon} Pokémon in ${escapeHtml(options.familyLabel || 'this game')}.</p>
         <p>On all sets is the share of a Pokémon's sets that hold the item, averaged over every Pokémon, each counted equally. Top item for counts the Pokémon that hold it more than any other item.</p>
-        <p>Obtained counts the copies this game hands out, by the badge each turns up after, up to the first source that restocks the item: a shop or prize counter, a wild holder, mining, Pickup, a berry plot or a gift that repeats. An item a battle uses up is listed only from a source that restocks it. Blank means the game's item data tracks no source.</p>
+        <p>Obtained counts the copies this game hands out, by the badge each turns up after, until there are six or a source restocks the item: a shop or prize counter, a wild holder, Pickup, a berry plot or a gift that repeats. A mined item counts what the rocks reached so far yield on average. An item a battle uses up is listed only from a source that restocks it. Blank means the game's item data tracks no source.</p>
       </div></div>
       <table class="usage-table item-usage-table static-rows"><thead>${renderHeaderRow(COLUMNS, tableState)}</thead><tbody>
         ${rows.map(renderRow).join('')}
@@ -162,7 +162,8 @@ function renderSupply(row) {
 }
 
 // "badge 13 ×1" for a copy, "badge 17 shop" for the source that restocks,
-// a bare "badge 11" where the copies are not audited. The item data's words
+// "badge 8 ×6+" for a supply that fills by count, a bare "badge 11" where
+// the copies are not audited. The item data's words
 // for the source are the tooltip: they run from "npc" to a list of routes.
 function renderStep(step) {
   const note = stepNote(step);
@@ -171,5 +172,6 @@ function renderStep(step) {
 
 function stepNote({ copies, source }) {
   if (copies == null) return '';
-  return copies === Infinity ? RESTOCK_WORDS[source.kind] : `×${copies}`;
+  if (copies !== Infinity) return `×${copies}`;
+  return RESTOCK_WORDS[source.kind] || `×${FULL_SUPPLY}+`;
 }

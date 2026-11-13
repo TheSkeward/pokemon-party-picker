@@ -1,8 +1,11 @@
 /**
- * @fileoverview Which held items a battle uses up. In these games an item
- * that triggers and is consumed is gone for good, so one copy is one
- * battle's worth: an item's supply (games/items.js) counts a consumable
- * only from a source that restocks it.
+ * @fileoverview How holding an item spends it, which decides what a copy is
+ * worth in an item's supply (games/item-sources.js). A battle uses a
+ * consumable up: in these games an item that triggers and is consumed is
+ * gone for good, so one copy is one battle's worth and only a source that
+ * restocks it counts. A Z-Crystal is the other way about: it stays in the
+ * Bag when a Pokémon is given one to hold, so one copy equips the whole
+ * team.
  */
 
 // The used-up items that are neither Berries nor Gems. The Seeds are the
@@ -46,4 +49,12 @@ const USED_UP_ITEM_IDS = new Set([
 export function isConsumableItem(itemId) {
   return itemId.endsWith('berry') || itemId.endsWith('gem') ||
     USED_UP_ITEM_IDS.has(itemId);
+}
+
+/**
+ * @param {string} itemId Normalized item id.
+ * @return {boolean} Whether one copy equips every Pokémon: a Z-Crystal.
+ */
+export function isSharedItem(itemId) {
+  return itemId.endsWith('iumz');
 }

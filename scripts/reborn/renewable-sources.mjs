@@ -6,8 +6,7 @@
  * fixtures.
  */
 
-const toId = (text) =>
-  String(text || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+import { itemId } from './item-id.mjs';
 
 // How an encounter type reads beside a place; the walking tables need no
 // word.
@@ -42,7 +41,7 @@ export function wildHeldSources(wildItems, encounters, badgeOf) {
       if (badge == null) continue;
       for (const species of new Set(slots.map((slot) => slot.species))) {
         for (const held of heldBy(wildItems, species, chances)) {
-          const id = toId(wildItems.itemNames[held.item] || held.item);
+          const id = itemId(wildItems.itemNames[held.item] || held.item);
           const current = best.get(id);
           if (
             current && (current.badge < badge ||
@@ -106,7 +105,7 @@ export function pickupSources(pickup, checkpoints, firstHolderBadge) {
     if (!reached) continue;
     const badge = Math.max(reached.badges, firstHolderBadge);
     for (const { item } of bracket.slots) {
-      const id = toId(pickup.itemNames[item] || item);
+      const id = itemId(pickup.itemNames[item] || item);
       if (sources.has(id)) continue;
       sources.set(id, {
         badge,
@@ -138,7 +137,7 @@ export function pointCounterStock(itemEvents, mapId) {
       ) {
         continue;
       }
-      const id = toId(itemEvents.itemNames[give.item] || give.item);
+      const id = itemId(itemEvents.itemNames[give.item] || give.item);
       stock.set(id, `${event.mapName}, ${points.name}s`);
     }
   }
@@ -161,7 +160,7 @@ export function pointCounterStock(itemEvents, mapId) {
 export function plantedBerries(itemEvents, firstBadgeOf, plotBadge) {
   const berries = new Map();
   for (const { berry } of itemEvents.scriptRules.berryPlants.values) {
-    const id = toId(itemEvents.itemNames[berry] || berry);
+    const id = itemId(itemEvents.itemNames[berry] || berry);
     const first = firstBadgeOf(id);
     if (first != null) berries.set(id, Math.max(plotBadge, first));
   }

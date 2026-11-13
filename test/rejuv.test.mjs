@@ -20,7 +20,7 @@ await loadGame('rejuv');
 const { dex } = await import('../src/games/dex.js');
 const { getCheckpoints } = await import('../src/games/schedule.js');
 const { mechanics, moveSources } = await import('../src/games/legality.js');
-const { getItemUnlockBadge, getRenewablyObtainableItems } = await import(
+const { getExpectedItemChanges, getItemUnlockBadge } = await import(
   '../src/games/items.js',
 );
 const { REJUV_PROGRESSION_CHECKPOINTS } = await import(
@@ -149,7 +149,7 @@ test('the item content prices with Reborn\'s proxies and offers the renewable st
     assert.equal(game.evolution.tradeItem, 'Link Heart');
     assert.equal(game.evolution.regionAccess.Alola.accessKey, 'evoAccessTerajuma');
     assert.deepEqual(game.items.fieldSeeds.names, ['Elemental Seed', 'Telluric Seed', 'Synthetic Seed', 'Magical Seed']);
-    const ids = getRenewablyObtainableItems(1).map((item) => item.id);
+    const ids = getExpectedItemChanges(1).map((item) => item.id);
     assert.ok(ids.includes('linkheart'));
     assert.ok(!ids.includes('firestone'), 'Lost Camp opens at badge 4');
   });

@@ -23,7 +23,7 @@ const { mechanics, moveSources } = await import('../src/games/legality.js');
 const { getEvolutionRequirement } = await import(
   '../src/playthrough/evolution-requirements.js',
 );
-const { getItemUnlockBadge, getRenewablyObtainableItems } = await import(
+const { getExpectedItemChanges, getItemUnlockBadge } = await import(
   '../src/games/items.js',
 );
 const { toId } = await import('../src/utils/ids.js');
@@ -269,10 +269,10 @@ test('B2W2 headline items arrive at their badges', () => {
     assert.equal(getItemUnlockBadge('lifeorb'), 8);
     assert.equal(getItemUnlockBadge('custapberry'), null); // event only
     // Nothing competitive is buyable before the Champion.
-    const early = getRenewablyObtainableItems(7).map((item) => item.id);
+    const early = getExpectedItemChanges(7).map((item) => item.id);
     assert.ok(!early.includes('choicescarf'));
     assert.ok(!early.includes('lifeorb'));
-    const late = getRenewablyObtainableItems(8).map((item) => item.id);
+    const late = getExpectedItemChanges(8).map((item) => item.id);
     assert.ok(late.includes('choicescarf') && late.includes('lifeorb'));
   });
 });

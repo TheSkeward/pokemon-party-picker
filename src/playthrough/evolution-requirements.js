@@ -140,6 +140,32 @@ export function spentEvolutionItems(fieldedId, inputId) {
   return spent;
 }
 
+/**
+ * Every item some evolution above one of the given species spends: the
+ * items whose ownership can change what those lines reach. An evolution
+ * item no line here can spend changes nothing for them.
+ * @param {!Iterable<string>} inputIds Species ids or names.
+ * @return {!Set<string>} Item ids.
+ */
+export function evolutionItemsAbove(inputIds) {
+  const inputs = new Set([...inputIds].map(toId));
+  const species = dex().progressionSpecies;
+  const items = new Set();
+  for (const id of Object.keys(species)) {
+    const seen = new Set([id]);
+    for (
+      let above = species[id].prevoId;
+      above && !seen.has(above);
+      above = species[above]?.prevoId
+    ) {
+      seen.add(above);
+      if (!inputs.has(above)) continue;
+      for (const item of spentEvolutionItems(id, above)) items.add(item.id);
+    }
+  }
+  return items;
+}
+
 // Item-shaped gates per game, keyed by its access-field list.
 const ITEM_GATES = new WeakMap();
 function itemGates() {

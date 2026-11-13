@@ -21,7 +21,7 @@ const rows = [
   { id: 'a', name: 'Assault Vest', supply: [copy(14, 1)], carry: 3, top: 20 },
   { id: 'b', name: 'Berry Juice', supply: [], carry: 3, top: 25 },
   { id: 'c', name: 'Choice Scarf', supply: [copy(16, 1), restock('shop', 18)], carry: 7, top: 80 },
-  { id: 'd', name: 'Damp Rock', supply: [restock('mining', 3)], carry: 1, top: 2 },
+  { id: 'd', name: 'Damp Rock', supply: [restock('wild', 3)], carry: 1, top: 2 },
   { id: 'e', name: 'Electric Seed', supply: [], carry: 0.5, top: 0 },
 ];
 const names = (selected) => selected.map((row) => row.name);
@@ -77,7 +77,7 @@ test('the item table searches and sorts, untracked items last', () => {
   assert.deepEqual(names(selectItemUsageRows(rows, { search: 'shop' })), [
     'Choice Scarf',
   ]);
-  assert.deepEqual(names(selectItemUsageRows(rows, { search: 'min' })), [
+  assert.deepEqual(names(selectItemUsageRows(rows, { search: 'wi' })), [
     'Damp Rock',
   ]);
   assert.deepEqual(names(selectItemUsageRows(rows, { search: 'single' })), []);
