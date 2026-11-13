@@ -84,6 +84,22 @@ jobs:
           SMOGON_REQUEST_GAP_MS: 2000
         run: npm run scrape:teams -- --only="${{ github.event.inputs.harvest_only }}"
 
+      # The scrape runs for hours while main moves on. The data is rebuilt
+      # by the code main has when the scrape ends, not the code this run
+      # checked out: a builder changed meanwhile would otherwise have its
+      # output replaced by the old builder's, since the commit below takes
+      # the harvest's side of a conflict. (It happened to the team index.)
+      # The archives the scrape appended to ride along uncommitted, and the
+      # dependencies are reinstalled if the lockfile moved. A pull that
+      # cannot be made fails the run here, before anything is rebuilt.
+      - name: Take the latest main before rebuilding
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          before=$(git rev-parse HEAD)
+          git pull --rebase --autostash origin main
+          git diff --quiet "$before" HEAD -- package-lock.json || npm ci
+
       # refresh:data rewrites BOTH trees (site-data/data JSON and the
       # src/generated/*.js modules); build:manifest must run after it so the
       # committed manifest's hashes/dataSignature describe the refreshed data.
@@ -92,15 +108,14 @@ jobs:
         if: github.event_name == 'schedule' || github.event.inputs.refresh_data == 'true'
         run: npm run refresh:data && npm run build:manifest
 
-      # The scrape runs for hours while main moves on, so the data commit is
-      # rebased onto whatever landed meanwhile, the generated files taking the
-      # harvest's side of any conflict. A failed push fails the run: a harvest
-      # that quietly never landed is the worst outcome, and it has happened.
+      # The rebuild takes minutes and main may move on again, so the data
+      # commit is rebased onto whatever landed meanwhile, the generated files
+      # taking the harvest's side of any conflict. A failed push fails the
+      # run: a harvest that quietly never landed is the worst outcome, and it
+      # has happened.
       - name: Commit refreshed generated data
         id: commit
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add site-data/data src/generated scripts/teamscrape/archive
           if git diff --cached --quiet; then
             echo "pushed=false" >> "$GITHUB_OUTPUT"
