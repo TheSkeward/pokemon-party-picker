@@ -3,9 +3,11 @@
  * engine family, straight from an install's compiled data and Ruby sources.
  *
  * Writes four extracts: wild held items, wild encounter tables, item-giving
- * map events, and the Pickup table. The extracts report what the game files
- * say and how each event is gated; deciding when an item becomes obtainable
- * in a playthrough is left to their consumers.
+ * map events, and the Pickup table; and, for a game that asks for it, a
+ * fifth: what raises the switches and variables those events are gated by.
+ * The extracts report what the game files say and how each event is gated;
+ * deciding when an item becomes obtainable in a playthrough is left to
+ * their consumers.
  *
  * Script-side rules (hold chances, Pickup, mining, marts) are parsed out of
  * the Ruby sources and cited by file and line, so a game update that moves
@@ -19,16 +21,27 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { Names } from './event-commands.mjs';
-import { formatJson } from './format-json.mjs';
+import { formatJson, formatJsonRows } from './format-json.mjs';
+import {
+  extractGateSetters,
+  summariseGateSetters,
+} from './gate-setters.mjs';
 import { GameInstall } from './game-files.mjs';
-import { extractItemEvents, summarise } from './item-events.mjs';
+import {
+  extractItemEvents,
+  giveConditions,
+  summarise,
+} from './item-events.mjs';
 import {
   extractEncounters,
   mapSwitchReader,
   readNamedSwitches,
 } from './map-metadata.mjs';
 import { extractPickup } from './pickup.mjs';
-import { scriptRuleItems } from './script-item-rules.mjs';
+import {
+  scriptRuleConditions,
+  scriptRuleItems,
+} from './script-item-rules.mjs';
 import { extractWildItems } from './wild-items.mjs';
 
 /**
@@ -36,7 +49,12 @@ import { extractWildItems } from './wild-items.mjs';
  *
  * `game` is the title every extract is headed with and `logTag` the name
  * its progress lines go under. `extractStems` names the four files, each
- * written as `<stem>.generated.json`.
+ * written as `<stem>.generated.json`; a game that names a `gateSetters`
+ * stem gets the fifth (gate-setters.mjs). `conditionDated` then says
+ * which conditions the game's consumers have no use of it for, so that it
+ * covers only the rest; and `martRowCondition` reads one clause of a mart
+ * row's test, with the names of the game's switches and variables by id,
+ * as the condition those consumers judge it by.
  *
  * `version` is the file and pattern (first group) of the version constant.
  * `constantsFile` defines the named switches and the Pickup lists.
@@ -60,7 +78,10 @@ import { extractWildItems } from './wild-items.mjs';
  *   game: string,
  *   logTag: string,
  *   extractStems: {wildItems: string, encounters: string,
- *       itemEvents: string, pickup: string},
+ *       itemEvents: string, pickup: string,
+ *       gateSetters: (string|undefined)},
+ *   conditionDated: (function(!Object): boolean|undefined),
+ *   martRowCondition: (function(string, !Object): !Object|undefined),
  *   version: {file: string, pattern: !RegExp},
  *   constantsFile: string,
  *   holdChances: {files: !Array<string>,
@@ -93,7 +114,7 @@ function itemNames(items, symbols) {
 }
 
 /**
- * Reads an install and writes the game's four extracts.
+ * Reads an install and writes the game's extracts.
  * @param {string} installDir The game's folder.
  * @param {!ItemSourceAdapter} adapter
  * @param {string} outDir Where the extracts are written.
@@ -108,11 +129,11 @@ export function extractItemSources(installDir, adapter, outDir) {
   const items = install.load('items.dat');
   const mapInfos = install.load('MapInfos.rxdata');
   // An extract is headed with the files it was read from.
-  const write = (stem, files, data) => {
+  const write = (stem, files, data, layout = formatJson) => {
     const file = path.join(outDir, `${stem}.generated.json`);
     const source = files.join(' + ');
     const body = { game: adapter.game, version, source, data };
-    fs.writeFileSync(file, `${formatJson(body)}\n`);
+    fs.writeFileSync(file, `${layout(body)}\n`);
     const kb = Math.round(fs.statSync(file).size / 1024);
     console.log(`[${adapter.logTag}] ${stem}: ${kb} KB`);
   };
@@ -168,12 +189,9 @@ export function extractItemSources(installDir, adapter, outDir) {
 
   const scriptRules = adapter.scriptRules(install);
   const names = new Names(system);
+  const commonEvents = install.load('CommonEvents.rxdata');
   const extracted = extractItemEvents(
-    {
-      maps: install.maps(),
-      commonEvents: install.load('CommonEvents.rxdata'),
-      mapInfos,
-    },
+    { maps: install.maps(), commonEvents, mapInfos },
     names,
     adapter.eventCalls,
     scriptRules.itemPools,
@@ -222,6 +240,30 @@ export function extractItemSources(installDir, adapter, outDir) {
     },
   );
   console.log(JSON.stringify(summary, null, 2));
+
+  if (stems.gateSetters) {
+    // A row's test is read with the names the item-events extract gives
+    // its consumers.
+    const markers = names.index();
+    const { martRowCondition } = adapter;
+    const rowConditions = scriptRuleConditions(
+      scriptRules,
+      martRowCondition && ((clause) => martRowCondition(clause, markers)));
+    // A second pass over the maps: what a gate is can be told only once
+    // every give is known.
+    const gateSetters = extractGateSetters(
+      { maps: install.maps(), commonEvents },
+      system,
+      [...giveConditions(extracted), ...rowConditions],
+      adapter.conditionDated,
+    );
+    write(
+      stems.gateSetters,
+      ['Map###.rxdata', 'CommonEvents.rxdata', 'System.rxdata'],
+      { summary: summariseGateSetters(gateSetters), ...gateSetters },
+      formatJsonRows,
+    );
+  }
 }
 
 /**

@@ -11,6 +11,7 @@
  *     defines no DrinkItems variable.
  *   - Mart.rb still defines pbDefaultMart, but no event calls it.
  */
+import { conditionBadge, rowCondition } from '../essentials/event-sources.mjs';
 import {
   ENGINE_GIVE_CALLS,
   setSelfSwitchesResets,
@@ -23,6 +24,10 @@ import {
   readMiningTable,
 } from '../essentials/script-item-rules.mjs';
 import { readCreationHandlerHoldChances } from '../essentials/wild-items.mjs';
+import { REJUV_EVENT_DATING } from './event-dating.mjs';
+
+// Rules under which every switch and variable has a date.
+const EVERYTHING_DATED = { switchBadge: () => 0, variableBadge: () => 0 };
 
 /** @const {!ItemSourceAdapter} */
 export const REJUV_ITEM_SOURCE_ADAPTER = {
@@ -35,7 +40,16 @@ export const REJUV_ITEM_SOURCE_ADAPTER = {
     encounters: 'rejuv-map-encounters',
     itemEvents: 'rejuv-item-events',
     pickup: 'rejuv-pickup',
+    gateSetters: 'rejuv-gate-setters',
   },
+  // The game's dating rules date its gym switches and story variables; the
+  // gate-setters extract is for the quest switches and counters they do
+  // not.
+  // A condition no rules could date has no use for its setters either.
+  conditionDated: (condition) =>
+    conditionBadge([condition], REJUV_EVENT_DATING) != null ||
+    conditionBadge([condition], EVERYTHING_DATED) == null,
+  martRowCondition: rowCondition,
   version: {
     file: 'Scripts/Rejuv/Bootstrap.rb',
     pattern: /^GAME_VERSION = '([^']+)'/,

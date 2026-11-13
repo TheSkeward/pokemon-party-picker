@@ -9,11 +9,13 @@
  */
 import {
   collapse,
+  enclosingConditions,
   isPrefix,
   pageConditions,
   pageRecord,
   relation,
   scriptsIn,
+  stateWrites,
   walkCommands,
 } from './event-commands.mjs';
 import { numbersIn, splitArgs, symbolsIn } from './game-files.mjs';
@@ -92,8 +94,6 @@ export function setSelfSwitchesResets(script) {
   }
   return resets;
 }
-
-const VARIABLE_OPS = ['set', 'add', 'sub', 'mul', 'div', 'mod'];
 
 // A call's argument list, parentheses nested one deep.
 const ARGUMENTS = '\\s*\\(((?:[^()]|\\([^()]*\\))*)\\)';
@@ -250,27 +250,11 @@ function givesInScript(script, calls) {
  * @return {!Array<!Object>}
  */
 function stateChanges(step, names, calls) {
-  const [a, b, c, d, e] = step.parameters;
+  const [a, b] = step.parameters;
   switch (step.code) {
-    case 121: {
-      const out = [];
-      for (let id = a; id <= b; id++) {
-        out.push({ ...names.switch(id), to: c === 0 });
-      }
-      return out;
-    }
-    case 122: {
-      const operand = [
-        () => ({ constant: e }),
-        () => ({ fromVariable: names.variable(e) }),
-        () => ({ random: [e, step.parameters[5]] }),
-      ][d]?.() ?? { operandType: d };
-      const out = [];
-      for (let id = a; id <= b; id++) {
-        out.push({ ...names.variable(id), op: VARIABLE_OPS[c], ...operand });
-      }
-      return out;
-    }
+    case 121:
+    case 122:
+      return stateWrites(step, names);
     case 123:
       return [{ selfSwitch: a, to: b === 0 }];
     case 116:
@@ -292,16 +276,10 @@ function stateChanges(step, names, calls) {
       )) {
         out.push({ selfSwitch: m[2], ofEvent: Number(m[1]), to: m[3] === 'true' });
       }
-      for (const m of script.matchAll(
-        /\$game_switches\[(\d+)\]\s*=\s*(true|false)/g,
-      )) {
-        out.push({ ...names.switch(Number(m[1])), to: m[2] === 'true' });
-      }
-      for (const m of script.matchAll(
-        /(?:\$game_variables\[(\d+)\]\s*([-+]?=)(?!=)|pbSet\(\s*(\d+)\s*,)/g,
-      )) {
-        const op = { '+=': 'add', '-=': 'sub' }[m[2]] ?? 'set';
-        out.push({ ...names.variable(Number(m[1] ?? m[3])), op, script: true });
+      // What a script sets a variable to stays out of `sets`: `repeat`
+      // reads a constant there as a step the event itself counts.
+      for (const { constant, ...write } of stateWrites(step, names)) {
+        out.push(write);
       }
       return out;
     }
@@ -486,8 +464,7 @@ function kindOf(give, context) {
  */
 function analyseCommands(list, names, calls, commonEvents, gates) {
   const steps = walkCommands(list, names);
-  const within = (chain) =>
-    chain.map((arm) => steps.arms.get(arm)).filter((c) => c && !c.loop);
+  const within = (chain) => enclosingConditions(steps, chain);
   const found = [];
   for (const step of steps) {
     const partials = step.script ? givesInScript(step.script, calls) : [];
@@ -779,6 +756,28 @@ export function extractItemEvents(files, names, eventCalls, itemPools = {}) {
     badgeAwards,
     selfSwitchResets,
   };
+}
+
+/**
+ * @param {{events: !Array<!Object>, commonEvents: !Array<!Object>}}
+ *     extracted The result of extractItemEvents.
+ * @return {!Array<!Object>} Every condition a give sits under: its page's
+ *     and its enclosing branches'; for a common event's give, the switch
+ *     the common event runs under.
+ */
+export function giveConditions({ events, commonEvents }) {
+  const conditions = [];
+  for (const event of events) {
+    for (const give of event.gives) {
+      const page = event.pages.find((entry) => entry.page === give.page);
+      conditions.push(...(page.conditions ?? []), ...(give.within ?? []));
+    }
+  }
+  for (const { triggerSwitch, gives } of commonEvents) {
+    if (triggerSwitch) conditions.push(triggerSwitch);
+    for (const give of gives) conditions.push(...(give.within ?? []));
+  }
+  return conditions;
 }
 
 /**

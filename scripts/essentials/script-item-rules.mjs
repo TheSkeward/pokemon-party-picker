@@ -262,6 +262,26 @@ const RULE_ITEMS = {
 
 /**
  * @param {!Object<string, !Object>} rules A game's script rules, by key.
+ * @param {function(string): !Object=} readClause Reads one Ruby test as
+ *     the condition an event would carry; unless given, each is the
+ *     condition an event's branch on that script is recorded as.
+ * @return {!Array<!Object>} The conditions the rules put on what they
+ *     yield: the tests a mart's rows show under, one for each clause of a
+ *     test that joins several with `&&`.
+ */
+export function scriptRuleConditions(
+  rules, readClause = (script) => ({ script }),
+) {
+  return Object.values(rules.marts?.marts ?? {})
+    .flatMap((mart) => Object.values(mart.categories))
+    .flatMap((stock) => (Array.isArray(stock) ? stock : []))
+    .flatMap((row) => row.conditions ?? [])
+    .flatMap((test) => test.split('&&'))
+    .map((clause) => readClause(clause.trim()));
+}
+
+/**
+ * @param {!Object<string, !Object>} rules A game's script rules, by key.
  * @return {!Array<string>} Every item symbol they name, for the extract's
  *     table of item names.
  */

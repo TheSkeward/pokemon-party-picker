@@ -6,6 +6,15 @@
 
 const COMPARISONS = ['==', '>=', '<=', '>', '<', '!='];
 const TRIGGERS = ['action', 'playerTouch', 'eventTouch', 'autorun', 'parallel'];
+const VARIABLE_OPS = ['set', 'add', 'sub', 'mul', 'div', 'mod'];
+
+// A script's assignments to a switch or a variable by number; pbSet is the
+// engine's own way to set a variable.
+const SWITCH_ASSIGNMENT = /\$game_switches\[(\d+)\]\s*=\s*(true|false)/g;
+const VARIABLE_ASSIGNMENT =
+  /(?:\$game_variables\[(\d+)\]\s*([-+]?=)(?!=)|pbSet\(\s*(\d+)\s*,)/g;
+// The number an assignment ends in, when a number is all it assigns.
+const LITERAL_OPERAND = /^\s*(-?\d+)\s*(?:[;)\n]|$)/;
 
 /**
  * @param {string} text
@@ -182,6 +191,64 @@ export function walkCommands(list, names) {
   });
   steps.arms = arms;
   return steps;
+}
+
+/**
+ * @param {!Array<!Object>} steps The steps of walkCommands.
+ * @param {!Array<string>} chain A step's chain of branch arms.
+ * @return {!Array<!Object>} The conditions of the branches the step sits
+ *     under, outermost first; a loop is no condition.
+ */
+export const enclosingConditions = (steps, chain) =>
+  chain.map((arm) => steps.arms.get(arm)).filter((c) => c && !c.loop);
+
+/**
+ * The switches and variables a step writes: an event command's, or a
+ * script's assignments. A switch write is {switch, name, to}. A variable
+ * write is {variable, name, op} with its operand as the engine has it:
+ * `constant`, `fromVariable` (another variable), `random` (a range),
+ * `operandType` (one of the engine's other sources) or `entered` (a number
+ * or a button the player is asked for). A script's write carries `script`,
+ * and a `constant` only when a number is all it assigns.
+ * @param {!Object} step A step of walkCommands.
+ * @param {!Names} names
+ * @return {!Array<!Object>}
+ */
+export function stateWrites(step, names) {
+  const [a, b, c, d, e] = step.parameters;
+  const out = [];
+  if (step.code === 121) {
+    for (let id = a; id <= b; id++) {
+      out.push({ ...names.switch(id), to: c === 0 });
+    }
+  } else if (step.code === 122) {
+    const operand = [
+      () => ({ constant: e }),
+      () => ({ fromVariable: names.variable(e) }),
+      () => ({ random: [e, step.parameters[5]] }),
+    ][d]?.() ?? { operandType: d };
+    for (let id = a; id <= b; id++) {
+      out.push({ ...names.variable(id), op: VARIABLE_OPS[c], ...operand });
+    }
+  } else if (step.code === 103 || step.code === 105) {
+    out.push({ ...names.variable(a), op: 'set', entered: true });
+  } else if (step.script) {
+    const { script } = step;
+    for (const m of script.matchAll(SWITCH_ASSIGNMENT)) {
+      out.push({ ...names.switch(Number(m[1])), to: m[2] === 'true' });
+    }
+    for (const m of script.matchAll(VARIABLE_ASSIGNMENT)) {
+      const op = { '+=': 'add', '-=': 'sub' }[m[2]] ?? 'set';
+      const literal = LITERAL_OPERAND.exec(script.slice(m.index + m[0].length));
+      out.push({
+        ...names.variable(Number(m[1] ?? m[3])),
+        op,
+        ...(literal ? { constant: Number(literal[1]) } : {}),
+        script: true,
+      });
+    }
+  }
+  return out;
 }
 
 /**
