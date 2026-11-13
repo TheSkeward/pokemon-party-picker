@@ -83,7 +83,13 @@ test('the schedule is the eighteen badges with the game\'s hard caps', () => {
   assert.deepEqual(checkpoints.map((c) => c.badges), caps.map((_, i) => i));
   withRejuv(() => {
     assert.equal(getCheckpoints()[1].label, 'PoisonHeart Badge (Venam)');
-    assert.equal(getCheckpoints()[18].label, 'Fairy Tale: Endings Badge (Alice)');
+    // The game hands the two Fairy Tale badges over together and Sigil
+    // Pearl last.
+    assert.deepEqual(getCheckpoints().slice(16).map((c) => c.label), [
+      'Fairy Tale: Beginnings Badge (Allen)',
+      'Fairy Tale: Endings Badge (Alice)',
+      'Sigil Pearl Badge (Damien)',
+    ]);
     assert.equal(getItemUnlockBadge('linkheart'), 1);
     assert.equal(getItemUnlockBadge('safetygoggles'), 7);
   });

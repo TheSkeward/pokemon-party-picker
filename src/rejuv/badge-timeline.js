@@ -3,14 +3,19 @@
  * games/schedule.js reads (see reborn/badge-timeline.js for the field
  * conventions). Eighteen badge checkpoints: the fifteen of BIGJRA's
  * walkthrough (bigjra.github.io/rejuvenation, V13.5 chapters 1 to 15, in the
- * order the story awards them) and V14's three, which the walkthrough does
- * not yet cover and which follow the Aevium League's own listing.
+ * order the story awards them) and V14's three, in the order the game's
+ * own events hand them over: Allen and Alice give Fairy Tale: Beginnings
+ * and Fairy Tale: Endings one after the other on a single page (map 661
+ * event 142), and Sigil Pearl follows the fight with Damien (map 637 event
+ * 130). So the count held goes 15, 17, 18: sixteen badges are never held
+ * on their own.
  *
  * Level caps are the game's: LEVELCAPS in Scripts/Rejuv/SystemConstants.rb
  * (V14.0) is indexed by badge count, 18 before the first badge and 100 from
  * the seventeenth, and the game enforces it (a hard cap, not an honor
- * system). Pyramid Point and Sigil Pearl raise no cap; the sixteenth badge
- * does not either.
+ * system). Pyramid Point and Sigil Pearl raise no cap. Nor does the
+ * sixteenth badge by the table, but it comes with the seventeenth, so the
+ * Fairy Tale pair takes the cap from 90 to 100.
  *
  * `unlocks` names what first becomes obtainable at a checkpoint, timed by
  * the walkthrough chapter in which it is first reached: the evolution
@@ -127,8 +132,9 @@ export const REJUV_PROGRESSION_CHECKPOINTS = [
     id: 'badge-15', badges: 15, label: 'Forgery Badge (Saki)', levelCap: 90,
     unlocks: { access: ['evoAccessThunderStone'] }, // the chapter-15 stone vendor
   },
-  // V14: the league's last three seats, beyond the walkthrough's coverage.
-  { id: 'badge-16', badges: 16, label: 'Sigil Pearl Badge (Damien)', levelCap: 90, unlocks: {} },
-  { id: 'badge-17', badges: 17, label: 'Fairy Tale: Beginnings Badge (Allen)', levelCap: 100, unlocks: {} },
-  { id: 'badge-18', badges: 18, label: 'Fairy Tale: Endings Badge (Alice)', levelCap: 100, unlocks: {} },
+  // V14: the league's last three seats. The first two are handed over
+  // together, so a player holds fifteen badges and then seventeen.
+  { id: 'badge-16', badges: 16, label: 'Fairy Tale: Beginnings Badge (Allen)', levelCap: 90, unlocks: {} },
+  { id: 'badge-17', badges: 17, label: 'Fairy Tale: Endings Badge (Alice)', levelCap: 100, unlocks: {} },
+  { id: 'badge-18', badges: 18, label: 'Sigil Pearl Badge (Damien)', levelCap: 100, unlocks: {} },
 ];
