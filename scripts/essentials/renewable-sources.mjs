@@ -11,6 +11,7 @@ import { itemId } from './item-id.mjs';
 // word.
 const METHOD_WORDS = {
   Water: 'surfing',
+  Lava: 'crossing lava',
   RockSmash: 'Rock Smash',
   OldRod: 'Old Rod',
   GoodRod: 'Good Rod',
@@ -22,7 +23,8 @@ const METHOD_WORDS = {
  * The earliest wild holder of every item some wild Pokémon carries.
  * @param {{holdChances: !Object, itemNames: !Object<string, string>,
  *     species: !Object<string, !Object>}} wildItems The wild-items extract.
- * @param {{maps: !Array<!Object>}} encounters The encounters extract.
+ * @param {{maps: !Array<!Object>}} encounters The encounters extract. A
+ *     slot may name the form it is met in (the extract's slotForms rule).
  * @param {function(!Object, string): ?number} badgeOf Given an encounter
  *     map and one of its encounter types, the badge count at which that
  *     table can be met; null when it is not dated, which drops the table.
@@ -38,8 +40,8 @@ export function wildHeldSources(wildItems, encounters, badgeOf) {
     for (const [type, slots] of Object.entries(map.types)) {
       const badge = badgeOf(map, type);
       if (badge == null) continue;
-      for (const species of new Set(slots.map((slot) => slot.species))) {
-        for (const held of heldBy(wildItems, species, chances)) {
+      for (const [species, form] of slotHolders(slots)) {
+        for (const held of heldBy(wildItems, species, form, chances)) {
           const id = itemId(wildItems.itemNames[held.item] || held.item);
           const current = best.get(id);
           if (
@@ -63,24 +65,45 @@ export function wildHeldSources(wildItems, encounters, badgeOf) {
     [...best].map(([id, { badge, via }]) => [id, { badge, via }]));
 }
 
-// A species' wild held items with their hold chances. A wild Pokémon is its
-// species' Normal Form unless a map says otherwise, which no table records.
-function heldBy(wildItems, species, chances) {
-  const form = wildItems.species[species]?.['Normal Form'];
+// The species and form of each wild Pokémon a table's slots can produce,
+// once each. A slot that names no form is met in the species' first; a
+// number is that form, counted in the order the wild-items extract lists a
+// species' forms; a list is any of its forms. A name is a rule the game
+// picks the form by (the season, the hour), so which form holds what is not
+// known here and the slot claims no holder.
+function slotHolders(slots) {
+  const holders = new Map();
+  for (const { species, form } of slots) {
+    const forms = form == null ? [0]
+      : typeof form === 'number' ? [form]
+        : Array.isArray(form) ? form : [];
+    for (const index of forms) {
+      holders.set(`${species}|${index}`, [species, index]);
+    }
+  }
+  return holders.values();
+}
+
+// The wild held items of one form of a species, with their hold chances.
+// A form past the first is named with its own words ("Alolan Rattata").
+function heldBy(wildItems, species, formIndex, chances) {
+  const [key, form] =
+    Object.entries(wildItems.species[species] || {})[formIndex] || [];
   if (!form) return [];
+  const name = formIndex === 0
+    ? form.name : `${key.replace(/ Form$/, '')} ${form.name}`;
   const slots = ['common', 'uncommon', 'rare'];
   const items = slots.map((slot) => form[slot]);
   // All three slots naming one item means it is always held.
   if (items[0] && items.every((item) => item === items[0])) {
-    return [{ item: items[0], name: form.name, chance: 100 }];
+    return [{ item: items[0], name, chance: 100 }];
   }
   const byItem = new Map();
   slots.forEach((slot, index) => {
     if (!items[index]) return;
     byItem.set(items[index], (byItem.get(items[index]) || 0) + chances[slot]);
   });
-  return [...byItem].map(([item, chance]) =>
-    ({ item, name: form.name, chance }));
+  return [...byItem].map(([item, chance]) => ({ item, name, chance }));
 }
 
 /**

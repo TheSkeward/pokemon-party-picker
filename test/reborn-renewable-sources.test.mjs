@@ -93,6 +93,59 @@ test('an item restocks from the badge its first wild holder is catchable', () =>
     allAtStart.get('blacksludge').via, 'Muk (50%), Peridot Ward, surfing');
 });
 
+test('a slot that names a form is held for by that form', () => {
+  const forms = {
+    holdChances: { default: { common: 50, uncommon: 5, rare: 1 } },
+    itemNames: { PECHABERRY: 'Pecha Berry', STARPIECE: 'Star Piece' },
+    species: {
+      RATTATA: {
+        'Normal Form': {
+          name: 'Rattata', common: null, uncommon: null, rare: null,
+        },
+        'Alolan Form': {
+          name: 'Rattata', common: null, uncommon: 'PECHABERRY', rare: null,
+        },
+      },
+      // No form is called Normal: the first listed is the one met.
+      MINIOR: {
+        'Red Core': {
+          name: 'Minior', common: null, uncommon: 'STARPIECE', rare: null,
+        },
+        'Blue Core': {
+          name: 'Minior', common: 'STARPIECE', uncommon: null, rare: null,
+        },
+      },
+      DEERLING: {
+        'Spring Form': {
+          name: 'Deerling', common: 'PECHABERRY', uncommon: null, rare: null,
+        },
+      },
+    },
+  };
+  const tables = (types) =>
+    ({ maps: [{ mapId: 1, mapName: 'Route 1', types }] });
+  const held = (types) =>
+    Object.fromEntries(wildHeldSources(forms, tables(types), () => 0));
+
+  // No form named: the first form, which for Rattata holds nothing.
+  assert.deepEqual(held({ Land: [slot('RATTATA'), slot('MINIOR')] }), {
+    starpiece: { badge: 0, via: 'Minior (5%), Route 1' },
+  });
+  // A number is that form, in the order the forms are listed.
+  assert.deepEqual(held({ Land: [{ ...slot('RATTATA'), form: 1 }] }), {
+    pechaberry: { badge: 0, via: 'Alolan Rattata (5%), Route 1' },
+  });
+  // A list is any of its forms; the likeliest hold is named.
+  assert.deepEqual(held({ Lava: [{ ...slot('MINIOR'), form: [0, 1] }] }), {
+    starpiece: {
+      badge: 0, via: 'Blue Core Minior (50%), Route 1, crossing lava',
+    },
+  });
+  // A form the game picks by a rule of its own claims no holder.
+  assert.deepEqual(
+    held({ Land: [{ ...slot('DEERLING'), form: 'Season' }] }), {});
+});
+
 test('a Pickup item turns up once the level cap admits its bracket', () => {
   const pickup = {
     itemNames: { ORANBERRY: 'Oran Berry', LEFTOVERS: 'Leftovers' },
