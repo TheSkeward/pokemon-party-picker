@@ -1,5 +1,5 @@
-// One Moon Stone owned before the game hands any out evolves ONE candidate:
-// the planner treats such items as copy-limited (like a single-use TM),
+// One Moon Stone on the held-item list evolves ONE candidate: the planner
+// treats an evolution item as copy-limited (like a single-use TM),
 // gives each item-evolved form a fallback build that keeps the
 // pre-evolution, and every reader of the chosen build agrees on the form it
 // holds.
@@ -19,20 +19,16 @@ import {
   noteSingleCopyTms,
 } from '../src/teamBuilder/team-selection.js';
 
-// The first Moon Stone is an item ball reached with one badge: before it,
-// a stone in the bag is all there is.
+// The copies on the held-item list are the copies there are.
 const oneStone = (owned = 1) => ({
   ...progressionAt({ badge: 0, levelCap: 20 }),
   ownedItems: { moonstone: owned },
 });
 
-// With that badge the game supplies the stone.
-const stonesOut = () => ({
-  ...progressionAt({ badge: 1, levelCap: 25 }),
-  ownedItems: { moonstone: 1 },
-});
+// Six or more is plenty.
+const plentyOfStones = () => oneStone(6);
 
-test('an owned evolution item the game withholds is contested; one it supplies and bare chains are not', () => {
+test('an evolution item short of a full supply is contested; a full supply and bare chains are not', () => {
   assert.deepEqual(contestedEvolutionItems('clefable', 'clefairy', oneStone()), [
     { id: 'moonstone', name: 'Moon Stone', copies: 1 },
   ]);
@@ -40,9 +36,9 @@ test('an owned evolution item the game withholds is contested; one it supplies a
     contestedEvolutionItems('clefable', 'clefairy', oneStone(3))[0].copies,
     3,
   );
-  // The game supplies stones: nothing is contested.
+  // Plenty of stones: nothing is contested.
   assert.deepEqual(
-    contestedEvolutionItems('clefable', 'clefairy', stonesOut()), []);
+    contestedEvolutionItems('clefable', 'clefairy', plentyOfStones()), []);
   // The item is not owned: the evolution is blocked, not contested.
   const unowned = { ...oneStone(), ownedItems: {} };
   assert.deepEqual(contestedEvolutionItems('clefable', 'clefairy', unowned), []);
@@ -108,15 +104,14 @@ test('the optimizer fields at most one Moon Stone evolution per owned stone', as
   assert.equal(kept.buildKey, withoutItemsBuildKey(['moonstone']));
   assert.match(kept.note, /Moon Stone: one copy, planned for/);
 
-  // Once the game supplies it the stone is not contested and both evolve.
-  const open = await runPool({
-    pool: ['Clefairy', 'Nidorino'],
-    progression: stonesOut(),
-  });
-  const openForms = open.team.map(
-    (choice) => getCurrentSpeciesForChoice(choice, stonesOut())?.id,
-  );
-  assert.deepEqual(openForms.sort(), ['clefable', 'nidoking']);
+  // Two stones evolve both, and so does a full supply.
+  for (const progression of [oneStone(2), plentyOfStones()]) {
+    const both = await runPool({ pool: ['Clefairy', 'Nidorino'], progression });
+    const forms = both.team.map(
+      (choice) => getCurrentSpeciesForChoice(choice, progression)?.id,
+    );
+    assert.deepEqual(forms.sort(), ['clefable', 'nidoking']);
+  }
 });
 
 test('an item the team spends on an evolution is not offered as a held item', async () => {

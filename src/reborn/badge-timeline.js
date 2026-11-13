@@ -17,9 +17,9 @@
  *   - access: evolution-access keys (EVOLUTION_ACCESS_FIELDS) — areas reached
  *   - flags:  boolean progression fields (daycare, relearner, HP changer)
  * Mechanic-style access keys (friendship, party-condition, other-locations)
- * have no schedule entry: they are available from the start. Held items and
- * evolution items are timed by their sources
- * (scripts/build-item-timeline.mjs).
+ * have no schedule entry: they are available from the start. Held items
+ * are timed by their sources (scripts/build-item-timeline.mjs), and an
+ * evolution item is spent from the held-item list.
  *
  * Notes against the walkthrough:
  *   - Corey and Kiki award no badge ("No gym badge or TM is awarded to you

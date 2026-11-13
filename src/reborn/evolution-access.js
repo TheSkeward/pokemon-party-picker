@@ -8,8 +8,9 @@
  * in blockedEvolutions, never silent.
  *
  * No field gates an evolution item (a stone, the Link Stone, a Metal Coat):
- * Reborn's item sources are read from its files, so each item is timed by
- * its first source (playthrough/evolution-requirements.js). The keys are
+ * an evolution spends one from the held-item list, which can be set to the
+ * counts Reborn's item sources expect at a badge
+ * (playthrough/evolution-requirements.js). The keys are
  * what saved progressions and the badge timeline's `unlocks.access`
  * entries name, so they are part of the game's saved-state contract.
  */

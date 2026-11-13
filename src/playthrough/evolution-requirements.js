@@ -7,11 +7,11 @@
  *   move-based:           legal once the pre-evo can have learned the move
  *                         (gated by the move's learn level vs the cap)
  *   item / hold / trade:  legal if the game hands the item out (its item
- *                         sources, or its evolution-item table) and does
- *                         not withhold it yet: by the progression's field
- *                         for the item, or, in a game with no such field,
- *                         until the badges held reach the item's first
- *                         source. An owned item is usable either way. K =
+ *                         sources, or its evolution-item table) and the
+ *                         progression can pay for it: its field for the
+ *                         item is open, or, in a game with no such field,
+ *                         the held-item list has a copy. A copy pays for
+ *                         one evolution; a full supply for any number. K =
  *                         item friction;
  *                         UNKNOWN item availability is surfaced, not silently
  *                         blocked or allowed; where an item stands in for the
@@ -31,14 +31,14 @@
  */
 
 import { toId } from '../utils/ids.js';
-import { describeItemSource, getItemUnlockBadge } from '../games/items.js';
+import { describeItemSource } from '../games/items.js';
+import { FULL_SUPPLY } from '../games/item-sources.js';
 import {
   accessFields,
   evolutionItemAccessKey,
   evolutionRules,
 } from '../games/evolution.js';
 import { getActiveGame } from '../games/registry.js';
-import { badgesHeldOf } from '../games/schedule.js';
 import { tunable } from '../teamBuilder/scoring-constants.js';
 import { dex } from '../games/dex.js';
 
@@ -80,27 +80,28 @@ function gateClosed(access, key) {
   return access?.[key] === false;
 }
 
-// Whether the game withholds an evolution item from this progression. An
-// item with an access field goes by the field. One without is timed by the
-// game's item sources: withheld until the badges held reach the badge its
-// first source opens at. An item with no dated source, or a progression
-// with no badge count, withholds nothing.
-function itemWithheld(access, itemName, accessKey) {
-  if (!access) return false;
-  if (accessKey) return gateClosed(access, accessKey);
-  const opens = getItemUnlockBadge(toId(itemName));
-  const held = badgesHeldOf(access);
-  return opens != null && held != null && held < opens;
+// How many evolutions the progression can pay for with an item. Any number
+// where the game is taken to supply it: the item's access field is open,
+// or, for an item with no field, the progression keeps no item list. Else
+// the copies in the held-item list, a full supply of which is again any
+// number: the player's count is the limit until it says there is plenty.
+function itemCopies(access, itemName, accessKey) {
+  if (!access) return Infinity;
+  if (accessKey ? !gateClosed(access, accessKey) : !access.ownedItems) {
+    return Infinity;
+  }
+  const owned = ownedItemCount(access, itemName);
+  return owned >= FULL_SUPPLY ? Infinity : owned;
 }
 
 /**
  * The evolution items the chain from `inputId` up to `fieldedId` spends out
- * of the bag alone: each item the game withholds from the progression (its
- * access field is closed, or its first source lies past the badges held)
- * but which the player owns. Owning one lets ONE evolution through, not
- * every candidate's, so the team planner treats these as copy-limited, like
- * a single-use TM. Empty without a progression, for an item the game
- * supplies, or when nothing on the chain needs an item.
+ * of the bag: each item the held-item list has some copies of, short of a
+ * full supply, where the game is not taken to supply it (itemCopies). A
+ * copy lets ONE evolution through, not every candidate's, so the team
+ * planner treats these as copy-limited, like a single-use TM. Empty
+ * without a progression, for an item there is plenty of, or when nothing
+ * on the chain needs an item.
  * @param {?string} fieldedId
  * @param {?string} inputId
  * @param {?Object} access The progression.
@@ -111,9 +112,10 @@ export function contestedEvolutionItems(fieldedId, inputId, access) {
   const contested = new Map();
   const spent = spentEvolutionItems(fieldedId, inputId);
   for (const { id, name, accessKey } of spent) {
-    if (!itemWithheld(access, name, accessKey)) continue;
-    const copies = ownedItemCount(access, name);
-    if (copies > 0) contested.set(id, { id, name, copies });
+    const copies = itemCopies(access, name, accessKey);
+    if (copies > 0 && copies !== Infinity) {
+      contested.set(id, { id, name, copies });
+    }
   }
   return [...contested.values()];
 }
@@ -122,8 +124,8 @@ export function contestedEvolutionItems(fieldedId, inputId, access) {
  * Every item the chain from `inputId` up to `fieldedId` consumes, one entry
  * per evolution step that spends one (a stone, a held evolution item, the
  * game's trade item), with the access field that governs it, null where
- * the game's item sources time it. Gate and bag are not consulted: this is
- * what the evolutions cost, whoever pays.
+ * the game has none and the held-item list pays. Gate and bag are not
+ * consulted: this is what the evolutions cost, whoever pays.
  * @param {?string} fieldedId
  * @param {?string} inputId
  * @return {!Array<{id: string, name: string, accessKey: ?string}>}
@@ -238,7 +240,7 @@ function accessLabel(key) {
 // What an evolution needs open, in the order its reasons are given: a
 // method or a place by its access field (`key`), and each item it spends
 // (`item`) by the item's field, `key` null where the game has none and
-// its sources time the item.
+// the held-item list pays for it.
 function requiredGates(evoType, condition, species) {
   const field = (key) => ({ item: null, key });
   const spent = (item) =>
@@ -284,25 +286,24 @@ function requiredGates(evoType, condition, species) {
   return [];
 }
 
-// Whether a gate keeps the evolution from this progression. An item the
-// player owns is usable whatever the game withholds: a Thunder Stone in the
-// bag works before stones can be had.
+// Whether a gate keeps the evolution from this progression: a closed field
+// for a method or a place, no copy to spend for an item.
 function gateShut(access, gate) {
   if (!gate.item) return gateClosed(access, gate.key);
-  return (
-    itemWithheld(access, gate.item, gate.key) &&
-    !ownedItemCount(access, gate.item)
-  );
+  return itemCopies(access, gate.item, gate.key) === 0;
 }
 
-// Why a shut gate blocks: the player's own setting for a field, the game's
-// item data for an item its sources time.
+// Why a shut gate blocks: the player's own setting for a field, an empty
+// count for an item the held-item list pays for. The item's sources say
+// where a copy comes from.
 function shutReason(gate) {
   if (gate.key) {
     return `${accessLabel(gate.key)} not yet accessible ` +
       `(${getActiveGame().shortLabel} Progression setting)`;
   }
-  return `${gate.item} not yet obtainable (${describeItemSource(gate.item)})`;
+  const source = describeItemSource(gate.item);
+  return `${gate.item}: none among your held items` +
+    (source ? ` (${source})` : '');
 }
 
 /**
@@ -350,9 +351,9 @@ export function getEvolutionRequirement(species, access = null) {
     };
   }
 
-  // Access first: a method the player can't use yet, or an item the game
-  // does not hand out yet, is BLOCKED — a concrete fact that outranks the
-  // friction model. Surfaced, never silent.
+  // Access first: a method the player can't use yet, or an item they have
+  // no copy of, is BLOCKED — a concrete fact that outranks the friction
+  // model. Surfaced, never silent.
   if (access) {
     const shut = gates.find((gate) => gateShut(access, gate));
     if (shut) {

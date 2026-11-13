@@ -1,7 +1,7 @@
 /**
  * @fileoverview The access fields of the evolution stones, one per stone,
- * for a game whose progression gates its stones by hand. A game that times
- * its evolution items by its item sources lists none (games/evolution.js).
+ * for a game whose progression gates its stones by hand. A game whose
+ * evolutions spend the held-item list lists none (games/evolution.js).
  * The keys are what saved progressions and a badge timeline's
  * `unlocks.access` entries name, so they are part of a game's saved-state
  * contract.

@@ -98,6 +98,10 @@ const { setScoringOverrides } = await import(
 const progressionOptions = await import(
   '../../src/reborn/progression-options.js',
 );
+const { getExpectedItemChanges } = await import('../../src/games/items.js');
+const { ownedEvolutionItems } = await import(
+  '../../src/playthrough/evolution-requirements.js',
+);
 
 const shared = { availability: null, pokemonIndex: null };
 export async function loadShared() {
@@ -115,9 +119,19 @@ function badgeNumber(text) {
   return match ? Number(match[1]) : 99; // no badge string => not yet available
 }
 
+// The evolution items the game has handed out by a badge, in the counts its
+// item data expects: what the held-item list holds once it is set to the
+// expected counts. An evolution spends from that list, so a player with an
+// empty one could evolve nothing by item.
+function expectedEvolutionItems(badge) {
+  const expected = Object.fromEntries(
+    getExpectedItemChanges(badge, {}).map((item) => [item.id, item.count]));
+  return ownedEvolutionItems({ ownedItems: expected });
+}
+
 // Progression state for "badge N, level cap L": TMs/TMXs whose availability
 // badge is unlocked, tutor moves via the tutor GROUPS (options carry no
-// availability of their own).
+// availability of their own), and the evolution items handed out so far.
 export function progressionAt(
   { badge = 1, levelCap = 25, opponentTypeBias = {} } = {}) {
   const {
@@ -143,7 +157,7 @@ export function progressionAt(
     availableTutorMoveIds: (REBORN_TUTOR_OPTIONS || [])
       .filter((option) => tutorMoves.has(option.move))
       .map((option) => option.id),
-    ownedItems: {},
+    ownedItems: expectedEvolutionItems(badge),
     opponentTypeBias,
   };
 }

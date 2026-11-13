@@ -51,7 +51,8 @@ function itemFields() {
  * @param {?string} itemName
  * @return {?string} The access field that gates an evolution item: its own
  *     (a stone's), else the game's field for the rest. Null where the game
- *     lists neither: the item is then timed by the game's item sources.
+ *     lists neither: an evolution then spends the item from the held-item
+ *     list.
  */
 export function evolutionItemAccessKey(itemName) {
   const { keyByItemId, catchAll } = itemFields();
@@ -60,9 +61,9 @@ export function evolutionItemAccessKey(itemName) {
 
 /**
  * @return {boolean} Whether the game gates no evolution item by a field of
- *     its progression, each being timed by its sources instead.
+ *     its progression, each being spent from the held-item list instead.
  */
-export function evolutionItemsFollowSources() {
+export function evolutionItemsSpentFromList() {
   const { keyByItemId, catchAll } = itemFields();
   return !catchAll && keyByItemId.size === 0;
 }

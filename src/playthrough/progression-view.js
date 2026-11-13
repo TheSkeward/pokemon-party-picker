@@ -4,7 +4,7 @@ import { getMoveMeta, describeMoveMeta } from '../move-meta';
 import { legalityRules, mechanics, moveSources } from '../games/legality.js';
 import {
   accessFields,
-  evolutionItemsFollowSources,
+  evolutionItemsSpentFromList,
   evolutionRules,
   isAccessOpen,
 } from '../games/evolution.js';
@@ -25,15 +25,14 @@ import { dex } from '../games/dex.js';
 import { getActiveGame } from '../games/registry.js';
 
 // Says where the evolution items went, in a game that lists no box for
-// them: they open by the game's item data, and the held-item list can only
-// open one sooner.
+// them: the held-item list pays for them, a copy an evolution.
 function renderEvolutionItemNote() {
-  if (!evolutionItemsFollowSources()) return '';
+  if (!evolutionItemsSpentFromList()) return '';
   const tradeItem = evolutionRules().tradeItem;
   const examples = ['a stone', tradeItem ? `the ${tradeItem}` : '', 'a Metal Coat']
     .filter(Boolean).join(', ');
   return `
-          <p class="muted evo-access-hint">Evolution items (${escapeHtml(examples)}) have no box here. Each can be used from the badge its first copy turns up in the game, or sooner if it is among your held items owned.</p>`;
+          <p class="muted evo-access-hint">Evolution items (${escapeHtml(examples)}) have no box here. An evolution spends one from your held items owned: the count there is how many are planned, and ${MAX_TRACKED_ITEM_COUNT}+ counts as plenty.</p>`;
 }
 
 /**
