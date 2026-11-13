@@ -4,15 +4,15 @@
 //
 // Friction DEFAULTS are 0 (requirements are information, the
 // player prices their own grind), so the K-pricing assertions here run under
-// explicit overrides — they pin the machinery (tedious multiplier, trade+item
-// stacking, chain summing) that a future re-enable would turn back on.
+// explicit overrides — they pin the machinery (trade+item stacking, chain
+// summing) that a future re-enable would turn back on.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   getEvolutionRequirement,
   evolutionChainProof,
 } from '../src/playthrough/evolution-requirements.js';
-import { getItemAvailability } from '../src/games/items.js';
+import { describeItemSource } from '../src/games/items.js';
 import { setScoringOverrides } from '../src/teamBuilder/scoring-constants.js';
 import { GEN7_PROGRESSION_SPECIES } from '../src/generated/gen7ProgressionSpecies.generated.js';
 
@@ -65,7 +65,7 @@ test('Happiny -> Chansey: legal via the Oval Stone, with item K + proof', () => 
     assert.equal(req.status, 'legal');
     assert.equal(req.method, 'item');
     assert.ok(req.friction > 0);
-    // The reason names the item and its source; a grind would say "tedious".
+    // The reason names the item and its source, with no word on the effort.
     // The source is the item's supply in words, read from the game's item
     // data: no wild Pokémon of Reborn's holds an Oval Stone, the rocks do.
     assert.match(req.reason, /Oval Stone \(mined from badge \d+/);
@@ -79,15 +79,12 @@ test('every item a Reborn evolution spends has a source in the game data', () =>
   }
   assert.ok(items.size >= 25, 'the dex names the evolution items');
   for (const item of items) {
-    const { status, source } = getItemAvailability(item);
-    assert.match(status, /^farmable(-tedious)?$/, item);
-    assert.ok(source.length > 0, `${item} has no source the supply counts`);
+    assert.ok(describeItemSource(item), `${item} has no source`);
   }
 });
 
-test('an item the grind table does not judge is legal by its sources', () => {
-  // Sold or placed in the game files, and in no hand-set table.
-  const unjudged = {
+test('an item evolution is legal by the item\'s sources in the game files', () => {
+  const sourced = {
     aromatisse: 'Sachet',
     slurpuff: 'Whipped Dream',
     dusknoir: 'Reaper Cloth',
@@ -96,23 +93,28 @@ test('an item the grind table does not judge is legal by its sources', () => {
     porygonz: 'Dubious Disc',
     rhyperior: 'Protector',
   };
-  for (const [id, item] of Object.entries(unjudged)) {
+  for (const [id, item] of Object.entries(sourced)) {
     const req = getEvolutionRequirement(species(id));
     assert.equal(req.status, 'legal', id);
     assert.ok(req.reason.includes(`${item} (`), `${id}: ${req.reason}`);
-    assert.ok(!req.reason.includes(`${item} (tedious`), id);
   }
   assert.match(
     getEvolutionRequirement(species('slurpuff')).reason,
     /Whipped Dream \(sold from badge \d+\)/);
 });
 
-test('stone evolution: legal, farmable-tedious priced above plain item K', () => {
+test('an item costs the same K wherever it comes from; an owned one is free', () => {
   withPricedFriction(() => {
     const raichu = getEvolutionRequirement(species('raichu'));
     const chansey = getEvolutionRequirement(species('chansey'));
     assert.equal(raichu.status, 'legal');
-    assert.ok(raichu.friction > chansey.friction, 'tedious stone > plain item');
+    assert.doesNotMatch(raichu.reason, /tedious|grind/i);
+    assert.equal(raichu.friction, chansey.friction);
+    const owned = getEvolutionRequirement(species('raichu'), {
+      ownedItems: { thunderstone: 1 },
+    });
+    assert.equal(owned.friction, 0);
+    assert.match(owned.reason, /Thunder Stone \(owned\)/);
   });
 });
 

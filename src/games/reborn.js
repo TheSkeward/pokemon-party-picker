@@ -18,7 +18,6 @@ import {
   REBORN_TUTOR_GROUPS,
   REBORN_TUTOR_OPTIONS,
 } from '../reborn/progression-options.js';
-import { REBORN_EVOLUTION_ITEM_AVAILABILITY } from '../reborn/item-availability.js';
 import { EVOLUTION_ACCESS_FIELDS } from '../reborn/evolution-access.js';
 import { REBORN_EXTRA_INVENTORY_ITEMS } from '../reborn/extra-inventory-items.js';
 import {
@@ -80,15 +79,16 @@ export const REBORN_GAME = Object.freeze({
   // Item content (games/items.js): every held item's sources, each with
   // its kind and badge (games/item-sources.js), the game-only inventory
   // items, the held items the game replaces (hidden from the picker; saved
-  // counts migrate), curated evolution-item availability, and the proxies
-  // that price game-original items (SCORING.md, "Borrowed priors"): field
-  // seeds from Gen 7 terrain-seed usage, gems from Z-Crystals.
+  // counts migrate), and the proxies that price game-original items
+  // (SCORING.md, "Borrowed priors"): field seeds from Gen 7 terrain-seed
+  // usage, gems from Z-Crystals. A game whose sources are not read from its
+  // files also lists `evolutionItemAvailability`: where each evolution item
+  // comes from, in words (games/hgss.js).
   items: Object.freeze({
     sources: REBORN_ITEM_SOURCES,
     extraInventoryItems: REBORN_EXTRA_INVENTORY_ITEMS,
     hiddenInventoryItemIds: HIDDEN_INVENTORY_ITEM_IDS,
     inventoryMigration: TERRAIN_SEED_MIGRATION,
-    evolutionItemAvailability: REBORN_EVOLUTION_ITEM_AVAILABILITY,
     fieldSeeds: Object.freeze({
       names: REBORN_SEEDS,
       proxyItems: GEN7_TERRAIN_SEEDS,

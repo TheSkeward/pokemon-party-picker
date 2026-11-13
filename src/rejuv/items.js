@@ -12,51 +12,49 @@
  */
 
 /**
- * Evolution items. `farmable` means a reliable source at its badge (a shop,
- * a quest reward, a fixed pickup); `farmable-tedious` a real grind (a
- * 25,000 price tag early, or a 5% wild hold).
- * @type {!Object<string, {status: string, source: string}>}
+ * The evolution items Rejuvenation hands out, with where each comes from.
+ * @type {!Object<string, {source: string}>}
  */
 export const REJUV_EVOLUTION_ITEM_AVAILABILITY = Object.freeze({
   // Route 2's Kecleon Bazaar (chapter 2) sells these at 25,000 each; Lost
   // Camp (chapter 5) sells Water, Fire, and Leaf Stones at 2,100.
-  waterstone: { status: 'farmable', source: 'Route 2 quest reward; Kecleon Bazaar (25,000); Lost Camp (2,100)' },
-  firestone: { status: 'farmable', source: 'Lost Camp (2,100); Kecleon Bazaar (25,000)' },
-  leafstone: { status: 'farmable', source: 'Lost Camp (2,100); hidden on Route 4' },
-  duskstone: { status: 'farmable-tedious', source: 'Kecleon Bazaar (25,000); hidden in West Gearen City' },
-  dawnstone: { status: 'farmable-tedious', source: 'Kecleon Bazaar (25,000)' },
-  shinystone: { status: 'farmable-tedious', source: 'Kecleon Bazaar (25,000); Aquamarine Cave quest reward' },
-  icestone: { status: 'farmable-tedious', source: 'Kecleon Bazaar (25,000)' },
-  moonstone: { status: 'farmable', source: 'hidden on Route 3 (chapter 4)' },
-  sunstone: { status: 'farmable', source: 'hidden on Route 3 (chapter 4); Aquamarine Cave' },
-  thunderstone: { status: 'farmable', source: 'the chapter-15 stone vendor' },
+  waterstone: { source: 'Route 2 quest reward; Kecleon Bazaar (25,000); Lost Camp (2,100)' },
+  firestone: { source: 'Lost Camp (2,100); Kecleon Bazaar (25,000)' },
+  leafstone: { source: 'Lost Camp (2,100); hidden on Route 4' },
+  duskstone: { source: 'Kecleon Bazaar (25,000); hidden in West Gearen City' },
+  dawnstone: { source: 'Kecleon Bazaar (25,000)' },
+  shinystone: { source: 'Kecleon Bazaar (25,000); Aquamarine Cave quest reward' },
+  icestone: { source: 'Kecleon Bazaar (25,000)' },
+  moonstone: { source: 'hidden on Route 3 (chapter 4)' },
+  sunstone: { source: 'hidden on Route 3 (chapter 4); Aquamarine Cave' },
+  thunderstone: { source: 'the chapter-15 stone vendor' },
   // Rejuvenation's trade replacement.
-  linkheart: { status: 'farmable-tedious', source: 'Kecleon Bazaar (25,000)' },
+  linkheart: { source: 'Kecleon Bazaar (25,000)' },
   // Fixed pickups and quest rewards.
-  reapercloth: { status: 'farmable', source: 'one copy: Weather Institute (chapter 6)' },
-  razorclaw: { status: 'farmable', source: 'Kristiline Town (chapter 8); chapter-15 vendor (2,100)' },
-  razorfang: { status: 'farmable', source: 'chapter-15 vendor (2,100)' },
-  prismscale: { status: 'farmable', source: 'Kristiline Town, for the Aquamarine Ore (chapter 8)' },
-  electirizer: { status: 'farmable', source: 'West Gearen babies quest (chapter 9)' },
-  magmarizer: { status: 'farmable', source: 'West Gearen babies quest (chapter 9)' },
-  protector: { status: 'farmable', source: 'Valor Cliffside, for ten Rock types (chapter 10)' },
-  blackaugurite: { status: 'farmable', source: 'Route 8 (chapter 10)' },
-  dubiousdisc: { status: 'farmable', source: 'Darchlight Manor journal (chapter 12); chapter-15 vendor' },
-  ovalstone: { status: 'farmable', source: 'Grand Dream City mushroom trader (chapter 11); chapter-15 vendor' },
-  sachet: { status: 'farmable', source: 'Route 3 stand (1,000)' },
-  whippeddream: { status: 'farmable', source: 'Route 3 stand (1,000)' },
-  sweetapple: { status: 'farmable', source: 'Teila Resort vendor (1,100)' },
-  tartapple: { status: 'farmable', source: 'Teila Resort vendor (1,100)' },
-  syrupyapple: { status: 'farmable', source: 'Grand Dream City vendor (1,100)' },
-  galaricacuff: { status: 'farmable-tedious', source: 'Kecleon Bazaar (25,000)' },
-  auspiciousarmor: { status: 'farmable', source: 'one copy: Darchlight Manor battle reward (chapter 10)' },
-  maliciousarmor: { status: 'farmable', source: 'one copy: Darchlight Manor battle reward (chapter 10)' },
-  masterpieceteacup: { status: 'farmable', source: 'Grand Dream City incense shop (19,000)' },
+  reapercloth: { source: 'one copy: Weather Institute (chapter 6)' },
+  razorclaw: { source: 'Kristiline Town (chapter 8); chapter-15 vendor (2,100)' },
+  razorfang: { source: 'chapter-15 vendor (2,100)' },
+  prismscale: { source: 'Kristiline Town, for the Aquamarine Ore (chapter 8)' },
+  electirizer: { source: 'West Gearen babies quest (chapter 9)' },
+  magmarizer: { source: 'West Gearen babies quest (chapter 9)' },
+  protector: { source: 'Valor Cliffside, for ten Rock types (chapter 10)' },
+  blackaugurite: { source: 'Route 8 (chapter 10)' },
+  dubiousdisc: { source: 'Darchlight Manor journal (chapter 12); chapter-15 vendor' },
+  ovalstone: { source: 'Grand Dream City mushroom trader (chapter 11); chapter-15 vendor' },
+  sachet: { source: 'Route 3 stand (1,000)' },
+  whippeddream: { source: 'Route 3 stand (1,000)' },
+  sweetapple: { source: 'Teila Resort vendor (1,100)' },
+  tartapple: { source: 'Teila Resort vendor (1,100)' },
+  syrupyapple: { source: 'Grand Dream City vendor (1,100)' },
+  galaricacuff: { source: 'Kecleon Bazaar (25,000)' },
+  auspiciousarmor: { source: 'one copy: Darchlight Manor battle reward (chapter 10)' },
+  maliciousarmor: { source: 'one copy: Darchlight Manor battle reward (chapter 10)' },
+  masterpieceteacup: { source: 'Grand Dream City incense shop (19,000)' },
   // Wild holds listed in the walkthrough's appendix.
-  kingsrock: { status: 'farmable-tedious', source: 'wild Poliwhirl and Slowbro (5%)' },
-  dragonscale: { status: 'farmable-tedious', source: 'wild Horsea and Dratini lines (5%)' },
-  deepseatooth: { status: 'farmable-tedious', source: 'wild Carvanha and Sharpedo (5%)' },
-  metalcoat: { status: 'farmable-tedious', source: 'wild Magnemite line (5%)' },
+  kingsrock: { source: 'wild Poliwhirl and Slowbro (5%)' },
+  dragonscale: { source: 'wild Horsea and Dratini lines (5%)' },
+  deepseatooth: { source: 'wild Carvanha and Sharpedo (5%)' },
+  metalcoat: { source: 'wild Magnemite line (5%)' },
 });
 
 /**

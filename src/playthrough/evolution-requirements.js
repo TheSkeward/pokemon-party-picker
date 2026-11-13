@@ -8,7 +8,7 @@
  *                         (gated by the move's learn level vs the cap)
  *   item / hold / trade:  legal if the game hands the item out (its item
  *                         sources, or its evolution-item table), K = item
- *                         friction (higher when the table calls it tedious);
+ *                         friction;
  *                         UNKNOWN item availability is surfaced, not silently
  *                         blocked or allowed; where an item stands in for the
  *                         trade, "with a Shelmet" is a party requirement
@@ -27,13 +27,11 @@
  */
 
 import { toId } from '../utils/ids.js';
-import { getItemAvailability } from '../games/items.js';
+import { describeItemSource } from '../games/items.js';
 import { accessFields, evolutionRules } from '../games/evolution.js';
 import { getActiveGame } from '../games/registry.js';
 import { tunable } from '../teamBuilder/scoring-constants.js';
 import { dex } from '../games/dex.js';
-
-const TEDIOUS_MULTIPLIER = 1.5;
 
 
 // A region-locked evolution (dex evoRegion) needs the game's stand-in for
@@ -403,26 +401,24 @@ export function getEvolutionRequirement(species, access = null) {
     const parts = [];
     let friction = 0;
     // A trade is priced as the game prices it: an item that replaces trading
-    // (Reborn's Link Stone, itself farmable) or a trade as such.
+    // (Reborn's Link Stone) or a trade as such. `source` is where the game
+    // hands the item out, null when its data does not say.
     if (evoType === 'trade') {
       parts.push(
         rules.tradeItem
           ? {
             item: rules.tradeItem,
             trade: true,
-            ...getItemAvailability(rules.tradeItem),
+            source: describeItemSource(rules.tradeItem),
           }
-          : {
-            item: 'trade',
-            trade: true,
-            status: 'farmable',
-            source: 'trade evolution',
-          },
+          : { item: 'trade', trade: true, source: 'trade evolution' },
       );
     }
     if (species.evoItem) {
-      parts.push(
-        { item: species.evoItem, ...getItemAvailability(species.evoItem) });
+      parts.push({
+        item: species.evoItem,
+        source: describeItemSource(species.evoItem),
+      });
     }
     if (evoType === 'useItem' && !species.evoItem) {
       return {
@@ -438,37 +434,31 @@ export function getEvolutionRequirement(species, access = null) {
     for (const part of parts) {
       if (ownedItemCount(access, part.item)) part.owned = true;
     }
-    const unknown = parts.find(
-      (part) => part.status === 'unknown' && !part.owned,
-    );
+    const unknown = parts.find((part) => !part.source && !part.owned);
     if (unknown) {
       return {
         status: 'unknown',
         levelRequired: null,
         friction: 0,
         method: evoType === 'trade' ? 'trade' : 'item',
-        reason: `${unknown.item} availability unknown (${unknown.source})`,
+        reason: `${unknown.item} availability unknown ` +
+          `(no source in ${getActiveGame().shortLabel}'s item data)`,
       };
     }
     for (const part of parts) {
-      // An owned item costs nothing to "acquire" — friction models the grind
+      // An owned item costs nothing to "acquire" — friction models the cost
       // of getting it, and it's already in the bag.
       if (part.owned) continue;
-      const base =
-        part.trade ? tunable('TRADE_FRICTION') : tunable('ITEM_FRICTION');
       friction +=
-        part.status === 'farmable-tedious'
-          ? Math.round(base * TEDIOUS_MULTIPLIER)
-          : base;
+        part.trade ? tunable('TRADE_FRICTION') : tunable('ITEM_FRICTION');
     }
     // "trade + Metal Coat (Athlete Shop, Friday)": a bare trade needs no
-    // source, an owned item none either, and only a grind is called out.
+    // source, an owned item none either.
     const how = parts
       .map((part) => {
         if (part.owned) return `${part.item} (owned)`;
         if (part.trade && part.item === 'trade') return 'trade';
-        const grind = part.status === 'farmable-tedious' ? 'tedious: ' : '';
-        return `${part.item} (${grind}${part.source})`;
+        return `${part.item} (${part.source})`;
       })
       .join(' + ');
     const riders = [condition, regionAccess(species)?.label || '']

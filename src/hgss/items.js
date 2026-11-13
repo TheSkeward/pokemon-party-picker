@@ -14,40 +14,38 @@
  */
 
 /**
- * Evolution items. `farmable` means a reliable source at its badge (a fixed
- * pickup, a shop, a gift, or a 50% wild hold); `farmable-tedious` means a
- * real grind (5% wild holds only, or a 48 BP Frontier price).
- * @type {!Object<string, {status: string, source: string}>}
+ * The evolution items HGSS hands out, with where each comes from.
+ * @type {!Object<string, {source: string}>}
  */
 export const HGSS_EVOLUTION_ITEM_AVAILABILITY = Object.freeze({
   // The Athlete Shop sells one a day from the National Park on; the phone
   // gift trainers and Bill's grandfather add copies.
-  firestone: { status: 'farmable', source: 'Athlete Shop (Tuesday), Alan on Route 36, Bill\'s grandfather' },
-  waterstone: { status: 'farmable', source: 'Athlete Shop (Wednesday), Tully on Route 42, Bill\'s grandfather' },
-  thunderstone: { status: 'farmable', source: 'Athlete Shop (Thursday), Dana on Route 38, Bill\'s grandfather' },
-  leafstone: { status: 'farmable', source: 'Athlete Shop (Saturday), Gina on Route 34, Bill\'s grandfather' },
-  moonstone: { status: 'farmable', source: 'Athlete Shop (Monday), Ruins of Alph, Tohjo Falls, wild Clefairy (5%)' },
+  firestone: { source: 'Athlete Shop (Tuesday), Alan on Route 36, Bill\'s grandfather' },
+  waterstone: { source: 'Athlete Shop (Wednesday), Tully on Route 42, Bill\'s grandfather' },
+  thunderstone: { source: 'Athlete Shop (Thursday), Dana on Route 38, Bill\'s grandfather' },
+  leafstone: { source: 'Athlete Shop (Saturday), Gina on Route 34, Bill\'s grandfather' },
+  moonstone: { source: 'Athlete Shop (Monday), Ruins of Alph, Tohjo Falls, wild Clefairy (5%)' },
   // Post-National Dex only: the Athlete Shop stocks them in Kanto, and a
   // Kanto phone trainer gives each.
-  sunstone: { status: 'farmable', source: 'Athlete Shop after the National Dex, Tanner on Route 13' },
-  shinystone: { status: 'farmable', source: 'National Park, Athlete Shop after the National Dex, Josh on Route 14' },
-  duskstone: { status: 'farmable', source: 'Athlete Shop after the National Dex, Reese on Route 17, Cerulean Cave' },
-  dawnstone: { status: 'farmable', source: 'Athlete Shop after the National Dex, Aiden on Route 17, Mt. Silver Cave' },
-  metalcoat: { status: 'farmable', source: 'Athlete Shop (Friday), S.S. Aqua, wild Magnemite line (5%)' },
-  kingsrock: { status: 'farmable', source: 'Slowpoke Well, Athlete Shop (Sunday), wild Poliwhirl and Slowbro (5%)' },
-  dragonscale: { status: 'farmable', source: 'Mt. Mortar, Athlete Shop after the National Dex, wild Horsea and Dratini lines (5%)' },
-  ovalstone: { status: 'farmable', source: 'Rock Tunnel, wild Chansey (50%)' },
+  sunstone: { source: 'Athlete Shop after the National Dex, Tanner on Route 13' },
+  shinystone: { source: 'National Park, Athlete Shop after the National Dex, Josh on Route 14' },
+  duskstone: { source: 'Athlete Shop after the National Dex, Reese on Route 17, Cerulean Cave' },
+  dawnstone: { source: 'Athlete Shop after the National Dex, Aiden on Route 17, Mt. Silver Cave' },
+  metalcoat: { source: 'Athlete Shop (Friday), S.S. Aqua, wild Magnemite line (5%)' },
+  kingsrock: { source: 'Slowpoke Well, Athlete Shop (Sunday), wild Poliwhirl and Slowbro (5%)' },
+  dragonscale: { source: 'Mt. Mortar, Athlete Shop after the National Dex, wild Horsea and Dratini lines (5%)' },
+  ovalstone: { source: 'Rock Tunnel, wild Chansey (50%)' },
   // One fixed copy each.
-  upgrade: { status: 'farmable', source: 'one copy: Silph Co.' },
-  deepseatooth: { status: 'farmable', source: 'one copy: Route 20' },
-  deepseascale: { status: 'farmable', source: 'Route 20, wild Chinchou line (5%)' },
-  protector: { status: 'farmable', source: 'one copy: Mt. Mortar' },
-  electirizer: { status: 'farmable', source: 'one copy: Cerulean Cave' },
-  magmarizer: { status: 'farmable', source: 'one copy: Cinnabar Island' },
-  dubiousdisc: { status: 'farmable', source: 'one copy: Route 42' },
-  reapercloth: { status: 'farmable', source: 'one copy: Mt. Silver' },
-  razorclaw: { status: 'farmable-tedious', source: 'Battle Frontier (48 BP)' },
-  razorfang: { status: 'farmable-tedious', source: 'Battle Frontier (48 BP)' },
+  upgrade: { source: 'one copy: Silph Co.' },
+  deepseatooth: { source: 'one copy: Route 20' },
+  deepseascale: { source: 'Route 20, wild Chinchou line (5%)' },
+  protector: { source: 'one copy: Mt. Mortar' },
+  electirizer: { source: 'one copy: Cerulean Cave' },
+  magmarizer: { source: 'one copy: Cinnabar Island' },
+  dubiousdisc: { source: 'one copy: Route 42' },
+  reapercloth: { source: 'one copy: Mt. Silver' },
+  razorclaw: { source: 'Battle Frontier (48 BP)' },
+  razorfang: { source: 'Battle Frontier (48 BP)' },
 });
 
 /**

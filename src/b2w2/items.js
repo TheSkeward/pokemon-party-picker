@@ -16,41 +16,39 @@
  */
 
 /**
- * Evolution items. `farmable` means a reliable source at its badge (a fixed
- * pickup, a shop, a gift, or a 50% wild hold); `farmable-tedious` means a
- * real grind (5% wild holds or a Join Avenue shop only).
- * @type {!Object<string, {status: string, source: string}>}
+ * The evolution items B2W2 hands out, with where each comes from.
+ * @type {!Object<string, {source: string}>}
  */
 export const B2W2_EVOLUTION_ITEM_AVAILABILITY = Object.freeze({
   // The Battle Subway and PWT sell the four classic stones for 3 BP, the
   // cheapest prize there is; Black City and White Forest stock stones after
   // the Champion.
-  firestone: { status: 'farmable', source: 'Desert Resort, Lentimas Town, Battle Subway/PWT (3 BP), Black City' },
-  waterstone: { status: 'farmable', source: 'Route 19, Clay Tunnel, Battle Subway/PWT (3 BP), White Forest' },
-  thunderstone: { status: 'farmable', source: 'Nimbasa City, Chargestone Cave, Battle Subway/PWT (3 BP), Black City' },
-  leafstone: { status: 'farmable', source: 'Route 7, Lostlorn Forest, Battle Subway/PWT (3 BP), White Forest' },
-  moonstone: { status: 'farmable', source: 'Route 6, Giant Chasm, wild Clefairy line and Lunatone (5%)' },
-  sunstone: { status: 'farmable', source: 'Nimbasa City, Relic Castle, Giant Chasm, Pinwheel Forest, wild Solrock (5%)' },
-  shinystone: { status: 'farmable', source: 'Route 6, Undella Town, Abundant Shrine, Dragonspiral Tower, White Forest' },
-  duskstone: { status: 'farmable', source: 'Strange House, Victory Road, Twist Mountain, Black City' },
-  dawnstone: { status: 'farmable', source: 'Route 2, Dreamyard, Moor of Icirrus, Black City' },
-  metalcoat: { status: 'farmable', source: 'Chargestone Cave, Clay Tunnel, Black City, wild Magnemite and Bronzor lines (5%)' },
-  kingsrock: { status: 'farmable', source: 'Nuvema Town, Icirrus City, White Forest, wild Poliwhirl line (5%)' },
-  dragonscale: { status: 'farmable', source: 'Victory Road, White Forest, wild Horsea and Dratini lines (5%)' },
-  upgrade: { status: 'farmable', source: 'Pinwheel Forest, Striaton City, Black City' },
-  prismscale: { status: 'farmable', source: 'Route 1, Undella Town, Route 18 (hidden, recurring)' },
+  firestone: { source: 'Desert Resort, Lentimas Town, Battle Subway/PWT (3 BP), Black City' },
+  waterstone: { source: 'Route 19, Clay Tunnel, Battle Subway/PWT (3 BP), White Forest' },
+  thunderstone: { source: 'Nimbasa City, Chargestone Cave, Battle Subway/PWT (3 BP), Black City' },
+  leafstone: { source: 'Route 7, Lostlorn Forest, Battle Subway/PWT (3 BP), White Forest' },
+  moonstone: { source: 'Route 6, Giant Chasm, wild Clefairy line and Lunatone (5%)' },
+  sunstone: { source: 'Nimbasa City, Relic Castle, Giant Chasm, Pinwheel Forest, wild Solrock (5%)' },
+  shinystone: { source: 'Route 6, Undella Town, Abundant Shrine, Dragonspiral Tower, White Forest' },
+  duskstone: { source: 'Strange House, Victory Road, Twist Mountain, Black City' },
+  dawnstone: { source: 'Route 2, Dreamyard, Moor of Icirrus, Black City' },
+  metalcoat: { source: 'Chargestone Cave, Clay Tunnel, Black City, wild Magnemite and Bronzor lines (5%)' },
+  kingsrock: { source: 'Nuvema Town, Icirrus City, White Forest, wild Poliwhirl line (5%)' },
+  dragonscale: { source: 'Victory Road, White Forest, wild Horsea and Dratini lines (5%)' },
+  upgrade: { source: 'Pinwheel Forest, Striaton City, Black City' },
+  prismscale: { source: 'Route 1, Undella Town, Route 18 (hidden, recurring)' },
   // One fixed copy each; the Frigate's is version-exclusive.
-  protector: { status: 'farmable', source: 'one copy: Wellspring Cave; Black City' },
-  electirizer: { status: 'farmable', source: 'one copy: Plasma Frigate (White 2; Black 2 gets the Magmarizer), else Join Avenue' },
-  magmarizer: { status: 'farmable', source: 'one copy: Plasma Frigate (Black 2; White 2 gets the Electirizer), else Join Avenue' },
-  dubiousdisc: { status: 'farmable', source: 'one copy: P2 Laboratory; Black City' },
-  reapercloth: { status: 'farmable', source: 'one copy: Dreamyard; Join Avenue' },
-  razorclaw: { status: 'farmable', source: 'Giant Chasm, Battle Subway/PWT (8 BP)' },
-  razorfang: { status: 'farmable', source: 'Route 11, Battle Subway/PWT (8 BP)' },
+  protector: { source: 'one copy: Wellspring Cave; Black City' },
+  electirizer: { source: 'one copy: Plasma Frigate (White 2; Black 2 gets the Magmarizer), else Join Avenue' },
+  magmarizer: { source: 'one copy: Plasma Frigate (Black 2; White 2 gets the Electirizer), else Join Avenue' },
+  dubiousdisc: { source: 'one copy: P2 Laboratory; Black City' },
+  reapercloth: { source: 'one copy: Dreamyard; Join Avenue' },
+  razorclaw: { source: 'Giant Chasm, Battle Subway/PWT (8 BP)' },
+  razorfang: { source: 'Route 11, Battle Subway/PWT (8 BP)' },
   // No fixed copy: wild holds, a store, or dust clouds only.
-  deepseatooth: { status: 'farmable-tedious', source: 'wild Carvanha line and Red-Striped Basculin (5%), White Forest' },
-  deepseascale: { status: 'farmable-tedious', source: 'wild Chinchou line, Relicanth, and Blue-Striped Basculin (5%), White Forest' },
-  ovalstone: { status: 'farmable-tedious', source: 'dust clouds in caves, White Forest' },
+  deepseatooth: { source: 'wild Carvanha line and Red-Striped Basculin (5%), White Forest' },
+  deepseascale: { source: 'wild Chinchou line, Relicanth, and Blue-Striped Basculin (5%), White Forest' },
+  ovalstone: { source: 'dust clouds in caves, White Forest' },
 });
 
 /**

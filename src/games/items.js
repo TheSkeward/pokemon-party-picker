@@ -2,8 +2,8 @@
  * @fileoverview The active game's item content: each held item's sources
  * and the supply they add up to, game-only inventory items outside the
  * dex's held-item catalog, held-item ids the game replaces (hidden from the
- * picker, with the migration of saved counts), the evolution-item
- * availability, and the proxies the recommender prices game-original items
+ * picker, with the migration of saved counts), where each evolution item
+ * comes from, and the proxies the recommender prices game-original items
  * with. Reads the descriptor's `items`; see games/reborn.js for the field
  * shapes.
  */
@@ -28,30 +28,18 @@ export function gameItems() {
 
 /**
  * @param {?string} itemName Item name or id (normalized internally).
- * @return {{status: string, source: string}} Whether the game hands the
- *     item out, and how. It does when its item data has a source for the
- *     item or its evolution-item table lists it; otherwise status is
- *     "unknown". The table judges the grind, "farmable" or
- *     "farmable-tedious", and an item it does not judge is "farmable".
- *     source says where the item comes from: the table's words where it
- *     gives them, else the item's supply in words, so that a game whose
- *     sources are read from its files states no source by hand.
+ * @return {?string} Where the active game hands an evolution item out: the
+ *     words of its evolution-item table where it has one for the item, else
+ *     the item's supply in words, so that a game whose sources are read
+ *     from its files states none by hand. Null when the game's data has no
+ *     source for the item: whether it can be had is then unknown.
  */
-export function getItemAvailability(itemName) {
+export function describeItemSource(itemName) {
   const id = toId(itemName);
-  if (!id) return { status: 'unknown', source: 'no item recorded' };
-  const entry = gameItems().evolutionItemAvailability[id];
-  const supplied = describeSupply(getItemSupply(id));
-  if (!entry && !supplied) {
-    return {
-      status: 'unknown',
-      source: `no availability data for ${itemName}`,
-    };
-  }
-  return {
-    status: entry?.status ?? 'farmable',
-    source: entry?.source ?? supplied,
-  };
+  if (!id) return null;
+  return gameItems().evolutionItemAvailability?.[id]?.source ||
+    describeSupply(getItemSupply(id)) ||
+    null;
 }
 
 /**

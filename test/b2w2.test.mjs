@@ -233,7 +233,6 @@ test('every Gen 5 evolution item has a sourced availability entry', () => {
   for (const id of evolutionItems) {
     const entry = B2W2_EVOLUTION_ITEM_AVAILABILITY[id];
     assert.ok(entry, `${id} has no availability entry`);
-    assert.ok(['farmable', 'farmable-tedious'].includes(entry.status), id);
     assert.ok(entry.source.length > 0, id);
   }
 });
