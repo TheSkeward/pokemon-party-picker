@@ -35,6 +35,9 @@ export class RubyObject {
   }
 }
 
+// The floats Ruby writes as words rather than digits.
+const FLOAT_WORDS = { inf: Infinity, '-inf': -Infinity, nan: NaN };
+
 class MarshalReader {
   constructor(buffer) {
     this.buf = buffer;
@@ -55,24 +58,18 @@ class MarshalReader {
     return this.buf[this.pos++];
   }
 
-  // Marshal's variable-length signed integer encoding.
+  // Marshal's variable-length signed integer encoding: a small integer in
+  // the first byte itself, else that byte counts the bytes that follow, low
+  // byte first, a negative count marking a two's complement of that width.
   long() {
     const c = (this.byte() << 24) >> 24; // sign-extend to int8
     if (c === 0) return 0;
-    if (c > 0) {
-      if (c > 4) return c - 5;
-      let n = 0;
-      for (let i = 0; i < c; i++) n += this.byte() * 2 ** (8 * i);
-      return n;
-    }
+    if (c > 4) return c - 5;
     if (c < -4) return c + 5;
-    let n = -1;
-    const count = -c;
-    for (let i = 0; i < count; i++) {
-      const mask = ~(0xff * 2 ** (8 * i));
-      n = (n & mask) + this.byte() * 2 ** (8 * i);
-    }
-    return n;
+    const count = Math.abs(c);
+    let n = 0;
+    for (let i = 0; i < count; i++) n += this.byte() * 2 ** (8 * i);
+    return c > 0 ? n : n - 2 ** (8 * count);
   }
 
   bytes(n) {
@@ -156,9 +153,14 @@ class MarshalReader {
         return this.readValue();
       }
       case 'U': {
-        // marshal_dump: class symbol, then the dumped object.
+        // marshal_dump: class symbol, then the dumped object, which stands
+        // for the instance here. Ruby gives the instance its place in the
+        // link table before it reads the dump, so the place is held first.
         this.readValue();
-        return this.readValue();
+        const place = this.objects.push(undefined) - 1;
+        const dumped = this.readValue();
+        this.objects[place] = dumped;
+        return dumped;
       }
       case 'u': {
         // _dump userdef: class symbol, then a byte string. Keep raw.
@@ -167,8 +169,12 @@ class MarshalReader {
         return this.registerObject({ rubyUserdef: className, raw });
       }
       case 'f': {
-        const obj = { rubyFloat: Number(this.string()) };
-        return this.registerObject(obj);
+        const text = this.string();
+        return this.registerObject({
+          rubyFloat: Object.hasOwn(FLOAT_WORDS, text)
+            ? FLOAT_WORDS[text]
+            : Number(text),
+        });
       }
       case 'e': {
         this.readValue(); // extended module symbol
