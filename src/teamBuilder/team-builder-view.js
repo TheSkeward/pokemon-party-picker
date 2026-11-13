@@ -292,6 +292,17 @@ export function renderTeamRail(state) {
   `;
 }
 
+// The marks a pool entry can carry (pool-parsing.js reads them), as the
+// pool's legend shows them: an example, and what the mark does.
+const POOL_ENTRY_MARKS = [
+  ['Gengar!', 'locks it into the team'],
+  ['Larvesta*', 'keeps it, whatever the bench says'],
+  ['Munna@14', 'arrived at level 14, which decides its level 1 moves'],
+  ['Munna@', 'arrived too late for its level 1 moves'],
+  ['Eevee (Adaptability)', 'caught with that ability'],
+  ['Meowstic {Thunder Wave / Psychic}', 'locks those moves into its set'],
+];
+
 function renderPoolControls({
   embedded,
   families,
@@ -304,9 +315,13 @@ function renderPoolControls({
       <div class="panel-header">
         <div>
           <h2>Owned Pokémon Pool</h2>
-          <p>${poolStats.uniqueCount} unique entries${poolStats.duplicateCount ? ` · ${poolStats.duplicateCount} duplicates ignored` : ''}. Autosaved in this browser. Suffix <code>!</code> to lock an entry into the team (<code>Gengar!</code>), <code>*</code> to keep one whatever the bench says (<code>Larvesta*</code>), <code>@</code> and a level to record the level it arrived at (<code>Munna@14</code>), which decides its level 1 moves, or a bare <code>@</code> for one that arrived too late to have them (<code>Munna@</code>); a parenthetical declares a caught ability (<code>Eevee (Adaptability)</code>).</p>
+          <p>${poolStats.uniqueCount} unique entries${poolStats.duplicateCount ? ` · ${poolStats.duplicateCount} duplicates ignored` : ''}. Autosaved in this browser. Marks an entry can carry:</p>
         </div>
       </div>
+      <dl class="pool-syntax">
+        ${POOL_ENTRY_MARKS.map(([example, effect]) => `
+          <div><dt><code>${escapeHtml(example)}</code></dt><dd>${escapeHtml(effect)}</dd></div>`).join('')}
+      </dl>
 
       <div class="toolbar pool-toolbar">
         ${
@@ -756,7 +771,7 @@ function renderProvenanceFooter(manifest, result) {
     : '';
   return `
     <section class="panel">
-      <p class="muted" style="font-size: 0.85em">
+      <p class="muted fine-print">
         Data: ${escapeHtml(getActiveGame().shortLabel)} ${escapeHtml(manifest?.gameVersions?.[getActiveGame().id] || '?')} ·
         scoring ${escapeHtml(manifest?.scoringVersion || '?')} ·
         signature ${escapeHtml(manifest?.dataSignature || '?')} ·
@@ -883,7 +898,7 @@ function renderTelemetryDetails() {
     lastRunLine = '';
   }
   return `
-    <details class="muted" style="font-size: 0.85em" ${detailsStateAttrs('telemetry', false)}>
+    <details class="muted fine-print" ${detailsStateAttrs('telemetry', false)}>
       <summary>Performance (${summary.total} run${summary.total === 1 ? '' : 's'} on this build${summary.cores ? `, ${summary.cores} cores` : ''})</summary>
       <div class="table-wrap"><table>
         <thead>

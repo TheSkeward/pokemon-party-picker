@@ -133,6 +133,12 @@ header h1 {
 .muted {
   color: var(--text-muted);
 }
+/* Small text is one size wherever it sits: a relative size shrinks again
+   inside text that is already small. */
+small,
+.fine-print {
+  font-size: var(--type-s);
+}
 .toolbar {
   display: grid;
   grid-template-columns: 180px 1fr;
@@ -577,6 +583,32 @@ button:hover {
   }
 }
 
+/* The marks a pool entry can carry: an example and what it does per cell,
+   in as many columns as fit. */
+.pool-syntax {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr));
+  gap: var(--space-1) var(--space-6);
+  margin: 0 0 var(--space-3);
+  color: var(--text-muted);
+  font-size: var(--type-s);
+}
+
+.pool-syntax dt,
+.pool-syntax dd {
+  display: inline;
+  margin: 0;
+}
+
+.pool-syntax dt {
+  margin-right: var(--space-2);
+}
+
+.pool-syntax code {
+  color: var(--text);
+  font-size: inherit;
+}
+
 /* The pool and the donor box side by side at equal height: the box holds
    the pool, and both show sixty-odd names instead of the box's four when
    it fell into the toolbar's narrow first column. Everything else in the
@@ -840,7 +872,7 @@ html {
    One relic-gem colour per box (30 chips each) so a box boundary reads at a
    glance and none is confused with the muted tier labels or the keep mark. */
 .bench-index {
-  font-size: 0.85em;
+  font-size: var(--type-s);
   font-variant-numeric: tabular-nums;
 }
 
@@ -919,7 +951,7 @@ html {
 .progression-subgroup-all {
   margin-left: auto;
   padding: 1px 8px;
-  font-size: 0.8em;
+  font-size: var(--type-s);
 }
 
 /* The inventory's bulk actions: one wrapping row above the list. */
@@ -943,12 +975,12 @@ html {
 
 .item-expected-hint {
   margin: 6px 0;
-  font-size: 0.85em;
+  font-size: var(--type-s);
 }
 
 .item-expected-list {
   margin: 8px 0 4px;
-  font-size: 0.85em;
+  font-size: var(--type-s);
   line-height: 1.5;
 }
 
@@ -1150,7 +1182,7 @@ html {
   min-width: 0;
   max-width: 100%;
   overflow-wrap: anywhere;
-  font-size: 0.86em;
+  font-size: var(--type-s);
   opacity: 0.78;
 }
 
@@ -1195,7 +1227,7 @@ html {
 }
 
 .progression-level-control [data-checkpoint-cap-note] {
-  font-size: 0.85em;
+  font-size: var(--type-s);
 }
 
 /* The walkthrough schedule says this unlock is reachable at the chosen badge
@@ -1231,12 +1263,19 @@ html {
 }
 
 /* Evolution-access toggles: checkbox stays beside its label, long labels wrap
-   WITHIN their own column instead of dropping below the box. */
+   WITHIN their own column instead of dropping below the box. Every label
+   starts at the top of its row, so the boxes line up across it, and the
+   columns are wide enough that the longest label takes two or three lines. */
+.evo-access-group .evo-access-checklist {
+  grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr));
+}
+
 .evo-access-group .checkbox-label {
   flex-wrap: nowrap;
   align-items: flex-start;
+  align-self: start;
   min-height: 0;
-  margin: 0.35rem 0;
+  margin: 0;
 }
 
 .evo-access-group .checkbox-label input {
@@ -1258,7 +1297,7 @@ html {
 .info-tip {
   color: var(--text-muted);
   cursor: help;
-  font-size: 0.85em;
+  font-size: var(--type-s);
 }
 
 /* Gamestate strip: one read-only line of what the recommendation assumes;
@@ -1760,8 +1799,8 @@ html {
   cursor: help;
 }
 
-.team-set-readiness small {
-  font-size: inherit;
+.team-set-readiness.is-complete {
+  color: var(--text-muted);
 }
 
 /* The interim note under the readiness line: informational, so muted. */
@@ -1769,10 +1808,6 @@ html {
   font-size: var(--type-s);
   color: var(--text-muted);
   margin-top: 0.15rem;
-}
-
-.team-set-interim small {
-  font-size: inherit;
 }
 
 /* Interim-donor panel: the set above needs this egg or Sketch donor, so the
@@ -1848,18 +1883,11 @@ html {
 }
 
 .team-analysis-explanation {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
   margin: 1rem 0;
   border: 1px solid var(--hairline);
   border-radius: var(--radius);
   padding: 0.85rem;
   background: transparent;
-}
-
-.team-analysis-explanation > div {
-  min-width: 0;
 }
 
 .team-analysis-explanation-list {
@@ -2020,9 +2048,6 @@ html {
 .team-analysis-row small,
 .team-analysis-move-row small {
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .team-analysis-empty-cell {
@@ -2050,10 +2075,6 @@ html {
   }
 
   .team-analysis-columns {
-    grid-template-columns: 1fr;
-  }
-
-  .team-analysis-explanation {
     grid-template-columns: 1fr;
   }
 

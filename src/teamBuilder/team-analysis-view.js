@@ -693,10 +693,11 @@ function renderSetReadiness(readiness, profile = null) {
       parts.push(`item ${readiness.item.detail}`);
     else parts.push('item ?');
   }
+  const complete = !readiness.pendingPickups && readiness.fullAtCap == null;
   parts.push(
     readiness.pendingPickups
       ? 'pickups pending'
-      : readiness.fullAtCap == null
+      : complete
         ? 'complete now'
         : `full at cap ${readiness.fullAtCap}`,
   );
@@ -732,7 +733,7 @@ function renderSetReadiness(readiness, profile = null) {
     .join('\n');
 
   return `
-    <div class="team-set-readiness" title="${escapeHtml(tooltip)}">
+    <div class="team-set-readiness${complete ? ' is-complete' : ''}" title="${escapeHtml(tooltip)}">
       <small>Competitive set: ${escapeHtml(parts.join(' · '))}</small>
     </div>
     ${interim}
