@@ -105,6 +105,51 @@ export function itemSupply(
   return steps;
 }
 
+// How a source of each kind reads in a sentence about where an item comes
+// from. `when` holds the badge it opens at, worded for a moment (`at`)
+// and for a start (`from`); `via` is the item data's words for it.
+const SOURCE_PHRASES = {
+  single: (via, when) => `a copy ${when.at}${via ? ` (${via})` : ''}`,
+  mining: (via, when) => `mined ${when.from}`,
+  shop: (via, when) => `sold ${when.from}${via ? ` (${via})` : ''}`,
+  wild: (via, when) => `held by wild ${via || 'Pokémon'}, ${when.from}`,
+  pickup: (via, when) => `found by ${via || 'Pickup'}, ${when.from}`,
+  gift: (via, when) => `given ${when.from}${via ? ` (${via})` : ''}`,
+};
+
+function sourcePhrase({ kind, via }, badge) {
+  const when = badge === 0
+    ? { at: 'at the start', from: 'from the start' }
+    : { at: `at badge ${badge}`, from: `from badge ${badge}` };
+  const phrase = SOURCE_PHRASES[kind];
+  // A kind with no wording of its own goes by the item data's.
+  return phrase ? phrase(via, when) : [via, when.from].filter(Boolean).join(', ');
+}
+
+/**
+ * A supply in words, for a sentence about where an item comes from: the
+ * first source of each kind with the badge it opens at, and the badge the
+ * counted copies fill the supply by where no phrase names that step.
+ * @param {!Array<!SupplyStep>} supply
+ * @return {string} '' for an empty supply.
+ */
+export function describeSupply(supply) {
+  const kinds = new Set();
+  const phrases = [];
+  let named = null;
+  for (const step of supply) {
+    if (kinds.has(step.source.kind)) continue;
+    kinds.add(step.source.kind);
+    phrases.push(sourcePhrase(step.source, step.badge));
+    named = step;
+  }
+  const last = supply.at(-1);
+  if (last && last !== named && last.copies === Infinity) {
+    phrases.push(`${FULL_SUPPLY} copies by badge ${last.badge}`);
+  }
+  return phrases.join('; ');
+}
+
 /**
  * Sources for a game that records only the badge each item is first
  * obtainable at and the badge a shop sells it from. A first source at the

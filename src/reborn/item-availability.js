@@ -1,52 +1,36 @@
 /**
- * @fileoverview Curated evolution-item availability for Pokémon Reborn.
+ * @fileoverview How much grind each evolution item takes in Pokémon Reborn.
  *
- * This is a small, SOURCED table — not scraped data and not guesswork dressed
- * as data. Every entry states why we believe the item is obtainable; anything
- * not listed is "unknown" and the evolution engine surfaces that as unknown
- * (blocked, with the reason shown) rather than silently pretending either way.
+ * A hand-set judgment per item: "farmable" (reliably obtainable) or
+ * "farmable-tedious" (obtainable with real grind). An item not listed is
+ * "unknown", which the evolution engine surfaces as blocked with the reason
+ * shown rather than pretending either way.
  *
- * Sources of belief:
- *  - WILD-HELD: mainline Gen-7 wild held items, which Reborn's mons.dat
- *    preserves — the evolving line itself carries the item in the wild, so a
- *    player who can catch the mon can farm the item (e.g. wild Happiny holds an
- *    Oval Stone 50% of the time).
- *  - MINING/COMMERCE: Reborn's mining rocks and department store stock the
- *    standard evolution stones and the Link Stone (Reborn's replacement for
- *    trade evolutions) across the game; farmable, but tedious.
- *
- * status values: "farmable" (reliably obtainable), "farmable-tedious"
- * (obtainable with real grind), absent = unknown.
+ * Where an item comes from is not stated here. games/items.js reads it off
+ * the item's sources, which are built from the game files.
  */
-/** @type {!Object<string, {status: string, source: string}>} */
+/** @type {!Object<string, {status: string}>} */
 export const REBORN_EVOLUTION_ITEM_AVAILABILITY = {
-  // Wild-held by the evolving line itself (50% — reliably farmable).
-  ovalstone: { status: 'farmable', source: 'wild-held by Happiny (50%)' },
-
-  // Wild-held at low rates (5%) by common wild lines — farmable, tedious.
-  metalcoat: { status: 'farmable-tedious', source: 'wild-held (Magnemite/Beldum, 5%)' },
-  kingsrock: { status: 'farmable-tedious', source: 'wild-held (Poliwhirl/Politoed line, 5%)' },
-  razorclaw: { status: 'farmable-tedious', source: 'wild-held (Sneasel, 5%)' },
-  razorfang: { status: 'farmable-tedious', source: 'wild-held (Bruxish, 5%)' },
-  electirizer: { status: 'farmable-tedious', source: 'wild-held (Elekid, 5%)' },
-  magmarizer: { status: 'farmable-tedious', source: 'wild-held (Magby, 5%)' },
-  dragonscale: { status: 'farmable-tedious', source: 'wild-held (Horsea/Seadra, 5%)' },
-  deepseatooth: { status: 'farmable-tedious', source: 'wild-held (Carvanha/Sharpedo, 5%)' },
-  deepseascale: { status: 'farmable-tedious', source: 'wild-held (Chinchou/Lanturn/Relicanth, 5%)' },
-  lightball: { status: 'farmable-tedious', source: 'wild-held (Pikachu, 5%)' },
-
-  // Reborn systems: mining rocks + department store carry the standard stones
-  // and the Link Stone across the playthrough.
-  linkstone: { status: 'farmable-tedious', source: 'Reborn mining / commerce (trade-evolution item)' },
-  firestone: { status: 'farmable-tedious', source: 'Reborn mining / dept. store' },
-  waterstone: { status: 'farmable-tedious', source: 'Reborn mining / dept. store' },
-  thunderstone: { status: 'farmable-tedious', source: 'Reborn mining / dept. store' },
-  leafstone: { status: 'farmable-tedious', source: 'Reborn mining / dept. store' },
-  moonstone: { status: 'farmable-tedious', source: 'Reborn mining / dept. store' },
-  sunstone: { status: 'farmable-tedious', source: 'Reborn mining / dept. store' },
-  shinystone: { status: 'farmable-tedious', source: 'Reborn mining / dept. store' },
-  duskstone: { status: 'farmable-tedious', source: 'Reborn mining / dept. store' },
-  dawnstone: { status: 'farmable-tedious', source: 'Reborn mining / dept. store' },
-  icestone: { status: 'farmable-tedious', source: 'Reborn mining / dept. store' },
-  everstone: { status: 'farmable-tedious', source: 'Reborn mining' },
+  ovalstone: { status: 'farmable' },
+  metalcoat: { status: 'farmable-tedious' },
+  kingsrock: { status: 'farmable-tedious' },
+  razorclaw: { status: 'farmable-tedious' },
+  razorfang: { status: 'farmable-tedious' },
+  electirizer: { status: 'farmable-tedious' },
+  magmarizer: { status: 'farmable-tedious' },
+  dragonscale: { status: 'farmable-tedious' },
+  deepseatooth: { status: 'farmable-tedious' },
+  deepseascale: { status: 'farmable-tedious' },
+  lightball: { status: 'farmable-tedious' },
+  linkstone: { status: 'farmable-tedious' },
+  firestone: { status: 'farmable-tedious' },
+  waterstone: { status: 'farmable-tedious' },
+  thunderstone: { status: 'farmable-tedious' },
+  leafstone: { status: 'farmable-tedious' },
+  moonstone: { status: 'farmable-tedious' },
+  sunstone: { status: 'farmable-tedious' },
+  shinystone: { status: 'farmable-tedious' },
+  duskstone: { status: 'farmable-tedious' },
+  dawnstone: { status: 'farmable-tedious' },
+  icestone: { status: 'farmable-tedious' },
 };

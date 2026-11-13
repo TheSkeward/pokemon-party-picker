@@ -12,6 +12,8 @@ import {
   getEvolutionRequirement,
   evolutionChainProof,
 } from '../src/playthrough/evolution-requirements.js';
+import { getItemAvailability } from '../src/games/items.js';
+import { REBORN_EVOLUTION_ITEM_AVAILABILITY } from '../src/reborn/item-availability.js';
 import { setScoringOverrides } from '../src/teamBuilder/scoring-constants.js';
 import { GEN7_PROGRESSION_SPECIES } from '../src/generated/gen7ProgressionSpecies.generated.js';
 
@@ -58,15 +60,25 @@ test('friendship evolution: legal with friendship K (priced overrides)', () => {
   });
 });
 
-test('Happiny -> Chansey: legal via wild-held Oval Stone, with item K + proof', () => {
+test('Happiny -> Chansey: legal via the Oval Stone, with item K + proof', () => {
   withPricedFriction(() => {
     const req = getEvolutionRequirement(species('chansey'));
     assert.equal(req.status, 'legal');
     assert.equal(req.method, 'item');
     assert.ok(req.friction > 0);
     // The reason names the item and its source; a grind would say "tedious".
-    assert.match(req.reason, /Oval Stone \(wild-held/);
+    // The source is the item's supply in words, read from the game's item
+    // data: no wild Pokémon of Reborn's holds an Oval Stone, the rocks do.
+    assert.match(req.reason, /Oval Stone \(mined from badge \d+/);
   });
+});
+
+test('every Reborn evolution item says where the game data has it from', () => {
+  for (const id of Object.keys(REBORN_EVOLUTION_ITEM_AVAILABILITY)) {
+    const { status, source } = getItemAvailability(id);
+    assert.match(status, /^farmable(-tedious)?$/, id);
+    assert.ok(source.length > 0, `${id} has no source the supply counts`);
+  }
 });
 
 test('stone evolution: legal, farmable-tedious priced above plain item K', () => {
@@ -74,7 +86,7 @@ test('stone evolution: legal, farmable-tedious priced above plain item K', () =>
     const raichu = getEvolutionRequirement(species('raichu'));
     const chansey = getEvolutionRequirement(species('chansey'));
     assert.equal(raichu.status, 'legal');
-    assert.ok(raichu.friction > chansey.friction, 'tedious stone > 50% wild-held item');
+    assert.ok(raichu.friction > chansey.friction, 'tedious stone > plain item');
   });
 });
 

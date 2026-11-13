@@ -8,6 +8,7 @@ import { Dex } from '@pkmn/dex';
 
 import { isConsumableItem, isSharedItem } from '../src/games/item-use.js';
 import {
+  describeSupply,
   FULL_SUPPLY,
   itemSupply,
   orderItemSources,
@@ -195,4 +196,48 @@ test("Reborn's supply follows its sources", () => {
     [4, 1, 'mining'], [8, 2, 'mining'], [14, 3, 'mining'],
     [18, Infinity, 'regrow'],
   ]);
+});
+
+test('a supply in words names each kind of source once, and when it fills', () => {
+  const words = (sources, use) =>
+    describeSupply(itemSupply(orderItemSources(sources), use));
+  const mined = (badge, count) =>
+    ({ kind: 'mining', badge, count, via: 'mining rocks, on average' });
+
+  // A placed copy, then the holder that restocks: the shop past it is not
+  // part of the supply, so it is not part of the sentence.
+  assert.equal(
+    words([
+      single(7, 1, 'item ball'),
+      renewable('wild', 8, 'Bronzor (5%), Iolia Valley'),
+      renewable('shop', 13),
+    ]),
+    'a copy at badge 7 (item ball); ' +
+      'held by wild Bronzor (5%), Iolia Valley, from badge 8',
+  );
+  assert.equal(
+    words([renewable('shop', 0, 'Department Store 8F')]),
+    'sold from the start (Department Store 8F)',
+  );
+  // Later copies of a kind already named add nothing but the badge they
+  // fill the supply by.
+  assert.equal(
+    words([single(2, 1, 'npc'), mined(3, 1), mined(4, 3), mined(7, 1)]),
+    'a copy at badge 2 (npc); mined from badge 3; 6 copies by badge 7',
+  );
+  assert.equal(
+    words([single(3, 1, 'npc'), single(5, 1, 'hidden item, Route 2')]),
+    'a copy at badge 3 (npc)',
+  );
+  // One Z-Crystal is a full supply: no count to reach.
+  assert.equal(
+    words([single(9, 1, 'npc'), single(14, 1)], { shared: true }),
+    'a copy at badge 9 (npc)',
+  );
+  // A kind with no wording of its own goes by the item data's words.
+  assert.equal(
+    words([renewable('regrow', 7, 'planted in a berry plot')]),
+    'planted in a berry plot, from badge 7',
+  );
+  assert.equal(words([]), '');
 });

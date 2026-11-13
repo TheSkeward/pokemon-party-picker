@@ -8,7 +8,7 @@
 // holder's encounter table can first be met.
 export const REBORN_ITEM_SOURCES = {
   abomasite: [
-    {"kind":"single","badge":12,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":12,"count":1,"via":"item ball"},
   ],
   absolite: [
     {"kind":"single","badge":16,"count":1,"via":"npc"},
@@ -18,16 +18,16 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"shop","badge":2,"via":""},
   ],
   adamantorb: [
-    {"kind":"single","badge":18,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":18,"count":1,"via":"item ball"},
   ],
   adrenalineorb: [
     {"kind":"shop","badge":8,"via":""},
   ],
   aerodactylite: [
-    {"kind":"single","badge":10,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":10,"count":1,"via":"item ball"},
   ],
   aggronite: [
-    {"kind":"single","badge":14,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":14,"count":1,"via":"item ball"},
   ],
   aguavberry: [
     {"kind":"regrow","badge":13,"via":"planted in a berry plot"},
@@ -37,20 +37,20 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"shop","badge":2,"via":""},
   ],
   alakazite: [
-    {"kind":"single","badge":17,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":17,"count":1,"via":"item ball"},
   ],
   aloraichiumz: [
-    {"kind":"single","badge":13,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":13,"count":1,"via":"item ball"},
   ],
   altarianite: [
-    {"kind":"single","badge":13,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":13,"count":1,"via":"item ball"},
   ],
   ampharosite: [
-    {"kind":"single","badge":8,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":8,"count":1,"via":"item ball"},
   ],
   amplifieldrock: [
     {"kind":"mining","badge":3,"count":3,"via":"mining rocks, on average"},
-    {"kind":"single","badge":3,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":3,"count":1,"via":"item ball"},
     {"kind":"mining","badge":4,"count":3,"via":"mining rocks, on average"},
     {"kind":"shop","badge":13,"via":""},
     {"kind":"single","badge":16,"count":1,"via":"item ball, Tanzan Depths"},
@@ -72,16 +72,16 @@ export const REBORN_ITEM_SOURCES = {
   ],
   aspearberry: [
     {"kind":"shop","badge":1,"via":""},
-    {"kind":"single","badge":1,"count":1,"via":"hidden"},
+    {"kind":"single","badge":1,"count":1,"via":"hidden item"},
     {"kind":"wild","badge":1,"via":"Crabrawler (5%), Obsidia Slums B1F"},
     {"kind":"regrow","badge":7,"via":"planted in a berry plot"},
   ],
   assaultvest: [
-    {"kind":"single","badge":14,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":14,"count":1,"via":"item ball"},
     {"kind":"shop","badge":18,"via":"Nightclub Interior, Battle Floor Points"},
   ],
   audinite: [
-    {"kind":"single","badge":13,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":13,"count":1,"via":"item ball"},
   ],
   babiriberry: [
     {"kind":"shop","badge":4,"via":""},
@@ -95,15 +95,15 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"single","badge":18,"count":1,"via":"npc"},
   ],
   beedrillite: [
-    {"kind":"single","badge":13,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":13,"count":1,"via":"item ball"},
   ],
   berryjuice: [
     {"kind":"wild","badge":4,"via":"Shuckle (100%), Apophyll Beach, Rock Smash"},
-    {"kind":"single","badge":18,"count":1,"via":"hidden"},
+    {"kind":"single","badge":18,"count":1,"via":"hidden item"},
   ],
   bignugget: [
     {"kind":"pickup","badge":8,"via":"a Pickup holder at level 61 or above"},
-    {"kind":"single","badge":13,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":13,"count":1,"via":"item ball"},
     {"kind":"single","badge":13,"count":1,"via":"item ball, Coral Lighthouse"},
     {"kind":"single","badge":16,"count":1,"via":"item ball, Route 4"},
     {"kind":"single","badge":16,"count":1,"via":"hidden item, Charous Mountain B2F"},
@@ -111,7 +111,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"single","badge":18,"count":1,"via":"hidden item, Victory Road B5F"},
   ],
   bigroot: [
-    {"kind":"single","badge":2,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":2,"count":1,"via":"item ball"},
     {"kind":"shop","badge":7,"via":""},
     {"kind":"wild","badge":18,"via":"Cradily (5%), New World"},
   ],
@@ -119,22 +119,22 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"shop","badge":2,"via":""},
   ],
   blackbelt: [
-    {"kind":"single","badge":4,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":4,"count":1,"via":"item ball"},
     {"kind":"wild","badge":4,"via":"Sawk (5%), Pyrous Mountain 1F"},
     {"kind":"shop","badge":13,"via":""},
   ],
   blackglasses: [
     {"kind":"wild","badge":5,"via":"Sandile (5%), Tanzan Mountain"},
-    {"kind":"single","badge":8,"count":1,"via":"hidden"},
+    {"kind":"single","badge":8,"count":1,"via":"hidden item"},
     {"kind":"shop","badge":13,"via":""},
   ],
   blacksludge: [
     {"kind":"wild","badge":0,"via":"Grimer (5%), Lower Peridot Ward, Old Rod"},
-    {"kind":"single","badge":4,"count":1,"via":"hidden"},
+    {"kind":"single","badge":4,"count":1,"via":"hidden item"},
     {"kind":"shop","badge":16,"via":""},
   ],
   blastoisinite: [
-    {"kind":"single","badge":13,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":13,"count":1,"via":"item ball"},
   ],
   blazikenite: [
     {"kind":"single","badge":16,"count":1,"via":"npc"},
@@ -151,39 +151,39 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"shop","badge":6,"via":""},
   ],
   buginiumz: [
-    {"kind":"single","badge":14,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":14,"count":1,"via":"item ball"},
   ],
   bugmemory: [
-    {"kind":"single","badge":5,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":5,"count":1,"via":"item ball"},
   ],
   burndrive: [
     {"kind":"single","badge":18,"count":1,"via":"story"},
   ],
   cameruptite: [
-    {"kind":"single","badge":13,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":13,"count":1,"via":"item ball"},
   ],
   cellbattery: [
-    {"kind":"single","badge":12,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":12,"count":1,"via":"item ball"},
     {"kind":"wild","badge":13,"via":"Charjabug (5%), Peridot Ward"},
     {"kind":"shop","badge":18,"via":"Nightclub Interior, Battle Floor Points"},
   ],
   charcoal: [
-    {"kind":"single","badge":4,"count":1,"via":"hidden"},
+    {"kind":"single","badge":4,"count":1,"via":"hidden item"},
     {"kind":"shop","badge":8,"via":""},
     {"kind":"wild","badge":11,"via":"Vulpix (5%), Ametrine City"},
   ],
   charizarditex: [
-    {"kind":"single","badge":11,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":11,"count":1,"via":"item ball"},
   ],
   charizarditey: [
-    {"kind":"single","badge":17,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":17,"count":1,"via":"item ball"},
   ],
   chartiberry: [
     {"kind":"shop","badge":4,"via":""},
     {"kind":"regrow","badge":7,"via":"planted in a berry plot"},
   ],
   cheriberry: [
-    {"kind":"single","badge":0,"count":1,"via":"hidden"},
+    {"kind":"single","badge":0,"count":1,"via":"hidden item"},
     {"kind":"shop","badge":1,"via":""},
     {"kind":"regrow","badge":7,"via":"planted in a berry plot"},
     {"kind":"wild","badge":16,"via":"Crabominable (5%), Charous Mountain B2F"},
@@ -193,7 +193,7 @@ export const REBORN_ITEM_SOURCES = {
   ],
   chestoberry: [
     {"kind":"shop","badge":1,"via":""},
-    {"kind":"single","badge":1,"count":1,"via":"hidden"},
+    {"kind":"single","badge":1,"count":1,"via":"hidden item"},
     {"kind":"regrow","badge":7,"via":"planted in a berry plot"},
   ],
   chilanberry: [
@@ -252,19 +252,19 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"regrow","badge":18,"via":"mining rocks that come back, Cauldron of the Future"},
   ],
   darkgem: [
-    {"kind":"single","badge":0,"count":1,"via":"hidden"},
+    {"kind":"single","badge":0,"count":1,"via":"hidden item"},
     {"kind":"shop","badge":6,"via":""},
   ],
   darkiniumz: [
-    {"kind":"single","badge":16,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":16,"count":1,"via":"item ball"},
   ],
   darkmemory: [
-    {"kind":"single","badge":8,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":8,"count":1,"via":"item ball"},
   ],
   dawnstone: [
     {"kind":"mining","badge":3,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":4,"count":3,"via":"mining rocks, on average"},
-    {"kind":"single","badge":4,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":4,"count":1,"via":"item ball"},
     {"kind":"mining","badge":7,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":8,"count":1,"via":"mining rocks, on average"},
     {"kind":"shop","badge":13,"via":""},
@@ -293,7 +293,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"shop","badge":2,"via":""},
   ],
   diancite: [
-    {"kind":"single","badge":18,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":18,"count":1,"via":"item ball"},
   ],
   diveball: [
     {"kind":"shop","badge":1,"via":""},
@@ -315,7 +315,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"mining","badge":4,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":8,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":14,"count":1,"via":"mining rocks, on average"},
-    {"kind":"single","badge":14,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":14,"count":1,"via":"item ball"},
     {"kind":"mining","badge":18,"count":1,"via":"mining rocks, on average"},
     {"kind":"regrow","badge":18,"via":"mining rocks that come back, Cauldron of the Future"},
   ],
@@ -329,20 +329,20 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"shop","badge":6,"via":""},
   ],
   dragoniumz: [
-    {"kind":"single","badge":14,"count":1,"via":"hidden"},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item"},
   ],
   dragonmemory: [
-    {"kind":"single","badge":4,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":4,"count":1,"via":"item ball"},
   ],
   dragonscale: [
     {"kind":"wild","badge":9,"via":"Horsea (5%), Ametrine Mountain 2F, Good Rod"},
-    {"kind":"single","badge":12,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":12,"count":1,"via":"item ball"},
     {"kind":"shop","badge":16,"via":""},
   ],
   dreadplate: [
     {"kind":"mining","badge":4,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":8,"count":1,"via":"mining rocks, on average"},
-    {"kind":"single","badge":13,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":13,"count":1,"via":"item ball"},
     {"kind":"mining","badge":14,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":18,"count":1,"via":"mining rocks, on average"},
     {"kind":"regrow","badge":18,"via":"mining rocks that come back, Cauldron of the Future"},
@@ -351,12 +351,12 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"shop","badge":13,"via":""},
   ],
   dubiousdisc: [
-    {"kind":"single","badge":11,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":11,"count":1,"via":"item ball"},
     {"kind":"shop","badge":16,"via":""},
   ],
   duskball: [
     {"kind":"pickup","badge":0,"via":"a Pickup holder at level 1 or above"},
-    {"kind":"single","badge":3,"count":1,"via":"hidden"},
+    {"kind":"single","badge":3,"count":1,"via":"hidden item"},
     {"kind":"single","badge":4,"count":1,"via":"hidden item, Azurine Island"},
     {"kind":"single","badge":5,"count":1,"via":"hidden item, Chrysolia Spring 1F"},
     {"kind":"single","badge":7,"count":1,"via":"hidden item, Vanhanen Labyrinth"},
@@ -373,7 +373,7 @@ export const REBORN_ITEM_SOURCES = {
   ],
   duskstone: [
     {"kind":"mining","badge":3,"count":1,"via":"mining rocks, on average"},
-    {"kind":"single","badge":3,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":3,"count":1,"via":"item ball"},
     {"kind":"mining","badge":4,"count":3,"via":"mining rocks, on average"},
     {"kind":"mining","badge":7,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":8,"count":1,"via":"mining rocks, on average"},
@@ -390,13 +390,13 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"regrow","badge":18,"via":"mining rocks that come back, Cauldron of the Future"},
   ],
   eeviumz: [
-    {"kind":"single","badge":5,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":5,"count":1,"via":"item ball"},
   ],
   ejectbutton: [
     {"kind":"shop","badge":2,"via":""},
   ],
   electirizer: [
-    {"kind":"single","badge":11,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":11,"count":1,"via":"item ball"},
     {"kind":"shop","badge":16,"via":""},
     {"kind":"wild","badge":18,"via":"Electivire (5%), Victory Road B5F"},
   ],
@@ -405,18 +405,18 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"shop","badge":6,"via":""},
   ],
   electricmemory: [
-    {"kind":"single","badge":13,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":13,"count":1,"via":"item ball"},
   ],
   electriumz: [
     {"kind":"single","badge":16,"count":1,"via":"npc"},
   ],
   elementalseed: [
-    {"kind":"single","badge":0,"count":1,"via":"hidden"},
+    {"kind":"single","badge":0,"count":1,"via":"hidden item"},
     {"kind":"wild","badge":3,"via":"Togedemaru (5%), Yureyu Power Plant"},
     {"kind":"shop","badge":13,"via":""},
   ],
   energypowder: [
-    {"kind":"single","badge":2,"count":1,"via":"hidden"},
+    {"kind":"single","badge":2,"count":1,"via":"hidden item"},
     {"kind":"shop","badge":6,"via":""},
     {"kind":"single","badge":16,"count":1,"via":"hidden item, Teknite Ridge"},
   ],
@@ -432,14 +432,14 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"shop","badge":16,"via":""},
   ],
   fairiumz: [
-    {"kind":"single","badge":17,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":17,"count":1,"via":"item ball"},
   ],
   fairygem: [
     {"kind":"single","badge":0,"count":1,"via":"npc"},
     {"kind":"shop","badge":6,"via":""},
   ],
   fairymemory: [
-    {"kind":"single","badge":11,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":11,"count":1,"via":"item ball"},
   ],
   fastball: [
     {"kind":"shop","badge":1,"via":""},
@@ -463,10 +463,10 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"shop","badge":6,"via":""},
   ],
   firememory: [
-    {"kind":"single","badge":10,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":10,"count":1,"via":"item ball"},
   ],
   firestone: [
-    {"kind":"single","badge":2,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":2,"count":1,"via":"item ball"},
     {"kind":"mining","badge":3,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":4,"count":3,"via":"mining rocks, on average"},
     {"kind":"mining","badge":7,"count":1,"via":"mining rocks, on average"},
@@ -483,19 +483,19 @@ export const REBORN_ITEM_SOURCES = {
   fistplate: [
     {"kind":"mining","badge":4,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":8,"count":1,"via":"mining rocks, on average"},
-    {"kind":"single","badge":13,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":13,"count":1,"via":"item ball"},
     {"kind":"mining","badge":14,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":18,"count":1,"via":"mining rocks, on average"},
     {"kind":"regrow","badge":18,"via":"mining rocks that come back, Cauldron of the Future"},
   ],
   flameorb: [
-    {"kind":"single","badge":4,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":4,"count":1,"via":"item ball"},
     {"kind":"shop","badge":16,"via":""},
   ],
   flameplate: [
     {"kind":"mining","badge":4,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":8,"count":1,"via":"mining rocks, on average"},
-    {"kind":"single","badge":13,"count":1,"via":"hidden"},
+    {"kind":"single","badge":13,"count":1,"via":"hidden item"},
     {"kind":"mining","badge":14,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":18,"count":1,"via":"mining rocks, on average"},
     {"kind":"regrow","badge":18,"via":"mining rocks that come back, Cauldron of the Future"},
@@ -508,7 +508,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"shop","badge":6,"via":""},
   ],
   flyingmemory: [
-    {"kind":"single","badge":11,"count":1,"via":"hidden"},
+    {"kind":"single","badge":11,"count":1,"via":"hidden item"},
   ],
   flyiniumz: [
     {"kind":"single","badge":18,"count":1,"via":"npc"},
@@ -518,13 +518,13 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"wild","badge":9,"via":"Machoke (5%), Route 2"},
   ],
   focussash: [
-    {"kind":"single","badge":2,"count":1,"via":"hidden"},
+    {"kind":"single","badge":2,"count":1,"via":"hidden item"},
     {"kind":"shop","badge":17,"via":""},
     {"kind":"shop","badge":18,"via":"Nightclub Interior, Battle Floor Points"},
   ],
   friendball: [
     {"kind":"shop","badge":1,"via":""},
-    {"kind":"single","badge":1,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":1,"count":1,"via":"item ball"},
     {"kind":"single","badge":10,"count":1,"via":"hidden item, LCCC"},
   ],
   fullincense: [
@@ -543,23 +543,23 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"single","badge":16,"count":1,"via":"npc"},
   ],
   gardevoirite: [
-    {"kind":"single","badge":16,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":16,"count":1,"via":"item ball"},
   ],
   gengarite: [
-    {"kind":"single","badge":18,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":18,"count":1,"via":"item ball"},
   ],
   ghostgem: [
     {"kind":"single","badge":0,"count":1,"via":"npc"},
     {"kind":"shop","badge":6,"via":""},
   ],
   ghostiumz: [
-    {"kind":"single","badge":8,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":8,"count":1,"via":"item ball"},
   ],
   ghostmemory: [
-    {"kind":"single","badge":11,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":11,"count":1,"via":"item ball"},
   ],
   glalitite: [
-    {"kind":"single","badge":13,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":13,"count":1,"via":"item ball"},
   ],
   grassgem: [
     {"kind":"single","badge":0,"count":1,"via":"npc"},
@@ -569,11 +569,11 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"single","badge":14,"count":1,"via":"npc"},
   ],
   grassmemory: [
-    {"kind":"single","badge":12,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":12,"count":1,"via":"item ball"},
   ],
   greatball: [
     {"kind":"pickup","badge":0,"via":"a Pickup holder at level 1 or above"},
-    {"kind":"single","badge":1,"count":1,"via":"hidden"},
+    {"kind":"single","badge":1,"count":1,"via":"hidden item"},
     {"kind":"single","badge":1,"count":1,"via":"hidden item, Obsidia Slums 1F"},
     {"kind":"single","badge":1,"count":1,"via":"item ball, Obsidia Slums B1F"},
     {"kind":"single","badge":2,"count":1,"via":"item ball, Rhodochrine Jungle"},
@@ -610,7 +610,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"wild","badge":2,"via":"Sandshrew (5%), Grand Stairway B1F"},
   ],
   griseousorb: [
-    {"kind":"single","badge":18,"count":1,"via":"hidden"},
+    {"kind":"single","badge":18,"count":1,"via":"hidden item"},
   ],
   groundgem: [
     {"kind":"single","badge":0,"count":1,"via":"npc"},
@@ -620,10 +620,10 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"single","badge":16,"count":1,"via":"npc"},
   ],
   groundmemory: [
-    {"kind":"single","badge":16,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":16,"count":1,"via":"item ball"},
   ],
   gyaradosite: [
-    {"kind":"single","badge":16,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":16,"count":1,"via":"item ball"},
   ],
   habanberry: [
     {"kind":"shop","badge":4,"via":""},
@@ -659,7 +659,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"regrow","badge":18,"via":"mining rocks that come back, Cauldron of the Future"},
   ],
   heracronite: [
-    {"kind":"single","badge":16,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":16,"count":1,"via":"item ball"},
   ],
   hondewberry: [
     {"kind":"shop","badge":1,"via":""},
@@ -677,7 +677,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"shop","badge":6,"via":""},
   ],
   icememory: [
-    {"kind":"single","badge":14,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":14,"count":1,"via":"item ball"},
   ],
   icestone: [
     {"kind":"single","badge":2,"count":1,"via":"npc"},
@@ -693,13 +693,13 @@ export const REBORN_ITEM_SOURCES = {
   icicleplate: [
     {"kind":"mining","badge":4,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":8,"count":1,"via":"mining rocks, on average"},
-    {"kind":"single","badge":13,"count":1,"via":"hidden"},
+    {"kind":"single","badge":13,"count":1,"via":"hidden item"},
     {"kind":"mining","badge":14,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":18,"count":1,"via":"mining rocks, on average"},
     {"kind":"regrow","badge":18,"via":"mining rocks that come back, Cauldron of the Future"},
   ],
   iciumz: [
-    {"kind":"single","badge":16,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":16,"count":1,"via":"item ball"},
   ],
   icyrock: [
     {"kind":"shop","badge":2,"via":""},
@@ -730,7 +730,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"mining","badge":4,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":8,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":14,"count":1,"via":"mining rocks, on average"},
-    {"kind":"single","badge":14,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":14,"count":1,"via":"item ball"},
     {"kind":"mining","badge":18,"count":1,"via":"mining rocks, on average"},
     {"kind":"regrow","badge":18,"via":"mining rocks that come back, Cauldron of the Future"},
   ],
@@ -743,7 +743,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"single","badge":8,"count":1,"via":"npc"},
   ],
   kangaskhanite: [
-    {"kind":"single","badge":16,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":16,"count":1,"via":"item ball"},
   ],
   kasibberry: [
     {"kind":"shop","badge":4,"via":""},
@@ -763,12 +763,12 @@ export const REBORN_ITEM_SOURCES = {
   ],
   kingsrock: [
     {"kind":"wild","badge":5,"via":"Poliwhirl (5%), Tanzan Cove"},
-    {"kind":"single","badge":13,"count":1,"via":"hidden"},
+    {"kind":"single","badge":13,"count":1,"via":"hidden item"},
     {"kind":"single","badge":13,"count":1,"via":"item ball, Peridot Ward"},
     {"kind":"shop","badge":16,"via":""},
   ],
   kommoniumz: [
-    {"kind":"single","badge":18,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":18,"count":1,"via":"item ball"},
   ],
   laggingtail: [
     {"kind":"shop","badge":2,"via":""},
@@ -779,13 +779,13 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"single","badge":14,"count":1,"via":"berry"},
   ],
   latiasite: [
-    {"kind":"single","badge":18,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":18,"count":1,"via":"item ball"},
   ],
   latiosite: [
-    {"kind":"single","badge":18,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":18,"count":1,"via":"item ball"},
   ],
   laxincense: [
-    {"kind":"single","badge":4,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":4,"count":1,"via":"item ball"},
     {"kind":"shop","badge":13,"via":""},
   ],
   leafstone: [
@@ -806,28 +806,28 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"wild","badge":18,"via":"Snorlax (100%), Victory Road"},
   ],
   leppaberry: [
-    {"kind":"single","badge":1,"count":1,"via":"hidden"},
+    {"kind":"single","badge":1,"count":1,"via":"hidden item"},
     {"kind":"regrow","badge":7,"via":"planted in a berry plot"},
     {"kind":"shop","badge":17,"via":""},
   ],
   levelball: [
     {"kind":"shop","badge":13,"via":""},
-    {"kind":"single","badge":13,"count":1,"via":"hidden"},
+    {"kind":"single","badge":13,"count":1,"via":"hidden item"},
     {"kind":"single","badge":13,"count":1,"via":"hidden item, Azurine Cave"},
     {"kind":"single","badge":14,"count":1,"via":"hidden item, Teknite Ridge"},
     {"kind":"single","badge":18,"count":1,"via":"hidden item, Aegir Cave Depths"},
   ],
   liechiberry: [
-    {"kind":"single","badge":2,"count":1,"via":"hidden"},
+    {"kind":"single","badge":2,"count":1,"via":"hidden item"},
     {"kind":"regrow","badge":7,"via":"planted in a berry plot"},
     {"kind":"shop","badge":13,"via":""},
   ],
   lifeorb: [
-    {"kind":"single","badge":16,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":16,"count":1,"via":"item ball"},
     {"kind":"shop","badge":17,"via":""},
   ],
   lightball: [
-    {"kind":"single","badge":3,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":3,"count":1,"via":"item ball"},
     {"kind":"shop","badge":8,"via":""},
     {"kind":"wild","badge":13,"via":"Pikachu (5%), Onyx Ward"},
   ],
@@ -850,13 +850,13 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"single","badge":14,"count":1,"via":"item ball, Sugiline Cave B1F"},
   ],
   lopunnite: [
-    {"kind":"single","badge":14,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":14,"count":1,"via":"item ball"},
   ],
   loveball: [
     {"kind":"shop","badge":1,"via":""},
   ],
   lucarionite: [
-    {"kind":"single","badge":18,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":18,"count":1,"via":"item ball"},
   ],
   luckypunch: [
     {"kind":"shop","badge":8,"via":"7th Street"},
@@ -871,37 +871,37 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"wild","badge":13,"via":"Corsola (5%), Azurine Lake"},
   ],
   lunaliumz: [
-    {"kind":"single","badge":18,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":18,"count":1,"via":"item ball"},
   ],
   lureball: [
     {"kind":"shop","badge":13,"via":""},
   ],
   lustrousorb: [
-    {"kind":"single","badge":18,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":18,"count":1,"via":"item ball"},
   ],
   luxuryball: [
-    {"kind":"single","badge":5,"count":1,"via":"hidden"},
+    {"kind":"single","badge":5,"count":1,"via":"hidden item"},
     {"kind":"shop","badge":13,"via":""},
   ],
   lycaniumz: [
-    {"kind":"single","badge":16,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":16,"count":1,"via":"item ball"},
   ],
   machobrace: [
-    {"kind":"single","badge":1,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":1,"count":1,"via":"item ball"},
   ],
   magicalseed: [
-    {"kind":"single","badge":2,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":2,"count":1,"via":"item ball"},
     {"kind":"wild","badge":4,"via":"Exeggcute (5%), Azurine Island, headbutt"},
     {"kind":"shop","badge":13,"via":""},
   ],
   magmarizer: [
-    {"kind":"single","badge":11,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":11,"count":1,"via":"item ball"},
     {"kind":"shop","badge":16,"via":""},
     {"kind":"wild","badge":18,"via":"Magmortar (5%), Victory Road"},
   ],
   magnet: [
     {"kind":"wild","badge":4,"via":"Nosepass (5%), Apophyll Cave, Rock Smash"},
-    {"kind":"single","badge":8,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":8,"count":1,"via":"item ball"},
     {"kind":"shop","badge":13,"via":""},
   ],
   magoberry: [
@@ -909,38 +909,38 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"single","badge":13,"count":1,"via":"berry"},
   ],
   manectite: [
-    {"kind":"single","badge":16,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":16,"count":1,"via":"item ball"},
   ],
   marangaberry: [
     {"kind":"regrow","badge":13,"via":"planted in a berry plot"},
     {"kind":"shop","badge":13,"via":""},
   ],
   marshadiumz: [
-    {"kind":"single","badge":18,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":18,"count":1,"via":"item ball"},
   ],
   mawilite: [
-    {"kind":"single","badge":14,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":14,"count":1,"via":"item ball"},
   ],
   meadowplate: [
     {"kind":"mining","badge":4,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":8,"count":1,"via":"mining rocks, on average"},
-    {"kind":"single","badge":8,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":8,"count":1,"via":"item ball"},
     {"kind":"mining","badge":14,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":18,"count":1,"via":"mining rocks, on average"},
     {"kind":"regrow","badge":18,"via":"mining rocks that come back, Cauldron of the Future"},
   ],
   medichamite: [
-    {"kind":"single","badge":14,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":14,"count":1,"via":"item ball"},
   ],
   mentalherb: [
     {"kind":"wild","badge":1,"via":"Pancham (5%), Obsidia Slums B1F"},
     {"kind":"shop","badge":2,"via":""},
   ],
   metagrossite: [
-    {"kind":"single","badge":18,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":18,"count":1,"via":"item ball"},
   ],
   metalcoat: [
-    {"kind":"single","badge":7,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":7,"count":1,"via":"item ball"},
     {"kind":"wild","badge":8,"via":"Bronzor (5%), Iolia Valley"},
     {"kind":"shop","badge":13,"via":""},
   ],
@@ -967,19 +967,19 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"single","badge":13,"count":1,"via":"berry"},
   ],
   mimikiumz: [
-    {"kind":"single","badge":16,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":16,"count":1,"via":"item ball"},
   ],
   mindplate: [
     {"kind":"mining","badge":4,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":8,"count":1,"via":"mining rocks, on average"},
-    {"kind":"single","badge":13,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":13,"count":1,"via":"item ball"},
     {"kind":"mining","badge":14,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":18,"count":1,"via":"mining rocks, on average"},
     {"kind":"regrow","badge":18,"via":"mining rocks that come back, Cauldron of the Future"},
   ],
   miracleseed: [
     {"kind":"wild","badge":0,"via":"Cherubi (5%), Lower Peridot Ward"},
-    {"kind":"single","badge":4,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":4,"count":1,"via":"item ball"},
     {"kind":"shop","badge":13,"via":""},
   ],
   moonball: [
@@ -987,7 +987,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"single","badge":13,"count":1,"via":"hidden item, Coral Ward"},
   ],
   moonstone: [
-    {"kind":"single","badge":1,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":1,"count":1,"via":"item ball"},
     {"kind":"mining","badge":3,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":4,"count":3,"via":"mining rocks, on average"},
     {"kind":"single","badge":4,"count":1,"via":"hidden item, Byxbysion Wasteland"},
@@ -1000,11 +1000,11 @@ export const REBORN_ITEM_SOURCES = {
   ],
   muscleband: [
     {"kind":"shop","badge":16,"via":""},
-    {"kind":"single","badge":16,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":16,"count":1,"via":"item ball"},
   ],
   mysticwater: [
     {"kind":"wild","badge":0,"via":"Goldeen (5%), Lower Peridot Ward, Old Rod"},
-    {"kind":"single","badge":5,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":5,"count":1,"via":"item ball"},
     {"kind":"shop","badge":13,"via":""},
   ],
   nestball: [
@@ -1012,28 +1012,28 @@ export const REBORN_ITEM_SOURCES = {
   ],
   netball: [
     {"kind":"shop","badge":1,"via":""},
-    {"kind":"single","badge":1,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":1,"count":1,"via":"item ball"},
     {"kind":"single","badge":18,"count":1,"via":"hidden item, Aegir Cave"},
   ],
   nevermeltice: [
-    {"kind":"single","badge":3,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":3,"count":1,"via":"item ball"},
     {"kind":"wild","badge":9,"via":"Cryogonal (5%), Ametrine Mountain 2F"},
     {"kind":"single","badge":11,"count":1,"via":"hidden item, Ametrine Mountain 3F"},
     {"kind":"shop","badge":13,"via":""},
   ],
   normalgem: [
-    {"kind":"single","badge":0,"count":1,"via":"hidden"},
+    {"kind":"single","badge":0,"count":1,"via":"hidden item"},
     {"kind":"shop","badge":6,"via":""},
   ],
   normaliumz: [
-    {"kind":"single","badge":14,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":14,"count":1,"via":"item ball"},
   ],
   occaberry: [
     {"kind":"shop","badge":4,"via":""},
     {"kind":"regrow","badge":7,"via":"planted in a berry plot"},
   ],
   oddincense: [
-    {"kind":"single","badge":3,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":3,"count":1,"via":"item ball"},
     {"kind":"shop","badge":13,"via":""},
   ],
   oldamber: [
@@ -1041,7 +1041,7 @@ export const REBORN_ITEM_SOURCES = {
   ],
   oranberry: [
     {"kind":"pickup","badge":0,"via":"a Pickup holder at level 1 or above"},
-    {"kind":"single","badge":0,"count":1,"via":"hidden"},
+    {"kind":"single","badge":0,"count":1,"via":"hidden item"},
     {"kind":"shop","badge":1,"via":""},
     {"kind":"wild","badge":5,"via":"Audino (50%), Tanzan Cove"},
     {"kind":"regrow","badge":7,"via":"planted in a berry plot"},
@@ -1064,7 +1064,7 @@ export const REBORN_ITEM_SOURCES = {
   pechaberry: [
     {"kind":"wild","badge":0,"via":"Wurmple (50%), Lower Peridot Ward"},
     {"kind":"shop","badge":1,"via":""},
-    {"kind":"single","badge":1,"count":1,"via":"hidden"},
+    {"kind":"single","badge":1,"count":1,"via":"hidden item"},
     {"kind":"regrow","badge":7,"via":"planted in a berry plot"},
   ],
   persimberry: [
@@ -1073,18 +1073,18 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"wild","badge":11,"via":"Drampa (5%), Ametrine City"},
   ],
   petayaberry: [
-    {"kind":"single","badge":2,"count":1,"via":"hidden"},
+    {"kind":"single","badge":2,"count":1,"via":"hidden item"},
     {"kind":"regrow","badge":7,"via":"planted in a berry plot"},
     {"kind":"shop","badge":13,"via":""},
   ],
   pidgeotite: [
-    {"kind":"single","badge":14,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":14,"count":1,"via":"item ball"},
   ],
   pikaniumz: [
-    {"kind":"single","badge":7,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":7,"count":1,"via":"item ball"},
   ],
   pinsirite: [
-    {"kind":"single","badge":16,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":16,"count":1,"via":"item ball"},
   ],
   pixieplate: [
     {"kind":"mining","badge":4,"count":1,"via":"mining rocks, on average"},
@@ -1099,7 +1099,7 @@ export const REBORN_ITEM_SOURCES = {
   ],
   poisonbarb: [
     {"kind":"wild","badge":2,"via":"Beedrill (5%), Jasper Ward"},
-    {"kind":"single","badge":4,"count":1,"via":"hidden"},
+    {"kind":"single","badge":4,"count":1,"via":"hidden item"},
     {"kind":"single","badge":4,"count":1,"via":"item ball, Byxbysion Wasteland"},
     {"kind":"shop","badge":13,"via":"Spinel Museum"},
   ],
@@ -1108,10 +1108,10 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"shop","badge":6,"via":""},
   ],
   poisoniumz: [
-    {"kind":"single","badge":16,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":16,"count":1,"via":"item ball"},
   ],
   poisonmemory: [
-    {"kind":"single","badge":14,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":14,"count":1,"via":"item ball"},
   ],
   pokeball: [
     {"kind":"shop","badge":0,"via":""},
@@ -1165,18 +1165,18 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"single","badge":1,"count":1,"via":"npc"},
   ],
   primariumz: [
-    {"kind":"single","badge":13,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":13,"count":1,"via":"item ball"},
   ],
   prismscale: [
-    {"kind":"single","badge":12,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":12,"count":1,"via":"item ball"},
     {"kind":"shop","badge":13,"via":""},
   ],
   protectivepads: [
-    {"kind":"single","badge":1,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":1,"count":1,"via":"item ball"},
     {"kind":"shop","badge":7,"via":"Department Store 8F"},
   ],
   protector: [
-    {"kind":"single","badge":7,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":7,"count":1,"via":"item ball"},
     {"kind":"shop","badge":16,"via":""},
   ],
   psychicgem: [
@@ -1184,7 +1184,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"shop","badge":6,"via":""},
   ],
   psychicmemory: [
-    {"kind":"single","badge":7,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":7,"count":1,"via":"item ball"},
   ],
   psychiumz: [
     {"kind":"single","badge":16,"count":1,"via":"npc"},
@@ -1194,7 +1194,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"regrow","badge":7,"via":"planted in a berry plot"},
   ],
   quickball: [
-    {"kind":"single","badge":7,"count":1,"via":"hidden"},
+    {"kind":"single","badge":7,"count":1,"via":"hidden item"},
     {"kind":"single","badge":12,"count":1,"via":"item ball, Peridot Water Grid"},
     {"kind":"shop","badge":13,"via":""},
     {"kind":"single","badge":14,"count":1,"via":"hidden item, Teknite Ridge"},
@@ -1203,7 +1203,7 @@ export const REBORN_ITEM_SOURCES = {
   ],
   quickclaw: [
     {"kind":"wild","badge":0,"via":"Meowth (5%), Opal Ward"},
-    {"kind":"single","badge":1,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":1,"count":1,"via":"item ball"},
     {"kind":"shop","badge":7,"via":""},
     {"kind":"single","badge":16,"count":1,"via":"hidden item, Agate City"},
   ],
@@ -1214,28 +1214,28 @@ export const REBORN_ITEM_SOURCES = {
   rarebone: [
     {"kind":"mining","badge":3,"count":3,"via":"mining rocks, on average"},
     {"kind":"mining","badge":4,"count":3,"via":"mining rocks, on average"},
-    {"kind":"single","badge":14,"count":1,"via":"hidden"},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item"},
     {"kind":"regrow","badge":18,"via":"mining rocks that come back, Cauldron of the Future"},
     {"kind":"single","badge":18,"count":1,"via":"hidden item, Mirage Tower?"},
   ],
   rawstberry: [
     {"kind":"shop","badge":1,"via":""},
-    {"kind":"single","badge":1,"count":1,"via":"hidden"},
+    {"kind":"single","badge":1,"count":1,"via":"hidden item"},
     {"kind":"wild","badge":5,"via":"Toucannon (5%), Chrysolia Forest"},
     {"kind":"regrow","badge":7,"via":"planted in a berry plot"},
   ],
   razorclaw: [
-    {"kind":"single","badge":7,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":7,"count":1,"via":"item ball"},
     {"kind":"shop","badge":16,"via":""},
     {"kind":"wild","badge":18,"via":"Kommo-o (50%), Cauldron of the Future"},
   ],
   razorfang: [
-    {"kind":"single","badge":12,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":12,"count":1,"via":"item ball"},
     {"kind":"wild","badge":14,"via":"Bruxish (5%), Tourmaline Desert, Super Rod"},
     {"kind":"shop","badge":16,"via":""},
   ],
   reapercloth: [
-    {"kind":"single","badge":10,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":10,"count":1,"via":"item ball"},
     {"kind":"shop","badge":16,"via":""},
   ],
   redcard: [
@@ -1245,7 +1245,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"single","badge":18,"count":1,"via":"story"},
   ],
   repeatball: [
-    {"kind":"single","badge":10,"count":1,"via":"hidden"},
+    {"kind":"single","badge":10,"count":1,"via":"hidden item"},
     {"kind":"shop","badge":13,"via":""},
   ],
   rindoberry: [
@@ -1260,14 +1260,14 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"shop","badge":6,"via":""},
   ],
   rockincense: [
-    {"kind":"single","badge":3,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":3,"count":1,"via":"item ball"},
     {"kind":"shop","badge":13,"via":""},
   ],
   rockiumz: [
-    {"kind":"single","badge":16,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":16,"count":1,"via":"item ball"},
   ],
   rockmemory: [
-    {"kind":"single","badge":16,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":16,"count":1,"via":"item ball"},
   ],
   rockyhelmet: [
     {"kind":"single","badge":14,"count":1,"via":"npc"},
@@ -1298,7 +1298,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"single","badge":13,"count":1,"via":"berry"},
   ],
   sablenite: [
-    {"kind":"single","badge":16,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":16,"count":1,"via":"item ball"},
   ],
   sachet: [
     {"kind":"shop","badge":2,"via":""},
@@ -1311,15 +1311,15 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"single","badge":8,"count":1,"via":"npc"},
   ],
   salacberry: [
-    {"kind":"single","badge":2,"count":1,"via":"hidden"},
+    {"kind":"single","badge":2,"count":1,"via":"hidden item"},
     {"kind":"regrow","badge":7,"via":"planted in a berry plot"},
     {"kind":"shop","badge":13,"via":""},
   ],
   salamencite: [
-    {"kind":"single","badge":18,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":18,"count":1,"via":"item ball"},
   ],
   sceptilite: [
-    {"kind":"single","badge":16,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":16,"count":1,"via":"item ball"},
   ],
   scizorite: [
     {"kind":"single","badge":16,"count":1,"via":"npc"},
@@ -1329,16 +1329,16 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"single","badge":12,"count":1,"via":"item ball, Jasper Water Grid"},
   ],
   seaincense: [
-    {"kind":"single","badge":0,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":0,"count":1,"via":"item ball"},
     {"kind":"shop","badge":13,"via":""},
   ],
   sharpbeak: [
     {"kind":"wild","badge":0,"via":"Spearow (5%), Opal Ward, headbutt"},
-    {"kind":"single","badge":7,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":7,"count":1,"via":"item ball"},
     {"kind":"shop","badge":13,"via":""},
   ],
   sharpedonite: [
-    {"kind":"single","badge":13,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":13,"count":1,"via":"item ball"},
   ],
   shedshell: [
     {"kind":"wild","badge":5,"via":"Dustox (5%), Chrysolia Forest"},
@@ -1350,7 +1350,7 @@ export const REBORN_ITEM_SOURCES = {
   shinystone: [
     {"kind":"mining","badge":3,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":4,"count":3,"via":"mining rocks, on average"},
-    {"kind":"single","badge":4,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":4,"count":1,"via":"item ball"},
     {"kind":"mining","badge":7,"count":1,"via":"mining rocks, on average"},
     {"kind":"single","badge":7,"count":1,"via":"hidden item, Citae Astrae"},
     {"kind":"mining","badge":8,"count":1,"via":"mining rocks, on average"},
@@ -1367,12 +1367,12 @@ export const REBORN_ITEM_SOURCES = {
   ],
   silkscarf: [
     {"kind":"wild","badge":0,"via":"Trubbish (5%), Lower Peridot Alley"},
-    {"kind":"single","badge":5,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":5,"count":1,"via":"item ball"},
     {"kind":"shop","badge":13,"via":""},
     {"kind":"single","badge":16,"count":1,"via":"hidden item, Agate City"},
   ],
   silverpowder: [
-    {"kind":"single","badge":7,"count":1,"via":"hidden"},
+    {"kind":"single","badge":7,"count":1,"via":"hidden item"},
     {"kind":"wild","badge":7,"via":"Mothim (5%), South Aventurine Woods, headbutt"},
     {"kind":"shop","badge":13,"via":""},
   ],
@@ -1395,13 +1395,13 @@ export const REBORN_ITEM_SOURCES = {
   skyplate: [
     {"kind":"mining","badge":4,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":8,"count":1,"via":"mining rocks, on average"},
-    {"kind":"single","badge":13,"count":1,"via":"hidden"},
+    {"kind":"single","badge":13,"count":1,"via":"hidden item"},
     {"kind":"mining","badge":14,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":18,"count":1,"via":"mining rocks, on average"},
     {"kind":"regrow","badge":18,"via":"mining rocks that come back, Cauldron of the Future"},
   ],
   slowbronite: [
-    {"kind":"single","badge":15,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":15,"count":1,"via":"item ball"},
   ],
   smoothrock: [
     {"kind":"shop","badge":2,"via":""},
@@ -1410,7 +1410,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"regrow","badge":18,"via":"mining rocks that come back, Cauldron of the Future"},
   ],
   snorliumz: [
-    {"kind":"single","badge":12,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":12,"count":1,"via":"item ball"},
   ],
   snowball: [
     {"kind":"shop","badge":2,"via":""},
@@ -1418,24 +1418,24 @@ export const REBORN_ITEM_SOURCES = {
   ],
   softsand: [
     {"kind":"wild","badge":2,"via":"Diglett (5%), Grand Stairway B1F"},
-    {"kind":"single","badge":4,"count":1,"via":"hidden"},
+    {"kind":"single","badge":4,"count":1,"via":"hidden item"},
     {"kind":"shop","badge":13,"via":""},
   ],
   solganiumz: [
-    {"kind":"single","badge":18,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":18,"count":1,"via":"item ball"},
   ],
   souldew: [
-    {"kind":"single","badge":18,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":18,"count":1,"via":"item ball"},
   ],
   spelltag: [
     {"kind":"wild","badge":2,"via":"Shuppet (5%), The Underroot"},
-    {"kind":"single","badge":8,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":8,"count":1,"via":"item ball"},
     {"kind":"shop","badge":13,"via":""},
   ],
   splashplate: [
     {"kind":"mining","badge":4,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":8,"count":1,"via":"mining rocks, on average"},
-    {"kind":"single","badge":13,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":13,"count":1,"via":"item ball"},
     {"kind":"mining","badge":14,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":18,"count":1,"via":"mining rocks, on average"},
     {"kind":"regrow","badge":18,"via":"mining rocks that come back, Cauldron of the Future"},
@@ -1443,7 +1443,7 @@ export const REBORN_ITEM_SOURCES = {
   spookyplate: [
     {"kind":"mining","badge":4,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":8,"count":1,"via":"mining rocks, on average"},
-    {"kind":"single","badge":13,"count":1,"via":"hidden"},
+    {"kind":"single","badge":13,"count":1,"via":"hidden item"},
     {"kind":"mining","badge":14,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":18,"count":1,"via":"mining rocks, on average"},
     {"kind":"regrow","badge":18,"via":"mining rocks that come back, Cauldron of the Future"},
@@ -1460,10 +1460,10 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"single","badge":18,"count":1,"via":"npc"},
   ],
   steelixite: [
-    {"kind":"single","badge":14,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":14,"count":1,"via":"item ball"},
   ],
   steelmemory: [
-    {"kind":"single","badge":14,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":14,"count":1,"via":"item ball"},
   ],
   stick: [
     {"kind":"wild","badge":2,"via":"Farfetch'd (5%), Rhodochrine Jungle"},
@@ -1479,13 +1479,13 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"mining","badge":4,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":8,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":14,"count":1,"via":"mining rocks, on average"},
-    {"kind":"single","badge":14,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":14,"count":1,"via":"item ball"},
     {"kind":"mining","badge":18,"count":1,"via":"mining rocks, on average"},
     {"kind":"regrow","badge":18,"via":"mining rocks that come back, Cauldron of the Future"},
   ],
   sunstone: [
     {"kind":"mining","badge":3,"count":1,"via":"mining rocks, on average"},
-    {"kind":"single","badge":3,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":3,"count":1,"via":"item ball"},
     {"kind":"mining","badge":4,"count":3,"via":"mining rocks, on average"},
     {"kind":"single","badge":4,"count":1,"via":"hidden item, Byxbysion Grotto"},
     {"kind":"mining","badge":7,"count":1,"via":"mining rocks, on average"},
@@ -1496,7 +1496,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"wild","badge":18,"via":"Solrock (5%), New World"},
   ],
   syntheticseed: [
-    {"kind":"single","badge":2,"count":1,"via":"hidden"},
+    {"kind":"single","badge":2,"count":1,"via":"hidden item"},
     {"kind":"shop","badge":13,"via":""},
   ],
   tamatoberry: [
@@ -1508,7 +1508,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"regrow","badge":7,"via":"planted in a berry plot"},
   ],
   tapuniumz: [
-    {"kind":"single","badge":18,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":18,"count":1,"via":"item ball"},
   ],
   telluricseed: [
     {"kind":"single","badge":1,"count":1,"via":"npc"},
@@ -1516,7 +1516,7 @@ export const REBORN_ITEM_SOURCES = {
   ],
   thickclub: [
     {"kind":"wild","badge":4,"via":"Cubone (5%), Byxbysion Wasteland"},
-    {"kind":"single","badge":7,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":7,"count":1,"via":"item ball"},
     {"kind":"shop","badge":13,"via":""},
   ],
   thunderstone: [
@@ -1531,31 +1531,31 @@ export const REBORN_ITEM_SOURCES = {
   ],
   timerball: [
     {"kind":"shop","badge":1,"via":"Critical Capture"},
-    {"kind":"single","badge":7,"count":1,"via":"hidden"},
+    {"kind":"single","badge":7,"count":1,"via":"hidden item"},
     {"kind":"single","badge":18,"count":1,"via":"item ball, Aegir Cave Depths"},
   ],
   toxicorb: [
-    {"kind":"single","badge":8,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":8,"count":1,"via":"item ball"},
     {"kind":"shop","badge":16,"via":""},
   ],
   toxicplate: [
     {"kind":"mining","badge":4,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":8,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":14,"count":1,"via":"mining rocks, on average"},
-    {"kind":"single","badge":14,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":14,"count":1,"via":"item ball"},
     {"kind":"mining","badge":18,"count":1,"via":"mining rocks, on average"},
     {"kind":"regrow","badge":18,"via":"mining rocks that come back, Cauldron of the Future"},
   ],
   twistedspoon: [
-    {"kind":"single","badge":2,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":2,"count":1,"via":"item ball"},
     {"kind":"shop","badge":13,"via":""},
     {"kind":"wild","badge":18,"via":"Alakazam (5%), Victory Road"},
   ],
   tyranitarite: [
-    {"kind":"single","badge":18,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":18,"count":1,"via":"item ball"},
   ],
   ultraball: [
-    {"kind":"single","badge":3,"count":1,"via":"hidden"},
+    {"kind":"single","badge":3,"count":1,"via":"hidden item"},
     {"kind":"single","badge":4,"count":1,"via":"hidden item, Byxbysion Wasteland"},
     {"kind":"single","badge":5,"count":1,"via":"hidden item, Tanzan Mountain"},
     {"kind":"single","badge":8,"count":1,"via":"hidden item, Iolia Valley"},
@@ -1586,7 +1586,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"single","badge":18,"count":1,"via":"npc"},
   ],
   upgrade: [
-    {"kind":"single","badge":7,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":7,"count":1,"via":"item ball"},
     {"kind":"shop","badge":13,"via":""},
   ],
   venusaurite: [
@@ -1604,10 +1604,10 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"single","badge":14,"count":1,"via":"npc"},
   ],
   watermemory: [
-    {"kind":"single","badge":12,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":12,"count":1,"via":"item ball"},
   ],
   waterstone: [
-    {"kind":"single","badge":2,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":2,"count":1,"via":"item ball"},
     {"kind":"mining","badge":3,"count":1,"via":"mining rocks, on average"},
     {"kind":"mining","badge":4,"count":3,"via":"mining rocks, on average"},
     {"kind":"mining","badge":7,"count":1,"via":"mining rocks, on average"},
@@ -1623,11 +1623,11 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"shop","badge":13,"via":""},
   ],
   waveincense: [
-    {"kind":"single","badge":4,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":4,"count":1,"via":"item ball"},
     {"kind":"shop","badge":13,"via":""},
   ],
   weaknesspolicy: [
-    {"kind":"single","badge":5,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":5,"count":1,"via":"item ball"},
     {"kind":"shop","badge":17,"via":""},
   ],
   whippeddream: [
@@ -1638,7 +1638,7 @@ export const REBORN_ITEM_SOURCES = {
   ],
   widelens: [
     {"kind":"wild","badge":4,"via":"Yanma (5%), Azurine Island"},
-    {"kind":"single","badge":7,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":7,"count":1,"via":"item ball"},
     {"kind":"shop","badge":16,"via":""},
   ],
   wikiberry: [
@@ -1662,7 +1662,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"regrow","badge":18,"via":"mining rocks that come back, Cauldron of the Future"},
   ],
   zoomlens: [
-    {"kind":"single","badge":4,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":4,"count":1,"via":"item ball"},
     {"kind":"shop","badge":7,"via":""},
   ],
 };

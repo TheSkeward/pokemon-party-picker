@@ -2,7 +2,7 @@
  * @fileoverview The active game's item content: each held item's sources
  * and the supply they add up to, game-only inventory items outside the
  * dex's held-item catalog, held-item ids the game replaces (hidden from the
- * picker, with the migration of saved counts), the curated evolution-item
+ * picker, with the migration of saved counts), the evolution-item
  * availability, and the proxies the recommender prices game-original items
  * with. Reads the descriptor's `items`; see games/reborn.js for the field
  * shapes.
@@ -11,6 +11,7 @@ import { getActiveGame } from './registry.js';
 import { isConsumableItem, isSharedItem } from './item-use.js';
 import { dex } from './dex.js';
 import {
+  describeSupply,
   FULL_SUPPLY,
   itemSupply,
   orderItemSources,
@@ -28,17 +29,25 @@ export function gameItems() {
 /**
  * @param {?string} itemName Item name or id (normalized internally).
  * @return {{status: string, source: string}} status is "farmable",
- *     "farmable-tedious", or "unknown"; source states the basis for belief.
+ *     "farmable-tedious", or "unknown", from the game's evolution-item
+ *     table. source says where the item comes from: the table's words where
+ *     it gives them, else the item's supply in words, so that a game whose
+ *     sources are read from its files states no source by hand.
  */
 export function getItemAvailability(itemName) {
   const id = toId(itemName);
   if (!id) return { status: 'unknown', source: 'no item recorded' };
-  return (
-    gameItems().evolutionItemAvailability[id] || {
+  const entry = gameItems().evolutionItemAvailability[id];
+  if (!entry) {
+    return {
       status: 'unknown',
       source: `no availability data for ${itemName}`,
-    }
-  );
+    };
+  }
+  return {
+    status: entry.status,
+    source: entry.source ?? describeSupply(getItemSupply(id)),
+  };
 }
 
 /**

@@ -110,6 +110,14 @@ const SHOP_STOCK = {
 const SHOP_LABEL = 'Shop';
 const MINING_LABEL = 'Mining Rock';
 
+// The sheet's label for a placed copy, in the words a copy read from the
+// game files goes by (reborn/event-sources.mjs), so one table speaks of an
+// item ball one way.
+const SHEET_SOURCE_WORDS = {
+  'Poké Ball': 'item ball',
+  Hidden: 'hidden item',
+};
+
 
 const readJson = (file) => JSON.parse(readFileSync(file, 'utf8'));
 const extracted =
@@ -195,7 +203,7 @@ for (const [name, entry] of Object.entries(extracted.items)) {
     kind: 'single',
     badge: entry.badges,
     count: 1,
-    via: entry.source.toLowerCase(),
+    via: SHEET_SOURCE_WORDS[entry.source] || entry.source.toLowerCase(),
   });
 }
 for (const [id, badge] of shopBadges) {
