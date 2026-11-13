@@ -32,11 +32,14 @@ let Setter;
 /**
  * The gate-setters extract: per switch id the writes that turn it on, per
  * variable id the writes that raise it and how many other writes it has by
- * kind, and per common event id the events that call it.
+ * kind (a draw at random, a value the player enters, a copy of another
+ * variable, a lowering, anything else), and per common event id the events
+ * that call it.
  * @typedef {{
  *   switches: !Object<string, {name: string, on: !Array<!Setter>}>,
  *   variables: !Object<string, {name: string, raises: !Array<!Setter>,
- *       draws: number, copies: number, lowered: number, other: number}>,
+ *       draws: number, entered: number, copies: number, lowered: number,
+ *       other: number}>,
  *   calledFrom: !Object<string, !Array<{mapId: number,
  *       conditions: !Array<!Object>}>>,
  * }}
@@ -200,11 +203,12 @@ export function setterDating(gateSetters, reachBadgeOf, dating) {
 
   const variableDate = (name, floor, depth) =>
     latestOfIds(variables.get(name), (entry) => {
-      // Written only by a draw at random: a value of the moment, which any
-      // badge count can see.
+      // Written only by a draw at random or by what the player enters (a
+      // menu pick, a number typed): a value of the moment, which any badge
+      // count can see.
       if (
-        !entry.raises.length && entry.draws > 0 && !entry.copies &&
-        !entry.other
+        !entry.raises.length && entry.draws + entry.entered > 0 &&
+        !entry.copies && !entry.other
       ) {
         return 0;
       }

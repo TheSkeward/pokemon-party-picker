@@ -65,6 +65,8 @@ test('an event is dated by its badge switches and episode variables', () => {
     badge([{ script: 'pbTrainerBattle(:CAMPER,"Billy","",false,0)' }]), 0);
   assert.equal(
     badge([{ badges: 5 }, { script: 'pbDoubleTrainerBattle(:A,"B",0)' }]), 5);
+  assert.equal(
+    badge([{ script: 'pbWildBattle(:NOSEPASS,43,nil,false,false)' }]), 0);
   assert.equal(badge([{ script: '$Trainer.numbadges>=3' }]), 3);
   // The clock is the same at every badge count: a stand open by day, a
   // visitor of the weekend.

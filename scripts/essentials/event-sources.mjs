@@ -51,9 +51,9 @@ const ONCE = new Set(['once', 'resetByEvent', 'onceByVariable']);
 // The branch type that tests which way a character faces: no gate.
 const FACING_CONDITION = 6;
 
-// A branch that runs a trainer battle is passed by winning it: no gate in
-// time beyond reaching the trainer.
-const BATTLE_CALL = /^pb(Double)?TrainerBattle\(/;
+// A branch that runs a battle, with a trainer or a wild Pokémon, is passed
+// by winning it: no gate in time beyond reaching it.
+const BATTLE_CALL = /^pb(Double)?(Trainer|Wild)Battle\(/;
 
 // A script that asks for a badge count outright.
 const BADGE_COUNT = /^\$Trainer\.numbadges\s*>=\s*(\d+)$/;

@@ -4,8 +4,8 @@
  * thing the files do not date opens at, with its evidence. The game has no
  * guide's listing, so every source comes from the files.
  *
- * The extracts under scripts/rejuv are built by
- * extract-rejuv-item-sources.mjs from an install.
+ * The extracts under scripts/rejuv, the gate setters among them, are built
+ * by extract-rejuv-item-sources.mjs from an install.
  * rejuv-encounter-badges.json dates each encounter table, and each map
  * that holds a shop or a copy, from the walkthrough's area order.
  */
@@ -71,6 +71,9 @@ export function rejuvItemTimeline() {
       encounterBadges,
       checkpoints: REJUV_PROGRESSION_CHECKPOINTS,
       dating: REJUV_EVENT_DATING,
+      // A quest switch or a counter the dating rules do not know is dated
+      // from the events that set it.
+      gateSetters: readJson('./rejuv-gate-setters.generated.json').data,
       mapSwitchBadges: REJUV_MAP_SWITCH_BADGES,
       miningKitBadge: MINING_KIT_BADGE,
       pickupHolderBadge: PICKUP_HOLDER_BADGE,

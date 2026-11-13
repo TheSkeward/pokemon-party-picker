@@ -114,6 +114,16 @@ test('the files alone source shops, holders by form and rocks that return', () =
     kind: 'regrow', badge: 12,
     via: 'mining rocks that come back, Zorrialyn Desert',
   });
+  // A shop behind a quest switch opens once the switch can be set: the
+  // Lost Camp sells its stones when the first lost child is found.
+  assert.deepEqual(find('firestone', 'shop'), {
+    kind: 'shop', badge: 4, via: "Maman's Abode",
+  });
+  // A reward for a count is dated by what can be counted: the Help
+  // Center's Safety Goggles take 75 Zygarde Cells.
+  assert.deepEqual(find('safetygoggles', 'single'), {
+    kind: 'single', badge: 6, count: 1, via: 'gift, Help Plaza',
+  });
   // An evolution item outside the held-item catalog is sourced too.
   assert.deepEqual(sources.get('blackaugurite')[0], {
     kind: 'single', badge: 9, count: 1, via: 'item ball, Decompression Lab',

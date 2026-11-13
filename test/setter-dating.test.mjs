@@ -23,7 +23,7 @@ const add = (mapId, eventId, constant = 1, conditions = []) =>
   ({ mapId, eventId, page: 1, conditions, op: 'add', constant });
 const set = (mapId, constant, conditions = []) =>
   ({ mapId, eventId: 1, page: 1, conditions, op: 'set', constant });
-const counts = { draws: 0, copies: 0, lowered: 0, other: 0 };
+const counts = { draws: 0, entered: 0, copies: 0, lowered: 0, other: 0 };
 
 const gateSetters = {
   switches: {
@@ -76,7 +76,9 @@ const gateSetters = {
     // Only ever drawn at random.
     22: { name: 'Stock', ...counts, draws: 1, raises: [] },
     // Never raised by anything this reads.
-    23: { name: 'Typed', ...counts, other: 2, raises: [] },
+    23: { name: 'Worked', ...counts, other: 2, raises: [] },
+    // Only ever what the player picks from a menu.
+    25: { name: 'Choice', ...counts, entered: 3, lowered: 1, raises: [] },
     // Ten steps, each waiting on the one before; the eighth is taken on a
     // map reached at badge 7, and one step leads back on itself.
     24: {
@@ -140,9 +142,11 @@ test('a variable assigned outright is dated by a write that high', () => {
   assert.equal(dating.variableBadge('Shards', 7), 3);
   assert.equal(dating.variableBadge('Shards', 10), 7);
   assert.equal(dating.variableBadge('Shards', 11), null);
-  // Drawn at random each time: no gate. Typed in by the player: no date.
+  // Drawn at random each time, or picked by the player: no gate. Worked
+  // out by a script this cannot read: no date.
   assert.equal(dating.variableBadge('Stock', 6), 0);
-  assert.equal(dating.variableBadge('Typed', 1), null);
+  assert.equal(dating.variableBadge('Choice', 2), 0);
+  assert.equal(dating.variableBadge('Worked', 1), null);
 });
 
 test('an event gated by a quest is dated through its conditions', () => {
