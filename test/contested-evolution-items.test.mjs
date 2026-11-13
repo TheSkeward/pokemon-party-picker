@@ -1,7 +1,8 @@
-// One owned Moon Stone behind a closed stone gate evolves ONE candidate: the
-// planner treats such items as copy-limited (like a single-use TM), gives each
-// item-evolved form a fallback build that keeps the pre-evolution, and every
-// reader of the chosen build agrees on the form it holds.
+// One Moon Stone owned before the game hands any out evolves ONE candidate:
+// the planner treats such items as copy-limited (like a single-use TM),
+// gives each item-evolved form a fallback build that keeps the
+// pre-evolution, and every reader of the chosen build agrees on the form it
+// holds.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { progressionAt, runPool } from './helpers/harness.mjs';
@@ -18,13 +19,20 @@ import {
   noteSingleCopyTms,
 } from '../src/teamBuilder/team-selection.js';
 
+// The first Moon Stone is an item ball reached with one badge: before it,
+// a stone in the bag is all there is.
 const oneStone = (owned = 1) => ({
-  ...progressionAt({ badge: 3, levelCap: 40 }),
-  evoAccessMoonStone: false,
+  ...progressionAt({ badge: 0, levelCap: 20 }),
   ownedItems: { moonstone: owned },
 });
 
-test('a gated, owned evolution item is contested; open gates and bare chains are not', () => {
+// With that badge the game supplies the stone.
+const stonesOut = () => ({
+  ...progressionAt({ badge: 1, levelCap: 25 }),
+  ownedItems: { moonstone: 1 },
+});
+
+test('an owned evolution item the game withholds is contested; one it supplies and bare chains are not', () => {
   assert.deepEqual(contestedEvolutionItems('clefable', 'clefairy', oneStone()), [
     { id: 'moonstone', name: 'Moon Stone', copies: 1 },
   ]);
@@ -32,21 +40,14 @@ test('a gated, owned evolution item is contested; open gates and bare chains are
     contestedEvolutionItems('clefable', 'clefairy', oneStone(3))[0].copies,
     3,
   );
-  // The gate is open: the game supplies stones, nothing is contested.
-  const open = { ...oneStone(), evoAccessMoonStone: undefined };
-  assert.deepEqual(contestedEvolutionItems('clefable', 'clefairy', open), []);
+  // The game supplies stones: nothing is contested.
+  assert.deepEqual(
+    contestedEvolutionItems('clefable', 'clefairy', stonesOut()), []);
   // The item is not owned: the evolution is blocked, not contested.
   const unowned = { ...oneStone(), ownedItems: {} };
   assert.deepEqual(contestedEvolutionItems('clefable', 'clefairy', unowned), []);
   // Nothing on the chain spends an item.
   assert.deepEqual(contestedEvolutionItems('nidorino', 'nidoranm', oneStone()), []);
-  // Legacy blanket stone gate closes every stone gate.
-  const legacy = {
-    ...oneStone(),
-    evoAccessMoonStone: undefined,
-    evoAccessStones: false,
-  };
-  assert.equal(contestedEvolutionItems('clefable', 'clefairy', legacy).length, 1);
 });
 
 test('build keys name the forgone items and the chosen form follows the build', () => {
@@ -107,13 +108,13 @@ test('the optimizer fields at most one Moon Stone evolution per owned stone', as
   assert.equal(kept.buildKey, withoutItemsBuildKey(['moonstone']));
   assert.match(kept.note, /Moon Stone: one copy, planned for/);
 
-  // With the gate open the stone is not contested and both evolve.
+  // Once the game supplies it the stone is not contested and both evolve.
   const open = await runPool({
     pool: ['Clefairy', 'Nidorino'],
-    progression: { ...oneStone(), evoAccessMoonStone: undefined },
+    progression: stonesOut(),
   });
   const openForms = open.team.map(
-    (choice) => getCurrentSpeciesForChoice(choice, oneStone())?.id,
+    (choice) => getCurrentSpeciesForChoice(choice, stonesOut())?.id,
   );
   assert.deepEqual(openForms.sort(), ['clefable', 'nidoking']);
 });

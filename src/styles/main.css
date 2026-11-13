@@ -1192,6 +1192,11 @@ html {
   min-width: 0;
 }
 
+.evo-access-hint {
+  margin: 0.5rem 0 0;
+  font-size: var(--type-s);
+}
+
 /* Hover marker for controls whose explanation lives in a title tooltip. */
 .info-tip {
   color: var(--text-muted);

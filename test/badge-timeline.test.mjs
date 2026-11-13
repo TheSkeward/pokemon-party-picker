@@ -88,7 +88,6 @@ test('schedule pins: area/flag unlocks land at their walkthrough badges', () => 
   assert.equal(getUnlockBadge('evoAccessApophyll'), 4);
   assert.equal(getUnlockBadge('evoAccessMossyRock'), 5);
   assert.equal(getUnlockBadge('evoAccessIcyRock'), 7);
-  assert.equal(getUnlockBadge('evoAccessLinkStone'), 3);
   assert.equal(getUnlockBadge('daycareUnlocked'), 1);
   assert.equal(getUnlockBadge('moveRelearnerUnlocked'), 5);
   assert.equal(getUnlockBadge('hiddenPowerTypeChangerUnlocked'), 9);

@@ -104,7 +104,7 @@ test('the ring gate keeps an explicit true as well as false', () => {
   );
   // Other gates still drop true: absent already means accessible for them.
   assert.equal(
-    normalizeProgression({ evoAccessMoonStone: true }).evoAccessMoonStone,
+    normalizeProgression({ evoAccessMossyRock: true }).evoAccessMossyRock,
     undefined,
   );
 });

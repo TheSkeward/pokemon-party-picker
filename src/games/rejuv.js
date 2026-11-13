@@ -13,7 +13,7 @@
  * tables are the generation's, so nothing can score them.
  */
 import { unauditedItemSources } from './item-sources.js';
-import { EVOLUTION_STONE_FIELDS } from '../reborn/evolution-access.js';
+import { EVOLUTION_STONE_FIELDS } from './evolution-stone-fields.js';
 import {
   GEN7_TERRAIN_SEEDS,
   HIDDEN_INVENTORY_ITEM_IDS,

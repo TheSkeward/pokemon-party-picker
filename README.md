@@ -89,6 +89,12 @@ worth. The held-item list can be set to the counts expected at the current
 badge in one step. Reborn's sources are typed this way; the other games
 record a first source and shop stock until they are audited the same way.
 
+Reborn's evolution items are timed by the same sources. A stone, the Link
+Stone or a Metal Coat can be used from the badge its first copy turns up,
+with no box to tick; one already in the held-item list can be used sooner,
+a copy per evolution. The other games keep a box per stone and one for the
+rest until their sources are audited.
+
 The usage prior is per generation, not per game: competitive play describes
 a mainline game well enough that only Reborn, whose mechanics stray far from
 it, carries a calibration corpus (see `SCORING.md`). Rejuvenation's prior

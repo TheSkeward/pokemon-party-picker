@@ -99,10 +99,12 @@ export const REBORN_GAME = Object.freeze({
   // Evolution rules (games/evolution.js). Reborn replaces trades with the
   // Link Stone, stands in for Alola with the Apophyll area (Cubone excepted:
   // it picks Marowak's form by time of day), and has every location
-  // evolution, opening over the midgame.
+  // evolution, opening over the midgame. Its access fields gate no evolution
+  // item and it names no `tradeAccessKey`: the Link Stone and every other
+  // evolution item open at their first source (`items.sources`). A game
+  // that gates its items by hand lists the fields (games/hgss.js).
   evolution: Object.freeze({
     tradeItem: 'Link Stone',
-    tradeAccessKey: 'evoAccessLinkStone',
     regionAccess: Object.freeze({
       Alola: Object.freeze({
         accessKey: 'evoAccessApophyll',

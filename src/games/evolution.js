@@ -7,6 +7,7 @@
  */
 import { getActiveGame } from './registry.js';
 import { badgesHeldOf, getUnlockBadge } from './schedule.js';
+import { toId } from '../utils/ids.js';
 
 /** @return {!Object} The active game's evolution rules. */
 export function evolutionRules() {
@@ -20,6 +21,50 @@ export function evolutionRules() {
  */
 export function accessFields() {
   return evolutionRules().accessFields;
+}
+
+// The gate on every evolution item that has no field of its own.
+const OTHER_ITEMS_ACCESS_KEY = 'evoAccessOtherEvoItems';
+
+// The access fields that gate evolution items, per game, keyed by its
+// access-field list.
+const ITEM_FIELDS = new WeakMap();
+
+function itemFields() {
+  const fields = accessFields();
+  let gates = ITEM_FIELDS.get(fields);
+  if (!gates) {
+    gates = {
+      keyByItemId: new Map(
+        fields.filter((field) => field.item)
+          .map((field) => [toId(field.item), field.key])),
+      catchAll: fields.some((field) => field.key === OTHER_ITEMS_ACCESS_KEY)
+        ? OTHER_ITEMS_ACCESS_KEY
+        : null,
+    };
+    ITEM_FIELDS.set(fields, gates);
+  }
+  return gates;
+}
+
+/**
+ * @param {?string} itemName
+ * @return {?string} The access field that gates an evolution item: its own
+ *     (a stone's), else the game's field for the rest. Null where the game
+ *     lists neither: the item is then timed by the game's item sources.
+ */
+export function evolutionItemAccessKey(itemName) {
+  const { keyByItemId, catchAll } = itemFields();
+  return keyByItemId.get(toId(itemName)) ?? catchAll;
+}
+
+/**
+ * @return {boolean} Whether the game gates no evolution item by a field of
+ *     its progression, each being timed by its sources instead.
+ */
+export function evolutionItemsFollowSources() {
+  const { keyByItemId, catchAll } = itemFields();
+  return !catchAll && keyByItemId.size === 0;
 }
 
 /** The gate on Mega Evolution itself: the game's Mega ring. */

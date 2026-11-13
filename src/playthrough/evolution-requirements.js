@@ -7,8 +7,12 @@
  *   move-based:           legal once the pre-evo can have learned the move
  *                         (gated by the move's learn level vs the cap)
  *   item / hold / trade:  legal if the game hands the item out (its item
- *                         sources, or its evolution-item table), K = item
- *                         friction;
+ *                         sources, or its evolution-item table) and does
+ *                         not withhold it yet: by the progression's field
+ *                         for the item, or, in a game with no such field,
+ *                         until the badges held reach the item's first
+ *                         source. An owned item is usable either way. K =
+ *                         item friction;
  *                         UNKNOWN item availability is surfaced, not silently
  *                         blocked or allowed; where an item stands in for the
  *                         trade, "with a Shelmet" is a party requirement
@@ -27,9 +31,14 @@
  */
 
 import { toId } from '../utils/ids.js';
-import { describeItemSource } from '../games/items.js';
-import { accessFields, evolutionRules } from '../games/evolution.js';
+import { describeItemSource, getItemUnlockBadge } from '../games/items.js';
+import {
+  accessFields,
+  evolutionItemAccessKey,
+  evolutionRules,
+} from '../games/evolution.js';
 import { getActiveGame } from '../games/registry.js';
+import { badgesHeldOf } from '../games/schedule.js';
 import { tunable } from '../teamBuilder/scoring-constants.js';
 import { dex } from '../games/dex.js';
 
@@ -66,26 +75,32 @@ function ownedItemCount(access, itemName) {
   return id ? access.ownedItems[id] || 0 : 0;
 }
 
-// Whether the progression closes an access gate: an explicit false, or, for
-// legacy saves, the old blanket `evoAccessStones: false` standing in for an
-// item gate whose per-item key was never set.
+// Whether the progression closes an access field: an explicit false.
 function gateClosed(access, key) {
+  return access?.[key] === false;
+}
+
+// Whether the game withholds an evolution item from this progression. An
+// item with an access field goes by the field. One without is timed by the
+// game's item sources: withheld until the badges held reach the badge its
+// first source opens at. An item with no dated source, or a progression
+// with no badge count, withholds nothing.
+function itemWithheld(access, itemName, accessKey) {
   if (!access) return false;
-  if (access[key] === false) return true;
-  return (
-    itemGates().keys.has(key) &&
-    access[key] === undefined &&
-    access.evoAccessStones === false
-  );
+  if (accessKey) return gateClosed(access, accessKey);
+  const opens = getItemUnlockBadge(toId(itemName));
+  const held = badgesHeldOf(access);
+  return opens != null && held != null && held < opens;
 }
 
 /**
  * The evolution items the chain from `inputId` up to `fieldedId` spends out
- * of the bag alone: each item whose gate the progression closes (the game
- * does not supply it yet) but which the player owns. Owning one lets ONE
- * evolution through, not every candidate's, so the team planner treats these
- * as copy-limited, like a single-use TM. Empty without a progression, for an
- * open gate, or when nothing on the chain needs an item.
+ * of the bag alone: each item the game withholds from the progression (its
+ * access field is closed, or its first source lies past the badges held)
+ * but which the player owns. Owning one lets ONE evolution through, not
+ * every candidate's, so the team planner treats these as copy-limited, like
+ * a single-use TM. Empty without a progression, for an item the game
+ * supplies, or when nothing on the chain needs an item.
  * @param {?string} fieldedId
  * @param {?string} inputId
  * @param {?Object} access The progression.
@@ -96,7 +111,7 @@ export function contestedEvolutionItems(fieldedId, inputId, access) {
   const contested = new Map();
   const spent = spentEvolutionItems(fieldedId, inputId);
   for (const { id, name, accessKey } of spent) {
-    if (!gateClosed(access, accessKey)) continue;
+    if (!itemWithheld(access, name, accessKey)) continue;
     const copies = ownedItemCount(access, name);
     if (copies > 0) contested.set(id, { id, name, copies });
   }
@@ -106,11 +121,12 @@ export function contestedEvolutionItems(fieldedId, inputId, access) {
 /**
  * Every item the chain from `inputId` up to `fieldedId` consumes, one entry
  * per evolution step that spends one (a stone, a held evolution item, the
- * game's trade item), with the access gate that governs it. Gate and bag are
- * not consulted: this is what the evolutions cost, whoever pays.
+ * game's trade item), with the access field that governs it, null where
+ * the game's item sources time it. Gate and bag are not consulted: this is
+ * what the evolutions cost, whoever pays.
  * @param {?string} fieldedId
  * @param {?string} inputId
- * @return {!Array<{id: string, name: string, accessKey: string}>}
+ * @return {!Array<{id: string, name: string, accessKey: ?string}>}
  */
 export function spentEvolutionItems(fieldedId, inputId) {
   const rules = evolutionRules();
@@ -127,11 +143,11 @@ export function spentEvolutionItems(fieldedId, inputId) {
     if (!species?.prevoId) break;
     const evoType = species.evoType || '';
     if (evoType === 'useItem' || evoType === 'levelHold') {
-      add(species.evoItem, evoItemAccessKey(species.evoItem));
+      add(species.evoItem, evolutionItemAccessKey(species.evoItem));
     } else if (evoType === 'trade') {
-      add(rules.tradeItem, rules.tradeAccessKey);
+      add(rules.tradeItem, rules.tradeAccessKey || null);
       if (species.evoItem) {
-        add(species.evoItem, evoItemAccessKey(species.evoItem));
+        add(species.evoItem, evolutionItemAccessKey(species.evoItem));
       }
     }
     id = species.prevoId;
@@ -202,32 +218,6 @@ export function evolutionItemsAbove(inputIds) {
   return items;
 }
 
-// Item-shaped gates per game, keyed by its access-field list.
-const ITEM_GATES = new WeakMap();
-function itemGates() {
-  const fields = accessFields();
-  let gates = ITEM_GATES.get(fields);
-  if (gates) return gates;
-  const stoneKeyByItemId = new Map(
-    fields.filter((field) => field.item).map((field) => [
-      toId(field.item),
-      field.key,
-    ]),
-  );
-  gates = {
-    stoneKeyByItemId,
-    keys: new Set([...stoneKeyByItemId.values(), 'evoAccessOtherEvoItems']),
-  };
-  ITEM_GATES.set(fields, gates);
-  return gates;
-}
-
-function evoItemAccessKey(evoItem) {
-  return (
-    itemGates().stoneKeyByItemId.get(toId(evoItem)) || 'evoAccessOtherEvoItems'
-  );
-}
-
 // Names for the gates a game does not expose (a method it lacks has no
 // progression field), so its reasons still read as prose.
 const METHOD_LABELS = Object.freeze({
@@ -245,33 +235,74 @@ function accessLabel(key) {
   );
 }
 
-function requiredAccessKeys(evoType, condition, species) {
+// What an evolution needs open, in the order its reasons are given: a
+// method or a place by its access field (`key`), and each item it spends
+// (`item`) by the item's field, `key` null where the game has none and
+// its sources time the item.
+function requiredGates(evoType, condition, species) {
+  const field = (key) => ({ item: null, key });
+  const spent = (item) =>
+    ({ item: item || null, key: evolutionItemAccessKey(item) });
   const region = regionAccess(species);
-  const regionKeys = region ? [region.accessKey] : [];
-  if (evoType === 'levelFriendship') return ['evoAccessFriendship', ...regionKeys];
+  const regionGates = region ? [field(region.accessKey)] : [];
+  if (evoType === 'levelFriendship') {
+    return [field('evoAccessFriendship'), ...regionGates];
+  }
   if (evoType === 'trade') {
+    const rules = evolutionRules();
+    const gates = [];
+    // An item that stands in for the trade is spent like any other; a trade
+    // as such is a method.
+    if (rules.tradeItem) {
+      gates.push({ item: rules.tradeItem, key: rules.tradeAccessKey || null });
+    } else if (rules.tradeAccessKey) {
+      gates.push(field(rules.tradeAccessKey));
+    }
+    if (tradePartner(species)) gates.push(field('evoAccessPartyCondition'));
     // Trade-with-item (Metal Coat Scizor) needs the item too.
-    const tradeKeys = [evolutionRules().tradeAccessKey].filter(Boolean);
-    if (tradePartner(species)) tradeKeys.push('evoAccessPartyCondition');
-    return species.evoItem
-      ? [...tradeKeys, evoItemAccessKey(species.evoItem), ...regionKeys]
-      : [...tradeKeys, ...regionKeys];
+    if (species.evoItem) gates.push(spent(species.evoItem));
+    return [...gates, ...regionGates];
   }
   if (evoType === 'useItem' || evoType === 'levelHold') {
-    return [evoItemAccessKey(species.evoItem), ...regionKeys];
+    return [spent(species.evoItem), ...regionGates];
   }
-  if (evoType === '') return regionKeys;
+  if (evoType === '') return regionGates;
   if (evoType === 'levelExtra') {
-    if (/affection/i.test(condition)) return ['evoAccessFriendship', ...regionKeys];
-    if (/magnetic field/i.test(condition)) return ['evoAccessMagneticField'];
-    if (/moss rock/i.test(condition)) return ['evoAccessMossyRock'];
-    if (/ice rock/i.test(condition)) return ['evoAccessIcyRock'];
+    if (/affection/i.test(condition)) {
+      return [field('evoAccessFriendship'), ...regionGates];
+    }
+    if (/magnetic field/i.test(condition)) {
+      return [field('evoAccessMagneticField')];
+    }
+    if (/moss rock/i.test(condition)) return [field('evoAccessMossyRock')];
+    if (/ice rock/i.test(condition)) return [field('evoAccessIcyRock')];
     // "with a Remoraid in party" is NOT trivial — it needs a specific mon the
     // player may not own; gate it like the other special methods.
-    if (/party/i.test(condition)) return ['evoAccessPartyCondition'];
-    return ['evoAccessOtherLocations'];
+    if (/party/i.test(condition)) return [field('evoAccessPartyCondition')];
+    return [field('evoAccessOtherLocations')];
   }
   return [];
+}
+
+// Whether a gate keeps the evolution from this progression. An item the
+// player owns is usable whatever the game withholds: a Thunder Stone in the
+// bag works before stones can be had.
+function gateShut(access, gate) {
+  if (!gate.item) return gateClosed(access, gate.key);
+  return (
+    itemWithheld(access, gate.item, gate.key) &&
+    !ownedItemCount(access, gate.item)
+  );
+}
+
+// Why a shut gate blocks: the player's own setting for a field, the game's
+// item data for an item its sources time.
+function shutReason(gate) {
+  if (gate.key) {
+    return `${accessLabel(gate.key)} not yet accessible ` +
+      `(${getActiveGame().shortLabel} Progression setting)`;
+  }
+  return `${gate.item} not yet obtainable (${describeItemSource(gate.item)})`;
 }
 
 /**
@@ -303,50 +334,34 @@ export function getEvolutionRequirement(species, access = null) {
   const evoType = species.evoType || '';
   const condition = evoConditionText(species);
   const rules = evolutionRules();
-  const required = requiredAccessKeys(evoType, condition, species);
+  const gates = requiredGates(evoType, condition, species);
 
   // A method the game simply lacks (no Moss Rock anywhere in it) is blocked
   // regardless of progression: a fact about the game, not the player.
-  const missing = required.find((key) => rules.unavailableAccessKeys.has(key));
+  const missing = gates.find(
+    (gate) => rules.unavailableAccessKeys.has(gate.key));
   if (missing) {
     return {
       status: 'blocked',
       levelRequired: null,
       friction: 0,
       method: evoType || 'level',
-      reason: `${accessLabel(missing)} does not exist in ${getActiveGame().shortLabel}`,
+      reason: `${accessLabel(missing.key)} does not exist in ${getActiveGame().shortLabel}`,
     };
   }
 
-  // Access gate first: a method the player can't use yet is BLOCKED — a
-  // concrete, user-stated fact that outranks the friction model. Surfaced,
-  // never silent. Owning the required item overrides its gate (a Thunder
-  // Stone in the bag works even if stones "aren't accessible yet").
+  // Access first: a method the player can't use yet, or an item the game
+  // does not hand out yet, is BLOCKED — a concrete fact that outranks the
+  // friction model. Surfaced, never silent.
   if (access) {
-    const denied = required.find(
-      (key) => {
-        const itemGate = itemGates().keys.has(key);
-        if (!gateClosed(access, key)) return false;
-        if (itemGate && ownedItemCount(access, species.evoItem)) {
-          return false;
-        }
-        if (
-          key === rules.tradeAccessKey &&
-          rules.tradeItem &&
-          ownedItemCount(access, rules.tradeItem)
-        ) {
-          return false;
-        }
-        return true;
-      },
-    );
-    if (denied) {
+    const shut = gates.find((gate) => gateShut(access, gate));
+    if (shut) {
       return {
         status: 'blocked',
         levelRequired: null,
         friction: 0,
         method: evoType || 'level',
-        reason: `${accessLabel(denied)} not yet accessible (${getActiveGame().shortLabel} Progression setting)`,
+        reason: shutReason(shut),
       };
     }
   }

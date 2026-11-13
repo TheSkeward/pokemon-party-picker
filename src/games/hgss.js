@@ -7,7 +7,7 @@
  * is curated by hand in hgss/items.js.
  */
 import { unauditedItemSources } from './item-sources.js';
-import { EVOLUTION_STONE_FIELDS } from '../reborn/evolution-access.js';
+import { EVOLUTION_STONE_FIELDS } from './evolution-stone-fields.js';
 import { HGSS_PROGRESSION_CHECKPOINTS } from '../hgss/schedule.js';
 import {
   HGSS_EVOLUTION_ITEM_AVAILABILITY,

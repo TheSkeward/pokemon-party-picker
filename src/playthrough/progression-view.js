@@ -2,7 +2,12 @@ import { escapeHtml, escapeAttr } from '../utils/html.js';
 import { detailsStateAttrs } from '../utils/details-state.js';
 import { getMoveMeta, describeMoveMeta } from '../move-meta';
 import { legalityRules, mechanics, moveSources } from '../games/legality.js';
-import { accessFields, isAccessOpen } from '../games/evolution.js';
+import {
+  accessFields,
+  evolutionItemsFollowSources,
+  evolutionRules,
+  isAccessOpen,
+} from '../games/evolution.js';
 import {
   getCheckpoint,
   getCheckpoints,
@@ -18,6 +23,18 @@ import { analysisTypes } from './type-chart.js';
 import { badgeStyle, getTypeColor } from '../move-meta';
 import { dex } from '../games/dex.js';
 import { getActiveGame } from '../games/registry.js';
+
+// Says where the evolution items went, in a game that lists no box for
+// them: they open by the game's item data, and the held-item list can only
+// open one sooner.
+function renderEvolutionItemNote() {
+  if (!evolutionItemsFollowSources()) return '';
+  const tradeItem = evolutionRules().tradeItem;
+  const examples = ['a stone', tradeItem ? `the ${tradeItem}` : '', 'a Metal Coat']
+    .filter(Boolean).join(', ');
+  return `
+          <p class="muted evo-access-hint">Evolution items (${escapeHtml(examples)}) have no box here. Each can be used from the badge its first copy turns up in the game, or sooner if it is among your held items owned.</p>`;
+}
 
 /**
  * `includeBias: false` lets the modern layout render the opponent-bias group
@@ -72,8 +89,9 @@ export function renderProgressionPanel(
           </summary>
           <div class="progression-checklist evo-access-checklist">
             ${accessFields().map((field) => {
-              // Stones are timed by the item timeline (the community guide);
-              // area/method gates by the walkthrough schedule.
+              // A field of one item's own is annotated with that item's
+              // first source; an area or method gate with the schedule's
+              // unlock.
               const badge = field.item
                 ? getItemUnlockBadge(
                   field.item.toLowerCase().replace(/[^a-z0-9]+/g, ''),
@@ -90,6 +108,7 @@ export function renderProgressionPanel(
                 </label>`;
             }).join('')}
           </div>
+          ${renderEvolutionItemNote()}
         </details>
 
         ${renderOptionGroup({

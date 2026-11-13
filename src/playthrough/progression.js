@@ -90,7 +90,7 @@ export function clearSavedProgression() {
  * Canonicalizes any progression-shaped input (saved state, legacy saves,
  * mid-edit objects) into the schema of DEFAULT_PROGRESSION: unknown
  * checkpoints/options drop out, counts and biases clamp to their caps, and
- * legacy fields (free-text option lists, the blanket stone gate) migrate.
+ * legacy fields (free-text option lists) migrate.
  * Every mutator below funnels its result through this, so persisted state
  * is normalized by construction.
  * @param {Object=} progression
@@ -158,19 +158,8 @@ function normalizeTeamSlots(value) {
 
 function normalizeEvolutionAccess(progression) {
   const access = {};
-  // Legacy migration: the old blanket "evoAccessStones" gate split into
-  // per-stone keys + evoAccessOtherEvoItems. A saved `false` blocks all of
-  // them unless the new key was set explicitly.
-  const legacyStonesBlocked = progression.evoAccessStones === false;
   for (const field of accessFields()) {
-    const isItemGate =
-      field.item !== undefined || field.key === 'evoAccessOtherEvoItems';
-    const value =
-      progression[field.key] !== undefined
-        ? progression[field.key]
-        : isItemGate && legacyStonesBlocked
-          ? false
-          : undefined;
+    const value = progression[field.key];
     if (value === false) access[field.key] = false;
     // A gate that defaults from its unlock keeps an explicit true too: that
     // is the owner overriding the schedule (a ring before its badge).

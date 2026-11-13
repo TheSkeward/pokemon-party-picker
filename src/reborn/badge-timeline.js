@@ -17,8 +17,9 @@
  *   - access: evolution-access keys (EVOLUTION_ACCESS_FIELDS) — areas reached
  *   - flags:  boolean progression fields (daycare, relearner, HP changer)
  * Mechanic-style access keys (friendship, party-condition, other-locations)
- * have no schedule entry: they are available from the start. Held items are
- * timed by their sources (scripts/build-item-timeline.mjs).
+ * have no schedule entry: they are available from the start. Held items and
+ * evolution items are timed by their sources
+ * (scripts/build-item-timeline.mjs).
  *
  * Notes against the walkthrough:
  *   - Corey and Kiki award no badge ("No gym badge or TM is awarded to you
@@ -41,15 +42,14 @@ export const REBORN_PROGRESSION_CHECKPOINTS = [
   },
   {
     id: 'badge-2', badges: 2, label: 'Canopy Badge (Florinia)', levelCap: 35,
-    // Stone access is per-stone, timed by the item timeline.
     unlocks: {},
   },
   {
     id: 'badge-3', badges: 3, label: 'Cocoon Badge (Shelly)', levelCap: 40,
     unlocks: {
-      // Beryl vendor sells the first Link Stone; Shade's arena is the old
-      // power plant, the magnetic-field evolution spot.
-      access: ['evoAccessLinkStone', 'evoAccessMagneticField'],
+      // Shade's arena is the old power plant, the magnetic-field evolution
+      // spot.
+      access: ['evoAccessMagneticField'],
     },
   },
   {

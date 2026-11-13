@@ -8,7 +8,7 @@
  * content is curated by hand in b2w2/items.js.
  */
 import { unauditedItemSources } from './item-sources.js';
-import { EVOLUTION_STONE_FIELDS } from '../reborn/evolution-access.js';
+import { EVOLUTION_STONE_FIELDS } from './evolution-stone-fields.js';
 import { B2W2_PROGRESSION_CHECKPOINTS } from '../b2w2/schedule.js';
 import {
   B2W2_EVOLUTION_ITEM_AVAILABILITY,
