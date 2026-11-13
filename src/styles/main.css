@@ -197,6 +197,37 @@ button:hover {
 .secondary-tabs {
   margin-bottom: 20px;
 }
+/* The game and its format: a setting the pages are read under, not a place
+   to go, so each is a row of joined choices, quieter than the page tabs
+   and shaped apart from them. The choice in force is filled and bold, not
+   only recoloured. */
+.game-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin-bottom: var(--space-3);
+}
+.segmented {
+  display: flex;
+  flex-wrap: wrap;
+}
+.segmented button {
+  margin: 0 -1px -1px 0;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--type-s);
+  padding: var(--space-1) var(--space-3);
+}
+.segmented button:hover {
+  color: var(--text);
+}
+.segmented button[aria-pressed="true"] {
+  position: relative;
+  border-color: var(--text-muted);
+  background: var(--bg-surface);
+  color: var(--text);
+  font-weight: 700;
+}
 /* The Usage Data page's table tabs sit in the page stack, which spaces
    them. */
 .usage-table-tabs {
@@ -588,7 +619,13 @@ button:hover {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr));
   gap: var(--space-1) var(--space-6);
-  margin: 0 0 var(--space-3);
+  margin: 0 0 var(--space-4);
+  color: var(--text-muted);
+  font-size: var(--type-s);
+}
+
+.pool-syntax-lead {
+  margin: 0 0 var(--space-1);
   color: var(--text-muted);
   font-size: var(--type-s);
 }
@@ -623,8 +660,13 @@ button:hover {
 .toolbar label[hidden] {
   display: none;
 }
+/* Each box is as tall as the names in it, from three lines to half the
+   screen; a browser without field-sizing keeps the rows it is given. */
 .pool-list textarea {
   flex: 1;
+  field-sizing: content;
+  min-height: calc(3lh + 2 * var(--space-2));
+  max-height: 50vh;
 }
 /* One wrapping row of actions, the destructive one pushed to the far end,
    the status line beneath. Shared by the pool and the progression panel,
@@ -639,13 +681,29 @@ button:hover {
 .actions-row .danger-button {
   margin-left: auto;
 }
-/* The slot count sits with the optimize button: it is set per fight, like
-   the opponent bias, not per badge. */
+/* The badge picker and the slot count sit with the optimize button: the
+   badge moves with every stretch of play, and the slots are set per fight
+   like the opponent bias. */
+.actions-row .badge-picker,
 .actions-row .team-slots {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
   font-size: var(--type-s);
+}
+.actions-row .badge-picker {
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.actions-row .badge-picker > span:first-child,
+.actions-row .team-slots > span {
+  white-space: nowrap;
+}
+.actions-row .badge-picker select,
+.actions-row .team-slots select {
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
 }
 .actions-row [data-pool-status],
 .actions-row [data-progression-status] {
@@ -1198,21 +1256,6 @@ html {
 
 .progression-grid .wide-control {
   grid-column: 1 / -1;
-}
-
-.progression-level-control {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  max-width: 28rem;
-}
-
-.progression-level-control select {
-  width: 100%;
-}
-
-.progression-level-control [data-checkpoint-cap-note] {
-  font-size: var(--type-s);
 }
 
 /* The walkthrough schedule says this unlock is reachable at the chosen badge

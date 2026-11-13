@@ -674,8 +674,8 @@ export function mountPoolOptimizer(container, options = {}) {
     bindPersistentDetails(app);
 
     // Gamestate-strip chips: open (and scroll to) the control that changes
-    // the clicked assumption — the collapsed progression panel, one of its
-    // groups, or the bias group wherever the layout put it. Delegated (bound
+    // the clicked assumption — a control beside Optimize, the collapsed
+    // progression panel, one of its groups, or the bias group. Delegated (bound
     // once per widget) because light progression edits replace the strip's
     // DOM in place without a full re-render.
     if (!app.__gamestateChipsDelegated) {
@@ -684,6 +684,14 @@ export function mountPoolOptimizer(container, options = {}) {
         const chipButton = event.target.closest('[data-open-progression]');
         if (!chipButton || !app.contains(chipButton)) return;
         const targetId = chipButton.dataset.openProgression;
+        const control = targetId
+          ? app.querySelector(`[data-chip-target="${targetId}"]`)
+          : null;
+        if (control) {
+          control.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          control.focus({ preventScroll: true });
+          return;
+        }
         const wrapper = app.querySelector(
           'details[data-details-id="progression-panel"]',
         );

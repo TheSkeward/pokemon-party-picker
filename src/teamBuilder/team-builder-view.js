@@ -7,6 +7,7 @@ import { gamesToLikelySee } from './trace-usage.js';
 import { renderMovesetPanel } from '../views/moveset-view';
 import { renderLegalMovesPanel } from '../playthrough/legal-moves-view';
 import {
+  renderBadgePicker,
   renderProgressionPanel,
   renderOpponentTypeBias,
 } from '../playthrough/progression-view';
@@ -55,11 +56,12 @@ export function renderTeamBuilderPage({
   setDetails,
   state,
 }) {
-  // Ordered for playthrough cadence: results and set cards first, the
-  // episodic progression panel collapsed at the bottom, the gamestate strip
-  // making every result self-describing, the per-fight opponent bias next to
-  // Optimize, and the provenance/performance footer dead last — the average
-  // player never needs it.
+  // Ordered for playthrough cadence: the pool with the badge picker and
+  // the per-fight levers (slots, opponent bias) beside Optimize, then the
+  // results and set cards, the gamestate strip making every result
+  // self-describing, the rest of the progression (machines, items, access)
+  // collapsed at the bottom, and the provenance/performance footer dead
+  // last — the average player never needs it.
   app.innerHTML = `
     ${embedded ? '' : renderStandaloneHeader({ baseUrl })}
 
@@ -146,6 +148,8 @@ function usageTrustTooltip(state) {
  */
 export function renderGamestateStrip(progression = {}) {
   const chips = [];
+  // A chip's target is the control it names (data-chip-target), one of the
+  // progression panel's groups, or with none the panel itself.
   const chip = (label, targetId) =>
     chips.push(
       `<button type="button" class="gamestate-chip" data-open-progression="${escapeAttr(targetId || '')}">${escapeHtml(label)}</button>`,
@@ -158,7 +162,7 @@ export function renderGamestateStrip(progression = {}) {
       : progression.levelCap
         ? `Cap ${progression.levelCap}`
         : 'No cap',
-    '',
+    'badges',
   );
   chip(`TMs ${(progression.availableTmIds || []).length}`, 'tms');
   chip(
@@ -179,7 +183,7 @@ export function renderGamestateStrip(progression = {}) {
 
   chip(`Items ${Object.keys(progression.ownedItems || {}).length}`, 'items');
   const slots = teamSlotsOf(progression.teamSlots);
-  if (slots < MAX_TEAM_SLOTS) chip(`Slots ${slots}`, '');
+  if (slots < MAX_TEAM_SLOTS) chip(`Slots ${slots}`, 'slots');
 
   const bias = Object.entries(progression.opponentTypeBias || {}).filter(
     ([, level]) => level > 0,
@@ -315,13 +319,9 @@ function renderPoolControls({
       <div class="panel-header">
         <div>
           <h2>Owned Pokémon Pool</h2>
-          <p>${poolStats.uniqueCount} unique entries${poolStats.duplicateCount ? ` · ${poolStats.duplicateCount} duplicates ignored` : ''}. Autosaved in this browser. Marks an entry can carry:</p>
+          <p>List the Pokémon you own and set your badges: the optimizer picks the strongest team you can field right now. Everything is saved in this browser.</p>
         </div>
       </div>
-      <dl class="pool-syntax">
-        ${POOL_ENTRY_MARKS.map(([example, effect]) => `
-          <div><dt><code>${escapeHtml(example)}</code></dt><dd>${escapeHtml(effect)}</dd></div>`).join('')}
-      </dl>
 
       <div class="toolbar pool-toolbar">
         ${
@@ -336,7 +336,7 @@ function renderPoolControls({
         }
 
         <label class="pool-list">
-          <span>Pool · fielded</span>
+          <span>Pool · fielded · ${poolStats.uniqueCount} entries${poolStats.duplicateCount ? ` · ${poolStats.duplicateCount} duplicates ignored` : ''}</span>
           <textarea id="pool-query-input" rows="10" placeholder="Bulbasaur, Charmander, Squirtle...">${escapeHtml(state.query)}</textarea>
         </label>
 
@@ -346,10 +346,17 @@ function renderPoolControls({
         </label>
       </div>
 
+      <p class="pool-syntax-lead">Marks an entry can carry:</p>
+      <dl class="pool-syntax">
+        ${POOL_ENTRY_MARKS.map(([example, effect]) => `
+          <div><dt><code>${escapeHtml(example)}</code></dt><dd>${escapeHtml(effect)}</dd></div>`).join('')}
+      </dl>
+
       <div class="actions-row">
+        ${renderBadgePicker(state.progression)}
         <label class="team-slots" title="How many of the six party slots the optimizer fills. Set 5 while an egg rides along.">
           <span>Team slots</span>
-          <select data-progression-field="teamSlots">
+          <select data-progression-field="teamSlots" data-chip-target="slots">
             ${[6, 5, 4, 3, 2, 1].map((slots) => `<option value="${slots}" ${teamSlotsOf(state.progression?.teamSlots) === slots ? 'selected' : ''}>${slots}</option>`).join('')}
           </select>
         </label>
@@ -409,7 +416,7 @@ function renderLoading(state) {
 // keeps its place here so the in-place chip refresh always finds it.
 function renderEmpty(state) {
   const prompt = !state.query.trim()
-    ? 'Enter your available Pokémon pool, then optimize. Your list is stored locally in this browser.'
+    ? 'No team yet. List your Pokémon above, then optimize.'
     : 'No recommendation yet. Click Normalize + optimize team.';
   return `
     <section class="panel" id="team">

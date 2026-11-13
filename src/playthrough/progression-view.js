@@ -53,8 +53,6 @@ export function renderProgressionPanel(
       </div>
 
       <div class="progression-grid">
-        ${renderCheckpointControl(progression)}
-
         <label class="checkbox-label">
           <input
             data-progression-field="moveRelearnerUnlocked"
@@ -164,9 +162,15 @@ export function renderProgressionPanel(
   `;
 }
 
-// The badge picker: the atomic unit of progression the player deals with.
-// The level cap is derived from the walkthrough timeline, never typed.
-function renderCheckpointControl(progression) {
+/**
+ * The badge picker: the atomic unit of progression the player deals with.
+ * The level cap is derived from the walkthrough timeline, never typed. It
+ * sits with the pool and the optimize button, not in the progression
+ * panel: it is the one setting that moves with every stretch of play.
+ * @param {!Object} progression
+ * @return {string}
+ */
+export function renderBadgePicker(progression) {
   const selected = getCheckpoint(progression.checkpoint);
   const options = getCheckpoints().map(
     (checkpoint) => `
@@ -175,8 +179,10 @@ function renderCheckpointControl(progression) {
       </option>`,
   ).join('');
 
+  // A chosen badge names its cap in the option itself; only the two
+  // capless states need a word.
   const capNote = selected
-    ? `Level cap ${selected.levelCap} (from badges)`
+    ? ''
     : progression.levelCap
       ? `Level cap ${progression.levelCap} (saved before the badge picker; pick your badges to keep it in sync)`
       : 'No cap: every level-up move and evolution counts as reachable.';
@@ -194,13 +200,13 @@ function renderCheckpointControl(progression) {
     : '';
 
   return `
-    <label class="progression-level-control wide-control"${nextTip ? ` title="${escapeAttr(nextTip)}"` : ''}>
+    <label class="badge-picker"${nextTip ? ` title="${escapeAttr(nextTip)}"` : ''}>
       <span>Badges earned</span>
-      <select data-progression-checkpoint>
+      <select data-progression-checkpoint data-chip-target="badges">
         <option value="" ${selected ? '' : 'selected'}>No cap</option>
         ${options}
       </select>
-      <span class="muted" data-checkpoint-cap-note>${escapeHtml(capNote)}</span>
+      ${capNote ? `<span class="muted">${escapeHtml(capNote)}</span>` : ''}
     </label>
   `;
 }
