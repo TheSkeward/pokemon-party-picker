@@ -7,8 +7,10 @@ import test from 'node:test';
 
 import {
   conditionBadge,
+  datedSales,
   expectedCopySteps,
   mapReachBadges,
+  martSales,
   martStock,
   miningDigs,
   missedShopStock,
@@ -105,6 +107,13 @@ test('a map is reached with its own tables, or the area it sits in', () => {
   // No table at or above it.
   assert.equal(reach(7), null);
   assert.equal(reach(99), null);
+  // A record that states when the map is entered goes by that: a town
+  // with no table, a shore whose only table waits for Surf.
+  const stated = mapReachBadges(
+    maps, { 7: { types: {}, reach: 4 }, 2: { types: { Water: 13 }, reach: 1 } },
+    {});
+  assert.equal(stated(7), 4);
+  assert.equal(stated(4), 1);
 });
 
 test('a placed copy is an item ball or hidden item, once per map name', () => {
@@ -242,6 +251,127 @@ test('a mart sells what the game files stock, under the catalog id', () => {
     ],
   });
   assert.deepEqual([...sold].sort(), ['bigroot', 'pokeball', 'scopelens']);
+});
+
+test('a mart of the script rules sells its rows on their own terms', () => {
+  const itemEvents = {
+    itemNames: {
+      POKEBALL: 'Poké Ball', SITRUSBERRY: 'Sitrus Berry', BIGROOT: 'Big Root',
+      FAIRIUMZ: 'Fairium Z', CHOICEBAND: 'Choice Band',
+    },
+    storyMarkers: {
+      switches: { 2183: { name: 'ScentSold' } },
+      variables: { 912: { name: 'Post12thBadge' } },
+    },
+    scriptRules: {
+      marts: {
+        marts: {
+          Emporium: {
+            categories: {
+              Buy: [
+                { item: 'POKEBALL', currency: 'Money' },
+                {
+                  item: 'SITRUSBERRY', currency: 'Money',
+                  conditions: ['$Trainer.numbadges >= 5'],
+                },
+                // A row that sells no item: a move, a Pokémon, a currency.
+                { move: 'BIND', price: 2, currency: 'REDSHARD' },
+              ],
+              // Another mart's whole inventory.
+              Counter: { mart: 'Prizes' },
+            },
+          },
+          Prizes: {
+            categories: {
+              Buy: [
+                { item: 'CHOICEBAND', price: 30, currency: 'AP' },
+                {
+                  item: 'FAIRIUMZ', currency: 'Money', limit: 1,
+                  conditions: ['!searchItem(self.item)'],
+                },
+                {
+                  item: 'BIGROOT', currency: 'RedEssence',
+                  conditions: [
+                    '$game_switches[2183] == false && ' +
+                      '$game_variables[912] >= 91',
+                    'pbHasSpecies?(:GOOMY)',
+                  ],
+                },
+              ],
+            },
+          },
+        },
+      },
+    },
+    events: [
+      {
+        mapId: 61,
+        mapName: 'East Gearen City',
+        pages: [{ page: 2, conditions: [{ switch: 4, name: 'Defeated Gym 1' }] }],
+        gives: [
+          { page: 2, kind: 'mart', mart: 'Emporium' },
+          { page: 1, kind: 'mart', stock: ['POKEBALL'], within: [{ choice: 'A' }] },
+        ],
+      },
+    ],
+  };
+  const gym = { switch: 4, name: 'Defeated Gym 1' };
+  const here = { mapId: 61, mapName: 'East Gearen City' };
+  const sales = martSales(itemEvents);
+  assert.deepEqual(sales, [
+    { ...here, conditions: [gym], id: 'pokeball', currency: 'Money', once: false },
+    {
+      ...here, conditions: [gym, { badges: 5 }], id: 'sitrusberry',
+      currency: 'Money', once: false,
+    },
+    { ...here, conditions: [gym], id: 'choiceband', currency: 'AP', once: false },
+    // Withdrawn once bought: the condition that says so gates nothing.
+    { ...here, conditions: [gym], id: 'fairiumz', currency: 'Money', once: true },
+    {
+      ...here,
+      conditions: [
+        gym,
+        { switch: 2183, name: 'ScentSold', is: false },
+        { variable: 912, name: 'Post12thBadge', atLeast: 91 },
+        { script: 'pbHasSpecies?(:GOOMY)' },
+      ],
+      id: 'bigroot',
+      currency: 'RedEssence',
+      once: false,
+    },
+    {
+      ...here, conditions: [{ choice: 'A' }], id: 'pokeball',
+      currency: 'Money', once: false,
+    },
+  ]);
+  assert.deepEqual(
+    [...martStock(itemEvents)].sort(),
+    ['bigroot', 'choiceband', 'fairiumz', 'pokeball', 'sitrusberry']);
+
+  // A sale opens with the latest of its map, its conditions and its
+  // currency; one that any of the three leaves undated is left out.
+  const dating = {
+    switchBadge: (name) => (name === 'Defeated Gym 1' ? 1 : null),
+    variableBadge: () => null,
+  };
+  const currencies = { Money: 0, AP: 3 };
+  const dated = datedSales(
+    sales, (mapId) => (mapId === 61 ? 0 : null), dating,
+    (currency) => currencies[currency] ?? null);
+  assert.deepEqual(Object.fromEntries(dated.stock), {
+    // The stock the event lists itself needs no gym.
+    pokeball: { badge: 0, via: 'East Gearen City' },
+    sitrusberry: { badge: 5, via: 'East Gearen City' },
+    choiceband: { badge: 3, via: 'East Gearen City' },
+  });
+  assert.deepEqual(Object.fromEntries(dated.once), {
+    fairiumz: { badge: 1, via: 'East Gearen City' },
+  });
+  // The Big Root: a currency nothing dates, and a condition this cannot
+  // read.
+  assert.equal(dated.undated, 1);
+  assert.equal(
+    datedSales(sales, () => null, dating, () => 0).undated, sales.length);
 });
 
 test("Reborn's marts and maps supply what the guide's tables lack", () => {

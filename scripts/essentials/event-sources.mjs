@@ -1,9 +1,9 @@
 /**
  * @fileoverview Derives item sources from a game's map events (its
- * item-events extract): the copies of an item placed on the maps, each
- * dated by its map and what gates its event, and the shop stock a guide's
- * shop table lacks. Pure: the timeline builder feeds it the extracts, the
- * tests feed it fixtures.
+ * item-events extract): the copies of an item placed on the maps and what
+ * the marts sell, each dated by its map and what gates it, and the shop
+ * stock a guide's shop table lacks. Pure: the timeline builder feeds it
+ * the extracts, the tests feed it fixtures.
  */
 
 /**
@@ -38,10 +38,12 @@ const ONCE = new Set(['once', 'resetByEvent']);
 // The branch type that tests which way a character faces: no gate.
 const FACING_CONDITION = 6;
 
-// The badge one condition implies: 0 for one that gates nothing in time (a
-// confirmation, a price, a negation, a facing test, a counter at zero),
-// null for one this cannot date.
+// The badge one condition implies: its own for a badge count asked
+// outright, 0 for one that gates nothing in time (a confirmation, a price,
+// a negation, a facing test, a counter at zero), null for one this cannot
+// date.
 function badgeOfCondition(condition, dating) {
+  if (condition.badges != null) return condition.badges;
   if (
     condition.choice != null || condition.money != null ||
     condition.not != null || condition.selfSwitch != null ||
@@ -163,19 +165,23 @@ export function missedShopStock(itemEvents, shopBadgeOf, reachBadgeOf) {
  * @param {!Object<string, {name: string, parentId: number,
  *     mapSwitches: (!Array<{name: string, is: boolean}>|undefined)}>} maps
  *     The map tree, and the switches a map exists under.
- * @param {!Object<string, {types: !Object<string, ?number>}>}
- *     encounterBadges The game's dated encounter tables.
+ * @param {!Object<string, {types: !Object<string, ?number>,
+ *     reach: (?number|undefined)}>} encounterBadges The game's dated maps:
+ *     each one's encounter tables, and `reach` where the record states the
+ *     badge count the map is first entered at.
  * @param {!Object<string, number>} mapSwitchBadges Map switch name -> the
  *     badge count from which it can be on.
- * @return {function(number): ?number} Map id -> its badge count: the
- *     earliest of its own encounter tables, else the nearest ancestor's in
- *     the map tree (a building inside a ward, a floor of a cave); never
- *     before a switch the map exists under. Null for a map with no dated
- *     table at or above it, such as a town.
+ * @return {function(number): ?number} Map id -> its badge count: its
+ *     record's `reach`, else the earliest of its own encounter tables,
+ *     else the nearest ancestor's in the map tree (a building inside a
+ *     ward, a floor of a cave); never before a switch the map exists
+ *     under. Null for a map with nothing dated at or above it.
  */
 export function mapReachBadges(maps, encounterBadges, mapSwitchBadges) {
   const tableBadge = (id) => {
-    const badges = Object.values(encounterBadges[id]?.types || {})
+    const record = encounterBadges[id];
+    if (record?.reach != null) return record.reach;
+    const badges = Object.values(record?.types || {})
       .filter((badge) => badge != null);
     return badges.length ? Math.min(...badges) : null;
   };
@@ -260,19 +266,155 @@ export function expectedCopySteps(perDig, digsByBadge, cap) {
 }
 
 /**
+ * One thing a mart sells. `conditions` gate the sale: those of the event
+ * that opens the mart and the row's own. `currency` is 'Money' or a key of
+ * the script rules' currencies. `once` marks a row the mart stops selling:
+ * one with a purchase limit, or one withdrawn once the item is had.
+ * @typedef {{id: string, mapId: number, mapName: string,
+ *     conditions: !Array<!Object>, currency: string, once: boolean}}
+ */
+let Sale;
+
+// The row conditions that withdraw a row once its item has been bought.
+const SOLD_ONCE = /^!(\$game_switches\[self\.item\]|searchItem\(self\.item\))$/;
+
+// One clause of a mart row's condition, a Ruby expression, as the condition
+// an event page would carry; `script` for one this does not read, which
+// nothing then dates.
+function rowCondition(text, markers) {
+  const badges = /^\$Trainer\.numbadges\s*>=\s*(\d+)$/.exec(text);
+  if (badges) return { badges: Number(badges[1]) };
+  const off = /^\$game_switches\[(\d+)\]\s*==\s*false$/.exec(text);
+  if (off) {
+    return {
+      switch: Number(off[1]), name: markers.switches[off[1]]?.name, is: false,
+    };
+  }
+  const atLeast = /^\$game_variables\[(\d+)\]\s*>=\s*(\d+)$/.exec(text);
+  if (atLeast) {
+    return {
+      variable: Number(atLeast[1]),
+      name: markers.variables[atLeast[1]]?.name,
+      atLeast: Number(atLeast[2]),
+    };
+  }
+  return { script: text };
+}
+
+// The item rows of a mart of the script rules. A category may be another
+// mart's whole inventory; a row may sell a move, a Pokémon or a currency
+// instead of an item.
+function martRows(marts, key, seen = new Set()) {
+  if (seen.has(key) || !marts[key]) return [];
+  seen.add(key);
+  return Object.values(marts[key].categories).flatMap((category) =>
+    (Array.isArray(category)
+      ? category.filter((row) => row.item)
+      : martRows(marts, category.mart, seen)));
+}
+
+/**
+ * Every sale the marts on the maps make. An event lists a mart's stock
+ * itself, sold for money without limit, or names a mart of the script
+ * rules, whose rows carry their own price, currency, conditions and limit.
  * @param {{itemNames: !Object<string, string>, events: !Array<!Object>,
- *     scriptRules: {defaultMart: {tiers: !Array<{stock:
- *     !Array<string>}>}}}} itemEvents The item-events extract.
+ *     scriptRules: !Object, storyMarkers: !Object}} itemEvents The
+ *     item-events extract.
+ * @return {!Array<!Sale>} In event order.
+ */
+export function martSales(itemEvents) {
+  const marts = itemEvents.scriptRules.marts?.marts || {};
+  const idOf = (symbol) => itemId(itemEvents.itemNames[symbol] || symbol);
+  const sales = [];
+  for (const event of itemEvents.events) {
+    for (const give of event.gives) {
+      if (give.kind !== 'mart') continue;
+      const page = event.pages?.find((entry) => entry.page === give.page);
+      const opened = {
+        mapId: event.mapId,
+        mapName: event.mapName,
+        conditions: [...(page?.conditions || []), ...(give.within || [])],
+      };
+      for (const symbol of give.stock || []) {
+        sales.push({
+          ...opened, id: idOf(symbol), currency: 'Money', once: false,
+        });
+      }
+      for (const row of give.mart ? martRows(marts, give.mart) : []) {
+        const clauses = (row.conditions || [])
+          .flatMap((text) => text.split('&&'))
+          .map((text) => text.trim());
+        sales.push({
+          ...opened,
+          id: idOf(row.item),
+          conditions: [
+            ...opened.conditions,
+            ...clauses.filter((text) => !SOLD_ONCE.test(text))
+              .map((text) => rowCondition(text, itemEvents.storyMarkers)),
+          ],
+          currency: row.currency || 'Money',
+          once: row.limit != null || clauses.some((text) =>
+            SOLD_ONCE.test(text)),
+        });
+      }
+    }
+  }
+  return sales;
+}
+
+/**
+ * When each sale opens, from the game files alone.
+ * @param {!Array<!Sale>} sales
+ * @param {function(number): ?number} reachBadgeOf Map id -> the badge count
+ *     the mart's map is reached at; null when nothing dates it.
+ * @param {!EventDating} dating
+ * @param {function(string): ?number} currencyBadgeOf Currency -> the badge
+ *     count from which it can be earned again and again; null for one that
+ *     cannot, or that nothing dates.
+ * @return {{stock: !Map<string, {badge: number, via: string}>,
+ *     once: !Map<string, {badge: number, via: string}>, undated: number}}
+ *     `stock` holds the earliest sale of each item that restocks; `once`
+ *     the earliest sale of each item that is made a fixed number of times;
+ *     `undated` counts the sales left out because their map, a condition
+ *     or their currency could not be dated.
+ */
+export function datedSales(sales, reachBadgeOf, dating, currencyBadgeOf) {
+  const stock = new Map();
+  const once = new Map();
+  let undated = 0;
+  for (const sale of sales) {
+    const parts = [
+      reachBadgeOf(sale.mapId),
+      conditionBadge(sale.conditions, dating),
+      currencyBadgeOf(sale.currency),
+    ];
+    if (parts.some((badge) => badge == null)) {
+      undated++;
+      continue;
+    }
+    const badge = Math.max(...parts);
+    const earliest = sale.once ? once : stock;
+    if (earliest.has(sale.id) && earliest.get(sale.id).badge <= badge) {
+      continue;
+    }
+    earliest.set(sale.id, { badge, via: sale.mapName });
+  }
+  return { stock, once, undated };
+}
+
+/**
+ * @param {{itemNames: !Object<string, string>, events: !Array<!Object>,
+ *     scriptRules: !Object, storyMarkers: !Object}} itemEvents The
+ *     item-events extract.
  * @return {!Set<string>} The id of every item some mart in the game files
- *     sells: the marts on the maps and the badge-tiered default mart.
+ *     sells: the marts on the maps and, where the game has one, the
+ *     badge-tiered default mart.
  */
 export function martStock(itemEvents) {
-  const symbols = [
-    ...itemEvents.scriptRules.defaultMart.tiers.flatMap((tier) => tier.stock),
-    ...itemEvents.events.flatMap((event) =>
-      event.gives.flatMap((give) =>
-        (give.kind === 'mart' ? give.stock || [] : []))),
-  ];
-  return new Set(symbols.map((symbol) =>
-    itemId(itemEvents.itemNames[symbol] || symbol)));
+  const tiers = itemEvents.scriptRules.defaultMart?.tiers || [];
+  return new Set([
+    ...tiers.flatMap((tier) => tier.stock).map((symbol) =>
+      itemId(itemEvents.itemNames[symbol] || symbol)),
+    ...martSales(itemEvents).map((sale) => sale.id),
+  ]);
 }
