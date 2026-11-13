@@ -8,7 +8,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 globalThis.__ENV__ ??= { BASE_URL: '/' };
-const { utilityValue, FIELD_SETTING_MOVE_IDS, currentFormFeatures } =
+const { utilityValue, FIELD_SETTING_MOVE_IDS } =
   await import('../src/teamBuilder/current-form-value.js');
 const { SCORING_DEFAULTS } = await import(
   '../src/teamBuilder/scoring-constants.js',

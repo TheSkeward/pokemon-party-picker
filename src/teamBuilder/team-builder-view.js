@@ -1197,8 +1197,8 @@ function truncatePercent(value) {
 function renderItemRec(item) {
   if (!item) return '';
 
-  let qualifier = '';
-  let title = '';
+  let qualifier;
+  let title;
 
   if (item.fallback) {
     qualifier = 'fallback';
@@ -1446,7 +1446,7 @@ export function getSortedTeam(
   ]));
 
   rows.sort((a, b) => {
-    let primary = 0;
+    let primary;
 
     if (sortBy === 'lead') {
       primary = compareNumber(a.bundle?.leads?.value, b.bundle?.leads?.value);

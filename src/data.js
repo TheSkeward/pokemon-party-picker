@@ -240,19 +240,11 @@ export function resolveQueryEntries(query, pokemonIndex) {
     const substringMatches =
       indexed.filter((entry) => entry.normalizedName.includes(normalizedToken));
 
-    let matches = [];
-    let matchMode = 'substring';
-
-    if (exactMatches.length > 0) {
-      matches = exactMatches;
-      matchMode = 'exact';
-    } else if (prefixMatches.length > 0) {
-      matches = prefixMatches;
-      matchMode = 'prefix';
-    } else {
-      matches = substringMatches;
-      matchMode = 'substring';
-    }
+    const [matches, matchMode] = exactMatches.length > 0
+      ? [exactMatches, 'exact']
+      : prefixMatches.length > 0
+        ? [prefixMatches, 'prefix']
+        : [substringMatches, 'substring'];
 
     const limit = normalizedToken.length <= 2 ? 250 : 200;
 

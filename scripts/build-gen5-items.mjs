@@ -191,7 +191,7 @@ function parseMovesetItems(text) {
   const pokemon = {};
 
   const monBlockRegex =
-    /\+\-+\+\s*\|\s*([^|\n]+?)\s*\|\s*\+\-+\+\s*\|\s*Raw count:\s*([\d,]+)\s*([\s\S]*?)(?=\+\-+\+\s*\|\s*[^|\n]+?\s*\|\s*\+\-+\+\s*\|\s*Raw count:|$)/g;
+    /\+-+\+\s*\|\s*([^|\n]+?)\s*\|\s*\+-+\+\s*\|\s*Raw count:\s*([\d,]+)\s*([\s\S]*?)(?=\+-+\+\s*\|\s*[^|\n]+?\s*\|\s*\+-+\+\s*\|\s*Raw count:|$)/g;
 
   let match;
   while ((match = monBlockRegex.exec(normalizedText)) !== null) {

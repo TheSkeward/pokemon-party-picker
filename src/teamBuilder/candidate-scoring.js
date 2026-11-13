@@ -64,7 +64,6 @@ const ONLINE_DEAD = 0.0;
 export function scoreCandidate({
   availability,
   bundle,
-  candidate,
   family,
   legalityProfile,
   levelCap = 0,

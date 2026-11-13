@@ -10,6 +10,7 @@ const { renderMovesetPanel } = await import('../src/views/moveset-view.js');
 const { describeNature, NATURE_EFFECTS } = await import('../src/natures.js');
 const { computeFinalStats } = await import('../src/teamBuilder/damage-model.js');
 
+
 function renderToHtml(options) {
   const container = {
     innerHTML: '',
@@ -20,6 +21,28 @@ function renderToHtml(options) {
   return container.innerHTML;
 }
 
+test('a spread row carries its nature and the stats it comes to', () => {
+  const html = renderToHtml({
+    selectedPokemonName: 'Garchomp',
+    movesetEntry: {
+      moves: [{ name: 'Earthquake', usage: 90 }],
+      items: [],
+      abilities: [],
+      spreads: [{ name: 'Jolly:0/252/0/0/4/252', usage: 50 }],
+    },
+  });
+  // The nature's effect, then the stat line at the level spreads are
+  // defined at.
+  assert.ok(html.includes(describeNature('Jolly')));
+  const stats = computeFinalStats({
+    pokemonId: 'Garchomp', level: 100, nature: 'Jolly',
+    evs: [0, 252, 0, 0, 4, 252],
+  });
+  assert.ok(html.includes(`At Lv 100 (31 IVs): HP ${stats.hp}`));
+  assert.ok(html.includes(`Spe ${stats.spe}`));
+  // A move row names what the move is.
+  assert.match(html, /title="Earthquake — [^"]*Ground/);
+});
 
 test('nature table is complete and internally consistent', () => {
   const names = Object.keys(NATURE_EFFECTS);

@@ -11,14 +11,8 @@ globalThis.localStorage = {
 
 const {
   recordOptimizerSample,
-  loadTelemetrySamples,
-  getTelemetrySummary,
   buildPerformanceReport,
   clearTelemetry,
-  percentile,
-  poolBucket,
-  buildBucket,
-  estimateRunBudget,
 } = await import('../src/teamBuilder/telemetry.js');
 
 

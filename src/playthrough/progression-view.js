@@ -1,6 +1,11 @@
 import { escapeHtml, escapeAttr } from '../utils/html.js';
 import { detailsStateAttrs } from '../utils/details-state.js';
-import { getMoveMeta, describeMoveMeta } from '../move-meta';
+import {
+  badgeStyle,
+  describeMoveMeta,
+  getMoveMeta,
+  getTypeColor,
+} from '../move-meta';
 import { legalityRules, mechanics, moveSources } from '../games/legality.js';
 import {
   accessFields,
@@ -20,7 +25,6 @@ import {
 } from '../games/items.js';
 import { MAX_TRACKED_ITEM_COUNT, MAX_OPPONENT_TYPE_BIAS } from './progression';
 import { analysisTypes } from './type-chart.js';
-import { badgeStyle, getTypeColor } from '../move-meta';
 import { dex } from '../games/dex.js';
 import { getActiveGame } from '../games/registry.js';
 

@@ -2231,7 +2231,7 @@ function recommendCurrentMoves(
       if (move) return isDamagingMove(move) && selectable(move);
       return Boolean(holdReachableMoveIds?.has(id)) && isAttackId(id);
     }).length;
-  let reservedSeats = 0;
+  let reservedSeats;
   const meaningful = (move) =>
     move.usage >= tunable('MIN_MEANINGFUL_USAGE_PERCENT');
   const addCanonical = (keep) => {

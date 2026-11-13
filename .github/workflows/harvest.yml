@@ -108,6 +108,14 @@ jobs:
         if: github.event_name == 'schedule' || github.event.inputs.refresh_data == 'true'
         run: npm run refresh:data && npm run build:manifest
 
+      # The suite runs over the rebuilt data before it is committed. The
+      # deploy would refuse a data set that fails it, and so would every
+      # later deploy until someone repaired main; failing here keeps the
+      # bad data out and says so the same day.
+      - name: Test the refreshed data
+        if: steps.refresh.outcome == 'success'
+        run: npm test
+
       # The rebuild takes minutes and main may move on again, so the data
       # commit is rebased onto whatever landed meanwhile, the generated files
       # taking the harvest's side of any conflict. A failed push fails the

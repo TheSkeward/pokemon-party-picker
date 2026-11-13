@@ -10,7 +10,6 @@
  * Quality weighting: curated sample teams count SAMPLE_WEIGHT; replays count
  * 1, or RATED_WEIGHT at/above the same 1500 bar the usage stats publish.
  */
-import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { REAL_FORMATS } from './config.mjs';

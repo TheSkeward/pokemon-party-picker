@@ -11,7 +11,6 @@
  * several sets of one Pokémon and pastes the parser read past the end of,
  * and a short list of sets is the easiest "team" for any pool to match.
  */
-import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { REAL_FORMATS } from './config.mjs';

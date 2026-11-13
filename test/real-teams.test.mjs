@@ -8,7 +8,6 @@ await import('./helpers/harness.mjs'); // fetch → filesystem shim
 const {
   assignAvailableMembersToLines,
   assignMembersToLines,
-  compareRealTeams,
   findFieldableOrClosestRealTeam,
   getLineFieldableIds,
   lineSeatsMany,

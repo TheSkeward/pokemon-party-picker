@@ -71,12 +71,8 @@ function toTable(source) {
 export async function loadMovePrior(family) {
   if (!family) return active;
   if (!tablesByFamily.has(family)) {
-    let data = null;
-    try {
-      data = await fetchJsonCached(dataUrl(`move-prior/${family}.json`));
-    } catch {
-      data = null;
-    }
+    const data = await fetchJsonCached(
+      dataUrl(`move-prior/${family}.json`)).catch(() => null);
     tablesByFamily.set(family, toTable(data?.moves));
   }
   active = tablesByFamily.get(family);

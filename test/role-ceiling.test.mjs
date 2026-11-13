@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import { softCeiling } from '../src/teamBuilder/current-form-value.js';
-import { setScoringOverrides } from '../src/teamBuilder/scoring-constants.js';
+
 
 test('soft ceiling is identity below the knee', () => {
   for (const x of [0, 0.2, 0.5, 0.9]) {

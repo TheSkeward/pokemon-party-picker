@@ -71,7 +71,7 @@ export function startUpdateNotifier() {
     }
   };
 
-  const timer = setInterval(check, POLL_INTERVAL_MS);
+  setInterval(check, POLL_INTERVAL_MS);
   // Re-check when the user returns to the tab: deploys often land while it's
   // backgrounded, and this catches them without waiting out the interval.
   document.addEventListener('visibilitychange', () => {

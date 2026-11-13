@@ -124,12 +124,7 @@ async function buildFamily(family) {
 
     for (const { month, total } of months) {
       const url = `https://www.smogon.com/stats/${month}/moveset/${tier.formatId}-${tier.cutoff}.txt`;
-      let text = null;
-      try {
-        text = await fetchText(url);
-      } catch {
-        text = null;
-      }
+      const text = await fetchText(url).catch(() => null);
       if (!text) {
         console.warn(`[teammate-index] missing ${url}`);
         continue;

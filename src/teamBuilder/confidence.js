@@ -302,7 +302,6 @@ function rescoreLine(line, context) {
       ...scoreCandidate({
         availability: context.availability,
         bundle: choice.bundle,
-        candidate: { id: choice.pokemonId, isMega: choice.isMega },
         family: context.family,
         legalityProfile: choice.legalityProfile,
         levelCap: context.levelCap,

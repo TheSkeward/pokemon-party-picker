@@ -57,11 +57,6 @@ export function isInertInFamily(id, family) {
   return PARTNER_ONLY_MOVES.has(toId(id)) && !/doubles/i.test(String(family));
 }
 
-/** @return {!Array<string>} Every type name the palette covers. */
-export function listTypeNames() {
-  return [...VALID_TYPES];
-}
-
 const cache = new Map();
 
 /**

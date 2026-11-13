@@ -510,7 +510,6 @@ export async function optimizeTeamFromPool({
   const scoringPool = await selectScoringGroups({
     abilityAnnotations,
     allGroups,
-    availability,
     family,
     pokemonIndex,
     progression,
@@ -768,7 +767,6 @@ function lineIsDegraded(line) {
 async function selectScoringGroups({
   abilityAnnotations,
   allGroups,
-  availability,
   family,
   pokemonIndex,
   progression,
@@ -1115,7 +1113,6 @@ async function resolvePoolLine({
         scoreCandidate({
           availability,
           bundle,
-          candidate,
           family,
           legalityProfile,
           levelCap,

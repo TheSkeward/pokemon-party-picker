@@ -107,7 +107,7 @@ function pageOneHash(html, posts) {
 async function harvestThread(formatId, thread, seen, file, threadState) {
   const threadId = /\.(\d+)\/?$/.exec(thread)?.[1] || 'unknown';
   let walkAll = true;
-  let pagesFetched = 0;
+  let pagesFetched;
   let appended = 0;
   let inline = 0;
   let inlineSets = 0;
