@@ -804,6 +804,7 @@ export function summarise(events) {
       }
       if (give.item) items.add(give.item);
       for (const item of give.stock ?? []) items.add(item);
+      for (const item of give.itemCandidates ?? []) items.add(item);
       if (give.kind === 'dynamic') {
         unresolved.push({
           mapId: event.mapId,

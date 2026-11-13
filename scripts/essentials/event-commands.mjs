@@ -51,7 +51,12 @@ export class Names {
     return { variable: id, name: this.system.variables[id] ?? null };
   }
 
-  /** @return {!Object} The switches and variables named so far, by id. */
+  /**
+   * @return {!Object} The switches and variables named so far, by id. A
+   *     marker's `uses` counts how often a reader named it, which can be
+   *     more than once for one condition: a rough weight, not a count of
+   *     the events it gates.
+   */
   index() {
     const table = (uses, names) =>
       Object.fromEntries(
