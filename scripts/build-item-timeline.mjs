@@ -11,26 +11,37 @@
  *     post-game tiers collapse to badge 18). Its `items` map keeps each
  *     item's earliest row, a single copy unless the row is the shop or the
  *     mining rocks; its `shopItems` map is the renewable shop stock.
- *  2. The same file's Mining Items tab: everything minable restocks from the
- *     Mining Kit on (Grand Stairway hiker, badge 3 — right after Shelly).
- *  3. The game-file extracts under scripts/reborn (built by
+ *  2. The game-file extracts under scripts/reborn (built by
  *     extract-reborn-item-sources.mjs from an install): the items wild
  *     Pokémon hold and the encounter tables they are met in, the Pickup
- *     table, the Battle Floor point counter's stock, and the berries the
- *     plant script grows. The files say what a source yields; when it opens
- *     is set here, with its evidence.
- *  4. scripts/reborn/reborn-encounter-badges.json: the badge count at which
+ *     table, the mining table, the Battle Floor point counter's stock, the
+ *     berries the plant script grows, the marts' stock, and the item balls
+ *     and hidden items on each map. The files say what a source yields;
+ *     when it opens is set here, with its evidence.
+ *  3. scripts/reborn/reborn-encounter-badges.json: the badge count at which
  *     each encounter table can first be met, dated from the walkthrough's
  *     area order. A wild holder counts only through a table in the game
  *     files that this file dates: a Pokémon met once in an event, or on a
- *     map the player visits once, restocks nothing.
+ *     map the player visits once, restocks nothing. The same dates say when
+ *     a map is reached, for the copies placed on it.
+ *
+ * Everything minable restocks from the Mining Kit on (Grand Stairway hiker,
+ * badge 3 — right after Shelly).
  *
  * Rerun: node scripts/build-item-timeline.mjs
  */
 
 import { readFileSync, writeFileSync } from 'node:fs';
 
+import { isConsumableItem } from '../src/games/consumables.js';
 import { REBORN_PROGRESSION_CHECKPOINTS } from '../src/reborn/badge-timeline.js';
+import {
+  badgeSwitchBadge,
+  conditionBadge,
+  mapReachBadges,
+  missedShopStock,
+  placedCopies,
+} from './reborn/event-sources.mjs';
 import {
   pickupSources,
   plantedBerries,
@@ -54,6 +65,23 @@ const BERRY_PLOT_BADGE = 7;
 // limit. The Nightclub is post-game: the guide dates its Beast Ball gift at
 // badge 18.
 const POINT_COUNTER = { mapId: 827, badge: 18 };
+
+// The badge count from which a map that exists only under a switch can be
+// visited. The city is restored once Fly opens the way back, at badge 13;
+// the three rebuilding projects are funded after that, 14 at the earliest.
+const MAP_SWITCH_BADGES = {
+  'City Restore': 13,
+  'Slums Rebuilt': 14,
+  'Railnet Rebuilt': 14,
+  'Azurine rebuilt': 14,
+};
+
+// The guide's source labels for a copy placed on a map, and what the
+// game-file extract calls the same kind.
+const PLACED_KIND_OF_LABEL = {
+  'Poké Ball': 'item ball',
+  'Hidden': 'hidden item',
+};
 
 // item id -> badge — user-verified SHOP stock kept as a cross-check overlay
 // on the sheet's shopItems map (earliest badge wins). These should always
@@ -134,6 +162,9 @@ for (const [id, badge] of Object.entries(SHOP_STOCK)) {
   if (current == null || badge < current) shopBadges.set(id, badge);
 }
 
+const reachBadge =
+  mapReachBadges(itemEvents.maps, encounterBadges, MAP_SWITCH_BADGES);
+
 const sources = new Map();
 const add = (id, source) => {
   if (!knownIds.has(id)) return;
@@ -157,8 +188,52 @@ for (const [name, entry] of Object.entries(extracted.items)) {
 for (const [id, badge] of shopBadges) {
   add(id, { kind: 'shop', badge, via: '' });
 }
-for (const name of extracted.miningItems) {
-  add(toId(name), { kind: 'mining', badge: MINING_KIT_BADGE, via: '' });
+// Stock in the game's marts that the sheet's shop table lacks.
+const missedStock = missedShopStock(
+  itemEvents, (id) => shopBadges.get(id) ?? null, reachBadge);
+for (const [id, { badge, via }] of missedStock) {
+  add(id, { kind: 'shop', badge, via });
+}
+for (const { item } of itemEvents.scriptRules.mining.items) {
+  const id = toId(itemEvents.itemNames[item] || item);
+  add(id, { kind: 'mining', badge: MINING_KIT_BADGE, via: '' });
+}
+
+// Further copies of an item a battle does not use up: the item balls and
+// hidden items the game files place, each from the later of its map being
+// reached and its event's own gate. A copy on a map or behind a gate that
+// nothing dates is left out. So is one on a map reached before the sheet's
+// first copy of the item: the sheet lists every location, so that copy is
+// behind something the files do not show. And so is the sheet's own first
+// copy, when it is of the same kind.
+const switchBadge = (name) =>
+  badgeSwitchBadge(name) ?? MAP_SWITCH_BADGES[name] ?? null;
+let undatedCopies = 0;
+for (const [id, copies] of placedCopies(itemEvents)) {
+  if (!knownIds.has(id) || isConsumableItem(id)) continue;
+  const first = extracted.items[
+    Object.keys(extracted.items).find((name) => toId(name) === id)];
+  const dated = [];
+  for (const copy of copies) {
+    if (copy.mapName === 'REMOVED') continue;
+    const reached = reachBadge(copy.mapId);
+    const gate = conditionBadge(copy.conditions, switchBadge);
+    if (reached == null || gate == null || reached < (first?.badges ?? 0)) {
+      undatedCopies++;
+      continue;
+    }
+    dated.push({
+      kind: copy.kind,
+      badge: Math.max(reached, gate),
+      via: `${copy.kind}, ${copy.mapName}`,
+    });
+  }
+  dated.sort((a, b) => a.badge - b.badge);
+  const sheetCopy = dated.findIndex((copy) =>
+    copy.kind === PLACED_KIND_OF_LABEL[first?.source]);
+  for (const [index, { badge, via }] of dated.entries()) {
+    if (index !== sheetCopy) add(id, { kind: 'single', badge, count: 1, via });
+  }
 }
 // A table counts from the badge it can first be met; one on a map the
 // player visits once is no place to restock.
@@ -226,3 +301,7 @@ const unknown = Object.keys(extracted.items).filter(
   (name) => !knownIds.has(toId(name)),
 ).length;
 console.log(`[item-timeline] ${unknown} sheet rows outside the held-item catalog (TMs, medicine, etc.) ignored`);
+console.log(
+  `[item-timeline] ${[...missedStock.keys()].filter((id) => knownIds.has(id)).length} items sold in marts the sheet's shop table lacks; ` +
+  `${undatedCopies} placed copies left out as undated`,
+);

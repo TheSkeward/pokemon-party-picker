@@ -61,8 +61,9 @@ export function orderItemSources(sources) {
  * @param {!Array<!ItemSource>} sources The item's sources, in
  *     orderItemSources order.
  * @param {boolean} consumable
- * @return {!Array<!SupplyStep>} In badge order; empty when no source
- *     counts.
+ * @return {!Array<!SupplyStep>} In badge order, copies that turn up at one
+ *     badge as one step under the first of their sources; empty when no
+ *     source counts.
  */
 export function itemSupply(sources, consumable) {
   const steps = [];
@@ -76,7 +77,12 @@ export function itemSupply(sources, consumable) {
       steps.push({ badge: source.badge, copies: null, source });
     } else if (!consumable) {
       copies += source.count ?? 1;
-      steps.push({ badge: source.badge, copies, source });
+      const last = steps.at(-1);
+      if (last?.badge === source.badge && last.copies != null) {
+        last.copies = copies;
+      } else {
+        steps.push({ badge: source.badge, copies, source });
+      }
     }
   }
   return steps;

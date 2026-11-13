@@ -51,6 +51,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"mining","badge":3,"via":""},
     {"kind":"single","badge":3,"count":1,"via":"poké ball"},
     {"kind":"shop","badge":13,"via":""},
+    {"kind":"single","badge":16,"count":1,"via":"item ball, Tanzan Depths"},
   ],
   apicotberry: [
     {"kind":"regrow","badge":13,"via":"planted in a berry plot"},
@@ -58,6 +59,7 @@ export const REBORN_ITEM_SOURCES = {
   ],
   armorfossil: [
     {"kind":"mining","badge":3,"via":""},
+    {"kind":"shop","badge":13,"via":"Spinel Museum"},
   ],
   aspearberry: [
     {"kind":"shop","badge":1,"via":""},
@@ -93,6 +95,11 @@ export const REBORN_ITEM_SOURCES = {
   bignugget: [
     {"kind":"pickup","badge":8,"via":"a Pickup holder at level 61 or above"},
     {"kind":"single","badge":13,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":13,"count":1,"via":"item ball, Coral Lighthouse"},
+    {"kind":"single","badge":16,"count":1,"via":"item ball, Route 4"},
+    {"kind":"single","badge":16,"count":1,"via":"hidden item, Charous Mountain B2F"},
+    {"kind":"single","badge":18,"count":1,"via":"hidden item, Victory Road"},
+    {"kind":"single","badge":18,"count":1,"via":"hidden item, Victory Road B5F"},
   ],
   bigroot: [
     {"kind":"single","badge":2,"count":1,"via":"poké ball"},
@@ -209,6 +216,7 @@ export const REBORN_ITEM_SOURCES = {
   ],
   clawfossil: [
     {"kind":"mining","badge":3,"via":""},
+    {"kind":"shop","badge":13,"via":"Spinel Museum"},
   ],
   cobaberry: [
     {"kind":"shop","badge":4,"via":""},
@@ -244,6 +252,10 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"mining","badge":3,"via":""},
     {"kind":"single","badge":4,"count":1,"via":"poké ball"},
     {"kind":"shop","badge":13,"via":""},
+    {"kind":"single","badge":13,"count":1,"via":"hidden item, Opal Ward"},
+    {"kind":"single","badge":14,"count":1,"via":"item ball, Teknite Cave 2F"},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item, Tourmaline Desert"},
+    {"kind":"single","badge":16,"count":1,"via":"hidden item, Tanzan Depths"},
   ],
   decidiumz: [
     {"kind":"single","badge":13,"count":1,"via":"npc"},
@@ -251,11 +263,13 @@ export const REBORN_ITEM_SOURCES = {
   deepseascale: [
     {"kind":"single","badge":2,"count":1,"via":"npc"},
     {"kind":"wild","badge":2,"via":"Chinchou (5%), The Underroot, Old Rod"},
+    {"kind":"single","badge":10,"count":1,"via":"item ball, Celestinine Mountain B3F"},
     {"kind":"shop","badge":16,"via":""},
   ],
   deepseatooth: [
     {"kind":"single","badge":2,"count":1,"via":"npc"},
     {"kind":"wild","badge":5,"via":"Carvanha (5%), Lapis Alleyway, Good Rod"},
+    {"kind":"single","badge":12,"count":1,"via":"item ball, Ametrine Mountain B1F"},
     {"kind":"shop","badge":16,"via":""},
   ],
   destinyknot: [
@@ -281,6 +295,7 @@ export const REBORN_ITEM_SOURCES = {
   dragonfang: [
     {"kind":"wild","badge":10,"via":"Druddigon (5%), Route 3"},
     {"kind":"shop","badge":13,"via":""},
+    {"kind":"single","badge":14,"count":1,"via":"item ball, The Belly of the Beast"},
   ],
   dragongem: [
     {"kind":"single","badge":0,"count":1,"via":"npc"},
@@ -311,12 +326,26 @@ export const REBORN_ITEM_SOURCES = {
   duskball: [
     {"kind":"pickup","badge":0,"via":"a Pickup holder at level 1 or above"},
     {"kind":"single","badge":3,"count":1,"via":"hidden"},
+    {"kind":"single","badge":4,"count":1,"via":"hidden item, Azurine Island"},
+    {"kind":"single","badge":5,"count":1,"via":"hidden item, Chrysolia Spring 1F"},
+    {"kind":"single","badge":7,"count":1,"via":"hidden item, Vanhanen Labyrinth"},
+    {"kind":"single","badge":12,"count":1,"via":"hidden item, GUM Room"},
     {"kind":"shop","badge":13,"via":""},
+    {"kind":"single","badge":13,"count":1,"via":"hidden item, North Obsidia Alleyway"},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item, Tourmaline Desert"},
+    {"kind":"single","badge":16,"count":1,"via":"hidden item, Teknite Ridge"},
+    {"kind":"single","badge":18,"count":1,"via":"hidden item, Victory Road"},
+    {"kind":"single","badge":18,"count":1,"via":"hidden item, Chrysolia Deepwoods"},
+    {"kind":"single","badge":18,"count":1,"via":"hidden item, Aegir Cave"},
+    {"kind":"single","badge":18,"count":1,"via":"hidden item, Aegir Cave Depths"},
+    {"kind":"single","badge":18,"count":1,"via":"hidden item, Manyworld Pool"},
   ],
   duskstone: [
     {"kind":"mining","badge":3,"via":""},
     {"kind":"single","badge":3,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":8,"count":1,"via":"item ball, Iolia Valley"},
     {"kind":"shop","badge":13,"via":""},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item, Tourmaline Desert"},
   ],
   earthplate: [
     {"kind":"mining","badge":3,"via":""},
@@ -350,6 +379,7 @@ export const REBORN_ITEM_SOURCES = {
   energypowder: [
     {"kind":"single","badge":2,"count":1,"via":"hidden"},
     {"kind":"shop","badge":6,"via":""},
+    {"kind":"single","badge":16,"count":1,"via":"hidden item, Teknite Ridge"},
   ],
   enigmaberry: [
     {"kind":"regrow","badge":13,"via":"planted in a berry plot"},
@@ -399,7 +429,10 @@ export const REBORN_ITEM_SOURCES = {
   firestone: [
     {"kind":"single","badge":2,"count":1,"via":"poké ball"},
     {"kind":"mining","badge":3,"via":""},
+    {"kind":"single","badge":9,"count":1,"via":"hidden item, Route 2"},
     {"kind":"shop","badge":13,"via":""},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item, Tourmaline Desert"},
+    {"kind":"single","badge":16,"count":1,"via":"hidden item, Teknite Cave"},
   ],
   firiumz: [
     {"kind":"single","badge":14,"count":1,"via":"npc"},
@@ -441,6 +474,7 @@ export const REBORN_ITEM_SOURCES = {
   friendball: [
     {"kind":"shop","badge":1,"via":""},
     {"kind":"single","badge":1,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":10,"count":1,"via":"hidden item, LCCC"},
   ],
   fullincense: [
     {"kind":"single","badge":2,"count":1,"via":"npc"},
@@ -489,7 +523,32 @@ export const REBORN_ITEM_SOURCES = {
   greatball: [
     {"kind":"pickup","badge":0,"via":"a Pickup holder at level 1 or above"},
     {"kind":"single","badge":1,"count":1,"via":"hidden"},
+    {"kind":"single","badge":1,"count":1,"via":"hidden item, Obsidia Slums 1F"},
+    {"kind":"single","badge":1,"count":1,"via":"item ball, Obsidia Slums B1F"},
+    {"kind":"single","badge":2,"count":1,"via":"item ball, Rhodochrine Jungle"},
+    {"kind":"single","badge":2,"count":1,"via":"item ball, Grand Stairway B2F"},
     {"kind":"shop","badge":3,"via":""},
+    {"kind":"single","badge":3,"count":1,"via":"hidden item, Beryl Cave B1F"},
+    {"kind":"single","badge":3,"count":1,"via":"hidden item, Underground Railnet"},
+    {"kind":"single","badge":4,"count":1,"via":"hidden item, Apophyll Beach"},
+    {"kind":"single","badge":4,"count":1,"via":"item ball, Azurine Island"},
+    {"kind":"single","badge":7,"count":1,"via":"hidden item, Route 1"},
+    {"kind":"single","badge":7,"count":1,"via":"hidden item, North Aventurine Woods"},
+    {"kind":"single","badge":9,"count":1,"via":"hidden item, Celestinine Cascade"},
+    {"kind":"single","badge":10,"count":1,"via":"hidden item, Route 3"},
+    {"kind":"single","badge":11,"count":1,"via":"hidden item, Ametrine City"},
+    {"kind":"single","badge":12,"count":1,"via":"hidden item, Ametrine Mountain 1F"},
+    {"kind":"single","badge":12,"count":1,"via":"hidden item, Citrine Mountain 3F"},
+    {"kind":"single","badge":13,"count":1,"via":"hidden item, Azurine Cave"},
+    {"kind":"single","badge":13,"count":1,"via":"hidden item, Tanzan Cove"},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item, Sugiline Cave"},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item, Sugiline Cave B1F"},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item, Sugiline Ruin"},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item, Mirage Tower B1F"},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item, Tourmaline Desert"},
+    {"kind":"single","badge":16,"count":1,"via":"hidden item, Tanzan Depths"},
+    {"kind":"single","badge":18,"count":1,"via":"hidden item, Chrysolia Deepwoods"},
+    {"kind":"single","badge":18,"count":1,"via":"hidden item, Aegir Cave Depths"},
   ],
   grepaberry: [
     {"kind":"shop","badge":1,"via":""},
@@ -529,12 +588,16 @@ export const REBORN_ITEM_SOURCES = {
   ],
   heatrock: [
     {"kind":"shop","badge":2,"via":""},
+    {"kind":"mining","badge":3,"via":""},
+    {"kind":"single","badge":4,"count":1,"via":"hidden item, Apophyll Cave"},
   ],
   heavyball: [
     {"kind":"shop","badge":1,"via":""},
+    {"kind":"single","badge":2,"count":1,"via":"hidden item, The Underroot"},
   ],
   helixfossil: [
     {"kind":"mining","badge":3,"via":""},
+    {"kind":"shop","badge":13,"via":"Spinel Museum"},
   ],
   heracronite: [
     {"kind":"single","badge":16,"count":1,"via":"poké ball"},
@@ -560,7 +623,9 @@ export const REBORN_ITEM_SOURCES = {
   icestone: [
     {"kind":"single","badge":2,"count":1,"via":"npc"},
     {"kind":"mining","badge":3,"via":""},
+    {"kind":"single","badge":7,"count":1,"via":"item ball, Celestinine Mountain B2F"},
     {"kind":"shop","badge":13,"via":""},
+    {"kind":"single","badge":16,"count":1,"via":"item ball, Route 4"},
   ],
   icicleplate: [
     {"kind":"mining","badge":3,"via":""},
@@ -583,6 +648,7 @@ export const REBORN_ITEM_SOURCES = {
   ironball: [
     {"kind":"shop","badge":2,"via":""},
     {"kind":"mining","badge":3,"via":""},
+    {"kind":"single","badge":3,"count":1,"via":"item ball, Underground Railnet"},
     {"kind":"wild","badge":3,"via":"Mawile (5%), Underground Railnet"},
   ],
   ironplate: [
@@ -619,6 +685,7 @@ export const REBORN_ITEM_SOURCES = {
   kingsrock: [
     {"kind":"wild","badge":5,"via":"Poliwhirl (5%), Tanzan Cove"},
     {"kind":"single","badge":13,"count":1,"via":"hidden"},
+    {"kind":"single","badge":13,"count":1,"via":"item ball, Peridot Ward"},
     {"kind":"shop","badge":16,"via":""},
   ],
   kommoniumz: [
@@ -645,7 +712,9 @@ export const REBORN_ITEM_SOURCES = {
   leafstone: [
     {"kind":"single","badge":2,"count":1,"via":"npc"},
     {"kind":"mining","badge":3,"via":""},
+    {"kind":"single","badge":7,"count":1,"via":"item ball, North Aventurine Woods"},
     {"kind":"shop","badge":13,"via":""},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item, Tourmaline Desert"},
   ],
   leftovers: [
     {"kind":"pickup","badge":11,"via":"a Pickup holder at level 71 or above"},
@@ -661,6 +730,9 @@ export const REBORN_ITEM_SOURCES = {
   levelball: [
     {"kind":"shop","badge":13,"via":""},
     {"kind":"single","badge":13,"count":1,"via":"hidden"},
+    {"kind":"single","badge":13,"count":1,"via":"hidden item, Azurine Cave"},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item, Teknite Ridge"},
+    {"kind":"single","badge":18,"count":1,"via":"hidden item, Aegir Cave Depths"},
   ],
   liechiberry: [
     {"kind":"single","badge":2,"count":1,"via":"hidden"},
@@ -683,7 +755,14 @@ export const REBORN_ITEM_SOURCES = {
   ],
   linkstone: [
     {"kind":"single","badge":3,"count":1,"via":"npc"},
+    {"kind":"single","badge":3,"count":1,"via":"hidden item, Beryl Cave B1F"},
+    {"kind":"single","badge":5,"count":1,"via":"hidden item, Chrysolia Spring 1F"},
+    {"kind":"single","badge":7,"count":1,"via":"hidden item, South Aventurine Woods"},
+    {"kind":"single","badge":9,"count":1,"via":"hidden item, Route 2"},
+    {"kind":"single","badge":12,"count":1,"via":"hidden item, Ametrine Mountain B3F"},
     {"kind":"shop","badge":13,"via":""},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item, Azurine Island"},
+    {"kind":"single","badge":14,"count":1,"via":"item ball, Sugiline Cave B1F"},
   ],
   lopunnite: [
     {"kind":"single","badge":14,"count":1,"via":"poké ball"},
@@ -695,6 +774,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"single","badge":18,"count":1,"via":"poké ball"},
   ],
   luckypunch: [
+    {"kind":"shop","badge":8,"via":"7th Street"},
     {"kind":"wild","badge":14,"via":"Chansey (50%), Once Upon a Somewhere"},
   ],
   lumberry: [
@@ -811,11 +891,14 @@ export const REBORN_ITEM_SOURCES = {
   ],
   moonball: [
     {"kind":"shop","badge":1,"via":""},
+    {"kind":"single","badge":13,"count":1,"via":"hidden item, Coral Ward"},
   ],
   moonstone: [
     {"kind":"single","badge":1,"count":1,"via":"poké ball"},
     {"kind":"mining","badge":3,"via":""},
+    {"kind":"single","badge":4,"count":1,"via":"hidden item, Byxbysion Wasteland"},
     {"kind":"shop","badge":13,"via":""},
+    {"kind":"single","badge":16,"count":1,"via":"hidden item, Route 4"},
     {"kind":"wild","badge":16,"via":"Wigglytuff (5%), Route 4"},
   ],
   muscleband: [
@@ -833,10 +916,12 @@ export const REBORN_ITEM_SOURCES = {
   netball: [
     {"kind":"shop","badge":1,"via":""},
     {"kind":"single","badge":1,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":18,"count":1,"via":"hidden item, Aegir Cave"},
   ],
   nevermeltice: [
     {"kind":"single","badge":3,"count":1,"via":"poké ball"},
     {"kind":"wild","badge":9,"via":"Cryogonal (5%), Ametrine Mountain 2F"},
+    {"kind":"single","badge":11,"count":1,"via":"hidden item, Ametrine Mountain 3F"},
     {"kind":"shop","badge":13,"via":""},
   ],
   normalgem: [
@@ -867,6 +952,7 @@ export const REBORN_ITEM_SOURCES = {
   ovalstone: [
     {"kind":"mining","badge":3,"via":""},
     {"kind":"shop","badge":8,"via":""},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item, Tourmaline Desert"},
   ],
   passhoberry: [
     {"kind":"shop","badge":4,"via":""},
@@ -912,6 +998,8 @@ export const REBORN_ITEM_SOURCES = {
   poisonbarb: [
     {"kind":"wild","badge":2,"via":"Beedrill (5%), Jasper Ward"},
     {"kind":"single","badge":4,"count":1,"via":"hidden"},
+    {"kind":"single","badge":4,"count":1,"via":"item ball, Byxbysion Wasteland"},
+    {"kind":"shop","badge":13,"via":"Spinel Museum"},
   ],
   poisongem: [
     {"kind":"single","badge":0,"count":1,"via":"npc"},
@@ -965,6 +1053,7 @@ export const REBORN_ITEM_SOURCES = {
   ],
   protectivepads: [
     {"kind":"single","badge":1,"count":1,"via":"poké ball"},
+    {"kind":"shop","badge":7,"via":"Department Store 8F"},
   ],
   protector: [
     {"kind":"single","badge":7,"count":1,"via":"poké ball"},
@@ -986,12 +1075,17 @@ export const REBORN_ITEM_SOURCES = {
   ],
   quickball: [
     {"kind":"single","badge":7,"count":1,"via":"hidden"},
+    {"kind":"single","badge":12,"count":1,"via":"item ball, Peridot Water Grid"},
     {"kind":"shop","badge":13,"via":""},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item, Teknite Ridge"},
+    {"kind":"single","badge":16,"count":1,"via":"hidden item, Agate City"},
+    {"kind":"single","badge":18,"count":1,"via":"hidden item, Chrysolia Deepwoods"},
   ],
   quickclaw: [
     {"kind":"wild","badge":0,"via":"Meowth (5%), Opal Ward"},
     {"kind":"single","badge":1,"count":1,"via":"poké ball"},
     {"kind":"shop","badge":7,"via":""},
+    {"kind":"single","badge":16,"count":1,"via":"hidden item, Agate City"},
   ],
   quickpowder: [
     {"kind":"shop","badge":8,"via":""},
@@ -1000,6 +1094,7 @@ export const REBORN_ITEM_SOURCES = {
   rarebone: [
     {"kind":"mining","badge":3,"via":""},
     {"kind":"single","badge":14,"count":1,"via":"hidden"},
+    {"kind":"single","badge":18,"count":1,"via":"hidden item, Mirage Tower?"},
   ],
   rawstberry: [
     {"kind":"shop","badge":1,"via":""},
@@ -1063,6 +1158,7 @@ export const REBORN_ITEM_SOURCES = {
   roseincense: [
     {"kind":"single","badge":0,"count":1,"via":"npc"},
     {"kind":"shop","badge":2,"via":""},
+    {"kind":"single","badge":5,"count":1,"via":"hidden item, Tanzan Cove"},
   ],
   roseliberry: [
     {"kind":"shop","badge":4,"via":""},
@@ -1102,6 +1198,7 @@ export const REBORN_ITEM_SOURCES = {
   ],
   scopelens: [
     {"kind":"shop","badge":7,"via":""},
+    {"kind":"single","badge":12,"count":1,"via":"item ball, Jasper Water Grid"},
   ],
   seaincense: [
     {"kind":"single","badge":0,"count":1,"via":"poké ball"},
@@ -1125,7 +1222,9 @@ export const REBORN_ITEM_SOURCES = {
   shinystone: [
     {"kind":"mining","badge":3,"via":""},
     {"kind":"single","badge":4,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":7,"count":1,"via":"hidden item, Citae Astrae"},
     {"kind":"shop","badge":13,"via":""},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item, Tourmaline Desert"},
   ],
   shockdrive: [
     {"kind":"single","badge":18,"count":1,"via":"story"},
@@ -1138,6 +1237,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"wild","badge":0,"via":"Trubbish (5%), Lower Peridot Alley"},
     {"kind":"single","badge":5,"count":1,"via":"poké ball"},
     {"kind":"shop","badge":13,"via":""},
+    {"kind":"single","badge":16,"count":1,"via":"hidden item, Agate City"},
   ],
   silverpowder: [
     {"kind":"single","badge":7,"count":1,"via":"hidden"},
@@ -1216,9 +1316,11 @@ export const REBORN_ITEM_SOURCES = {
   stick: [
     {"kind":"wild","badge":2,"via":"Farfetch'd (5%), Rhodochrine Jungle"},
     {"kind":"shop","badge":8,"via":""},
+    {"kind":"single","badge":18,"count":1,"via":"item ball, Aegir Cave"},
   ],
   stickybarb: [
     {"kind":"shop","badge":2,"via":""},
+    {"kind":"single","badge":4,"count":1,"via":"hidden item, Byxbysion Wasteland"},
     {"kind":"wild","badge":14,"via":"Cacturne (5%), Sugiline Cave"},
   ],
   stoneplate: [
@@ -1228,7 +1330,9 @@ export const REBORN_ITEM_SOURCES = {
   sunstone: [
     {"kind":"mining","badge":3,"via":""},
     {"kind":"single","badge":3,"count":1,"via":"poké ball"},
+    {"kind":"single","badge":4,"count":1,"via":"hidden item, Byxbysion Grotto"},
     {"kind":"shop","badge":13,"via":""},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item, Tourmaline Desert"},
     {"kind":"wild","badge":18,"via":"Solrock (5%), New World"},
   ],
   syntheticseed: [
@@ -1258,10 +1362,13 @@ export const REBORN_ITEM_SOURCES = {
   thunderstone: [
     {"kind":"single","badge":2,"count":1,"via":"npc"},
     {"kind":"mining","badge":3,"via":""},
+    {"kind":"single","badge":4,"count":1,"via":"hidden item, Azurine Island"},
     {"kind":"shop","badge":13,"via":""},
   ],
   timerball: [
+    {"kind":"shop","badge":1,"via":"Critical Capture"},
     {"kind":"single","badge":7,"count":1,"via":"hidden"},
+    {"kind":"single","badge":18,"count":1,"via":"item ball, Aegir Cave Depths"},
   ],
   toxicorb: [
     {"kind":"single","badge":8,"count":1,"via":"poké ball"},
@@ -1281,7 +1388,31 @@ export const REBORN_ITEM_SOURCES = {
   ],
   ultraball: [
     {"kind":"single","badge":3,"count":1,"via":"hidden"},
+    {"kind":"single","badge":4,"count":1,"via":"hidden item, Byxbysion Wasteland"},
+    {"kind":"single","badge":5,"count":1,"via":"hidden item, Tanzan Mountain"},
+    {"kind":"single","badge":8,"count":1,"via":"hidden item, Iolia Valley"},
     {"kind":"shop","badge":9,"via":""},
+    {"kind":"single","badge":9,"count":1,"via":"hidden item, Route 2"},
+    {"kind":"single","badge":10,"count":1,"via":"hidden item, Celestinine Mountain 1F"},
+    {"kind":"single","badge":12,"count":1,"via":"hidden item, Celestinine Mountain B1F"},
+    {"kind":"single","badge":13,"count":1,"via":"hidden item, Peridot Ward"},
+    {"kind":"single","badge":13,"count":1,"via":"hidden item, Azurine Lake"},
+    {"kind":"single","badge":13,"count":1,"via":"hidden item, Apophyll Beach"},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item, Sugiline Cave"},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item, Sugiline Ruin"},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item, Mirage Tower B1F"},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item, Tourmaline Desert"},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item, Underground Railnet"},
+    {"kind":"single","badge":16,"count":1,"via":"hidden item, Route 4"},
+    {"kind":"single","badge":16,"count":1,"via":"hidden item, Agate City"},
+    {"kind":"single","badge":18,"count":1,"via":"hidden item, Victory Road B1F"},
+    {"kind":"single","badge":18,"count":1,"via":"hidden item, Charous Path"},
+    {"kind":"single","badge":18,"count":1,"via":"hidden item, Victory Road B4F"},
+    {"kind":"single","badge":18,"count":1,"via":"hidden item, Chrysolia Deepwoods"},
+    {"kind":"single","badge":18,"count":1,"via":"hidden item, Aegir Cave"},
+    {"kind":"single","badge":18,"count":1,"via":"hidden item, Aegir Cave Depths"},
+    {"kind":"single","badge":18,"count":1,"via":"item ball, Idyll of Pestilence"},
+    {"kind":"single","badge":18,"count":1,"via":"item ball, Idyll of Panaceance"},
   ],
   ultranecroziumz: [
     {"kind":"single","badge":18,"count":1,"via":"npc"},
@@ -1310,7 +1441,10 @@ export const REBORN_ITEM_SOURCES = {
   waterstone: [
     {"kind":"single","badge":2,"count":1,"via":"poké ball"},
     {"kind":"mining","badge":3,"via":""},
+    {"kind":"single","badge":11,"count":1,"via":"item ball, Celestinine Mountain 2F"},
+    {"kind":"single","badge":12,"count":1,"via":"hidden item, Ametrine Mountain B2F"},
     {"kind":"shop","badge":13,"via":""},
+    {"kind":"single","badge":14,"count":1,"via":"hidden item, Tourmaline Desert"},
   ],
   watmelberry: [
     {"kind":"regrow","badge":13,"via":"planted in a berry plot"},

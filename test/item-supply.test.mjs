@@ -41,6 +41,11 @@ test('single copies count up until a source restocks the item', () => {
     [[13, 1, 'single'], [15, 3, 'single'], [17, Infinity, 'shop']],
   );
   assert.deepEqual(steps([single(14, 1)]), [[14, 1, 'single']]);
+  // Copies that turn up at one badge are one step.
+  assert.deepEqual(
+    steps([single(3, 1, 'npc'), single(3, 1, 'hidden item'), single(5, 1)]),
+    [[3, 2, 'single'], [5, 3, 'single']],
+  );
   // A wild holder at the single copy's badge restocks from that badge.
   assert.deepEqual(
     steps([single(0, 1), renewable('wild', 0), renewable('shop', 16)]),
