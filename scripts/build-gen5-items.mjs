@@ -10,6 +10,11 @@
  * must not become "56% Ghost Gem"). Successful fetches are cached, since
  * old-gen monthly stats are immutable — so re-runs don't re-hammer Smogon.
  *
+ * Beside the per-Pokémon files it writes index.json, the ids that have
+ * one. Most Pokémon a Gen 7 or Gen 9 game fields have none (a later
+ * generation's, a Mega), and the app reads the index so as never to ask
+ * for a file that is not there.
+ *
  * Network-bound: runs only where smogon.com is reachable (CI).
  */
 
@@ -85,7 +90,7 @@ async function main() {
   await fs.rm(OUT_DIR, { recursive: true, force: true });
   await fs.mkdir(OUT_DIR, { recursive: true });
 
-  let written = 0;
+  const written = [];
   for (const [id, agg] of byPokemon) {
     if (agg.rawCount < MIN_MON_RAW_COUNT) continue;
 
@@ -101,11 +106,13 @@ async function main() {
       JSON.stringify(
         { pokemonId: id, name: agg.name, rawCount: agg.rawCount, items }),
     );
-    written += 1;
+    written.push(id);
   }
+  await fs.writeFile(
+    path.join(OUT_DIR, 'index.json'), JSON.stringify(written.sort()));
 
   console.log(
-    `Wrote Gen 5 item usage for ${written} Pokémon (>= ${MIN_MON_RAW_COUNT} samples).`,
+    `Wrote Gen 5 item usage for ${written.length} Pokémon (>= ${MIN_MON_RAW_COUNT} samples).`,
   );
 }
 

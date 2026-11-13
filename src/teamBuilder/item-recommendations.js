@@ -404,11 +404,23 @@ function applyUnburden(entry, unburden) {
   entry.unburden = true;
 }
 
+// The Pokémon that have Gen 5 item data, as the builder lists them. Most
+// picks of a later game have none (a later generation's, a Mega), and
+// asking anyway costs a request and a console error apiece. No index reads
+// as no data, like any failed fetch here.
+let gen5ItemIds = null;
+function loadGen5ItemIds() {
+  gen5ItemIds ??= fetchJsonCached(dataUrl('gen5-items/index.json'))
+    .then((ids) => new Set(Array.isArray(ids) ? ids : []))
+    .catch(() => new Set());
+  return gen5ItemIds;
+}
+
 async function fetchGen5Items(pokemonId) {
+  const id = toId(pokemonId);
+  if (!(await loadGen5ItemIds()).has(id)) return [];
   try {
-    const data = await fetchJsonCached(
-      dataUrl(`gen5-items/${toId(pokemonId)}.json`),
-    );
+    const data = await fetchJsonCached(dataUrl(`gen5-items/${id}.json`));
     return data?.items || [];
   } catch {
     return [];
