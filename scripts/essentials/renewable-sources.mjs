@@ -1,9 +1,8 @@
 /**
- * @fileoverview Derives Reborn's renewable item sources from its game-file
- * extracts (extract-reborn-item-sources.mjs): the items wild Pokémon hold,
- * the Pickup table, the point counters and planted berries. Pure: the
- * timeline builder feeds it the extracts and the timing, the tests feed it
- * fixtures.
+ * @fileoverview Derives a game's renewable item sources from its game-file
+ * extracts: the items wild Pokémon hold, the Pickup table, the point
+ * counters and planted berries. Pure: the timeline builder feeds it the
+ * extracts and the timing, the tests feed it fixtures.
  */
 
 import { itemId } from './item-id.mjs';

@@ -1,353 +1,43 @@
 /**
- * @fileoverview Generates src/generated/rebornItemTimeline.generated.js:
- * every held item's sources in Pokémon Reborn, each with its kind and the
- * badge count it opens at (src/games/item-sources.js). The sources come
- * from:
- *
- *  1. site-data/data/reborn-item-availability.extracted.json — extracted from
- *     the community "Pokemon Reborn Ep19 Items & Services Guide" spreadsheet
- *     (All Items Locations + Shops + Arcade Lottery tabs), with the sheet's
- *     fight order mapped to badge counts (Corey/Kiki/Saphira award no badge;
- *     post-game tiers collapse to badge 18). Its `items` map keeps each
- *     item's earliest row, a single copy unless the row is the shop or the
- *     mining rocks; its `shopItems` map is the renewable shop stock.
- *  2. The game-file extracts under scripts/reborn (built by
- *     extract-reborn-item-sources.mjs from an install): the items wild
- *     Pokémon hold and the encounter tables they are met in, the Pickup
- *     table, the mining table, the Battle Floor point counter's stock, the
- *     berries the plant script grows, the marts' stock, and the item balls
- *     and hidden items on each map. The files say what a source yields;
- *     when it opens is set here, with its evidence.
- *  3. scripts/reborn/reborn-encounter-badges.json: the badge count at which
- *     each encounter table can first be met, dated from the walkthrough's
- *     area order. A wild holder counts only through a table in the game
- *     files that this file dates: a Pokémon met once in an event, or on a
- *     map the player visits once, restocks nothing. The same dates say when
- *     a map is reached, for the copies placed on it.
- *
- * Mining starts with the Mining Kit (Grand Stairway hiker, badge 3 — right
- * after Shelly). A rock is dug once, and once more with Blast Powder, so
- * mining does not restock: a mined item counts the copies the rocks reached
- * by each badge yield on average, by the mining table's weights. Only the
- * post-game rocks that return when their map reloads restock.
+ * @fileoverview Generates each game's held-item sources
+ * (src/generated/<game>ItemTimeline.generated.js) with the shared builder
+ * (essentials/item-timeline.mjs) from what the game supplies
+ * (<game>/item-timeline.mjs).
  *
  * Rerun: node scripts/build-item-timeline.mjs
  */
 
-import { itemId } from './reborn/item-id.mjs';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { writeFileSync } from 'node:fs';
 
-import { isConsumableItem } from '../src/games/item-use.js';
-import { FULL_SUPPLY } from '../src/games/item-sources.js';
-import { REBORN_PROGRESSION_CHECKPOINTS } from '../src/reborn/badge-timeline.js';
 import {
-  badgeSwitchBadge,
-  conditionBadge,
-  expectedCopySteps,
-  mapReachBadges,
-  martStock,
-  miningDigs,
-  missedShopStock,
-  placedCopies,
-} from './reborn/event-sources.mjs';
-import {
-  pickupSources,
-  plantedBerries,
-  pointCounterStock,
-  wildHeldSources,
-} from './reborn/renewable-sources.mjs';
+  buildItemSources,
+  renderItemSources,
+} from './essentials/item-timeline.mjs';
+import { rebornItemTimeline } from './reborn/item-timeline.mjs';
 
-const MINING_KIT_BADGE = 3;
+const GENERATOR = 'scripts/build-item-timeline.mjs';
 
-// A Pickup holder is catchable from the start: Meowth, in the grass of the
-// Opal Ward the game opens in (reborn-encounters, map 29).
-const PICKUP_HOLDER_BADGE = 0;
+const TIMELINES = [rebornItemTimeline];
 
-// The first berry plots are the soil under the Aventurine Woods' berry
-// trees (maps 282, 283, 289), which the guide dates by those trees' Custap,
-// Sitrus and Lum Berries: badge 7. The other plots are in the restored
-// city.
-const BERRY_PLOT_BADGE = 7;
+for (const timeline of TIMELINES) {
+  const { game, exportName, outFile, header } = timeline();
+  const log = (message) => console.log(`[item-timeline] ${message}`);
+  const built = buildItemSources(
+    game, (message) => console.warn(`[item-timeline] ${message}`));
+  writeFileSync(
+    outFile, renderItemSources(exportName, header, built.sources, GENERATOR));
 
-// The Nightclub's Battle Floor counter (map 827) trades its points without
-// limit. The Nightclub is post-game: the guide dates its Beast Ball gift at
-// badge 18.
-const POINT_COUNTER = { mapId: 827, badge: 18 };
-
-// The badge count from which a map that exists only under a switch can be
-// visited. The city is restored once Fly opens the way back, at badge 13;
-// the three rebuilding projects are funded after that, 14 at the earliest.
-const MAP_SWITCH_BADGES = {
-  'City Restore': 13,
-  'Slums Rebuilt': 14,
-  'Railnet Rebuilt': 14,
-  'Azurine rebuilt': 14,
-};
-
-// The guide's source labels for a copy placed on a map, and what the
-// game-file extract calls the same kind.
-const PLACED_KIND_OF_LABEL = {
-  'Poké Ball': 'item ball',
-  'Hidden': 'hidden item',
-};
-
-// item id -> badge — user-verified SHOP stock kept as a cross-check overlay
-// on the sheet's shopItems map (earliest badge wins). These should always
-// agree with the sheet; a disagreement (warned below) is a signal one of the
-// two is wrong. Badge 1: the Obsidia Department Store berry floor, verified
-// in game.
-const SHOP_STOCK = {
-  oranberry: 1,
-  cheriberry: 1,
-  pechaberry: 1,
-  rawstberry: 1,
-  chestoberry: 1,
-  aspearberry: 1,
-};
-
-// The sheet's source labels for a row that is the shop or the mining rocks
-// themselves, which the renewable sources below already carry.
-const SHOP_LABEL = 'Shop';
-const MINING_LABEL = 'Mining Rock';
-
-// The sheet's label for a placed copy, in the words a copy read from the
-// game files goes by (reborn/event-sources.mjs), so one table speaks of an
-// item ball one way.
-const SHEET_SOURCE_WORDS = {
-  'Poké Ball': 'item ball',
-  Hidden: 'hidden item',
-};
-
-
-const readJson = (file) => JSON.parse(readFileSync(file, 'utf8'));
-const extracted =
-  readJson('site-data/data/reborn-item-availability.extracted.json');
-const pickup =
-  readJson('scripts/reborn/reborn-pickup.generated.json').data;
-const itemEvents =
-  readJson('scripts/reborn/reborn-item-events.generated.json').data;
-const wildItems =
-  readJson('scripts/reborn/reborn-wild-items.generated.json').data;
-const encounters =
-  readJson('scripts/reborn/reborn-encounters.generated.json').data;
-const encounterBadges =
-  readJson('scripts/reborn/reborn-encounter-badges.json').maps;
-const { GEN7_HELD_ITEMS_BY_ID } = await import(
-  '../src/generated/gen7HeldItems.generated.js',
-);
-const { REBORN_EXTRA_INVENTORY_ITEMS } = await import(
-  '../src/reborn/extra-inventory-items.js',
-);
-
-const knownIds = new Set([
-  ...Object.keys(GEN7_HELD_ITEMS_BY_ID),
-  ...REBORN_EXTRA_INVENTORY_ITEMS.map((item) => item.id),
-]);
-
-// Shop stock (renewable: buy as many as needed once the shop is reachable),
-// from the extraction's shopItems map — built from the Shops tab directly,
-// so an item with an earlier one-off pickup keeps its shop row. An entry
-// with `until` would be a stock window that permanently closes; the current
-// sheet has none (every windowed mart row chains into a permanent seller),
-// and a source has no closing badge to express one, so surface it loudly
-// rather than silently promise expired stock forever.
-// A shop row counts only for an item some mart in the game files sells:
-// the sheet files a one-time offer under its shops now and then.
-const sold = martStock(itemEvents);
-const shopBadges = new Map();
-for (const [name, entry] of Object.entries(extracted.shopItems)) {
-  const id = itemId(name);
-  if (!knownIds.has(id)) continue;
-  if (!sold.has(id)) {
-    console.warn(
-      `[item-timeline] sheet shop row for ${name} left out: no mart in the game files sells it`,
-    );
-    continue;
-  }
-  if (entry.until != null) {
-    console.warn(
-      `[item-timeline] WARNING: shop window for ${name} closes at badge ${entry.until}; expiry is unmodeled — item will read as purchasable forever`,
-    );
-  }
-  const current = shopBadges.get(id);
-  if (current == null || entry.badge < current) shopBadges.set(id, entry.badge);
+  const count = (kind) =>
+    [...built.sources.values()].filter((list) =>
+      list.some((source) => source.kind === kind)).length;
+  log(
+    `${exportName}: ${built.sources.size} held items sourced ` +
+    `(of ${game.knownIds.size} known ids): ` +
+    `${count('single')} with a single copy, ${count('shop')} in shops, ` +
+    `${count('mining')} mined, ${count('wild')} wild-held, ` +
+    `${count('pickup')} from Pickup, ${count('regrow')} regrowing`);
+  log(
+    `${built.missedShopItems} items sold in marts a listing's shop table ` +
+    `lacks; ${built.undatedCopies} placed copies and ` +
+    `${built.undatedRocks} mining rocks left out as undated`);
 }
-for (const [id, badge] of Object.entries(SHOP_STOCK)) {
-  if (!knownIds.has(id)) continue;
-  const current = shopBadges.get(id);
-  if (current == null) {
-    console.warn(`[item-timeline] SHOP_STOCK ${id} missing from sheet shopItems`);
-  } else if (current !== badge) {
-    console.warn(`[item-timeline] SHOP_STOCK ${id} badge ${badge} disagrees with sheet ${current}`);
-  }
-  if (current == null || badge < current) shopBadges.set(id, badge);
-}
-
-const reachBadge =
-  mapReachBadges(itemEvents.maps, encounterBadges, MAP_SWITCH_BADGES);
-
-const sources = new Map();
-const add = (id, source) => {
-  if (!knownIds.has(id)) return;
-  sources.set(id, [...(sources.get(id) || []), source]);
-};
-
-// A shop row the shop stock does not carry is a one-time purchase.
-for (const [name, entry] of Object.entries(extracted.items)) {
-  const id = itemId(name);
-  if (entry.source === MINING_LABEL) continue;
-  if (entry.source === SHOP_LABEL && shopBadges.get(id) <= entry.badges) {
-    continue;
-  }
-  add(id, {
-    kind: 'single',
-    badge: entry.badges,
-    count: 1,
-    via: SHEET_SOURCE_WORDS[entry.source] || entry.source.toLowerCase(),
-  });
-}
-for (const [id, badge] of shopBadges) {
-  add(id, { kind: 'shop', badge, via: '' });
-}
-// Stock in the game's marts that the sheet's shop table lacks.
-const missedStock = missedShopStock(
-  itemEvents, (id) => shopBadges.get(id) ?? null, reachBadge);
-for (const [id, { badge, via }] of missedStock) {
-  add(id, { kind: 'shop', badge, via });
-}
-// Mined copies: a dig buries two to four items drawn by weight, so an item
-// averages its share of the weights per item buried. The rocks that return
-// restock everything in the table.
-const miningRules = itemEvents.scriptRules.mining;
-const itemsPerDig =
-  (miningRules.itemsPerGame.min + miningRules.itemsPerGame.max) / 2;
-const miningWeight =
-  miningRules.items.reduce((sum, entry) => sum + entry.weight, 0);
-const rocks = miningDigs(itemEvents, reachBadge, MINING_KIT_BADGE);
-for (const { item, weight } of miningRules.items) {
-  const id = itemId(itemEvents.itemNames[item] || item);
-  const perDig = (itemsPerDig * weight) / miningWeight;
-  for (const step of expectedCopySteps(perDig, rocks.digs, FULL_SUPPLY)) {
-    add(id, {
-      kind: 'mining',
-      badge: step.badge,
-      count: step.count,
-      via: 'mining rocks, on average',
-    });
-  }
-  for (const { badge, mapName } of rocks.comesBack) {
-    add(id, {
-      kind: 'regrow',
-      badge,
-      via: `mining rocks that come back, ${mapName}`,
-    });
-  }
-}
-
-// Further copies of an item a battle does not use up: the item balls and
-// hidden items the game files place, each from the later of its map being
-// reached and its event's own gate. A copy on a map or behind a gate that
-// nothing dates is left out. So is one on a map reached before the sheet's
-// first copy of the item: the sheet lists every location, so that copy is
-// behind something the files do not show. And so is the sheet's own first
-// copy, when it is of the same kind.
-const switchBadge = (name) =>
-  badgeSwitchBadge(name) ?? MAP_SWITCH_BADGES[name] ?? null;
-let undatedCopies = 0;
-for (const [id, copies] of placedCopies(itemEvents)) {
-  if (!knownIds.has(id) || isConsumableItem(id)) continue;
-  const first = extracted.items[
-    Object.keys(extracted.items).find((name) => itemId(name) === id)];
-  const dated = [];
-  for (const copy of copies) {
-    if (copy.mapName === 'REMOVED') continue;
-    const reached = reachBadge(copy.mapId);
-    const gate = conditionBadge(copy.conditions, switchBadge);
-    if (reached == null || gate == null || reached < (first?.badges ?? 0)) {
-      undatedCopies++;
-      continue;
-    }
-    dated.push({
-      kind: copy.kind,
-      badge: Math.max(reached, gate),
-      via: `${copy.kind}, ${copy.mapName}`,
-    });
-  }
-  dated.sort((a, b) => a.badge - b.badge);
-  const sheetCopy = dated.findIndex((copy) =>
-    copy.kind === PLACED_KIND_OF_LABEL[first?.source]);
-  for (const [index, { badge, via }] of dated.entries()) {
-    if (index !== sheetCopy) add(id, { kind: 'single', badge, count: 1, via });
-  }
-}
-// A table counts from the badge it can first be met; one on a map the
-// player visits once is no place to restock.
-const tableBadge = (map, type) => {
-  const dated = encounterBadges[map.mapId];
-  return dated && !dated.oneTime ? dated.types[type] ?? null : null;
-};
-const wildHeld = wildHeldSources(wildItems, encounters, tableBadge);
-for (const [id, { badge, via }] of wildHeld) {
-  add(id, { kind: 'wild', badge, via });
-}
-const pickupItems = pickupSources(
-  pickup, REBORN_PROGRESSION_CHECKPOINTS, PICKUP_HOLDER_BADGE);
-for (const [id, { badge, via }] of pickupItems) {
-  add(id, { kind: 'pickup', badge, via });
-}
-// A counter is a shop that takes points.
-for (const [id, via] of pointCounterStock(itemEvents, POINT_COUNTER.mapId)) {
-  add(id, { kind: 'shop', badge: POINT_COUNTER.badge, via });
-}
-// Last, since a berry is planted from one the sources above supply.
-const firstBadgeOf = (id) => {
-  const list = sources.get(id);
-  return list ? Math.min(...list.map((source) => source.badge)) : null;
-};
-const berries = plantedBerries(itemEvents, firstBadgeOf, BERRY_PLOT_BADGE);
-for (const [id, badge] of berries) {
-  add(id, { kind: 'regrow', badge, via: 'planted in a berry plot' });
-}
-
-const byBadge = (a, b) => a.badge - b.badge || a.kind.localeCompare(b.kind);
-const lines = [...sources.entries()]
-  .sort(([a], [b]) => a.localeCompare(b))
-  .map(([id, list]) => {
-    const entries = [...list].sort(byBadge).map((source) =>
-      `    ${JSON.stringify(source)},`);
-    return `  ${id}: [\n${entries.join('\n')}\n  ],`;
-  });
-
-writeFileSync(
-  'src/generated/rebornItemTimeline.generated.js',
-  `// AUTO-GENERATED by scripts/build-item-timeline.mjs — do not edit by hand.
-// Every held item's sources in Pokemon Reborn, each with its kind and the
-// badge count it opens at (src/games/item-sources.js). ${extracted.provenance}
-// A mined item counts the copies the rocks reached by each badge yield on
-// average, from the Mining Kit (badge ${MINING_KIT_BADGE}) on. Wild holders, Pickup, the Battle
-// Floor point counter and planted berries come from the game-file extracts
-// under scripts/reborn; a wild-held item restocks from the badge its
-// holder's encounter table can first be met.
-export const REBORN_ITEM_SOURCES = {
-${lines.join('\n')}
-};
-`,
-);
-
-const count = (kind) =>
-  [...sources.values()].filter((list) =>
-    list.some((source) => source.kind === kind)).length;
-console.log(
-  `[item-timeline] ${sources.size} held items sourced (of ${knownIds.size} known ids): ` +
-  `${count('single')} with a single copy, ${count('shop')} in shops, ` +
-  `${count('mining')} mined, ${count('wild')} wild-held, ` +
-  `${count('pickup')} from Pickup, ${count('regrow')} planted`,
-);
-const unknown = Object.keys(extracted.items).filter(
-  (name) => !knownIds.has(itemId(name)),
-).length;
-console.log(`[item-timeline] ${unknown} sheet rows outside the held-item catalog (TMs, medicine, etc.) ignored`);
-console.log(
-  `[item-timeline] ${[...missedStock.keys()].filter((id) => knownIds.has(id)).length} items sold in marts the sheet's shop table lacks; ` +
-  `${undatedCopies} placed copies and ${rocks.undated} mining rocks left out as undated`,
-);

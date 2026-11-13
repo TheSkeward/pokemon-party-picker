@@ -1,6 +1,6 @@
-// Reborn's renewable item sources derived from its game-file extracts
-// (scripts/reborn/renewable-sources.mjs): the earliest wild holder of each
-// item, Pickup, the point counters and planted berries.
+// Renewable item sources derived from game-file extracts
+// (scripts/essentials/renewable-sources.mjs), on Reborn's: the earliest
+// wild holder of each item, Pickup, the point counters and planted berries.
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
@@ -10,7 +10,7 @@ import {
   plantedBerries,
   pointCounterStock,
   wildHeldSources,
-} from '../scripts/reborn/renewable-sources.mjs';
+} from '../scripts/essentials/renewable-sources.mjs';
 
 const wildItems = {
   holdChances: { default: { common: 50, uncommon: 5, rare: 1 } },

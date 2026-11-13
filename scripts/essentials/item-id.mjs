@@ -1,6 +1,6 @@
 /**
- * @fileoverview The catalog id of an item named by the game files or the
- * guide.
+ * @fileoverview The catalog id of an item named by a game's files or a
+ * guide to it.
  */
 
 /**

@@ -1,12 +1,11 @@
-// Reborn's item sources derived from its map events
-// (scripts/reborn/event-sources.mjs): the copies placed on the maps, when a
-// map and a gated event can be reached, and the mart stock the guide's shop
-// table lacks.
+// Item sources derived from map events (scripts/essentials/event-sources.mjs),
+// on Reborn's rules and data: the copies placed on the maps, when a map and
+// a gated event can be reached, and the mart stock the guide's shop table
+// lacks.
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import {
-  badgeSwitchBadge,
   conditionBadge,
   expectedCopySteps,
   mapReachBadges,
@@ -14,12 +13,21 @@ import {
   miningDigs,
   missedShopStock,
   placedCopies,
-} from '../scripts/reborn/event-sources.mjs';
-import { itemId } from '../scripts/reborn/item-id.mjs';
+} from '../scripts/essentials/event-sources.mjs';
+import { itemId } from '../scripts/essentials/item-id.mjs';
+import {
+  REBORN_EVENT_DATING,
+  rebornBadgeSwitchBadge,
+} from '../scripts/reborn/event-dating.mjs';
 import { getItemSources, getItemSupply } from '../src/games/items.js';
 
 test('an event is dated by its badge switches and episode variables', () => {
-  const badge = (conditions) => conditionBadge(conditions, badgeSwitchBadge);
+  // Badge switches only, so a map's own switch does not date these.
+  const dating = {
+    ...REBORN_EVENT_DATING,
+    switchBadge: rebornBadgeSwitchBadge,
+  };
+  const badge = (conditions) => conditionBadge(conditions, dating);
   assert.equal(badge([]), 0);
   assert.equal(badge([{ switch: 139, name: 'Fifth Badge' }]), 5);
   // The latest of several, and an episode variable counts from its

@@ -1,10 +1,20 @@
 /**
- * @fileoverview Derives item sources from Reborn's map events (the
- * item-events extract of extract-reborn-item-sources.mjs): the copies of an
- * item placed on the maps, each dated by its map and what gates its event,
- * and the shop stock the guide's shop table lacks. Pure: the timeline
- * builder feeds it the extracts, the tests feed it fixtures.
+ * @fileoverview Derives item sources from a game's map events (its
+ * item-events extract): the copies of an item placed on the maps, each
+ * dated by its map and what gates its event, and the shop stock a guide's
+ * shop table lacks. Pure: the timeline builder feeds it the extracts, the
+ * tests feed it fixtures.
  */
+
+/**
+ * How a game's event conditions are dated. `switchBadge` takes a switch
+ * name and `variableBadge` a variable name and the least value asked of
+ * it; each returns the badge count the condition implies, or null for one
+ * that is no measure of progress (a quest switch, a counter).
+ * @typedef {{switchBadge: function(string): ?number,
+ *     variableBadge: function(string, number): ?number}}
+ */
+let EventDating;
 
 import { itemId } from './item-id.mjs';
 
@@ -25,55 +35,13 @@ const PLACED_KIND_WORDS = {
 // live.
 const ONCE = new Set(['once', 'resetByEvent']);
 
-/**
- * The switches that mean a badge is held, by switch name, and the badge.
- * "Third Gym" and "Sixth Gym" may turn on as the gym is entered, so they
- * bound the badge before.
- * @const {!Object<string, number>}
- */
-const BADGE_SWITCHES = {
-  'First Badge': 1,
-  'Second Badge': 2,
-  'Third Gym': 2,
-  'Third Gym Done': 3,
-  'Fourth Gym Done': 4,
-  'Fifth Badge': 5,
-  'Sixth Gym': 5,
-  'Seventh Badge': 7,
-  'Eighth Badge': 8,
-  'Ninth Badge': 9,
-  'Tenth Badge': 10,
-  '11th Badge': 11,
-  '12th badge': 12,
-  '13th Badge': 13,
-  '14th Badge': 14,
-  '15th badge': 15,
-  '16th Badge': 16,
-  '17th Badge': 17,
-  '18th Badge': 18,
-  '19th Badge': 18,
-  '20th Badge': 18,
-};
-
-/**
- * Badges held as each episode's story variable starts counting. The
- * nineteen episodes are the eighteen badge fights plus Corey's (3) and
- * Kiki's (6), with Titania and Amaria sharing episode 17; the badge-award
- * events' own episode variables agree (badge 5 in E7, 7 in E9, 10 in E12,
- * 13 in E15, 14 in E16, 16 in E17, 18 in E19).
- * @const {!Array<number>} Indexed by episode number.
- */
-const EPISODE_START_BADGES = [
-  0, 0, 1, 2, 2, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17,
-];
-
 // The branch type that tests which way a character faces: no gate.
 const FACING_CONDITION = 6;
 
 // The badge one condition implies: 0 for one that gates nothing in time (a
 // confirmation, a price, a negation, a facing test, a counter at zero),
 // null for one this cannot date.
-function badgeOfCondition(condition, switchBadge) {
+function badgeOfCondition(condition, dating) {
   if (
     condition.choice != null || condition.money != null ||
     condition.not != null || condition.selfSwitch != null ||
@@ -81,15 +49,14 @@ function badgeOfCondition(condition, switchBadge) {
   ) {
     return 0;
   }
-  if (condition.switch != null) return switchBadge(condition.name);
+  if (condition.switch != null) return dating.switchBadge(condition.name);
   if (condition.variable != null) {
     const floor = condition.atLeast ?? condition.value;
     const lowerBound = condition.atLeast != null ||
       ['>=', '>', '=='].includes(condition.op);
     if (!lowerBound || typeof floor !== 'number') return null;
     if (floor <= 0 && condition.atLeast != null) return 0;
-    const episode = /^E(\d+) Story/.exec(condition.name || '');
-    return episode ? EPISODE_START_BADGES[Number(episode[1])] ?? null : null;
+    return dating.variableBadge(condition.name || '', floor);
   }
   return null;
 }
@@ -97,29 +64,21 @@ function badgeOfCondition(condition, switchBadge) {
 /**
  * @param {!Array<!Object>} conditions Page conditions and enclosing
  *     branches of a give, as the extract records them.
- * @param {function(string): ?number} switchBadge Switch name -> the badge
- *     count it implies; null for a switch that dates nothing.
+ * @param {!EventDating} dating The game's rules for dating a switch or
+ *     a variable.
  * @return {?number} The least badge count at which every condition can
- *     hold: the latest badge switch or episode among them. Null when a
- *     condition gates the give by something that is no badge or episode (a
- *     quest switch, an item check), since nothing then dates it.
+ *     hold: the latest among them. Null when a condition gates the give by
+ *     something the game's rules do not date (a quest switch, an item
+ *     check), since nothing then dates it.
  */
-export function conditionBadge(conditions, switchBadge) {
+export function conditionBadge(conditions, dating) {
   let badge = 0;
   for (const condition of conditions) {
-    const implied = badgeOfCondition(condition, switchBadge);
+    const implied = badgeOfCondition(condition, dating);
     if (implied == null) return null;
     badge = Math.max(badge, implied);
   }
   return badge;
-}
-
-/**
- * @param {string} name A switch name.
- * @return {?number} The badge a badge switch implies.
- */
-export function badgeSwitchBadge(name) {
-  return BADGE_SWITCHES[name] ?? null;
 }
 
 /**
@@ -205,8 +164,7 @@ export function missedShopStock(itemEvents, shopBadgeOf, reachBadgeOf) {
  *     mapSwitches: (!Array<{name: string, is: boolean}>|undefined)}>} maps
  *     The map tree, and the switches a map exists under.
  * @param {!Object<string, {types: !Object<string, ?number>}>}
- *     encounterBadges The dated encounter tables
- *     (reborn-encounter-badges.json).
+ *     encounterBadges The game's dated encounter tables.
  * @param {!Object<string, number>} mapSwitchBadges Map switch name -> the
  *     badge count from which it can be on.
  * @return {function(number): ?number} Map id -> its badge count: the

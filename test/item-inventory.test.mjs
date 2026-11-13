@@ -143,7 +143,7 @@ test('the inventory panel offers the sync and the removal', () => {
 test('badge-1 shop stock includes the user-verified Obsidia berry floor', () => {
   // Verified against in-game screenshots: after Badge 1 the Department
   // Store berry shop sells the six heal/status berries alongside Persim +
-  // the EV berries. The SHOP_STOCK overlay in build-item-timeline.mjs is
+  // the EV berries. The verified shop stock in reborn/item-timeline.mjs is
   // an agreement check on these user-verified rows.
   const VERIFIED_BADGE_1_BERRIES = [
     'oranberry', 'cheriberry', 'pechaberry', 'rawstberry', 'chestoberry',
