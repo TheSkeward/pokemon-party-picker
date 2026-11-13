@@ -9,6 +9,7 @@ import {
   familyForms,
 } from './breeding.js';
 import { getReachableSpecies } from './current-species.js';
+import { ownedEvolutionItems } from './evolution-requirements.js';
 import {
   getAvailableMoves,
   getMoveSourcePriority,
@@ -79,7 +80,9 @@ function transferMemoKey({
   if (sketchContext || preferredPartnerIds || preferredMoveIdsByPartnerId) {
     return null;
   }
-  // Both builders read the pool text only for the species it resolves to.
+  // Both builders read the pool text only for the species it resolves to,
+  // and the owned items only for the ones an evolution spends: a held item
+  // added to the bag must not rebuild what the whole donor box can pass on.
   const ownedIds = buildInputGroups(query, pokemonIndex)
     .filter((group) => !group.unresolved && group.input?.id)
     .map((group) => group.input.id);
@@ -87,7 +90,10 @@ function transferMemoKey({
     getActiveGame().id,
     retainRoutes ? 'routes' : 'plain',
     ownedIds.join(','),
-    stableStringify(progression),
+    stableStringify({
+      ...progression,
+      ownedItems: ownedEvolutionItems(progression),
+    }),
   ].join('|'));
 }
 

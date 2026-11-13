@@ -156,3 +156,45 @@ test('re-sorting the team moves the set cards without rebuilding the analysis', 
     );
   }
 });
+
+test('an edit to a held item the analysis never read keeps the analysis', async () => {
+  const pool = ['Patrat', 'Purrloin', 'Stunky'];
+  const progression = {
+    checkpoint: 'badge-1',
+    levelCap: '25',
+    moveRelearnerUnlocked: false,
+    daycareUnlocked: true,
+    availableTmIds: ['tm57'],
+    availableTmxIds: [],
+    availableTutorMoveIds: [],
+    ownedItems: { pokeball: 6, aspearberry: 6 },
+  };
+  const { team } = await runPool({ pool, progression });
+  const root = {
+    innerHTML: '',
+    isConnected: true,
+    querySelectorAll: () => [],
+  };
+  // Renders with the given bag; says whether the panel fell back to its
+  // placeholder, which it does only to rebuild the analysis.
+  const rebuilds = async (ownedItems) => {
+    const settled = renderTeamAnalysisPanel(root, {
+      family: 'singles',
+      poolQuery: pool.join('\n'),
+      progression: { ...progression, ownedItems },
+      itemAssignments: {},
+      team,
+    });
+    const rebuilt = root.innerHTML.includes('Checking defensive profile');
+    await settled;
+    assert.match(root.innerHTML, /team-set-card/);
+    return rebuilt;
+  };
+
+  assert.equal(await rebuilds(progression.ownedItems), true);
+  // No set here holds an Aspear Berry and no evolution spends one.
+  assert.equal(await rebuilds({ pokeball: 6 }), false);
+  assert.equal(await rebuilds({ pokeball: 6, redcard: 6 }), false);
+  // A Fire Stone is an evolution item: it can change what a pool becomes.
+  assert.equal(await rebuilds({ pokeball: 6, firestone: 1 }), true);
+});

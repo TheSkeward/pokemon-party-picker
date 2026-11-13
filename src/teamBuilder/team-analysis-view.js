@@ -18,6 +18,7 @@ import {
 } from './team-analysis';
 import { STAT_KEYS } from '../utils/stats.js';
 import { getActiveGame } from '../games/registry.js';
+import { trackReads } from '../utils/track-reads.js';
 
 // The page re-renders several times per optimize (result render, analysis-
 // pending render, confidence render, investment render) with IDENTICAL panel
@@ -27,8 +28,20 @@ import { getActiveGame } from '../games/registry.js';
 // flashing back to its "Checking..." placeholder on every re-render. The
 // order the picks are shown in is not an input: the analysis is built for
 // the picks in signature order, so re-sorting the team table repaints the
-// cards from the memo instead of rebuilding it.
+// cards from the memo instead of rebuilding it. Of the owned items the
+// build reads only a few (a set's item, an evolution's, a field
+// extender's), so they are left out of the key and the memo records which
+// ones it read: an edit to any other item keeps it.
 let analysisMemo = { key: null, promise: null };
+
+// Whether the memo answers for these inputs: the same key, and owned items
+// that differ only where the build never looked. A build still running has
+// not finished looking.
+function memoHolds(key, ownedItems) {
+  if (analysisMemo.key !== key) return false;
+  if (analysisMemo.ownedItems === ownedItems) return true;
+  return analysisMemo.settled && analysisMemo.itemReads.agreesWith(ownedItems);
+}
 
 /**
  * What the analysis reads of one pick. A progression edit first renders the
@@ -82,10 +95,11 @@ export function renderTeamAnalysisPanel(root, {
   const analysed = signed.map((entry) => entry.member);
   const cardOrder = team.map((member) => analysed.indexOf(member));
 
+  const { ownedItems = {}, ...rules } = progression || {};
   const memoKey = JSON.stringify([
     signed.map((entry) => entry.signature),
     itemAssignments || null,
-    progression || null,
+    rules,
     family || '',
     poolQuery,
     // The bench fix suggestions read the pool lines; a render without them
@@ -93,11 +107,17 @@ export function renderTeamAnalysisPanel(root, {
     lines.map((line) => (line.best || line.bestNonMega)?.inputPokemonId || ''),
   ]);
 
-  if (analysisMemo.key !== memoKey) {
+  if (!memoHolds(memoKey, ownedItems)) {
+    const itemReads = trackReads(ownedItems);
     const memo = {
       key: memoKey,
+      ownedItems,
+      itemReads,
       settled: false,
-      promise: buildTeamAnalysis(analysed, progression, {
+      promise: buildTeamAnalysis(analysed, {
+        ...progression,
+        ownedItems: itemReads.record,
+      }, {
         family,
         itemAssignments,
         lines,

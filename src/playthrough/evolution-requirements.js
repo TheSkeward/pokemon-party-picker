@@ -140,6 +140,43 @@ export function spentEvolutionItems(fieldedId, inputId) {
   return spent;
 }
 
+// The id of every item an evolution spends, per game, keyed by its species
+// table.
+const EVOLUTION_ITEM_IDS = new WeakMap();
+
+function evolutionItemIds() {
+  const species = dex().progressionSpecies;
+  let ids = EVOLUTION_ITEM_IDS.get(species);
+  if (!ids) {
+    ids = new Set();
+    for (const [id, entry] of Object.entries(species)) {
+      if (!entry.prevoId) continue;
+      for (const item of spentEvolutionItems(id, entry.prevoId)) {
+        ids.add(item.id);
+      }
+    }
+    EVOLUTION_ITEM_IDS.set(species, ids);
+  }
+  return ids;
+}
+
+/**
+ * The owned items an evolution can spend, with their counts. They are the
+ * only owned items that change what a Pokémon can become, learn or pass on,
+ * so a result keyed on the progression needs no others: a Berry in the bag
+ * moves no evolution.
+ * @param {?Object} access The progression.
+ * @return {!Object<string, number>}
+ */
+export function ownedEvolutionItems(access) {
+  const owned = {};
+  for (const id of evolutionItemIds()) {
+    const count = access?.ownedItems?.[id] || 0;
+    if (count > 0) owned[id] = count;
+  }
+  return owned;
+}
+
 /**
  * Every item some evolution above one of the given species spends: the
  * items whose ownership can change what those lines reach. An evolution

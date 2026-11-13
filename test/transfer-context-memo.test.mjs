@@ -1,7 +1,8 @@
 // The breeding and Sketch contexts are the slowest thing a run builds, and
 // every step of one run asks for the same pair. They are shared by input, so
-// a change that cannot alter them (a roster lock) must reuse them, and a
-// change that can (the progression, the owned species, kept routes) must not.
+// a change that cannot alter them (a roster lock, a held item in the bag)
+// must reuse them, and a change that can (the progression, the owned
+// species, kept routes, an evolution item) must not.
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
@@ -41,6 +42,26 @@ test('a roster lock reuses the move-transfer contexts', async () => {
   assert.notEqual(locked, pool);
   assert.equal(await build(locked), contexts);
   assert.equal(await build(pool), contexts);
+});
+
+test('a held item in the bag reuses the contexts; an evolution item does not', async () => {
+  const build = (ownedItems) => buildMoveTransferContexts({
+    pokemonIndex,
+    progression: { ...progression, ownedItems },
+    query: withDonors(pool, donors),
+  });
+
+  const contexts = await build({ aspearberry: 6, leftovers: 1 });
+  // No evolution spends a Berry or Leftovers: neither can change what the
+  // pool becomes or passes on.
+  assert.equal(await build({ leftovers: 1 }), contexts);
+  assert.equal(await build({}), contexts);
+  // A Water Stone evolves the pool's Eevee, and a second one a second
+  // candidate.
+  const withStone = await build({ waterstone: 1 });
+  assert.notEqual(withStone, contexts);
+  assert.notEqual(await build({ waterstone: 2 }), withStone);
+  assert.equal(await build({ waterstone: 1, aspearberry: 6 }), withStone);
 });
 
 test('whatever the move-transfer contexts read gets its own pair', async () => {
