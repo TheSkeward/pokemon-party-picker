@@ -14,7 +14,10 @@ import { readFileSync } from 'node:fs';
 
 import { GEN9_HELD_ITEMS_BY_ID } from '../../src/generated/gen9HeldItems.generated.js';
 import { REJUV_PROGRESSION_CHECKPOINTS } from '../../src/rejuv/badge-timeline.js';
-import { REJUV_EXTRA_INVENTORY_ITEMS } from '../../src/rejuv/items.js';
+import {
+  REJUV_EVOLUTION_ITEM_AVAILABILITY,
+  REJUV_EXTRA_INVENTORY_ITEMS,
+} from '../../src/rejuv/items.js';
 import { mapReachBadges } from '../essentials/event-sources.mjs';
 import {
   REJUV_EVENT_DATING,
@@ -52,9 +55,12 @@ export function rejuvItemTimeline() {
     itemEvents.maps, encounterBadges, REJUV_MAP_SWITCH_BADGES)(COIN_SHOP_MAP);
   return {
     game: {
+      // The held-item catalog, and the evolution items the game hands
+      // out that the catalog lacks (Black Augurite).
       knownIds: new Set([
         ...Object.keys(GEN9_HELD_ITEMS_BY_ID),
         ...REJUV_EXTRA_INVENTORY_ITEMS.map((item) => item.id),
+        ...Object.keys(REJUV_EVOLUTION_ITEM_AVAILABILITY),
       ]),
       extracts: {
         itemEvents,

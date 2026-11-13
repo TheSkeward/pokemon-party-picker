@@ -114,6 +114,10 @@ test('the files alone source shops, holders by form and rocks that return', () =
     kind: 'regrow', badge: 12,
     via: 'mining rocks that come back, Zorrialyn Desert',
   });
+  // An evolution item outside the held-item catalog is sourced too.
+  assert.deepEqual(sources.get('blackaugurite')[0], {
+    kind: 'single', badge: 9, count: 1, via: 'item ball, Decompression Lab',
+  });
   const all = [...sources.values()].flat();
   // Nothing is mined before the Mining Kit is won at Blacksteeple.
   assert.equal(
