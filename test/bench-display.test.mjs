@@ -80,6 +80,12 @@ test('bench deduplicates routes and renders the unscored tail unnumbered', () =>
   assert.doesNotMatch(html, /Swanna \(Ducklett\)/);
   assert.match(html, />Lurantis <em>4\.0%<\/em>/);
   assert.match(html, /outside the 126-line scored working set/);
+  // A tier is the name of the group of chips after it, for a screen
+  // reader as for the eye: the label alone read as the end of the group
+  // before.
+  assert.match(
+    html,
+    /role="group" aria-label="PU 1500"><span class="bench-tier" aria-hidden="true">PU 1500:</);
 });
 
 test('a kept entry wears the mark and nothing on the bench is flagged worst', () => {

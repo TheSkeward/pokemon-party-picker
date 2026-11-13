@@ -481,8 +481,7 @@ function renderResult({
           <thead>
             <tr>
               <th>#</th>
-              ${renderSortHeader('current', 'Current', state)}
-              ${renderSortHeader('name', 'Eventual', state)}
+              ${renderSortHeader('current', 'Pick', state)}
               ${renderSortHeader('tier', 'Usage', state)}
               ${renderSortHeader('lead', 'Lead %', state)}
               ${renderSortHeader('score', 'Score', state)}
@@ -563,8 +562,8 @@ function renderPostAnalysisSkippedSection(state) {
     return `
       <section class="panel">
         <h2>Stability and investment</h2>
-        <p class="muted">Recommendation stability and the level-cap investment projection weren't recomputed for this background refresh (they cost a couple of extra optimizer runs). They restore automatically when a saved copy exists.</p>
-        <p><button id="compute-post-analysis-button" type="button">Compute stability &amp; investment now</button></p>
+        <p class="muted">Stability shows how often each pick keeps its seat when the scoring's settings are varied; investment shows which Pokémon are worth training for the next level caps. Each takes a further optimizer run, so they are computed when you click Optimize, not when the page loads or re-optimizes by itself.</p>
+        <p><button id="compute-post-analysis-button" type="button">Compute stability and investment</button></p>
       </section>
     `;
   }
@@ -653,8 +652,22 @@ function renderExplanationsSection(state) {
 
   // Summary lines carry the headline facts (role, seat robustness) so the
   // collapsed list already says something; the details hold the full audit.
-  const seated = result.team
+  // The picks come in the table's order under the table's names: the form
+  // fielded, then the pool entry it comes from.
+  const seated = getSortedTeam(
+    result.team,
+    state.teamSort,
+    state.teamSortDir,
+    state.progression,
+    lineUsageByInputId(result.lines),
+  )
     .map((choice) => {
+      const fielded =
+        getCurrentSpeciesForChoice(choice, state.progression)?.name ||
+        choice.name;
+      const origin = choice.inputName && choice.inputName !== fielded
+        ? ` — from ${escapeHtml(choice.inputName)}`
+        : '';
       const confidenceEntry = confidenceByInput.get(choice.inputPokemonId);
       const lines = explainSeatedChoice(choice, result.team, confidenceEntry);
       const headline = [
@@ -667,7 +680,7 @@ function renderExplanationsSection(state) {
         .join(' · ');
       return `
         <details>
-          <summary><strong>${escapeHtml(choice.inputName)}</strong> — ${escapeHtml(choice.legalityProfile?.currentName || choice.name)}${headline ? ` · ${escapeHtml(headline)}` : ''}</summary>
+          <summary><strong>${escapeHtml(fielded)}</strong>${origin}${headline ? ` · ${escapeHtml(headline)}` : ''}</summary>
           <ul>${lines.map((line) => `<li>${escapeHtml(line)}</li>`).join('')}</ul>
         </details>
       `;
@@ -1149,7 +1162,10 @@ export function renderBenchLine(result, keptNames = new Set()) {
         group.games != null
           ? ` title="Below the meaningful-usage bar (50% chance of being seen within 25 games ≈ 2.7%) in every tier. Best trace signal: ~${truncatePercent(group.maxTraceValue)} here — 50% chance of being seen within ${group.games} games."`
           : '';
-      return `<span class="bench-group"><span class="bench-tier"${tierTitle}>${escapeHtml(label)}</span><span class="bench-chips">${chips}</span></span>`;
+      // A tier names the chips after it, to the next tier: said to a
+      // screen reader by the group, and to the eye by the colon and the
+      // rule between groups.
+      return `<span class="bench-group" role="group" aria-label="${escapeAttr(label)}"><span class="bench-tier" aria-hidden="true"${tierTitle}>${escapeHtml(label)}:</span><span class="bench-chips">${chips}</span></span>`;
     })
     .join('');
 
@@ -1250,10 +1266,21 @@ function renderTeamRow({
     row.inputPokemonId,
     currentSpecies?.id,
   );
-  // "Eventual" only when the representative genuinely lies AHEAD of the
-  // current form. A representative that is a PRE-evolution (a Noivern pick
-  // whose usage bundle is Noibat's) is the pick's past, not its future.
+  // What the pick becomes is named only when the representative genuinely
+  // lies AHEAD of the current form. A representative that is a
+  // PRE-evolution (a Noivern pick whose usage bundle is Noibat's) is the
+  // pick's past, not its future.
   const eventualDiffers = Boolean(currentSpecies?.representativeIsFuture);
+  // Under the name, as the set card says it: where the pick comes from and
+  // what it will be. A column of its own was a dash on most rows.
+  const pathNote = [
+    row.inputName && row.inputName !== currentName
+      ? `from ${row.inputName}${evolutionNote}`
+      : null,
+    eventualDiffers
+      ? `→ ${row.name} later${row.isMega ? ' (Mega slot)' : ''}`
+      : null,
+  ].filter(Boolean).join(' · ');
   const note = progressionStale
     ? 'Progression changed; re-optimize for current scores and legal move notes.'
     : row.note || '';
@@ -1270,21 +1297,10 @@ function renderTeamRow({
       <td>${index + 1}</td>
       <td>
         <button type="button" class="row-link" aria-pressed="${selected}"><strong>${escapeHtml(currentName)}</strong></button>
-        <button type="button" class="set-card-jump" data-jump-set-card="${escapeAttr(currentSpecies?.id || row.pokemonId)}" title="Jump to this pick's recommended set below">moves ↓</button>
-        <button type="button" class="set-card-jump" data-lock-toggle="${escapeAttr(row.inputName || '')}" data-lock-state="${row.locked ? 'locked' : 'free'}" title="${row.locked ? 'Unlock this pick so the optimizer may reconsider its slot' : 'Lock this pick into the team and re-optimize the other slots'}">${row.locked ? 'unlock' : 'lock'}</button>
-        ${
-          row.inputName && row.inputName !== currentName
-            ? `<div class="representative-note">from ${escapeHtml(row.inputName)}${escapeHtml(evolutionNote)}</div>`
-            : ''
-        }
+        <button type="button" class="set-card-jump" data-jump-set-card="${escapeAttr(currentSpecies?.id || row.pokemonId)}" aria-label="${escapeAttr(`${currentName}'s moves`)}" title="Jump to this pick's recommended set below">moves ↓</button>
+        <button type="button" class="set-card-jump" data-lock-toggle="${escapeAttr(row.inputName || '')}" data-lock-state="${row.locked ? 'locked' : 'free'}" aria-label="${escapeAttr(`${row.locked ? 'Unlock' : 'Lock'} ${currentName}`)}" title="${row.locked ? 'Unlock this pick so the optimizer may reconsider its slot' : 'Lock this pick into the team and re-optimize the other slots'}">${row.locked ? 'unlock' : 'lock'}</button>
+        ${pathNote ? `<div class="representative-note">${escapeHtml(pathNote)}</div>` : ''}
         ${renderItemRec(recommendedItem)}
-      </td>
-      <td data-current-species-note>
-        ${
-          eventualDiffers
-            ? `<strong>${escapeHtml(row.name)}</strong>${row.isMega ? `<div class="representative-note">Mega slot</div>` : ''}`
-            : `<span class="muted">—</span>`
-        }
       </td>
       <td>${renderMeaningfulUsage(row, formatsIndex, lineUsage)}</td>
       <td>${formatPercent(row.bundle?.leads?.value)}</td>
@@ -1294,7 +1310,7 @@ function renderTeamRow({
 
     ${
       selected
-        ? `<tr class="team-builder-set-row"><td colspan="7"><div id="team-builder-set-details-root"></div></td></tr>`
+        ? `<tr class="team-builder-set-row"><td colspan="6"><div id="team-builder-set-details-root"></div></td></tr>`
         : ''
     }
   `;
@@ -1398,6 +1414,20 @@ function getSelectedTeamChoice({ setDetails, state }) {
  * @param {string=} sortDir "asc" or "desc".
  * @return {!Array<!Object>} A sorted copy; the input team is not mutated.
  */
+/**
+ * The columns the team table sorts by; the first is the default, and the
+ * only one a name-less saved sort falls back to.
+ */
+export const TEAM_SORTS = Object.freeze(['score', 'current', 'tier', 'lead']);
+
+/**
+ * @param {?string} value A saved or linked sort column.
+ * @return {string} That column when the table still has it, else the
+ *     default.
+ */
+export const teamSortOf = (value) =>
+  (TEAM_SORTS.includes(value) ? value : TEAM_SORTS[0]);
+
 export function getSortedTeam(
   team,
   sortBy,
@@ -1420,8 +1450,6 @@ export function getSortedTeam(
 
     if (sortBy === 'lead') {
       primary = compareNumber(a.bundle?.leads?.value, b.bundle?.leads?.value);
-    } else if (sortBy === 'usage') {
-      primary = compareNumber(a.bundle?.usage?.value, b.bundle?.usage?.value);
     } else if (sortBy === 'tier') {
       // "Descending" = best tier first (lowest tierRank), then highest usage
       // within the tier — AG 1760 1.14%, AG 1760 1.12%, PU 1500 1.58%, ...
@@ -1450,12 +1478,10 @@ export function getSortedTeam(
         compareNumber(traceGamesOf(b), traceGamesOf(a)) ||
         compareNumber(traceRankOf(b), traceRankOf(a)) ||
         compareNumber(traceValueOf(a), traceValueOf(b));
-    } else if (sortBy === 'score') {
-      primary = compareNumber(a.score, b.score);
-    } else if (sortBy === 'current' || sortBy === 'input') {
+    } else if (sortBy === 'current') {
       primary = currentName(a).localeCompare(currentName(b));
     } else {
-      primary = a.name.localeCompare(b.name);
+      primary = compareNumber(a.score, b.score);
     }
 
     if (primary !== 0) return primary * direction;

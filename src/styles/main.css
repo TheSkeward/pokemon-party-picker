@@ -883,12 +883,17 @@ html {
 }
 
 /* A tier group hangs its label in the left margin of its chips, so a tier is
-   found by scanning the left edge rather than reading through the line; the
-   label and the wide gap between groups are the only separators. */
+   found by scanning the left edge rather than reading through the line. A
+   rule parts one group from the next: with one chip to a tier, the gap
+   alone left each label looking like the end of the group before it. */
 .bench-group {
   display: inline-flex;
   align-items: baseline;
   gap: var(--space-2);
+}
+.bench-group + .bench-group {
+  border-left: 1px solid var(--hairline);
+  padding-left: var(--space-4);
 }
 
 .bench-chips {
@@ -2105,17 +2110,18 @@ html {
 }
 
 /* Team-builder results table: column-specific rules on top of the shared
-   dex-table idiom (alignment, muted rank/notes, striped picks). */
-.team-results-panel .usage-table td:nth-child(4) {
+   dex-table idiom (alignment, muted rank/notes, striped picks). The
+   columns are rank, pick, usage, lead, score, notes. */
+.team-results-panel .usage-table td:nth-child(3) {
   white-space: nowrap;
 }
 
 .team-results-panel .usage-table th:nth-child(1),
 .team-results-panel .usage-table td:nth-child(1),
+.team-results-panel .usage-table th:nth-child(4),
+.team-results-panel .usage-table td:nth-child(4),
 .team-results-panel .usage-table th:nth-child(5),
-.team-results-panel .usage-table td:nth-child(5),
-.team-results-panel .usage-table th:nth-child(6),
-.team-results-panel .usage-table td:nth-child(6) {
+.team-results-panel .usage-table td:nth-child(5) {
   text-align: right;
 }
 
@@ -2123,7 +2129,7 @@ html {
   color: var(--text-muted);
 }
 
-.team-results-panel .usage-table td:nth-child(7) {
+.team-results-panel .usage-table td:nth-child(6) {
   color: var(--text-muted);
   font-size: var(--type-s);
 }

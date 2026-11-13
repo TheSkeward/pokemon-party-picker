@@ -12,6 +12,7 @@ import {
   currentRailSection,
   donorBoxLabel,
   renderTeamBuilderPage,
+  teamSortOf,
 } from './teamBuilder/team-builder-view';
 import { createTeamBuilderSetDetailsLoader } from './teamBuilder/set-details-loader';
 import {
@@ -126,7 +127,7 @@ export function mountPoolOptimizer(container, options = {}) {
     progression: loadSavedProgression(),
     // Default sort is the score the seats were actually chosen by — Lead % is
     // a ladder stat, informative but not the seating order.
-    teamSort: getParam('teamSort') || loadSavedTeamSort() || 'score',
+    teamSort: teamSortOf(getParam('teamSort') || loadSavedTeamSort()),
     teamSortDir: getParam('teamSortDir') || loadSavedTeamSortDir() || 'desc',
     result: null,
     resultProgressionKey: '',
@@ -747,8 +748,8 @@ export function mountPoolOptimizer(container, options = {}) {
           state.teamSortDir = state.teamSortDir === 'asc' ? 'desc' : 'asc';
         } else {
           state.teamSort = nextSort;
-          state.teamSortDir =
-            nextSort === 'name' || nextSort === 'input' ? 'asc' : 'desc';
+          // Names read A to Z first; figures, best first.
+          state.teamSortDir = nextSort === 'current' ? 'asc' : 'desc';
         }
 
         saveTeamSort(state.teamSort);
@@ -1680,18 +1681,6 @@ export function mountPoolOptimizer(container, options = {}) {
         : row?.note || '';
     });
 
-    app.querySelectorAll('[data-team-pokemon-id]').forEach((rowNode) => {
-      const row = getTeamChoiceForRow(rowNode);
-      const noteNode = rowNode.querySelector('[data-current-species-note]');
-      if (!row || !noteNode) return;
-
-      const currentSpecies =
-        getCurrentSpeciesForChoice(row, state.progression);
-      const showCurrent = Boolean(currentSpecies?.differsFromRepresentative);
-
-      noteNode.hidden = !showCurrent;
-      noteNode.textContent = showCurrent ? `Current: ${currentSpecies.name}` : '';
-    });
   }
 
   function getSelectedTeamChoice() {

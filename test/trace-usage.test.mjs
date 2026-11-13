@@ -10,9 +10,25 @@ import {
 } from '../src/teamBuilder/trace-usage.js';
 
 globalThis.__ENV__ ??= { BASE_URL: '/' };
-const { getSortedTeam } = await import(
+const { getSortedTeam, teamSortOf } = await import(
   '../src/teamBuilder/team-builder-view.js',
 );
+
+test('a sort the team table no longer has falls back to score', () => {
+  // "name" sorted the Eventual column, which is now a note under the pick.
+  assert.equal(teamSortOf('name'), 'score');
+  assert.equal(teamSortOf(''), 'score');
+  assert.equal(teamSortOf('lead'), 'lead');
+  const team = [
+    { name: 'Alakazam', score: 1 }, { name: 'Zubat', score: 9 },
+  ];
+  assert.deepEqual(
+    getSortedTeam(team, 'name', 'desc').map((row) => row.name),
+    ['Zubat', 'Alakazam']);
+  assert.deepEqual(
+    getSortedTeam(team, 'current', 'asc').map((row) => row.name),
+    ['Alakazam', 'Zubat']);
+});
 
 test('gamesToLikelySee inverts the 50%-seen bar and steps by 5', () => {
   // Exact horizons: ln(0.5)/ln(1−v). 2.5% → 27.4 → 30; 2.0% → 34.3 → 35;
