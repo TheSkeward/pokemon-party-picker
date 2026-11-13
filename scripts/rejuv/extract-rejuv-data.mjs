@@ -10,7 +10,7 @@
  * dropped: the consumers of these extracts build and rank teams, they never
  * simulate fights.
  */
-import { RubyObject, RubySymbol } from '../reborn/parse-marshal.mjs';
+import { RubyObject, RubySymbol } from '../essentials/parse-marshal.mjs';
 
 /**
  * Encounter-table slot order and per-slot rates, from Scripts/Encounters.rb

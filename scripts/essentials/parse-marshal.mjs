@@ -1,8 +1,9 @@
 /**
  * @fileoverview A minimal Ruby Marshal (version 4.8) reader — just the subset
- * needed to read Reborn's compiled `mons.dat` (a MonDataHash of species →
- * MonWrapper → MonData). Maintains the symbol table and object link table
- * that Marshal uses for back-references (`;` symlinks and `@` object links).
+ * needed to read the engine's compiled data, such as `mons.dat` (a
+ * MonDataHash of species → MonWrapper → MonData). Maintains the symbol table
+ * and object link table that Marshal uses for back-references (`;` symlinks
+ * and `@` object links).
  */
 
 /**

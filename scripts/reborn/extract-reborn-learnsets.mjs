@@ -8,7 +8,7 @@
 
 import { readFileSync } from 'node:fs';
 import { Dex } from '@pkmn/dex';
-import { parseMarshal, RubySymbol } from './parse-marshal.mjs';
+import { parseMarshal, RubySymbol } from '../essentials/parse-marshal.mjs';
 
 const dex = Dex.forGen(7);
 const toId = (s) => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');

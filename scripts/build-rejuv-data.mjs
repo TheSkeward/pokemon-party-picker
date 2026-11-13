@@ -8,7 +8,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { parseMarshal } from './reborn/parse-marshal.mjs';
+import { parseMarshal } from './essentials/parse-marshal.mjs';
 import {
   dexnumToSpecies,
   extractBosses,
