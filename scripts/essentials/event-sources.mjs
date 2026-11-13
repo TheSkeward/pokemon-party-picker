@@ -236,10 +236,13 @@ function recordBadge(record) {
 }
 
 // The record a map is dated by: its own, else the nearest ancestor's in the
-// map tree, passing over records that date nothing.
+// map tree, passing over records that date nothing. A record whose `reach`
+// is stated as null says the map is never entered, so neither it nor what
+// sits inside it is dated by anything above.
 function nearestRecord(maps, encounterBadges, mapId) {
   for (let id = mapId; maps[id]; id = maps[id].parentId) {
     const record = encounterBadges[id];
+    if (record?.reach === null) return null;
     if (record && recordBadge(record) != null) return record;
   }
   return null;

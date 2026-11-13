@@ -123,6 +123,13 @@ test('a map is reached with its own tables, or the area it sits in', () => {
     {});
   assert.equal(stated(7), 4);
   assert.equal(stated(4), 1);
+  // A record that states the map is never entered stops there: nothing on
+  // it or inside it takes a date from the area above.
+  const never = mapReachBadges(
+    maps, { 2: { types: { LandDay: 1 } }, 3: { types: {}, reach: null } }, {});
+  assert.equal(never(2), 1);
+  assert.equal(never(3), null);
+  assert.equal(never(4), null);
   // A map passed through once, and what sits inside it.
   const once = mapsVisitedOnce(
     maps, { 2: { types: { LandDay: 1 }, oneTime: true }, 5: { types: {} } });
