@@ -184,6 +184,7 @@ button:hover {
 }
 .view-tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 12px;
 }
@@ -238,9 +239,46 @@ button:hover {
   background: none;
   text-decoration: underline;
 }
+/* The column is sized explicitly: an unsized one is as wide as its widest
+   child's unbroken content (a table, a line of chips), which pushes the
+   whole page past a narrow screen. */
 .page-stack {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 20px;
+}
+/* Reached from the keyboard only: the first tab stop, ahead of the game
+   and page tabs. */
+.skip-link {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  z-index: 2;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--bg-surface);
+  transform: translateY(-300%);
+}
+.skip-link:focus {
+  transform: none;
+}
+/* A table wider than its panel scrolls sideways inside it, not the page. */
+.table-wrap {
+  overflow-x: auto;
+}
+/* A row's name is its button: the row takes the click, the button takes
+   the keyboard. */
+.row-link {
+  border: none;
+  background: none;
+  padding: 0;
+  color: inherit;
+  text-align: left;
+}
+.row-link:hover {
+  background: none;
+  text-decoration: underline;
 }
 .panel-header {
   display: flex;
@@ -621,6 +659,9 @@ html {
   font-size: var(--type-m);
 }
 .team-rail a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
   color: var(--text-muted);
 }
 .team-rail a:hover {
@@ -781,6 +822,10 @@ html {
 }
 
 .bench-chip {
+  border: none;
+  border-radius: 0;
+  background: none;
+  padding: 0;
   white-space: nowrap;
   color: var(--text);
 }
@@ -817,6 +862,7 @@ html {
 }
 
 .bench-chip[data-lock-input]:hover {
+  background: none;
   text-decoration: underline;
 }
 
@@ -906,10 +952,12 @@ html {
   line-height: 1.5;
 }
 
+/* Columns as the width allows, so a count sits beside its item's name and
+   a long list is a third of the scroll. */
 .item-inventory-list {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 4px var(--space-6);
 }
 
 .item-inventory-row {
@@ -934,6 +982,7 @@ html {
   cursor: pointer;
   font-size: var(--type-s);
   line-height: 1;
+  min-width: 24px;
   padding: 4px 6px;
 }
 
@@ -1001,8 +1050,11 @@ html {
   }
 }
 
+/* Reset by property, not with `all`, which would take the focus ring too. */
 .sort-header-button {
-  all: unset;
+  border: none;
+  background: none;
+  padding: 0;
   cursor: pointer;
   font: inherit;
   font-weight: 700;
@@ -1011,6 +1063,7 @@ html {
 
 .sort-header-button:hover,
 .sort-header-button.active {
+  background: none;
   text-decoration: underline;
 }
 
@@ -1025,12 +1078,16 @@ html {
 }
 
 .pool-pick-button {
-  all: unset;
+  border: none;
+  background: none;
+  padding: 0;
   cursor: pointer;
+  font: inherit;
   color: inherit;
 }
 
 .pool-pick-button:hover {
+  background: none;
   text-decoration: underline;
 }
 
@@ -1618,10 +1675,14 @@ html {
   font-size: var(--type-s);
   font-weight: 600;
   line-height: 1.2;
+  /* One box that wraps inside a narrow card, where a long build note would
+     otherwise push the card past the screen. */
+  display: inline-block;
+  box-sizing: border-box;
+  max-width: calc(100% - 0.35rem);
   margin-left: 0.35rem;
   padding: 0.1rem 0.45rem;
   vertical-align: middle;
-  white-space: nowrap;
 }
 
 .team-set-meta {
@@ -2080,4 +2141,21 @@ html {
 
 .team-results-panel .usage-table tbody tr.team-pick-row:hover {
   background: color-mix(in srgb, var(--hairline) 45%, transparent);
+}
+
+/* Small text controls still offer a 24 px target (WCAG 2.2, 2.5.8). */
+.bench-chip,
+.item-inventory-remove,
+.pool-pick-button,
+.progression-option,
+.progression-subgroup-all,
+.row-link,
+.set-card-jump,
+.sort-button,
+.sort-header-button,
+.team-rail-pick {
+  min-height: 24px;
+}
+summary {
+  padding-block: 3px;
 }

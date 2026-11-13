@@ -146,9 +146,9 @@ export function renderItemUsageTable(container, table, state, options = {}) {
         <p>On all sets is the share of a Pokémon's sets that hold the item, averaged over every Pokémon, each counted equally. Top item for counts the Pokémon that hold it more than any other item.</p>
         <p>Obtained counts the copies this game hands out, by the badge each turns up after, until there are six or a source restocks the item: a shop or prize counter, a wild holder, Pickup, a berry plot or a gift that repeats. A mined item counts what the rocks reached so far yield on average. An item a battle uses up is listed only from a source that restocks it. Blank means the game's item data tracks no source.</p>
       </div></div>
-      <table class="usage-table item-usage-table static-rows"><thead>${renderHeaderRow(COLUMNS, tableState)}</thead><tbody>
+      <div class="table-wrap"><table class="usage-table item-usage-table static-rows"><thead>${renderHeaderRow(COLUMNS, tableState)}</thead><tbody>
         ${rows.map(renderRow).join('')}
-      </tbody></table>
+      </tbody></table></div>
     </section>`;
 }
 

@@ -71,8 +71,8 @@ export function renderPokemonUsageTable(container, rows, state, options = {}) {
   container.innerHTML = `
     <section class="panel">
       <div class="panel-header"><div><h2>Pokémon Usage</h2><p>${shown.length} Pokémon shown for ${escapeHtml(options.selectionLabel || 'all available months')}</p></div></div>
-      <table class="usage-table usage-browser-table"><thead>${renderHeaderRow(COLUMNS, tableState)}</thead><tbody>
-        ${shown.map((row) => `<tr data-pokemon-id="${escapeAttr(row.pokemonId)}" class="${row.pokemonId === state.selectedPokemon ? 'selected' : ''}"><td>${row.rank}</td><td>${escapeHtml(row.name)}</td><td>${row.usage.toFixed(2)}</td><td>${(row.leadTendency || 0).toFixed(1)}</td><td>${row.rawCount.toLocaleString()}</td></tr>`).join('')}
-      </tbody></table>
+      <div class="table-wrap"><table class="usage-table usage-browser-table"><thead>${renderHeaderRow(COLUMNS, tableState)}</thead><tbody>
+        ${shown.map((row) => `<tr data-pokemon-id="${escapeAttr(row.pokemonId)}" class="${row.pokemonId === state.selectedPokemon ? 'selected' : ''}"><td>${row.rank}</td><td><button type="button" class="row-link" aria-pressed="${row.pokemonId === state.selectedPokemon}">${escapeHtml(row.name)}</button></td><td>${row.usage.toFixed(2)}</td><td>${(row.leadTendency || 0).toFixed(1)}</td><td>${row.rawCount.toLocaleString()}</td></tr>`).join('')}
+      </tbody></table></div>
     </section>`;
 }

@@ -1,4 +1,4 @@
-import { escapeHtml } from '../utils/html.js';
+import { currentAttr, escapeHtml } from '../utils/html.js';
 import { gameForFamily } from '../games/registry.js';
 
 /**
@@ -19,26 +19,30 @@ export function renderAppShell(app, state, families) {
         ? `${game.shortLabel} · ${family.label}`
         : family.label;
       const title = game ? ` title="${escapeHtml(game.label)}"` : '';
-      return `<button class="view-tab ${state.family === family.id ? 'active' : ''}" data-app-family="${escapeHtml(family.id)}"${title}>${escapeHtml(label)}</button>`;
+      const current = state.family === family.id;
+      return `<button class="view-tab ${current ? 'active' : ''}"${currentAttr(current)} data-app-family="${escapeHtml(family.id)}"${title}>${escapeHtml(label)}</button>`;
     })
     .join('\n        ');
+  const viewTab = (view, label) =>
+    `<button class="view-tab ${state.view === view ? 'active' : ''}"${currentAttr(state.view === view)} data-app-view="${view}">${label}</button>`;
   app.innerHTML = `
     <div class="app-shell">
+      <a class="skip-link" href="#page-root">Skip to content</a>
       <header>
         <h1>Pokémon Party Picker</h1>
       </header>
 
-      <nav class="view-tabs">
+      <nav class="view-tabs" aria-label="Game and format">
         ${familyTabs}
       </nav>
 
-      <nav class="view-tabs secondary-tabs">
-        <button class="view-tab ${state.view === 'resolver' ? 'active' : ''}" data-app-view="resolver">Set Lookup</button>
-        <button class="view-tab ${state.view === 'pool' ? 'active' : ''}" data-app-view="pool">Team Builder</button>
-        <button class="view-tab ${state.view === 'browser' ? 'active' : ''}" data-app-view="browser">Usage Data</button>
+      <nav class="view-tabs secondary-tabs" aria-label="Pages">
+        ${viewTab('resolver', 'Set Lookup')}
+        ${viewTab('pool', 'Team Builder')}
+        ${viewTab('browser', 'Usage Data')}
       </nav>
 
-      <section id="page-root" class="page-stack"></section>
+      <main id="page-root" class="page-stack" tabindex="-1"></main>
     </div>
   `;
 }

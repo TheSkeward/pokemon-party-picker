@@ -173,9 +173,9 @@ export function renderMoveUsageTable(container, table, state, options = {}) {
         <p>Run by learners is the share of a learner's sets that run the move, averaged over every Pokémon that can learn it, each counted equally. On all sets averages over every Pokémon, learner or not.</p>
         <p>Taught by names the machine or tutor that teaches the move in this game, and the badge it opens after.</p>
       </div></div>
-      <table class="usage-table move-usage-table static-rows"><thead>${renderHeaderRow(COLUMNS, tableState)}</thead><tbody>
+      <div class="table-wrap"><table class="usage-table move-usage-table static-rows"><thead>${renderHeaderRow(COLUMNS, tableState)}</thead><tbody>
         ${rows.map(renderRow).join('')}
-      </tbody></table>
+      </tbody></table></div>
     </section>`;
 }
 

@@ -4,7 +4,7 @@ import {
   getDatasetLabel,
   getMovesetEntry,
 } from '../data';
-import { escapeAttr, escapeHtml } from '../utils/html.js';
+import { currentAttr, escapeAttr, escapeHtml } from '../utils/html.js';
 import {
   ITEM_USAGE_TABLE,
   renderItemUsageControls,
@@ -42,14 +42,14 @@ const TABLE_RENDERERS = {
 export function renderBrowserPage(pageRoot, context) {
   const { state } = context;
   const tabs = USAGE_TABLES.map((table) =>
-    `<button class="view-tab ${table.id === state.usageTable ? 'active' : ''}" data-usage-table="${escapeAttr(table.id)}">${escapeHtml(table.label)}</button>`);
+    `<button class="view-tab ${table.id === state.usageTable ? 'active' : ''}"${currentAttr(table.id === state.usageTable)} data-usage-table="${escapeAttr(table.id)}">${escapeHtml(table.label)}</button>`);
 
   pageRoot.innerHTML = `
     <nav class="view-tabs usage-table-tabs" aria-label="Usage table">
       ${tabs.join('\n      ')}
     </nav>
     <section id="controls-root"></section>
-    <main id="content-root"></main>
+    <section id="content-root"></section>
     <section id="details-root"></section>
   `;
 

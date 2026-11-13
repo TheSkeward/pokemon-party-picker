@@ -1,4 +1,4 @@
-import { escapeHtml, escapeAttr } from '../utils/html.js';
+import { escapeHtml, escapeAttr, sortAttr } from '../utils/html.js';
 
 // vite `define` stamps the deployed commit; the guard covers dev runs.
 const RUNNING_BUILD_ID =
@@ -345,7 +345,7 @@ function renderPoolControls({
         <input type="file" id="import-gamestate-input" accept="application/json,.json,text/plain,.txt" style="display: none" />
         <button class="view-tab" id="generate-availability-button" ${state.result?.lines?.length ? '' : 'disabled'} title="${state.result?.lines?.length ? 'Generate a pasteable list of every available Pokémon, its current move pool, and your held items' : 'Optimize the team first to resolve your pool'}">Generate availability list</button>
         <button class="view-tab danger-button" id="clear-pool-button">Clear saved pool</button>
-        <span class="muted" data-pool-status>${escapeHtml(state.statusMessage)}</span>
+        <span class="muted" data-pool-status role="status">${escapeHtml(state.statusMessage)}</span>
       </div>
 
       ${
@@ -885,12 +885,12 @@ function renderTelemetryDetails() {
   return `
     <details class="muted" style="font-size: 0.85em" ${detailsStateAttrs('telemetry', false)}>
       <summary>Performance (${summary.total} run${summary.total === 1 ? '' : 's'} on this build${summary.cores ? `, ${summary.cores} cores` : ''})</summary>
-      <table>
+      <div class="table-wrap"><table>
         <thead>
           <tr><th>cache</th><th>pool</th><th>n</th><th>resolve p50/p90/p95</th><th>search p50/p90/p95</th><th>total p50/p90/p95</th><th>builds</th></tr>
         </thead>
         <tbody>${rows}</tbody>
-      </table>
+      </table></div>
       ${lastRunLine}
       <p>
         <button id="copy-perf-report-button" type="button">Copy performance report</button>
@@ -1116,7 +1116,7 @@ export function renderBenchLine(result, keptNames = new Set()) {
           const unscoredNote = entry.scored
             ? ''
             : ' · outside the 126-line scored working set; still available for donors and usage-team matching';
-          return `<span class="${classes}" data-lock-input="${escapeAttr(representative.inputName)}" title="from input ${escapeHtml(representative.inputName)}${escapeHtml(fieldsAs)}${escapeHtml(keptNote)}${escapeHtml(unscoredNote)} · click to lock into the team">${boxIndex}${escapeHtml(chipName)}${keptMark}${usage}</span>`;
+          return `<button type="button" class="${classes}" data-lock-input="${escapeAttr(representative.inputName)}" title="from input ${escapeHtml(representative.inputName)}${escapeHtml(fieldsAs)}${escapeHtml(keptNote)}${escapeHtml(unscoredNote)} · click to lock into the team">${boxIndex}${escapeHtml(chipName)}${keptMark}${usage}</button>`;
         })
         .join('');
 
@@ -1201,7 +1201,7 @@ function renderSortHeader(sortBy, label, state) {
   const arrow = active ? (state.teamSortDir === 'asc' ? ' ▲' : ' ▼') : '';
 
   return `
-    <th>
+    <th${sortAttr(active, state.teamSortDir)}>
       <button class="sort-header-button ${active ? 'active' : ''}" data-team-sort="${escapeHtml(sortBy)}">
         ${escapeHtml(label)}${arrow}
       </button>
@@ -1247,7 +1247,7 @@ function renderTeamRow({
     >
       <td>${index + 1}</td>
       <td>
-        <strong>${escapeHtml(currentName)}</strong>
+        <button type="button" class="row-link" aria-pressed="${selected}"><strong>${escapeHtml(currentName)}</strong></button>
         <button type="button" class="set-card-jump" data-jump-set-card="${escapeAttr(currentSpecies?.id || row.pokemonId)}" title="Jump to this pick's recommended set below">moves ↓</button>
         <button type="button" class="set-card-jump" data-lock-toggle="${escapeAttr(row.inputName || '')}" data-lock-state="${row.locked ? 'locked' : 'free'}" title="${row.locked ? 'Unlock this pick so the optimizer may reconsider its slot' : 'Lock this pick into the team and re-optimize the other slots'}">${row.locked ? 'unlock' : 'lock'}</button>
         ${

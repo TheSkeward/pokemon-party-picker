@@ -3,7 +3,7 @@
  * the state and the URL work from, so none of them names a table, and the
  * search box, sortable header and row sort each table renders with.
  */
-import { escapeAttr, escapeHtml } from '../utils/html.js';
+import { escapeAttr, escapeHtml, sortAttr } from '../utils/html.js';
 
 /**
  * One Usage Data table. `sorters` holds a low-first comparator per sortable
@@ -98,7 +98,7 @@ export function renderHeaderRow(columns, tableState) {
   const cells = columns.map(([field, label]) => {
     const isActive = tableState.sortBy === field;
     const arrow = !isActive ? '' : tableState.sortDir === 'asc' ? ' ↑' : ' ↓';
-    return `<th><button class="sort-button ${isActive ? 'active' : ''}" data-sort-by="${escapeAttr(field)}">${escapeHtml(label)}${arrow}</button></th>`;
+    return `<th${sortAttr(isActive, tableState.sortDir)}><button class="sort-button ${isActive ? 'active' : ''}" data-sort-by="${escapeAttr(field)}">${escapeHtml(label)}${arrow}</button></th>`;
   });
   return `<tr>${cells.join('')}</tr>`;
 }
