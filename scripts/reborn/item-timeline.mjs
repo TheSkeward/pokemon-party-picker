@@ -79,6 +79,7 @@ export function rebornItemTimeline() {
       encounterBadges: readJson('./reborn-encounter-badges.json').maps,
       checkpoints: REBORN_PROGRESSION_CHECKPOINTS,
       dating: REBORN_EVENT_DATING,
+      gateSetters: null,
       mapSwitchBadges: REBORN_MAP_SWITCH_BADGES,
       miningKitBadge: MINING_KIT_BADGE,
       pickupHolderBadge: PICKUP_HOLDER_BADGE,

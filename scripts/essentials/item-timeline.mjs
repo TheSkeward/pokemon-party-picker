@@ -42,6 +42,7 @@ import {
   pointCounterStock,
   wildHeldSources,
 } from './renewable-sources.mjs';
+import { setterDating } from './setter-dating.mjs';
 
 /**
  * A guide's listing of a game's items, as extracted from it. `items` maps
@@ -67,10 +68,13 @@ let ItemListing;
  * are its game-file extracts; `encounterBadges` the badge each encounter
  * table can first be met at; `checkpoints` its progression, in play order.
  * `dating` dates an event's conditions and `mapSwitchBadges` a map that
- * exists only under a switch. The three badges say when the Mining Kit is
- * had, when a Pokémon with Pickup can first be caught and when the first
- * berry plots open; `pointCounters` are the maps whose counters trade
- * points without limit, each with the badge it is reached at. `currencies`
+ * exists only under a switch. `gateSetters` is the gate-setters extract of
+ * a game that has one: a switch or variable `dating` does not date is then
+ * dated from the events that set it (setter-dating.mjs). The three badges
+ * say when the Mining Kit is had, when a Pokémon with Pickup can first be
+ * caught and when the first berry plots open; `pointCounters` are the maps
+ * whose counters trade points without limit, each with the badge it is
+ * reached at. `currencies`
  * gives, for each currency a mart takes, the badge count from which it can
  * be earned again and again; a currency left out is one that cannot, or
  * that nothing dates, and what it buys is left out. `unusedMapName` is the
@@ -84,6 +88,7 @@ let ItemListing;
  *   encounterBadges: !Object<string, !Object>,
  *   checkpoints: !Array<{badges: number, levelCap: number}>,
  *   dating: !EventDating,
+ *   gateSetters: ?GateSetters,
  *   mapSwitchBadges: !Object<string, number>,
  *   miningKitBadge: number,
  *   pickupHolderBadge: number,
@@ -143,6 +148,8 @@ export function buildItemSources(game, warn = () => {}) {
   const { itemEvents, wildItems, encounters, pickup } = game.extracts;
   const reachBadge = mapReachBadges(
     itemEvents.maps, game.encounterBadges, game.mapSwitchBadges);
+  const dating = game.gateSetters
+    ? setterDating(game.gateSetters, reachBadge, game.dating) : game.dating;
 
   const sources = new Map();
   const add = (id, source) => {
@@ -187,7 +194,7 @@ export function buildItemSources(game, warn = () => {}) {
   if (!listing) {
     const sales = datedSales(
       martSales(itemEvents).filter((sale) => knownIds.has(sale.id)),
-      reachBadge, game.dating,
+      reachBadge, dating,
       (currency) => game.currencies[currency] ?? null);
     for (const [id, { badge, via }] of sales.stock) {
       add(id, { kind: 'shop', badge, via });
@@ -249,7 +256,7 @@ export function buildItemSources(game, warn = () => {}) {
     for (const copy of copies) {
       if (copy.mapName === game.unusedMapName) continue;
       const reached = reachBadge(copy.mapId);
-      const gate = conditionBadge(copy.conditions, game.dating);
+      const gate = conditionBadge(copy.conditions, dating);
       if (reached == null || gate == null || reached < (first?.badges ?? 0)) {
         undatedCopies++;
         continue;
