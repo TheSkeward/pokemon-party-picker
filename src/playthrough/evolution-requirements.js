@@ -6,8 +6,9 @@
  *   friendship:           legal, K = friendship grind
  *   move-based:           legal once the pre-evo can have learned the move
  *                         (gated by the move's learn level vs the cap)
- *   item / hold / trade:  legal if the item is farmable (curated, sourced
- *                         table), K = item friction (higher when tedious);
+ *   item / hold / trade:  legal if the game hands the item out (its item
+ *                         sources, or its evolution-item table), K = item
+ *                         friction (higher when the table calls it tedious);
  *                         UNKNOWN item availability is surfaced, not silently
  *                         blocked or allowed; where an item stands in for the
  *                         trade, "with a Shelmet" is a party requirement

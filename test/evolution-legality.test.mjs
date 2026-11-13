@@ -13,7 +13,6 @@ import {
   evolutionChainProof,
 } from '../src/playthrough/evolution-requirements.js';
 import { getItemAvailability } from '../src/games/items.js';
-import { REBORN_EVOLUTION_ITEM_AVAILABILITY } from '../src/reborn/item-availability.js';
 import { setScoringOverrides } from '../src/teamBuilder/scoring-constants.js';
 import { GEN7_PROGRESSION_SPECIES } from '../src/generated/gen7ProgressionSpecies.generated.js';
 
@@ -73,12 +72,39 @@ test('Happiny -> Chansey: legal via the Oval Stone, with item K + proof', () => 
   });
 });
 
-test('every Reborn evolution item says where the game data has it from', () => {
-  for (const id of Object.keys(REBORN_EVOLUTION_ITEM_AVAILABILITY)) {
-    const { status, source } = getItemAvailability(id);
-    assert.match(status, /^farmable(-tedious)?$/, id);
-    assert.ok(source.length > 0, `${id} has no source the supply counts`);
+test('every item a Reborn evolution spends has a source in the game data', () => {
+  const items = new Set(['Link Stone']);
+  for (const entry of Object.values(GEN7_PROGRESSION_SPECIES)) {
+    if (entry.prevoId && entry.evoItem) items.add(entry.evoItem);
   }
+  assert.ok(items.size >= 25, 'the dex names the evolution items');
+  for (const item of items) {
+    const { status, source } = getItemAvailability(item);
+    assert.match(status, /^farmable(-tedious)?$/, item);
+    assert.ok(source.length > 0, `${item} has no source the supply counts`);
+  }
+});
+
+test('an item the grind table does not judge is legal by its sources', () => {
+  // Sold or placed in the game files, and in no hand-set table.
+  const unjudged = {
+    aromatisse: 'Sachet',
+    slurpuff: 'Whipped Dream',
+    dusknoir: 'Reaper Cloth',
+    milotic: 'Prism Scale',
+    porygon2: 'Up-Grade',
+    porygonz: 'Dubious Disc',
+    rhyperior: 'Protector',
+  };
+  for (const [id, item] of Object.entries(unjudged)) {
+    const req = getEvolutionRequirement(species(id));
+    assert.equal(req.status, 'legal', id);
+    assert.ok(req.reason.includes(`${item} (`), `${id}: ${req.reason}`);
+    assert.ok(!req.reason.includes(`${item} (tedious`), id);
+  }
+  assert.match(
+    getEvolutionRequirement(species('slurpuff')).reason,
+    /Whipped Dream \(sold from badge \d+\)/);
 });
 
 test('stone evolution: legal, farmable-tedious priced above plain item K', () => {
@@ -121,9 +147,20 @@ test('trade with a partner species: the Link Stone wants the partner in the part
 });
 
 test('unknown item: surfaced as unknown, not silently blocked or allowed', () => {
-  const milotic = getEvolutionRequirement(species('milotic'));
-  assert.equal(milotic.status, 'unknown');
-  assert.match(milotic.reason, /unknown/i);
+  // An item neither the game's sources nor its table know.
+  const stranger = {
+    ...species('milotic'),
+    evoType: 'useItem',
+    evoItem: 'Sourceless Scale',
+  };
+  const unknown = getEvolutionRequirement(stranger);
+  assert.equal(unknown.status, 'unknown');
+  assert.match(unknown.reason, /Sourceless Scale availability unknown/);
+  // In the bag it is a settled fact.
+  const owned = getEvolutionRequirement(stranger, {
+    ownedItems: { sourcelessscale: 1 },
+  });
+  assert.equal(owned.status, 'legal');
 });
 
 test("move-based evolution: gated by the pre-evo's learn level", () => {

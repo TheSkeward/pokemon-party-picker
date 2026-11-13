@@ -3,11 +3,11 @@
  *
  * A hand-set judgment per item: "farmable" (reliably obtainable) or
  * "farmable-tedious" (obtainable with real grind). An item not listed is
- * "unknown", which the evolution engine surfaces as blocked with the reason
- * shown rather than pretending either way.
+ * not judged, and counts as farmable.
  *
- * Where an item comes from is not stated here. games/items.js reads it off
- * the item's sources, which are built from the game files.
+ * Whether the game hands an item out, and where, is not stated here.
+ * games/items.js reads both off the item's sources, which are built from
+ * the game files.
  */
 /** @type {!Object<string, {status: string}>} */
 export const REBORN_EVOLUTION_ITEM_AVAILABILITY = {

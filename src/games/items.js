@@ -28,25 +28,29 @@ export function gameItems() {
 
 /**
  * @param {?string} itemName Item name or id (normalized internally).
- * @return {{status: string, source: string}} status is "farmable",
- *     "farmable-tedious", or "unknown", from the game's evolution-item
- *     table. source says where the item comes from: the table's words where
- *     it gives them, else the item's supply in words, so that a game whose
+ * @return {{status: string, source: string}} Whether the game hands the
+ *     item out, and how. It does when its item data has a source for the
+ *     item or its evolution-item table lists it; otherwise status is
+ *     "unknown". The table judges the grind, "farmable" or
+ *     "farmable-tedious", and an item it does not judge is "farmable".
+ *     source says where the item comes from: the table's words where it
+ *     gives them, else the item's supply in words, so that a game whose
  *     sources are read from its files states no source by hand.
  */
 export function getItemAvailability(itemName) {
   const id = toId(itemName);
   if (!id) return { status: 'unknown', source: 'no item recorded' };
   const entry = gameItems().evolutionItemAvailability[id];
-  if (!entry) {
+  const supplied = describeSupply(getItemSupply(id));
+  if (!entry && !supplied) {
     return {
       status: 'unknown',
       source: `no availability data for ${itemName}`,
     };
   }
   return {
-    status: entry.status,
-    source: entry.source ?? describeSupply(getItemSupply(id)),
+    status: entry?.status ?? 'farmable',
+    source: entry?.source ?? supplied,
   };
 }
 
