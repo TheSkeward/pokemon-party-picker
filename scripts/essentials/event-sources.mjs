@@ -20,30 +20,48 @@ import { itemId } from './item-id.mjs';
 
 /**
  * The kinds of give that place a copy on a map, and what each is called.
- * A gift is left out: an NPC often hands over a copy the player could have
- * had another way (a missed item returned, a story branch), so only a
- * placed copy is certain to be one more.
  * @const {!Object<string, string>}
  */
-const PLACED_KIND_WORDS = {
+export const PLACED_COPY_KINDS = Object.freeze({
   itemBall: 'item ball',
   hiddenItem: 'hidden item',
-};
+});
 
-// The `repeat` labels of a placed copy. One the map re-arms (resetByEvent)
-// counts once: nothing shows it can be reached again while the reset is
-// live.
-const ONCE = new Set(['once', 'resetByEvent']);
+/**
+ * The kinds of give by which someone hands a copy over, and what each is
+ * called. A game with a guide's listing leaves these to the listing: an
+ * NPC often hands over a copy the player could have had another way (a
+ * missed item returned, a story branch), so only a placed copy is certain
+ * to be one more. A game without one has nothing else to learn them from.
+ * @const {!Object<string, string>}
+ */
+export const GIVEN_COPY_KINDS = Object.freeze({
+  gift: 'gift',
+  trainerReward: 'battle reward',
+  exchange: 'trade',
+  giftPokemonHeldItem: 'held by a gift Pokémon',
+});
+
+// The `repeat` labels of a copy had once. One the map re-arms
+// (resetByEvent) counts once: nothing shows it can be reached again while
+// the reset is live. One a variable closes (onceByVariable) is had once
+// too.
+const ONCE = new Set(['once', 'resetByEvent', 'onceByVariable']);
 
 // The branch type that tests which way a character faces: no gate.
 const FACING_CONDITION = 6;
 
+// A branch that runs a trainer battle is passed by winning it: no gate in
+// time beyond reaching the trainer.
+const BATTLE_CALL = /^pb(Double)?TrainerBattle\(/;
+
 // The badge one condition implies: its own for a badge count asked
 // outright, 0 for one that gates nothing in time (a confirmation, a price,
-// a negation, a facing test, a counter at zero), null for one this cannot
-// date.
+// a negation, a facing test, a counter at zero, a battle to win), null for
+// one this cannot date.
 function badgeOfCondition(condition, dating) {
   if (condition.badges != null) return condition.badges;
+  if (condition.script != null && BATTLE_CALL.test(condition.script)) return 0;
   if (
     condition.choice != null || condition.money != null ||
     condition.not != null || condition.selfSwitch != null ||
@@ -84,23 +102,26 @@ export function conditionBadge(conditions, dating) {
 }
 
 /**
- * The copies of each item placed on the maps: item balls and hidden items.
+ * The copies of each item had once: those placed on the maps (item balls
+ * and hidden items) and, when asked for, those handed over.
  * @param {{itemNames: !Object<string, string>, events: !Array<!Object>}}
  *     itemEvents The item-events extract.
+ * @param {!Object<string, string>=} kinds The kinds of give that count,
+ *     with what each is called.
  * @return {!Map<string, !Array<{mapId: number, mapName: string,
- *     kind: string, conditions: !Array<!Object>}>>} Item id -> its placed
+ *     kind: string, conditions: !Array<!Object>}>>} Item id -> its
  *     copies. An item counts once per map name, as the first listed: a map
  *     often exists in several versions (a room's water levels, a puzzle's
  *     states, a ward before and after its restoration) that repeat one
  *     copy, and a version cannot be told from a second copy.
  */
-export function placedCopies(itemEvents) {
+export function placedCopies(itemEvents, kinds = PLACED_COPY_KINDS) {
   const copies = new Map();
   const spots = new Set();
   for (const event of itemEvents.events) {
     const byItem = new Map();
     for (const give of event.gives) {
-      const kind = PLACED_KIND_WORDS[give.kind];
+      const kind = kinds[give.kind];
       if (!kind || !give.item || !ONCE.has(give.repeat)) continue;
       const page = event.pages.find((entry) => entry.page === give.page);
       const conditions = [
@@ -178,19 +199,10 @@ export function missedShopStock(itemEvents, shopBadgeOf, reachBadgeOf) {
  *     under. Null for a map with nothing dated at or above it.
  */
 export function mapReachBadges(maps, encounterBadges, mapSwitchBadges) {
-  const tableBadge = (id) => {
-    const record = encounterBadges[id];
-    if (record?.reach != null) return record.reach;
-    const badges = Object.values(record?.types || {})
-      .filter((badge) => badge != null);
-    return badges.length ? Math.min(...badges) : null;
-  };
   return (mapId) => {
-    let badge = null;
-    for (let id = mapId; maps[id] && badge == null; id = maps[id].parentId) {
-      badge = tableBadge(id);
-    }
-    if (badge == null) return null;
+    const record = nearestRecord(maps, encounterBadges, mapId);
+    if (!record) return null;
+    let badge = recordBadge(record);
     for (const { name, is } of maps[mapId].mapSwitches || []) {
       if (is && mapSwitchBadges[name] != null) {
         badge = Math.max(badge, mapSwitchBadges[name]);
@@ -201,6 +213,39 @@ export function mapReachBadges(maps, encounterBadges, mapSwitchBadges) {
 }
 
 /**
+ * @param {!Object<string, {name: string, parentId: number}>} maps The map
+ *     tree.
+ * @param {!Object<string, {oneTime: (boolean|undefined)}>} encounterBadges
+ *     The game's dated maps.
+ * @return {function(number): boolean} Map id -> whether the dated map it
+ *     is reached with is one the player passes through once and cannot
+ *     return to.
+ */
+export function mapsVisitedOnce(maps, encounterBadges) {
+  return (mapId) =>
+    Boolean(nearestRecord(maps, encounterBadges, mapId)?.oneTime);
+}
+
+// The badge a dated map's record stands for: its `reach`, else the earliest
+// of its encounter tables; null for a record that dates neither.
+function recordBadge(record) {
+  if (record.reach != null) return record.reach;
+  const badges = Object.values(record.types || {})
+    .filter((badge) => badge != null);
+  return badges.length ? Math.min(...badges) : null;
+}
+
+// The record a map is dated by: its own, else the nearest ancestor's in the
+// map tree, passing over records that date nothing.
+function nearestRecord(maps, encounterBadges, mapId) {
+  for (let id = mapId; maps[id]; id = maps[id].parentId) {
+    const record = encounterBadges[id];
+    if (record && recordBadge(record) != null) return record;
+  }
+  return null;
+}
+
+/**
  * The digs the mining rocks allow, by the badge each rock is reached.
  * @param {{events: !Array<!Object>}} itemEvents The item-events extract. A
  *     rock is an event with mining gives: one dig each, the second needing
@@ -208,13 +253,19 @@ export function mapReachBadges(maps, encounterBadges, mapSwitchBadges) {
  * @param {function(number): ?number} reachBadgeOf Map id -> the badge count
  *     the map is reached at; null when nothing dates it.
  * @param {number} kitBadge The badge count the Mining Kit is had from.
+ * @param {function(number): boolean=} visitedOnce Map id -> whether the
+ *     player passes through the map once and cannot return.
  * @return {{digs: !Map<number, number>, comesBack: !Array<{badge: number,
  *     mapName: string}>, undated: number}} `digs` counts the digs of the
  *     rocks that are dug once and gone, by badge; `comesBack` lists the
- *     maps whose rocks return each time the map reloads; `undated` counts
- *     the rocks on maps nothing dates, which are left out.
+ *     maps whose rocks return, each time the map reloads or after a wait;
+ *     `undated` counts the rocks on maps nothing dates, which are left
+ *     out. A rock that returns on a map visited once is dug while there
+ *     and gone.
  */
-export function miningDigs(itemEvents, reachBadgeOf, kitBadge) {
+export function miningDigs(
+  itemEvents, reachBadgeOf, kitBadge, visitedOnce = () => false,
+) {
   const digs = new Map();
   const comesBack = new Map();
   let undated = 0;
@@ -227,7 +278,9 @@ export function miningDigs(itemEvents, reachBadgeOf, kitBadge) {
       continue;
     }
     const badge = Math.max(reached, kitBadge);
-    if (gives.some((give) => give.repeat === 'mapReload')) {
+    const returns = gives.some((give) =>
+      give.repeat === 'mapReload' || give.repeat === 'timed');
+    if (returns && !visitedOnce(event.mapId)) {
       comesBack.set(event.mapName, { badge, mapName: event.mapName });
     } else {
       digs.set(badge, (digs.get(badge) || 0) + gives.length);

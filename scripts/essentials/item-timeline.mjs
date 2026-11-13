@@ -10,7 +10,9 @@
  * at, which also says when a map is reached, and from the game's rules for
  * dating an event's conditions. A game with a guide's listing takes each
  * item's first copy and its shop stock from the listing, checked against
- * the files.
+ * the files. A game without one takes both from the files: what its marts
+ * sell, and the copies placed on its maps or handed over, each as far as
+ * its map and conditions can be dated.
  *
  * A mined item counts the copies the rocks reached by each badge yield on
  * average: a rock is dug once, so mining does not restock, except where
@@ -21,11 +23,16 @@ import { isConsumableItem } from '../../src/games/item-use.js';
 import { FULL_SUPPLY } from '../../src/games/item-sources.js';
 import {
   conditionBadge,
+  datedSales,
   expectedCopySteps,
+  GIVEN_COPY_KINDS,
   mapReachBadges,
+  mapsVisitedOnce,
+  martSales,
   martStock,
   miningDigs,
   missedShopStock,
+  PLACED_COPY_KINDS,
   placedCopies,
 } from './event-sources.mjs';
 import { itemId } from './item-id.mjs';
@@ -63,8 +70,11 @@ let ItemListing;
  * exists only under a switch. The three badges say when the Mining Kit is
  * had, when a Pokémon with Pickup can first be caught and when the first
  * berry plots open; `pointCounters` are the maps whose counters trade
- * points without limit, each with the badge it is reached at. `listing` is
- * null for a game without one.
+ * points without limit, each with the badge it is reached at. `currencies`
+ * gives, for each currency a mart takes, the badge count from which it can
+ * be earned again and again; a currency left out is one that cannot, or
+ * that nothing dates, and what it buys is left out. `listing` is null for
+ * a game without one.
  * @typedef {{
  *   knownIds: !Set<string>,
  *   extracts: {itemEvents: !Object, wildItems: !Object,
@@ -77,6 +87,7 @@ let ItemListing;
  *   pickupHolderBadge: number,
  *   berryPlotBadge: number,
  *   pointCounters: !Array<{mapId: number, badge: number}>,
+ *   currencies: !Object<string, number>,
  *   listing: ?ItemListing,
  * }}
  */
@@ -121,8 +132,8 @@ function listedShopBadges(listing, sold, knownIds, warn) {
  * @param {!ItemTimelineGame} game
  * @param {function(string)=} warn Told of each thing left out or in doubt.
  * @return {{sources: !Map<string, !Array<!Object>>, missedShopItems: number,
- *     undatedCopies: number, undatedRocks: number}} Each known item's
- *     sources, unordered, and what could not be dated.
+ *     undatedSales: number, undatedCopies: number, undatedRocks: number}}
+ *     Each known item's sources, unordered, and what could not be dated.
  */
 export function buildItemSources(game, warn = () => {}) {
   const { knownIds, listing } = game;
@@ -167,6 +178,22 @@ export function buildItemSources(game, warn = () => {}) {
   for (const [id, { badge, via }] of missedStock) {
     add(id, { kind: 'shop', badge, via });
   }
+  // Without a listing the marts' stock is dated from the files: what
+  // restocks, and the rows a mart sells a fixed number of times.
+  let undatedSales = 0;
+  if (!listing) {
+    const sales = datedSales(
+      martSales(itemEvents).filter((sale) => knownIds.has(sale.id)),
+      reachBadge, game.dating,
+      (currency) => game.currencies[currency] ?? null);
+    for (const [id, { badge, via }] of sales.stock) {
+      add(id, { kind: 'shop', badge, via });
+    }
+    for (const [id, { badge, via }] of sales.once) {
+      add(id, { kind: 'single', badge, count: 1, via: `sold once, ${via}` });
+    }
+    undatedSales = sales.undated;
+  }
 
   // Mined copies: a dig buries a few items drawn by weight, so an item
   // averages its share of the weights per item buried. The rocks that
@@ -176,7 +203,9 @@ export function buildItemSources(game, warn = () => {}) {
     (miningRules.itemsPerGame.min + miningRules.itemsPerGame.max) / 2;
   const miningWeight =
     miningRules.items.reduce((sum, entry) => sum + entry.weight, 0);
-  const rocks = miningDigs(itemEvents, reachBadge, game.miningKitBadge);
+  const rocks = miningDigs(
+    itemEvents, reachBadge, game.miningKitBadge,
+    mapsVisitedOnce(itemEvents.maps, game.encounterBadges));
   for (const { item, weight } of miningRules.items) {
     const id = itemId(itemEvents.itemNames[item] || item);
     const perDig = (itemsPerDig * weight) / miningWeight;
@@ -203,10 +232,13 @@ export function buildItemSources(game, warn = () => {}) {
   // nothing dates is left out. So is one on a map reached before the
   // listing's first copy of the item: a listing gives every location, so
   // that copy is behind something the files do not show. And so is the
-  // listing's own first copy, when it is of the same kind.
+  // listing's own first copy, when it is of the same kind. Without a
+  // listing the copies handed over count too.
   const listedItems = listing?.items || {};
+  const copyKinds = listing
+    ? PLACED_COPY_KINDS : { ...PLACED_COPY_KINDS, ...GIVEN_COPY_KINDS };
   let undatedCopies = 0;
-  for (const [id, copies] of placedCopies(itemEvents)) {
+  for (const [id, copies] of placedCopies(itemEvents, copyKinds)) {
     if (!knownIds.has(id) || isConsumableItem(id)) continue;
     const first = listedItems[
       Object.keys(listedItems).find((name) => itemId(name) === id)];
@@ -269,6 +301,7 @@ export function buildItemSources(game, warn = () => {}) {
     sources,
     missedShopItems:
       [...missedStock.keys()].filter((id) => knownIds.has(id)).length,
+    undatedSales,
     undatedCopies,
     undatedRocks: rocks.undated,
   };

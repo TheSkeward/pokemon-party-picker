@@ -38,6 +38,6 @@ for (const timeline of TIMELINES) {
     `${count('pickup')} from Pickup, ${count('regrow')} regrowing`);
   log(
     `${built.missedShopItems} items sold in marts a listing's shop table ` +
-    `lacks; ${built.undatedCopies} placed copies and ` +
-    `${built.undatedRocks} mining rocks left out as undated`);
+    `lacks; ${built.undatedSales} mart sales, ${built.undatedCopies} ` +
+    `copies and ${built.undatedRocks} mining rocks left out as undated`);
 }

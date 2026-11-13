@@ -84,6 +84,8 @@ export function rebornItemTimeline() {
       pickupHolderBadge: PICKUP_HOLDER_BADGE,
       berryPlotBadge: BERRY_PLOT_BADGE,
       pointCounters: [POINT_COUNTER],
+      // The listing's shop table dates the shops.
+      currencies: {},
       listing: {
         items: sheet.items,
         shopItems: sheet.shopItems,

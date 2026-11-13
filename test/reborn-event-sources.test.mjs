@@ -9,11 +9,14 @@ import {
   conditionBadge,
   datedSales,
   expectedCopySteps,
+  GIVEN_COPY_KINDS,
   mapReachBadges,
+  mapsVisitedOnce,
   martSales,
   martStock,
   miningDigs,
   missedShopStock,
+  PLACED_COPY_KINDS,
   placedCopies,
 } from '../scripts/essentials/event-sources.mjs';
 import { itemId } from '../scripts/essentials/item-id.mjs';
@@ -56,6 +59,12 @@ test('an event is dated by its badge switches and episode variables', () => {
     ]),
     0,
   );
+  // Nor does a battle the branch runs, or a badge count asked outright
+  // beyond the count itself.
+  assert.equal(
+    badge([{ script: 'pbTrainerBattle(:CAMPER,"Billy","",false,0)' }]), 0);
+  assert.equal(
+    badge([{ badges: 5 }, { script: 'pbDoubleTrainerBattle(:A,"B",0)' }]), 5);
   // A quest switch, an item check or a counter is no badge: undated.
   assert.equal(badge([{ switch: 2012, name: 'Blacksteam Case' }]), null);
   assert.equal(
@@ -114,6 +123,14 @@ test('a map is reached with its own tables, or the area it sits in', () => {
     {});
   assert.equal(stated(7), 4);
   assert.equal(stated(4), 1);
+  // A map passed through once, and what sits inside it.
+  const once = mapsVisitedOnce(
+    maps, { 2: { types: { LandDay: 1 }, oneTime: true }, 5: { types: {} } });
+  assert.equal(once(2), true);
+  assert.equal(once(4), true);
+  // A record that dates nothing is passed over for the one above it.
+  assert.equal(once(5), false);
+  assert.equal(once(7), false);
 });
 
 test('a placed copy is an item ball or hidden item, once per map name', () => {
@@ -166,6 +183,38 @@ test('a placed copy is an item ball or hidden item, once per map name', () => {
     kind: 'item ball',
     conditions: [{ switch: 737, name: 'LarvitarPuzzle2' }],
   }]);
+
+  // A game with no listing counts what is handed over as well: a gift, a
+  // battle reward a variable closes; not one that repeats, nor a shop.
+  const handed = placedCopies(
+    {
+      itemNames: { KINGSROCK: "King's Rock" },
+      events: [
+        event(29, 'Opal Ward', [
+          { page: 1, kind: 'gift', item: 'KINGSROCK', repeat: 'once' },
+          { page: 1, kind: 'mart', stock: ['KINGSROCK'] },
+        ]),
+        event(30, 'Route 1', [{
+          page: 1, kind: 'trainerReward', item: 'KINGSROCK',
+          repeat: 'onceByVariable',
+        }]),
+        event(31, 'Route 2', [{
+          page: 1, kind: 'repeatableGift', item: 'KINGSROCK',
+          repeat: 'unlimited',
+        }]),
+        event(32, 'Route 3', [ball('KINGSROCK')]),
+      ],
+    },
+    { ...PLACED_COPY_KINDS, ...GIVEN_COPY_KINDS },
+  );
+  assert.deepEqual(
+    handed.get('kingsrock').map((copy) => [copy.mapName, copy.kind]),
+    [
+      ['Opal Ward', 'gift'],
+      ['Route 1', 'battle reward'],
+      ['Route 3', 'item ball'],
+    ],
+  );
 });
 
 test('stock the shop table lacks opens with what it is sold beside', () => {
@@ -220,6 +269,17 @@ test('mined copies rise with the digs the rocks reached allow', () => {
   assert.deepEqual([...rocks.digs], [[3, 4], [9, 3]]);
   assert.deepEqual(rocks.comesBack, [{ badge: 18, mapName: 'Cauldron' }]);
   assert.equal(rocks.undated, 1);
+  // A rock that returns after a wait restocks too, unless its map is one
+  // the player passes through once: then it is dug while there and gone.
+  const timed = {
+    events: [
+      rock(6, 'Desert', [dig('timed'), dig()]),
+      rock(7, 'Prison Mines', [dig('timed')]),
+    ],
+  };
+  const waited = miningDigs(timed, () => 5, 4, (mapId) => mapId === 7);
+  assert.deepEqual(waited.comesBack, [{ badge: 5, mapName: 'Desert' }]);
+  assert.deepEqual([...waited.digs], [[5, 1]]);
 
   // A quarter of a copy per dig: one whole copy from the first four digs,
   // none more until the next whole one.
