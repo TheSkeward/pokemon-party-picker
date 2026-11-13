@@ -27,6 +27,7 @@ import {
   levelCapAtBadges,
 } from '../games/schedule.js';
 import { lockedMoveIdsFor, receivedForm } from './legal-moves.js';
+import { normalizeLevelCap } from './progression.js';
 import { mechanics, teachingRoutesByMove } from '../games/legality.js';
 import { fixedMoveDamage } from '../teamBuilder/damage-model.js';
 import { getMoveMetaById } from '../move-meta.js';
@@ -318,7 +319,7 @@ export function computeSetReadiness({
   // reachable — the gate is pickups (unchecked TMs, unclaimed items), not
   // future progression. "Pending" requires something actually pending; the
   // scaling sentinel alone (a fully-ready set at cap 100) is not a pickup.
-  const currentCap = Number.parseInt(progression.levelCap, 10) || 0;
+  const currentCap = normalizeLevelCap(progression.levelCap);
   const hasPending =
     moves.some((move) => move.status === 'later') ||
     (item.name != null && item.status === 'later');

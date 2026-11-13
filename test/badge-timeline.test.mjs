@@ -161,9 +161,10 @@ test('applyCheckpoint derives the cap; normalization keeps the field honest', ()
   const post = applyCheckpoint(nine, 'post-3');
   assert.equal(post.levelCap, '115'); // post-game caps clear the old 100 clamp
 
+  // "No cap" lifts the cap: it has no control of its own to lift it with.
   const cleared = applyCheckpoint(post, '');
   assert.equal(cleared.checkpoint, '');
-  assert.equal(cleared.levelCap, '115', 'clearing the picker keeps the cap');
+  assert.equal(cleared.levelCap, '');
 
   // Unknown ids are dropped, legacy saves stay untouched otherwise.
   const junk = normalizeProgression({ checkpoint: 'badge-99', levelCap: '45' });

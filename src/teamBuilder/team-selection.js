@@ -18,7 +18,7 @@ import {
   getTypeMultiplier,
 } from '../playthrough/type-chart.js';
 import { parallelFullSearch, PARALLEL_THRESHOLD } from './parallel-search.js';
-import { tunable } from './scoring-constants.js';
+import { getScoringOverrides, tunable } from './scoring-constants.js';
 import { SearchStage } from './optimize-progress.js';
 import { moveSources } from '../games/legality.js';
 
@@ -438,8 +438,12 @@ const COMBINATION_OVERFLOW_CAP = 3_000_000;
 // optimizer's resolver yield): the polish/realization tail of the search
 // phase runs as long synchronous blocks; yielding ~20 times a second lets
 // the progress caption actually paint.
+// Not under scoring overrides (the confidence sweep): they are globals of
+// this thread, and a yield would let whatever else is queued read the
+// perturbed constants. The sweep yields between its settings instead.
 let lastSelectionYieldAt = 0;
 function yieldForPaint() {
+  if (getScoringOverrides()) return Promise.resolve();
   const now = Date.now();
   if (now - lastSelectionYieldAt < 50) return Promise.resolve();
   lastSelectionYieldAt = now;

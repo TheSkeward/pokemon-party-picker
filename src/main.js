@@ -228,9 +228,30 @@ function bindEvents() {
   });
 }
 
-async function handleFamilyChange(nextFamily) {
-  if (nextFamily === getState().family) return;
+// A family change loads a game, its species and a format, and a second
+// click can land while the first is still loading. Changes run one at a
+// time and the newest request wins: left to race, whichever finished
+// loading last decided the page, not whichever was clicked last.
+let requestedFamily = null;
+let familyChanging = false;
 
+async function handleFamilyChange(nextFamily) {
+  requestedFamily = nextFamily;
+  if (familyChanging) return;
+  familyChanging = true;
+  try {
+    while (requestedFamily && requestedFamily !== getState().family) {
+      const family = requestedFamily;
+      requestedFamily = null;
+      await changeFamily(family);
+    }
+  } finally {
+    familyChanging = false;
+    requestedFamily = null;
+  }
+}
+
+async function changeFamily(nextFamily) {
   clearPendingResolverDebounce();
   resolverSetDetails.cancel();
 

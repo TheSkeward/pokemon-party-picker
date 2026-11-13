@@ -267,14 +267,18 @@ export function clearOwnedItems(progression) {
 
 /**
  * Selecting a badge/post-game checkpoint derives the level cap from the
- * timeline — the player deals in badges; the cap is a consequence. An unknown
- * checkpoint id clears the selection (the cap keeps its last value).
+ * timeline — the player deals in badges; the cap is a consequence. Selecting
+ * none ("No cap", or an id the timeline does not have) lifts the cap with
+ * it: the cap has no control of its own, so one left behind could be
+ * neither seen nor changed.
  * @return {Object} The normalized progression.
  */
 export function applyCheckpoint(progression, checkpointId) {
   const checkpoint = getCheckpoint(checkpointId);
   if (!checkpoint) {
-    return normalizeProgression({ ...progression, checkpoint: '' });
+    return normalizeProgression({
+      ...progression, checkpoint: '', levelCap: '',
+    });
   }
   return normalizeProgression({
     ...progression,

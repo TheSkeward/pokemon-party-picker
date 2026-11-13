@@ -214,7 +214,9 @@ test('set readiness prices HGSS machines against its own caps', () => {
       },
       availableMoves: [],
       topSet: { moveUsage: new Map([['roost', 50]]) },
-      progression: {},
+      // Before any badge: a progression with no cap at all is uncapped,
+      // and would already hold the machine.
+      progression: { levelCap: '1' },
     });
     assert.match(readiness.moves[0].detail, /^TM\d+ @1 badge/);
     assert.equal(readiness.fullAtCap, 20);

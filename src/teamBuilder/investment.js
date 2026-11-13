@@ -29,7 +29,10 @@ const CLOSE_BENCH_MARGIN = 0.985;
  * @return {Array<number>}
  */
 export function nextLevelCaps(levelCap, count = 2) {
-  const cap = Number.parseInt(levelCap, 10) || 0;
+  // No cap set: nothing lies ahead of a player the game is not holding
+  // back, and reading it as zero projected the two lowest caps.
+  const cap = Number.parseInt(levelCap, 10);
+  if (!Number.isFinite(cap)) return [];
   const upcoming = [];
   for (const checkpoint of getCheckpoints()) {
     if (checkpoint.levelCap > cap && !upcoming.includes(checkpoint.levelCap)) {

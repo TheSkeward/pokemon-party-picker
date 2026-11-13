@@ -20,6 +20,12 @@ export const PARALLEL_THRESHOLD = 150_000;
 
 let workerPool = null;
 let workerPoolBroken = false;
+// Parallel jobs that failed in a row. One failure may be circumstance (the
+// machine slept through the hang timeout), so the pool is rebuilt for the
+// next job; a second in a row is the pool itself, and retires it for the
+// session.
+let poolFailures = 0;
+const MAX_POOL_FAILURES = 2;
 let messageSeq = 0;
 // Injected by non-browser hosts (the Node test harness) to supply a pool of
 // Web-Worker-shaped objects backed by worker_threads, so the exact-search
@@ -37,6 +43,7 @@ let injectedPoolFactory = null;
 export function setSearchWorkerPoolFactory(factory, { timeoutMs } = {}) {
   injectedPoolFactory = factory;
   workerPoolBroken = false;
+  poolFailures = 0;
   workerPool = null;
   if (timeoutMs) workerTimeoutMs = timeoutMs;
 }
@@ -108,8 +115,7 @@ export function parallelFullSearch(
 // used to live for the tab's lifetime after the first parallel search. Runs
 // are bursty — one optimize, then minutes of reading — so terminate after a
 // quiet minute and respawn on the next job (milliseconds; the spawn was
-// already amortized per-run, not per-message). Distinct from retireWorkerPool:
-// this does NOT set workerPoolBroken, so the pool comes back.
+// already amortized per-run, not per-message).
 const WORKER_IDLE_MS = 60_000;
 let idleTimer = null;
 
@@ -119,15 +125,7 @@ function scheduleIdleRelease() {
   if (idleTimer) clearTimeout(idleTimer);
   idleTimer = setTimeout(() => {
     idleTimer = null;
-    if (!workerPool) return;
-    for (const worker of workerPool) {
-      try {
-        worker.terminate();
-      } catch {
-        // ignore
-      }
-    }
-    workerPool = null;
+    dropWorkerPool();
   }, WORKER_IDLE_MS);
 }
 
@@ -143,7 +141,9 @@ async function dispatch(
   const pool = total >= PARALLEL_THRESHOLD ? getWorkerPool() : null;
   const typeChart = activeTypeChart();
 
-  if (!pool || pool.length < 2) {
+  // Even one worker takes the search: it is no faster there, but the page
+  // stays live and the progress bar paints.
+  if (!pool || !pool.length) {
     return searchCombinationRange(
       compactLines, targetSize, bias, 0, total, topCount, onProgress,
       fixedCompactLines, typeChart);
@@ -185,13 +185,15 @@ async function dispatch(
       );
     }
     const results = await Promise.all(jobs);
+    poolFailures = 0;
     return mergeResults(results, topCount);
   } catch {
-    // Any worker failure (load error, crash, or hang) → retire the pool so we
-    // don't pay the failure again, and recompute synchronously so a correct
-    // result is always returned. A broken worker degrades to "no speedup",
-    // never to a wrong answer or a frozen UI.
-    retireWorkerPool();
+    // Any worker failure (load error, crash, or hang) → drop the pool and
+    // recompute synchronously so a correct result is always returned. A
+    // broken worker degrades to "no speedup", never to a wrong answer.
+    dropWorkerPool();
+    poolFailures += 1;
+    if (poolFailures >= MAX_POOL_FAILURES) workerPoolBroken = true;
     return searchCombinationRange(
       compactLines, targetSize, bias, 0, total, topCount, null,
       fixedCompactLines, typeChart);
@@ -259,18 +261,18 @@ function runOnWorker(
   });
 }
 
-function retireWorkerPool() {
-  workerPoolBroken = true;
-  if (workerPool) {
-    for (const worker of workerPool) {
-      try {
-        worker.terminate();
-      } catch {
-        // ignore
-      }
+// Ends the pool's workers. The next job spawns a fresh pool unless the pool
+// has been retired (workerPoolBroken).
+function dropWorkerPool() {
+  if (!workerPool) return;
+  for (const worker of workerPool) {
+    try {
+      worker.terminate();
+    } catch {
+      // ignore
     }
-    workerPool = null;
   }
+  workerPool = null;
 }
 
 // Merges the per-range top lists with the SAME ordering as betterEvaluated for

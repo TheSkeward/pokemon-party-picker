@@ -27,6 +27,7 @@ import {
   contestedEvolutionItems,
 } from '../playthrough/evolution-requirements.js';
 import {
+  normalizeLevelCap,
   teamSlotsOf,
   withoutOwnedItems,
 } from '../playthrough/progression.js';
@@ -70,7 +71,7 @@ import { resolveRepresentativeLightBundle } from './representative-bundle';
 import { choosePoolTeam, orderLineBuilds } from './team-selection';
 import { attachCoreLift } from './core-completion.js';
 import { attachTeammateLift } from './teammate-synergy.js';
-import { loadPersistedResults, persistResult } from './result-cache-store.js';
+import { loadPersistedResult, persistResult } from './result-cache-store.js';
 import { getDataSignature } from '../manifest.js';
 import { moveSources } from '../games/legality.js';
 import {
@@ -314,25 +315,23 @@ const MAX_RESULT_CACHE = 400;
 // one are retired.
 // v92: a locked move that needs an evolution held seats in every build and
 // its hold is not charged; lines with such a lock change sets and scores.
-const RESULT_CACHE_VERSION = '92';
+// v93: a progression with no level cap is scored at cap 100, not 0; its
+// usage trust and scores change.
+const RESULT_CACHE_VERSION = '93';
 
-// Hydrate the in-memory memo from persisted results once, lazily. optimize()
-// awaits this before consulting the memo so a reload-then-same-pool is a hit.
-let hydration = null;
-function ensureHydrated() {
-  if (!hydration) {
-    hydration = loadPersistedResults(RESULT_CACHE_VERSION)
-      .then((entries) => {
-        for (const [poolKey, result] of entries) {
-          // Re-stamp the key: records written before post-analysis persistence
-          // predate the stamp, and persistPostAnalysis needs it to write back.
-          result.poolKey = poolKey;
-          if (!resultCache.has(poolKey)) resultCache.set(poolKey, result);
-        }
-      })
-      .catch(() => {});
-  }
-  return hydration;
+// The memoized result of a pool: the one in memory, else the one persisted
+// by an earlier page load, which joins the memo. So a reload followed by the
+// same pool is a hit, and only the pools asked for are ever read back.
+async function memoizedResult(poolKey) {
+  const inMemory = resultCache.get(poolKey);
+  if (inMemory) return inMemory;
+  const persisted = await loadPersistedResult(
+    RESULT_CACHE_VERSION, poolKey).catch(() => null);
+  if (!persisted) return null;
+  // Re-stamp the key: persistPostAnalysis needs it to write back.
+  persisted.poolKey = poolKey;
+  storeResult(poolKey, persisted);
+  return persisted;
 }
 
 /**
@@ -384,8 +383,6 @@ export async function optimizeTeamFromPool({
   let total = initialScoredPoolSize + unresolvedPoolSize;
   let completed = 0;
   onProgress?.({ phase: ProgressPhase.RESOLVE, completed, total });
-
-  await ensureHydrated();
 
   // Met levels ("Munna@14") gate a line's level-1 moves and move locks
   // ("Meowstic {Thunder Wave}") fix its sets, so both ride the progression
@@ -486,7 +483,7 @@ export async function optimizeTeamFromPool({
     )
     .sort()
     .join(',')}`;
-  const memoized = resultCache.get(poolKey);
+  const memoized = await memoizedResult(poolKey);
   if (memoized) {
     onProgress?.({ phase: ProgressPhase.RESOLVE, completed: total, total });
     // A fast-mode hit must not touch the incremental cache: its results are
@@ -1073,7 +1070,9 @@ async function resolvePoolLine({
   const familyConfig = availability?.familyConfigs?.[family] || {};
   const formatOrder = familyConfig.formatOrder || [];
   const cutoffPriority = familyConfig.cutoffPriority || [];
-  const levelCap = Number.parseInt(progression.levelCap, 10) || 0;
+  // An unset cap is no cap, as everywhere else: read as zero it put every
+  // line's usage trust at its floor.
+  const levelCap = normalizeLevelCap(progression.levelCap);
   const repEntry = getCanonicalLineCandidates(prepared.filter(
     (entry) => !entry.error && entry.bundle?.usage,
   ))[0];

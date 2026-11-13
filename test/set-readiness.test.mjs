@@ -18,12 +18,26 @@ test('machine timing is priced from the active game\'s option tables', () => {
     },
     availableMoves: [],
     topSet: { moveUsage: new Map([[moveId, 50]]) },
-    progression: {},
+    progression: { levelCap: '1' },
   });
   const entry = readiness.moves.find((move) => move.id === moveId);
   assert.notEqual(entry.status, 'blocked');
   assert.match(entry.detail, /TM57 @1 badge/);
   assert.equal(readiness.fullAtCap, 25);
+
+  // With no cap set the player is uncapped: the badge-1 machine is within
+  // reach, so what is missing is a pickup, not progress.
+  const uncapped = computeSetReadiness({
+    legalMoveData: {
+      pokemonId: 'mareep',
+      moves: [{ id: moveId, sources: { tm: true } }],
+    },
+    availableMoves: [],
+    topSet: { moveUsage: new Map([[moveId, 50]]) },
+    progression: {},
+  });
+  assert.equal(uncapped.fullAtCap, null);
+  assert.equal(uncapped.pendingPickups, true);
 });
 
 test("a canonical move names every route: the pre-evolution's level and the TM", async () => {

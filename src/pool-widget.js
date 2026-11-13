@@ -172,7 +172,7 @@ export function mountPoolOptimizer(container, options = {}) {
 
   async function init() {
     applyGameTheme(await gameReady);
-    state.query = getParam('poolQuery') || loadSavedPool();
+    state.query = loadSavedPool();
     state.donorQuery = loadSavedDonors();
     state.progression = loadSavedProgression();
     // Manifest FIRST: loading it sets the data-version tag, so every fetch
@@ -569,8 +569,8 @@ export function mountPoolOptimizer(container, options = {}) {
   }
 
   // After a progression change that invalidates the optimized team, re-run the
-  // optimizer automatically. Debounced so rapid edits — typing a level cap,
-  // dragging a bias slider, toggling several TMs — settle into one re-optimize.
+  // optimizer automatically. Debounced so rapid edits — dragging a bias
+  // slider, toggling several TMs — settle into one re-optimize.
   // Batch-style edits (a shop haul of items, a badge's worth of TM/tutor
   // checkboxes) pass the LONG delay: they arrive as bursts of actions each a
   // few seconds apart, and must not pay a full recompute per pause.
@@ -797,13 +797,6 @@ export function mountPoolOptimizer(container, options = {}) {
           control.dataset.progressionField,
           control.type === 'checkbox' ? control.checked : control.value,
         );
-
-        if (
-          control.dataset.progressionField === 'levelCap' &&
-          control.value !== state.progression.levelCap
-        ) {
-          control.value = state.progression.levelCap;
-        }
 
         const saved = saveProgression(state.progression);
         const stale = markResultProgressionStale();
@@ -1085,7 +1078,7 @@ export function mountPoolOptimizer(container, options = {}) {
 
         const saved = savePool(state.query);
 
-        discardResult();
+        const interrupted = discardResult();
         state.resultProgressionKey = '';
         state.availabilityText = '';
         state.teamItemUsage = null;
@@ -1098,6 +1091,9 @@ export function mountPoolOptimizer(container, options = {}) {
           : 'Not saved locally; browser storage is full.';
 
         writeUrl();
+        // An interrupted run's progress panel comes down; the box keeps its
+        // focus and selection through the render.
+        if (interrupted) render();
         updatePoolStatusMessage(state.statusMessage);
       });
 
@@ -1116,7 +1112,7 @@ export function mountPoolOptimizer(container, options = {}) {
         const saved = saveDonors(state.donorQuery);
         // Donors change what the pool can breed or Sketch, so the result
         // and everything derived from it are stale.
-        discardResult();
+        const interrupted = discardResult();
         state.resultProgressionKey = '';
         state.availabilityText = '';
         state.teamItemUsage = null;
@@ -1126,6 +1122,7 @@ export function mountPoolOptimizer(container, options = {}) {
         state.statusMessage = saved
           ? 'Saved locally'
           : 'Not saved locally; browser storage is full.';
+        if (interrupted) render();
         updatePoolStatusMessage(state.statusMessage);
       });
 
@@ -1348,7 +1345,7 @@ export function mountPoolOptimizer(container, options = {}) {
     scheduleAutoReoptimize(stale);
   }
 
-  // Light progression edits (level cap typing, bias drags) deliberately skip
+  // Light progression edits (a ticked box, a bias drag) deliberately skip
   // the full re-render; keep the modern layout's gamestate strip honest by
   // rebuilding just its chips in place. Chip clicks stay live because their
   // handler is delegated to the widget root.
@@ -1731,13 +1728,20 @@ export function mountPoolOptimizer(container, options = {}) {
   }
 
   // An edit that discards the result ends the run that produced it: a sweep
-  // in flight sees the result change and stops itself. An optimize still in
-  // flight keeps its phase, since it will still land.
+  // in flight sees the result change and stops itself, and an optimize in
+  // flight is disowned, since the team it would land is for the pool as it
+  // was. (The optimizer finishes unheard and its result stays cached.)
+  // Returns whether an optimize was interrupted, which leaves its progress
+  // panel on the page for the caller to render away.
   function discardResult() {
     state.result = null;
-    if (state.phase !== OptimizePhase.OPTIMIZING) {
-      state.phase = OptimizePhase.IDLE;
+    const interrupted = state.phase === OptimizePhase.OPTIMIZING;
+    if (interrupted) {
+      optimizeRunToken += 1;
+      stopOptimizeProgress();
     }
+    state.phase = OptimizePhase.IDLE;
+    return interrupted;
   }
 
   function getProgressionSavedMessage(stale) {

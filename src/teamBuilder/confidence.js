@@ -25,6 +25,7 @@
 import { scoreCandidate } from './candidate-scoring.js';
 import { choosePoolTeam, orderLineBuilds } from './team-selection.js';
 import { setScoringOverrides } from './scoring-constants.js';
+import { normalizeLevelCap } from '../playthrough/progression.js';
 
 /**
  * CONSTRAINT for new settings: overrides are process-globals on THIS thread.
@@ -175,7 +176,7 @@ export async function computeTeamConfidence({
   if (!allLines.length || !result?.team?.length) return null;
   const lines = selectSweepContenders(allLines, result.team);
 
-  const levelCap = Number.parseInt(progression?.levelCap, 10) || 0;
+  const levelCap = normalizeLevelCap(progression?.levelCap);
   const opponentTypeBias = progression?.opponentTypeBias || {};
   const context = { availability, family, levelCap, opponentTypeBias };
 

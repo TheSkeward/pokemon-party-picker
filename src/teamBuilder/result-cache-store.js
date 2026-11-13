@@ -15,13 +15,19 @@
  * manifest on every flush and compaction, so a 2 MB key grew one manifest to
  * 13 GB in a day; the optimizer keys on a digest of the score context
  * (test/result-cache-key.test.mjs bounds the length).
+ *
+ * A record is read only when its pool asks for it. Each holds a whole
+ * resolved pool, so reading the store through at startup, as this once
+ * did, put every cached gamestate in memory for the life of the tab.
  */
 
 // Frozen at the project's original name; renaming would orphan every
 // browser's existing cache for no gain.
 const DB_NAME = 'pokemon-usage-viewer';
 const STORE = 'team-results';
-const DB_VERSION = 1;
+// 2 adds the index by version, which lets retired records be found
+// without reading them.
+const DB_VERSION = 2;
 // Cap stored pools so the database can't grow without bound; oldest-written are
 // evicted first. Sized for the investment plan's future-cap projections, which
 // persist alongside the interactive result: each gamestate can write three
@@ -44,12 +50,24 @@ function openStore() {
       const request = indexedDB.open(DB_NAME, DB_VERSION);
       request.onupgradeneeded = () => {
         const db = request.result;
-        if (!db.objectStoreNames.contains(STORE)) {
-          const store = db.createObjectStore(STORE, { keyPath: 'poolKey' });
-          store.createIndex('ts', 'ts');
+        const store = db.objectStoreNames.contains(STORE)
+          ? request.transaction.objectStore(STORE)
+          : db.createObjectStore(STORE, { keyPath: 'poolKey' });
+        if (!store.indexNames.contains('ts')) store.createIndex('ts', 'ts');
+        if (!store.indexNames.contains('version')) {
+          store.createIndex('version', 'version');
         }
       };
-      request.onsuccess = () => resolve(request.result);
+      request.onsuccess = () => {
+        const db = request.result;
+        // Step aside for a newer build in another tab that needs to
+        // upgrade the store; this tab then simply stops caching.
+        db.onversionchange = () => {
+          db.close();
+          dbPromise = Promise.resolve(null);
+        };
+        resolve(db);
+      };
       request.onerror = () => resolve(null);
       request.onblocked = () => resolve(null);
     } catch {
@@ -59,42 +77,53 @@ function openStore() {
 }
 
 /**
- * Entries matching the current version; asynchronously prunes any entry from
- * a different version (a deploy that changed optimizer output bumps the
- * version, retiring the old results).
+ * The result persisted for one pool under the current version, if any. The
+ * first call also retires, in the background, the records of other
+ * versions (a deploy that changed optimizer output bumps the version).
  * @param {string} version
- * @return {Promise<Map<string, Object>>} poolKey -> result.
+ * @param {string} poolKey
+ * @return {Promise<?Object>} The result; null when there is none.
  */
-export async function loadPersistedResults(version) {
+export async function loadPersistedResult(version, poolKey) {
   const db = await openDb();
-  const entries = new Map();
-  if (!db) return entries;
+  if (!db) return null;
+  pruneOtherVersions(db, version);
 
   return new Promise((resolve) => {
-    const stale = [];
     try {
-      const tx = db.transaction(STORE, 'readonly');
-      const request = tx.objectStore(STORE).openCursor();
+      const request =
+        db.transaction(STORE, 'readonly').objectStore(STORE).get(poolKey);
       request.onsuccess = () => {
-        const cursor = request.result;
-        if (!cursor) {
-          if (stale.length) deleteKeys(stale);
-          resolve(entries);
-          return;
-        }
-        const value = cursor.value;
-        if (value?.version === version && value.result) {
-          entries.set(value.poolKey, value.result);
-        } else {
-          stale.push(cursor.key);
-        }
-        cursor.continue();
+        const value = request.result;
+        resolve(value?.version === version && value.result
+          ? value.result
+          : null);
       };
-      request.onerror = () => resolve(entries);
+      request.onerror = () => resolve(null);
     } catch {
-      resolve(entries);
+      resolve(null);
     }
   });
+}
+
+// Deletes the records of every version but this one, once a session. A key
+// cursor over the version index names them without reading a record.
+let pruned = false;
+function pruneOtherVersions(db, version) {
+  if (pruned) return;
+  pruned = true;
+  try {
+    const store = db.transaction(STORE, 'readwrite').objectStore(STORE);
+    const request = store.index('version').openKeyCursor();
+    request.onsuccess = () => {
+      const cursor = request.result;
+      if (!cursor) return;
+      if (cursor.key !== version) store.delete(cursor.primaryKey);
+      cursor.continue();
+    };
+  } catch {
+    // best-effort cleanup
+  }
 }
 
 /**
@@ -145,13 +174,3 @@ function evictOldest(store, count) {
   }
 }
 
-async function deleteKeys(keys) {
-  const db = await openDb();
-  if (!db) return;
-  try {
-    const store = db.transaction(STORE, 'readwrite').objectStore(STORE);
-    for (const key of keys) store.delete(key);
-  } catch {
-    // best-effort cleanup
-  }
-}
