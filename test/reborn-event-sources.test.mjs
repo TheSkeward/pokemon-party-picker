@@ -75,6 +75,20 @@ test('an event is dated by its badge switches and episode variables', () => {
     ]),
     0,
   );
+  // A counter still under a value, or not at one, is so from the start;
+  // one that has left nothing has been raised.
+  assert.equal(
+    badge([
+      { variable: 348, name: 'Stamps', op: '<', value: 1 },
+      { variable: 348, name: 'Stamps', op: '<=', value: 0 },
+      { variable: 348, name: 'Stamps', op: '!=', value: 3 },
+    ]),
+    0,
+  );
+  assert.equal(
+    badge([{ variable: 173, name: 'E12 Story', op: '!=', value: 0 }]), 9);
+  assert.equal(
+    badge([{ variable: 348, name: 'Stamps', op: '<', value: 0 }]), null);
   // Any other script switch is as undated as a quest's.
   assert.equal(badge([{ switch: 31, name: 's:pbGet(5)==2' }]), null);
   // A quest switch, an item check or a counter is no badge: undated.

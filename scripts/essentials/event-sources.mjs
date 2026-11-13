@@ -64,8 +64,8 @@ const CLOCK_SWITCH = /^s:!?(PBDayNight\.|pbIsWeekday\()/;
 
 // The badge one condition implies: its own for a badge count asked
 // outright, 0 for one that gates nothing in time (a confirmation, a price,
-// a negation, a facing test, a counter at zero, a battle to win, the time
-// of day), null for one this cannot date.
+// a negation, a facing test, a counter at zero or still under a value, a
+// battle to win, the time of day), null for one this cannot date.
 function badgeOfCondition(condition, dating) {
   if (condition.badges != null) return condition.badges;
   if (condition.script != null) {
@@ -86,9 +86,18 @@ function badgeOfCondition(condition, dating) {
   }
   if (condition.variable != null) {
     const floor = condition.atLeast ?? condition.value;
+    if (typeof floor !== 'number') return null;
+    // A variable starts at nothing, so one asked to be under a value, or
+    // other than it, is so from the start; other than nothing means it
+    // has been raised.
+    if (condition.op === '<') return floor > 0 ? 0 : null;
+    if (condition.op === '<=') return floor >= 0 ? 0 : null;
+    if (condition.op === '!=') {
+      return floor === 0 ? dating.variableBadge(condition.name || '', 1) : 0;
+    }
     const lowerBound = condition.atLeast != null ||
       ['>=', '>', '=='].includes(condition.op);
-    if (!lowerBound || typeof floor !== 'number') return null;
+    if (!lowerBound) return null;
     if (floor <= 0 && condition.atLeast != null) return 0;
     return dating.variableBadge(condition.name || '', floor);
   }
@@ -348,10 +357,15 @@ let Sale;
 // The row conditions that withdraw a row once its item has been bought.
 const SOLD_ONCE = /^!(\$game_switches\[self\.item\]|searchItem\(self\.item\))$/;
 
-// One clause of a mart row's condition, a Ruby expression, as the condition
-// an event page would carry; `script` for one this does not read, which
-// nothing then dates.
-function rowCondition(text, markers) {
+/**
+ * @param {string} text One clause of a mart row's condition, a Ruby
+ *     expression.
+ * @param {{switches: !Object, variables: !Object}} markers The names of
+ *     the game's switches and variables, by id.
+ * @return {!Object} The clause as the condition an event page would carry;
+ *     `script` for one this does not read, which nothing then dates.
+ */
+export function rowCondition(text, markers) {
   const badges = BADGE_COUNT.exec(text);
   if (badges) return { badges: Number(badges[1]) };
   const off = /^\$game_switches\[(\d+)\]\s*==\s*false$/.exec(text);

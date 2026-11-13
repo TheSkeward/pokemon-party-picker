@@ -77,6 +77,19 @@ const gateSetters = {
     22: { name: 'Stock', ...counts, draws: 1, raises: [] },
     // Never raised by anything this reads.
     23: { name: 'Typed', ...counts, other: 2, raises: [] },
+    // Ten steps, each waiting on the one before; the eighth is taken on a
+    // map reached at badge 7, and one step leads back on itself.
+    24: {
+      name: 'Shards',
+      ...counts,
+      raises: [
+        set(2, 1),
+        ...[2, 3, 4, 5, 6, 7, 9, 10].map((value) => set(
+          2, value, [{ variable: 24, name: 'Shards', atLeast: value - 1 }])),
+        set(4, 8, [{ variable: 24, name: 'Shards', op: '==', value: 7 }]),
+        set(1, 12, [{ variable: 24, name: 'Shards', atLeast: 12 }]),
+      ],
+    },
   },
   calledFrom: {
     7: [
@@ -123,6 +136,10 @@ test('a variable assigned outright is dated by a write that high', () => {
   assert.equal(dating.variableBadge('Quest', 1), 3);
   assert.equal(dating.variableBadge('Quest', 2), 4);
   assert.equal(dating.variableBadge('Quest', 6), null);
+  // A quest that counts itself up is followed down all its steps.
+  assert.equal(dating.variableBadge('Shards', 7), 3);
+  assert.equal(dating.variableBadge('Shards', 10), 7);
+  assert.equal(dating.variableBadge('Shards', 11), null);
   // Drawn at random each time: no gate. Typed in by the player: no date.
   assert.equal(dating.variableBadge('Stock', 6), 0);
   assert.equal(dating.variableBadge('Typed', 1), null);
