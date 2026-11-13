@@ -8,7 +8,9 @@ import { escapeHtml } from '../utils/html.js';
  * @param {!Object} state
  * @param {!Array<!Object>} formatsIndex
  * @param {string} selectionLabel
- * @param {{loading: (boolean|undefined), message: (string|undefined)}=} status
+ * @param {{loading: (boolean|undefined), message: (string|undefined),
+ *     unmatched: (!Array<string>|undefined)}=} status `unmatched` names
+ *     the query's entries that matched no Pokémon.
  */
 export function renderResolverResults(
   container,
@@ -29,13 +31,19 @@ export function renderResolverResults(
         <span>${escapeHtml(status.message || 'Resolving Pokémon...')}</span>
       </div>`
     : '';
+  // Said in words as well as colour: a misspelt name otherwise just has no
+  // row, and the count beside it looks complete.
+  const unmatched = status.unmatched || [];
+  const unmatchedNotice = unmatched.length
+    ? `<p class="resolver-unmatched">Not recognised: ${escapeHtml(unmatched.join(', '))}</p>`
+    : '';
   if (rows.length === 0) {
-    container.innerHTML = `<section class="panel">${loadingNotice}<p class="muted">No matching Pokémon found.</p></section>`;
+    container.innerHTML = `<section class="panel">${loadingNotice}${unmatchedNotice || '<p class="muted">No matching Pokémon found.</p>'}</section>`;
     return;
   }
   container.innerHTML = `
     <section class="panel">
-      <div class="panel-header"><div><h2>Set Lookup Results</h2><p>${rows.length} Pokémon resolved for ${selectionLabel}</p><p>Usage % and Source show the canonical tier — the first tier the Pokémon is meaningfully played in (its best trace tier when it never clears the bar). Shallower fallback tiers are noted and their sets appear tagged in the details below. Sorted by Lead % descending. Click a row to load movesets.</p></div></div>
+      <div class="panel-header"><div><h2>Set Lookup Results</h2><p>${rows.length} Pokémon resolved for ${selectionLabel}</p>${unmatchedNotice}<p>Usage % and Source show the canonical tier — the first tier the Pokémon is meaningfully played in (its best trace tier when it never clears the bar). Shallower fallback tiers are noted and their sets appear tagged in the details below. Sorted by Lead % descending. Click a row to load movesets.</p></div></div>
       ${loadingNotice}
       <div class="table-wrap"><table class="usage-table resolver-results-table"><thead><tr><th>Pokémon</th><th>Usage %</th><th>Lead %</th><th>Source</th></tr></thead><tbody>
         ${rows.map((row) => `<tr data-resolver-pokemon-id="${row.pokemonId}" class="${row.pokemonId === state.resolverSelectedPokemon ? 'selected' : ''}"><td><button type="button" class="row-link" aria-pressed="${row.pokemonId === state.resolverSelectedPokemon}">${renderPokemonCell(row)}</button></td><td>${renderUsageCell(row.bundle)}</td><td>${row.bundle.leads ? row.bundle.leads.value.toFixed(1) : '—'}</td><td>${renderSourceCell(row.bundle, formatsIndex)}</td></tr>`).join('')}
@@ -46,13 +54,13 @@ function renderPokemonCell(row) {
   if (row.inputName && row.inputName !== row.name) {
     return `
       <div class="representative-cell">
-        <div><span class="input-mon">${escapeHtml(row.inputName)}</span> <span class="arrow">→</span> <strong>${escapeHtml(row.name)}</strong></div>
+        <div><span class="input-mon">${escapeHtml(row.inputName)}</span> <span class="arrow">→</span> <strong class="row-link-name">${escapeHtml(row.name)}</strong></div>
         <div class="representative-note">${escapeHtml(getRepresentativeNote(row))}</div>
       </div>
     `;
   }
 
-  return escapeHtml(row.name);
+  return `<span class="row-link-name">${escapeHtml(row.name)}</span>`;
 }
 
 function getRepresentativeNote(row) {

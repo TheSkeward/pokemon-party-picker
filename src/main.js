@@ -11,6 +11,7 @@ import {
   loadItemUsage,
   loadMoveUsage,
   loadPokemonIndex,
+  splitQueryNames,
 } from './data';
 import {
   activateGameForFamily,
@@ -38,7 +39,10 @@ import { POKEMON_USAGE_TABLE } from './views/pokemon-usage-view';
 import { nextSort } from './views/table-parts';
 import { usageTableById } from './views/usage-tables';
 import { mountPoolOptimizer } from './pool-widget';
-import { computeResolverRepresentativeResults } from './resolver/representatives';
+import {
+  computeResolverRepresentativeResults,
+  unmatchedQueryNames,
+} from './resolver/representatives';
 import { createPrecomputedSetDetailsLoader } from './setDetails/precomputed-set-details';
 import { startUpdateNotifier } from './update-notifier';
 
@@ -59,6 +63,8 @@ let browserMovesetData = null;
 let browserMovesetKey = null;
 let familyTable = null;
 let resolverResults = [];
+// The names of the query behind those results that matched no Pokémon.
+let resolverUnmatched = [];
 let resolverLoadingState = { loading: false, message: '' };
 let syncGeneration = 0;
 let resolverDebounceTimer = null;
@@ -89,7 +95,7 @@ async function init() {
   await ensureBrowserMovesetData();
   await ensureFamilyTableData();
 
-  resolverResults = await computeResolverResults();
+  applyResolverResults(await computeResolverResults());
 
   writeStateToUrl(getState());
   renderApp();
@@ -176,6 +182,7 @@ function renderApp() {
       resolverResults,
       setDetails: resolverSetDetails,
       state,
+      unmatchedNames: resolverUnmatched,
     });
   } else if (state.view === 'pool') {
     renderPoolPage(pageRoot);
@@ -354,10 +361,7 @@ function clearPendingResolverDebounce() {
 }
 
 function getResolverLoadingMessage() {
-  const tokens = (getState().resolverQuery || '')
-    .split(/[,\n]+/)
-    .map((token) => token.trim())
-    .filter(Boolean);
+  const tokens = splitQueryNames(getState().resolverQuery);
 
   if (tokens.length >= 8) {
     return `Resolving ${tokens.length} inputs across best available data...`;
@@ -407,8 +411,7 @@ async function sync(options = {}) {
 
   if (recomputeResolverResults) {
     resolverLoadingState = { loading: false, message: '' };
-    resolverResults = nextResolverResults;
-    ensureResolverSelectionStillExists();
+    applyResolverResults(nextResolverResults);
   }
 
   writeStateToUrl(getState());
@@ -418,6 +421,21 @@ async function sync(options = {}) {
 
   restoreFocusState(focusState);
   syncResolverSetDetailsSelection();
+}
+
+// Takes the results of the query as it stands: which of its names matched
+// nothing, whether the open Pokémon is still among them, and, when the
+// query came to exactly one Pokémon, that one opened. A lone result is the
+// answer asked for, so its movesets need no click; closing it holds until
+// the results are worked out again.
+function applyResolverResults(results) {
+  resolverResults = results;
+  resolverUnmatched = unmatchedQueryNames(
+    getState().resolverQuery, pokemonIndex);
+  ensureResolverSelectionStillExists();
+  if (results.length === 1 && !getState().resolverSelectedPokemon) {
+    setState({ resolverSelectedPokemon: results[0].pokemonId });
+  }
 }
 
 function ensureResolverSelectionStillExists() {

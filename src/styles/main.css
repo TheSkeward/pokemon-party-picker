@@ -317,6 +317,26 @@ button:hover {
   background: none;
   text-decoration: underline;
 }
+/* A name that opens something when clicked reads as a link at rest, not
+   only under the pointer. */
+.row-link-name {
+  text-decoration: underline;
+  text-decoration-color: var(--text-muted);
+  text-underline-offset: 0.2em;
+}
+/* A typed name that matched no Pokémon. */
+.resolver-unmatched {
+  color: var(--state-warn);
+}
+/* The method notes of a moveset panel, folded under one line. */
+.moveset-method {
+  margin: var(--space-1) 0;
+  color: var(--text-muted);
+  font-size: var(--type-s);
+}
+.moveset-method summary {
+  cursor: pointer;
+}
 .panel-header {
   display: flex;
   justify-content: space-between;

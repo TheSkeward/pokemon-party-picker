@@ -2,9 +2,27 @@ import {
   getLineRepresentativeCandidates,
   resolveBestAvailableLightBundle,
   resolveQueryEntries,
+  splitQueryNames,
 } from '../data';
 import { toId as normalizeName } from '../utils/ids.js';
 import { getCanonicalLineCandidates } from '../teamBuilder/usage-line-ranking.js';
+
+/**
+ * The names of a query that match no Pokémon, as typed and in order, each
+ * once. The results say nothing about them otherwise: a misspelt name
+ * simply has no row.
+ * @param {string} query
+ * @param {!Array<!Object>} pokemonIndex
+ * @return {!Array<string>}
+ */
+export function unmatchedQueryNames(query, pokemonIndex) {
+  const matched = new Set(
+    resolveQueryEntries(query, pokemonIndex).map((entry) => entry.token),
+  );
+  return [...new Set(splitQueryNames(query))].filter(
+    (name) => !matched.has(name),
+  );
+}
 
 /**
  * Resolves each query token to result rows: normally one row carrying the

@@ -22,6 +22,7 @@ export function renderResolverPage(pageRoot, context) {
     resolverResults,
     setDetails,
     state,
+    unmatchedNames = [],
   } = context;
 
   const resolverSelected =
@@ -47,7 +48,7 @@ export function renderResolverPage(pageRoot, context) {
     state,
     formatsIndex,
     getAvailabilityLabel(availability),
-    resolverLoadingState,
+    { ...resolverLoadingState, unmatched: unmatchedNames },
   );
 
   const detailsRoot = document.querySelector('#details-root');

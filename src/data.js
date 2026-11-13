@@ -200,6 +200,17 @@ export function getLineRepresentativeCandidates(pokemonId, pokemonIndex) {
 }
 
 /**
+ * @param {?string} query Names separated by commas or newlines.
+ * @return {!Array<string>} The names as typed, trimmed, in order.
+ */
+export function splitQueryNames(query) {
+  return String(query || '')
+    .split(/[,\n]+/)
+    .map((token) => token.trim())
+    .filter(Boolean);
+}
+
+/**
  * Resolves a comma/newline-separated query against the Pokémon index. Per
  * token, the first non-empty match tier wins: exact, then prefix, then
  * substring.
@@ -207,13 +218,8 @@ export function getLineRepresentativeCandidates(pokemonId, pokemonIndex) {
  *     matchMode: string, broadMatch: boolean}>}
  */
 export function resolveQueryEntries(query, pokemonIndex) {
-  const raw = query.trim();
-  if (!raw) return [];
-
-  const tokens = raw
-    .split(/[,\n]+/)
-    .map((token) => token.trim())
-    .filter(Boolean);
+  const tokens = splitQueryNames(query);
+  if (!tokens.length) return [];
 
   const indexed = pokemonIndex.map((entry) => ({
     ...entry,

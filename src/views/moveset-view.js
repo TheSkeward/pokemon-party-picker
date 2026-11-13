@@ -62,21 +62,20 @@ export function renderMovesetPanel(container, options = {}) {
   const topSpreads = spreads.slice(0, 3);
   const pokemonId = toId(selectedPokemonName);
 
-  const notes = [];
+  // How the figures were made: true of every Pokémon, so folded away to
+  // leave the first screen to this one's data.
+  const methodNotes = [];
 
   if (aggregate)
-    notes.push(
+    methodNotes.push(
       "Aggregated across all available months, weighted by each month's sample size.",
     );
   if (stitched)
-    notes.push(
+    methodNotes.push(
       "Fallback-tier set options (shallower tiers first, from the family's strongest tier down) are appended with source tags instead of misleading percentages.",
     );
 
-  notes.push('Other and Nothing are hidden.');
-  notes.push(
-    'Hover a move to highlight matches. Click a move to show only moves with the same type and category.',
-  );
+  methodNotes.push('Other and Nothing are hidden.');
 
   container.innerHTML = `
     <section class="panel details-panel wide-details">
@@ -87,7 +86,11 @@ export function renderMovesetPanel(container, options = {}) {
           <p>Movesets from ${escapeHtml(lookupLabel || 'the current source')}${
             sourceUsageLabel ? ` · ${escapeHtml(sourceUsageLabel)}` : ''
           }</p>
-          ${notes.map((note) => `<p>${escapeHtml(note)}</p>`).join('')}
+          <details class="moveset-method">
+            <summary>How these numbers are made</summary>
+            ${methodNotes.map((note) => `<p>${escapeHtml(note)}</p>`).join('')}
+          </details>
+          <p>Hover a move to highlight matches. Click a move to show only moves with the same type and category.</p>
         </div>
       </div>
 
@@ -183,16 +186,25 @@ function renderSection(title, entries = [], alreadyExpanded = false, pokemonId =
   let additionalStarted = false;
   let legalUnusedStarted = false;
   const rows = [];
+  const sharedSources = sharedSourceRuns(entries);
 
   for (const [index, entry] of entries.entries()) {
     const moveMeta = title === 'Moves' ? resolveMoveMeta(entry) : null;
     const moveAttrs = moveMeta
       ? `data-move-type="${escapeAttr(moveMeta.type)}" data-move-category="${escapeAttr(moveMeta.category)}"`
       : '';
+    const shared = sharedSources[index];
+    // A run's source heads it, joined to the divider when the run opens
+    // the additional options.
+    const sourceHeading = shared?.opens
+      ? escapeHtml(compactSourceText(shared.source))
+      : '';
 
     if (isAdditionalEntry(entry) && !additionalStarted) {
       additionalStarted = true;
-      rows.push('<li class="section-divider">Additional set options</li>');
+      rows.push(`<li class="section-divider">Additional set options${sourceHeading ? ` · ${sourceHeading}` : ''}</li>`);
+    } else if (sourceHeading) {
+      rows.push(`<li class="section-divider">${sourceHeading}</li>`);
     }
 
     if (isLegalUnusedEntry(entry) && !legalUnusedStarted) {
@@ -204,8 +216,8 @@ function renderSection(title, entries = [], alreadyExpanded = false, pokemonId =
 
     rows.push(
       title === 'Moves'
-        ? renderMoveRow(entry, index, moveMeta, moveAttrs)
-        : renderStandardRow(entry, index, title, pokemonId),
+        ? renderMoveRow(entry, index, moveMeta, moveAttrs, Boolean(shared))
+        : renderStandardRow(entry, index, title, pokemonId, Boolean(shared)),
     );
   }
 
@@ -230,7 +242,37 @@ function renderSection(title, entries = [], alreadyExpanded = false, pokemonId =
   `;
 }
 
-function renderMoveRow(entry, index, moveMeta, moveAttrs) {
+// For each entry, the source it shares with its neighbours when two or
+// more additional options in a row give the same one in place of a usage
+// figure, and whether it opens that run; null otherwise. Such a run says
+// its source once, over the rows, not on each.
+function sharedSourceRuns(entries) {
+  const sourceOf = (entry) =>
+    (isAdditionalEntry(entry) && typeof entry.usage !== 'number'
+      ? entry.sourceText || ''
+      : '');
+  const marks = new Array(entries.length).fill(null);
+  let start = 0;
+  while (start < entries.length) {
+    const source = sourceOf(entries[start]);
+    let end = start + 1;
+    while (
+      source && end < entries.length && sourceOf(entries[end]) === source
+    ) {
+      end += 1;
+    }
+    if (source && end - start >= 2) {
+      for (let at = start; at < end; at++) {
+        marks[at] = { source, opens: at === start };
+      }
+    }
+    start = end;
+  }
+  return marks;
+}
+
+function renderMoveRow(
+  entry, index, moveMeta, moveAttrs, sourceShared = false) {
   const facts = describeMoveMeta(moveMeta);
   return `
     <li class="moveset-row move-row ${isTailEntry(entry) ? 'tail-entry' : ''} ${moveMeta ? 'move-entry' : ''}" ${moveAttrs}>
@@ -251,12 +293,13 @@ function renderMoveRow(entry, index, moveMeta, moveAttrs) {
         </span>
         ${typeof entry.usage === 'number' ? `<strong>${entry.usage.toFixed(1)}%</strong>` : ''}
       </span>
-      ${typeof entry.usage === 'number' ? '' : renderSourceLine(entry)}
+      ${typeof entry.usage === 'number' || sourceShared ? '' : renderSourceLine(entry)}
     </li>
   `;
 }
 
-function renderStandardRow(entry, index, sectionTitle, pokemonId = '') {
+function renderStandardRow(
+  entry, index, sectionTitle, pokemonId = '', sourceShared = false) {
   const tip = sectionTitle === 'Spreads' ? spreadTooltip(entry.name, pokemonId) : '';
   return `
     <li class="moveset-row ${isTailEntry(entry) ? 'tail-entry' : ''}"${tip ? ` title="${escapeAttr(tip)}"` : ''}>
@@ -264,7 +307,7 @@ function renderStandardRow(entry, index, sectionTitle, pokemonId = '') {
         <span class="entry-rank">${index + 1}.</span>
         <span>${renderPlainEntryName(entry.name, sectionTitle)}</span>
       </span>
-      ${renderEntryValue(entry)}
+      ${sourceShared ? '' : renderEntryValue(entry)}
     </li>
   `;
 }
