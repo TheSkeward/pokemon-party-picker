@@ -1,10 +1,12 @@
 /**
  * @fileoverview Which scraped real team (team-index.js) the player could field
- * RIGHT NOW: every member must be covered by a distinct pool line, every
- * listed move must be obtainable under the progression + breeding context
- * (the same egg-move availability the analysis panel's own sets use), and
- * every held item must be covered by tracked inventory. Display-only —
- * nothing here feeds scoring.
+ * RIGHT NOW: every member must be covered by a pool line, every listed move
+ * must be obtainable under the progression + breeding context (the same
+ * egg-move availability the analysis panel's own sets use), and every held
+ * item must be covered by tracked inventory. A pool line is one Pokémon and
+ * covers one member, unless it can be bred: with the daycare open, a line
+ * that hatches covers as many members as the team asks of it. Display-only
+ * — nothing here feeds scoring.
  */
 import { getCurrentSpeciesForChoice } from '../playthrough/current-species.js';
 import {
@@ -37,14 +39,9 @@ import { dex } from '../games/dex.js';
 export function getLineFieldableIds(line, progression = {}) {
   const ids = new Set();
   const hatchExpanded = new Set();
-  const choices = [
-    line?.best,
-    line?.bestNonMega,
-    ...(line?.choiceOptions || []),
-  ].filter(Boolean);
 
-  for (const choice of choices) {
-    const inputId = toId(choice.inputPokemonId || choice.pokemonId);
+  for (const choice of lineChoices(line)) {
+    const inputId = choiceInputId(choice);
     if (!inputId) continue;
     const currentId = toId(
       getCurrentSpeciesForChoice(choice, progression)?.id || inputId,
@@ -80,6 +77,30 @@ export function getLineFieldableIds(line, progression = {}) {
   return ids;
 }
 
+/**
+ * Whether a pool line covers any number of team members. With the daycare
+ * open a line that hatches is as many Pokémon as the player breeds: one
+ * Bulbasaur fields a team of six.
+ * @param {Object} line
+ * @param {Object} progression
+ * @return {boolean}
+ */
+export function lineSeatsMany(line, progression = {}) {
+  return Boolean(progression?.daycareUnlocked) &&
+    lineChoices(line).some((choice) => canHatchLine(choiceInputId(choice)));
+}
+
+function lineChoices(line) {
+  return [
+    line?.best,
+    line?.bestNonMega,
+    ...(line?.choiceOptions || []),
+  ].filter(Boolean);
+}
+
+const choiceInputId = (choice) =>
+  toId(choice.inputPokemonId || choice.pokemonId);
+
 // Input, current, and everything between, walking the prevo chain back from
 // current and stopping AT the input — nothing below it (a devolution) leaks
 // in. If current isn't actually an evolution of input (unknown data), only
@@ -99,9 +120,10 @@ function evolutionPathIds(inputId, currentId) {
 }
 
 /**
- * One pool line covers at most ONE team member, so seating is a bipartite
- * matching. Pools are small, so an augmenting-path pass can find a complete
- * assignment without letting one flexible member hide a valid team.
+ * A pool line that cannot be bred covers at most ONE team member, so
+ * seating on such lines is a bipartite matching. Pools are small, so an
+ * augmenting-path pass can find a complete assignment without letting one
+ * flexible member hide a valid team.
  * @param {Array<Array<number>>} candidateLinesByMember Per member, the line
  *     indexes that can field it.
  * @return {?Array<number>} The chosen line index per member, or null when
@@ -232,10 +254,10 @@ export function compareRealTeams(a, b, recommendedIds = new Set()) {
 /**
  * Finds the best-ranked team whose members, moves, and items the pool can
  * all field. When there is no exact result, returns the team with the
- * greatest share of members that
- * distinct pool lines can field (then greatest raw member count, then the
- * normal popularity/recommended-team ordering), plus a blocker receipt.
- * Teams over the six-Pokemon game limit are parser spill and are ignored.
+ * greatest share of members the pool's lines can field (then greatest raw
+ * member count, then the normal popularity/recommended-team ordering), plus
+ * a blocker receipt. What counts as a team is settled when the index is
+ * built (scripts/build-team-index.mjs).
  *
  * Move checks stay lazy: every plausible team gets the cheap species match,
  * but only exact candidates and the single displayed fallback load moves.
@@ -251,14 +273,14 @@ export async function findFieldableOrClosestRealTeam({
 }) {
   const candidates = [...(teams || [])].sort((a, b) =>
     compareRealTeams(a, b, recommendedIds),
-  ).filter((team) => {
-    const count = team.members?.length || 0;
-    return count > 0 && count <= 6;
-  });
+  );
   if (!candidates.length) return null;
 
   const fieldableByLine = (lines || []).map((line) =>
     getLineFieldableIds(line, progression),
+  );
+  const seatsMany = (lines || []).map((line) =>
+    lineSeatsMany(line, progression),
   );
   const context = {
     fieldableByLine,
@@ -271,7 +293,7 @@ export async function findFieldableOrClosestRealTeam({
   let closest = null;
 
   for (const team of candidates) {
-    const speciesMatch = teamSpeciesMatch(team, fieldableByLine);
+    const speciesMatch = teamSpeciesMatch(team, fieldableByLine, seatsMany);
     if (isCloserSpeciesMatch(speciesMatch, closest)) {
       closest = speciesMatch;
     }
@@ -308,17 +330,28 @@ export async function findFieldableOrClosestRealTeam({
   };
 }
 
-function teamSpeciesMatch(team, fieldableByLine) {
+function teamSpeciesMatch(team, fieldableByLine, seatsMany) {
   const members = team.members || [];
-  const candidateLines = members.map((member) => {
+  const lineIndexes = new Array(members.length).fill(null);
+  // Members only a one-Pokémon line can field compete for those lines; a
+  // line that breeds never runs out, so a member it fields takes it.
+  const contested = [];
+  members.forEach((member, index) => {
     const speciesId = toId(member.speciesId);
-    const indexes = [];
-    fieldableByLine.forEach((ids, index) => {
-      if (ids.has(speciesId)) indexes.push(index);
+    const candidates = [];
+    fieldableByLine.forEach((ids, lineIndex) => {
+      if (ids.has(speciesId)) candidates.push(lineIndex);
     });
-    return indexes;
+    const bred = candidates.find((lineIndex) => seatsMany[lineIndex]);
+    if (bred === undefined) contested.push({ index, candidates });
+    else lineIndexes[index] = bred;
   });
-  const lineIndexes = assignAvailableMembersToLines(candidateLines);
+  const seated = assignAvailableMembersToLines(
+    contested.map((member) => member.candidates),
+  );
+  contested.forEach(({ index }, order) => {
+    lineIndexes[index] = seated[order];
+  });
   return {
     team,
     lineIndexes,

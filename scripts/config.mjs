@@ -119,9 +119,18 @@ export const FAMILY_CONFIGS = {
   },
 };
 
-/** @type {!Array<{id: string, label: string, family: string}>} */
+/**
+ * The formats usage and teams are read for. `speciesClause: false` marks
+ * one whose rules let a team repeat a species; every other format forbids
+ * it.
+ * @type {!Array<{id: string, label: string, family: string,
+ *     speciesClause: (boolean|undefined)}>}
+ */
 export const REAL_FORMATS = [
-  { id: 'gen7anythinggoes', label: 'Gen 7 AG', family: 'singles' },
+  {
+    id: 'gen7anythinggoes', label: 'Gen 7 AG', family: 'singles',
+    speciesClause: false,
+  },
   { id: 'gen7ubers', label: 'Gen 7 Ubers', family: 'singles' },
   { id: 'gen7ou', label: 'Gen 7 OU', family: 'singles' },
   { id: 'gen7uu', label: 'Gen 7 UU', family: 'singles' },

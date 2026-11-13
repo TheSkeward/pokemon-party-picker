@@ -116,7 +116,9 @@ export function getEvolutionDepth(pokemonId) {
 /**
  * Lightweight, unscored pool lines for real-team ownership matching. This is
  * deliberately built from the complete query, not the optimizer's bounded
- * working set: the 126-line cap controls score/search cost only.
+ * working set: the 126-line cap controls score/search cost only. One line
+ * per Pokémon owned: the query holds the pool and the donor box, the donor
+ * box keeps every pool entry, and a species named in both is one Pokémon.
  */
 export function buildFieldablePoolLines({
   query = '',
@@ -126,8 +128,13 @@ export function buildFieldablePoolLines({
   if (!query || !pokemonIndex?.length) return [];
 
   const abilityAnnotations = parseAbilityAnnotations(query, pokemonIndex);
+  const owned = new Set();
   return buildInputGroups(query, pokemonIndex)
-    .filter((group) => !group.unresolved)
+    .filter((group) => {
+      if (group.unresolved || owned.has(group.input.id)) return false;
+      owned.add(group.input.id);
+      return true;
+    })
     .map((group) => {
       const candidates = getReachableLineCandidates(
         group,

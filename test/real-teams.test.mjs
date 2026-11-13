@@ -11,6 +11,7 @@ const {
   compareRealTeams,
   findFieldableOrClosestRealTeam,
   getLineFieldableIds,
+  lineSeatsMany,
   teamItemShortages,
   teamItemsCovered,
 } = await import('../src/teamBuilder/real-teams.js');
@@ -137,6 +138,60 @@ test('unscored pool inputs remain available to usage-team matching', async () =>
     'lapras-team',
     'the lightweight full-query pool can see Lapras without scoring it',
   );
+});
+
+test('a species in the pool and in the donor box is one Pokémon', () => {
+  const pokemonIndex = [
+    { id: 'tauros', name: 'Tauros' },
+    { id: 'lapras', name: 'Lapras' },
+  ];
+  // The query is the pool, then the donor box, which keeps every pool
+  // entry.
+  const lines = buildFieldablePoolLines({
+    query: 'Tauros!, Lapras\nLapras, Tauros',
+    pokemonIndex,
+    progression: { levelCap: '100' },
+  });
+  assert.deepEqual(
+    lines.map((line) => line.best.inputPokemonId), ['tauros', 'lapras']);
+});
+
+test('a line that can be bred seats as many members as the team asks', async () => {
+  const six = makeTeam('six', 1, 1, new Array(6).fill('bulbasaur'));
+  const lines = [makeLine('bulbasaur')];
+  const daycare = { levelCap: '100', daycareUnlocked: true };
+
+  assert.equal(lineSeatsMany(lines[0], { levelCap: '100' }), false);
+  assert.equal(lineSeatsMany(lines[0], daycare), true);
+  // One Bulbasaur is one seat; one Bulbasaur and a daycare is the team.
+  const alone = await findFieldableOrClosestRealTeam({
+    teams: [six], lines, progression: { levelCap: '100' },
+  });
+  assert.equal(alone.kind, 'closest');
+  assert.equal(alone.matchedCount, 1);
+  const bred = await findFieldableOrClosestRealTeam({
+    teams: [six], lines, progression: daycare,
+  });
+  assert.equal(bred.kind, 'fieldable');
+
+  // A line with no mother cannot be bred, daycare or not.
+  const magnets = makeTeam('magnets', 1, 1, ['magnezone', 'magnezone']);
+  const magnemite = [makeLine('magnemite', 'magnezone')];
+  assert.equal(lineSeatsMany(magnemite[0], daycare), false);
+  const stuck = await findFieldableOrClosestRealTeam({
+    teams: [magnets], lines: magnemite, progression: daycare,
+  });
+  assert.equal(stuck.kind, 'closest');
+  assert.equal(stuck.matchedCount, 1);
+
+  // A bred line leaves the one-seat lines to the members that need them.
+  const mixed = makeTeam('mixed', 1, 1, ['bulbasaur', 'tauros', 'bulbasaur']);
+  const both = await findFieldableOrClosestRealTeam({
+    teams: [mixed],
+    lines: [makeLine('tauros'), makeLine('bulbasaur')],
+    progression: daycare,
+  });
+  assert.equal(both.kind, 'fieldable');
 });
 
 test('assignment: one line covers at most one member, scarcest member seats first', () => {
@@ -355,33 +410,6 @@ test('closest team reports distinct species, move, and item blockers', async () 
       missing: 1,
     },
   ]);
-});
-
-test('closest-team search ignores parser spill beyond six members', async () => {
-  const malformed = makeTeam('spill', 999, 99, [
-    'tauros',
-    'lapras',
-    'pinsir',
-    'heracross',
-    'skarmory',
-    'dragonite',
-    'notapokemon',
-  ]);
-  const valid = makeTeam('valid', 1, 1, [
-    'tauros',
-    'lapras',
-    'pinsir',
-    'heracross',
-    'dragonite',
-    'skarmory',
-  ]);
-  const match = await findFieldableOrClosestRealTeam({
-    teams: [malformed, valid],
-    lines: [makeLine('tauros')],
-    progression: { levelCap: '100' },
-  });
-  assert.equal(match.kind, 'closest');
-  assert.equal(match.team.key, 'valid');
 });
 
 test('closest-team panel stays visible and explains every blocker type', () => {

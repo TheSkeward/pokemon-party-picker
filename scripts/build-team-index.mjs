@@ -5,6 +5,11 @@
  * runtime's "fieldable real team" panel filters these against the player's
  * pool, progression, and tracked inventory. Uncapped: see real harvest volume
  * before deciding any cap is needed.
+ *
+ * Only a team is indexed: six Pokémon, no species twice where the format
+ * has the Species Clause. The archives also hold forum posts that list
+ * several sets of one Pokémon and pastes the parser read past the end of,
+ * and a short list of sets is the easiest "team" for any pool to match.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -18,8 +23,17 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const ARCHIVE_DIR = path.join(scriptDir, 'teamscrape', 'archive');
 const OUT_ROOT = path.join(scriptDir, '..', 'site-data', 'data', 'team-index');
 
-const MIN_MEMBERS = 4;
+const TEAM_SIZE = 6;
 const familyOf = new Map(REAL_FORMATS.map((f) => [f.id, f.family]));
+const REPEATS_ALLOWED = new Set(
+  REAL_FORMATS.filter((f) => f.speciesClause === false).map((f) => f.id),
+);
+
+function isTeam(sets, formatId) {
+  if (sets.length !== TEAM_SIZE) return false;
+  return REPEATS_ALLOWED.has(formatId) ||
+    new Set(sets.map((set) => set.speciesId)).size === sets.length;
+}
 
 function memberKey(set) {
   return [
@@ -45,7 +59,7 @@ export function buildTeamIndex(records) {
     const sets = (record.sets || []).filter(
       (set) => set.speciesId && (set.moveIds || []).length,
     );
-    if (!family || sets.length < MIN_MEMBERS) continue;
+    if (!family || !isTeam(sets, record.format)) continue;
     const key = sets
       .map(memberKey)
       .sort()
