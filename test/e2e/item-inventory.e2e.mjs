@@ -1,6 +1,6 @@
-// Item inventory UX (the renewable-haul flow): sticky 6+ picker, Enter-to-add
+// Item inventory UX (the shop-haul flow): sticky 6+ picker, Enter-to-add
 // with focus retention, row flash, never-lower re-adds, and the one-click
-// "renewably obtainable at your badge" sync.
+// sync to the counts the game has handed out by the player's badge.
 import {
   launchBrowser,
   openPoolPage,
@@ -52,25 +52,35 @@ try {
 
   await setBadgeCheckpoint(page, 7);
   await openAllDetails(page);
-  const syncButton = await page.$('[data-renewable-sync-button]');
-  check('renewable sync block appears with a badge set', Boolean(syncButton));
+  const syncButton = await page.$('[data-expected-sync-button]');
+  check(
+    'the sync offers the expected counts with a badge set',
+    /^Set \d+ items to expected$/.test(
+      ((await syncButton?.textContent()) || '').trim()),
+  );
   const beforeRows = await page.$$eval('.item-inventory-row', (rows) => rows.length);
   await syncButton.click();
   await page.waitForTimeout(400);
   const afterRows = await page.$$eval('.item-inventory-row', (rows) => rows.length);
   check(
-    'sync adds the renewable stock in one click',
+    'sync adds what the game has handed out in one click',
     afterRows > beforeRows + 5,
     `${beforeRows} -> ${afterRows}`,
   );
-  for (const id of ['pixieplate', 'firegem']) {
-    check(
-      `${id} is raised from 1 to 6`,
-      (await page.inputValue(
-        `[data-owned-item-count][data-item-id="${id}"]`,
-      )) === '6',
-    );
-  }
+  const countOf = (id) => page.inputValue(
+    `[data-owned-item-count][data-item-id="${id}"]`);
+  // A gem the shops sell by now is raised to a full supply; a plate the
+  // game hands out once stays at the one copy.
+  check('a shop item is raised from 1 to 6', (await countOf('firegem')) === '6');
+  check('a single copy stays at 1', (await countOf('pixieplate')) === '1');
+  check(
+    'the sync then has nothing left to offer',
+    await page.evaluate(() => {
+      const button = document.querySelector('[data-expected-sync-button]');
+      return button.disabled &&
+        button.textContent.trim() === 'Matches the expected counts';
+    }),
+  );
 } finally {
   await browser.close();
 }

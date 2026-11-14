@@ -5,8 +5,8 @@
  * These specs cover behaviors the unit suites cannot see — focus retention,
  * scroll pinning, downloads, in-place DOM patching. Run: npm run e2e
  *
- * Not wired into CI on purpose: it needs the full site-data tree and a
- * browser.
+ * Needs the full site-data tree and an installed Chrome or Edge, both of
+ * which a checkout on a GitHub runner has.
  */
 
 import { spawn, execSync } from 'node:child_process';
@@ -24,15 +24,23 @@ function log(message) {
 log('building…');
 execSync('npm run build', { stdio: 'inherit' });
 
+// A junction on Windows, where a plain directory symlink needs a privilege
+// most accounts lack; elsewhere the type is ignored.
 if (!existsSync(dataLink)) {
-  symlinkSync(path.join('..', 'site-data', 'data'), dataLink);
+  symlinkSync(path.join(root, 'site-data', 'data'), dataLink, 'junction');
 }
 
 log(`starting preview on :${PORT}…`);
-const preview = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'], {
-  stdio: 'ignore',
-  detached: false,
-});
+// Vite's own entry under this Node, not `npx`: a .cmd shim cannot be
+// spawned without a shell on Windows.
+const preview = spawn(
+  process.execPath,
+  [
+    path.join(root, 'node_modules', 'vite', 'bin', 'vite.js'),
+    'preview', '--port', String(PORT), '--strictPort',
+  ],
+  { stdio: 'ignore', detached: false },
+);
 
 async function waitForServer() {
   const deadline = Date.now() + 30_000;

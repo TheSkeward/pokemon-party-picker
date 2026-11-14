@@ -1,40 +1,35 @@
-// Shared environment for the e2e specs: resolves playwright wherever it
-// lives, launches Chromium, and provides the page-setup steps every spec
-// repeats. Specs are plain node scripts (assert + async main) run by
+// Shared environment for the e2e specs: launches the machine's own Chrome
+// or Edge through playwright-core, so no browser is downloaded, and
+// provides the page-setup steps every spec repeats. Specs are plain node
+// scripts (assert + async main) run by
 // scripts/run-e2e.mjs against a `vite preview` of the CURRENT build — they
 // verify behaviors the unit suites cannot see (focus retention, scroll
 // pinning, downloads, in-place DOM patching).
 
 import assert from 'node:assert/strict';
-import { existsSync } from 'node:fs';
+
+import { chromium } from 'playwright-core';
 
 export const BASE_URL =
   process.env.E2E_BASE_URL || 'http://localhost:4199/pokemon-party-picker';
 
-async function resolvePlaywright() {
-  try {
-    return await import('playwright');
-  } catch {
-    // Not installed locally — try the environment's global install (the
-    // managed container ships one at this path).
-    try {
-      return await import(
-        'file:///opt/node22/lib/node_modules/playwright/index.mjs',
-      );
-    } catch {
-      throw new Error(
-        'playwright not found. Install it once: npm i -D playwright && npx playwright install chromium',
-      );
-    }
-  }
-}
+// The installed browsers to try, in order; E2E_BROWSER_CHANNEL names one
+// to use instead.
+const CHANNELS = ['chrome', 'msedge'];
 
 export async function launchBrowser() {
-  const { chromium } = await resolvePlaywright();
-  const knownChromium = '/opt/pw-browsers/chromium';
-  return chromium.launch(
-    existsSync(knownChromium) ? { executablePath: knownChromium } : {},
-  );
+  const channels = process.env.E2E_BROWSER_CHANNEL
+    ? [process.env.E2E_BROWSER_CHANNEL]
+    : CHANNELS;
+  const failures = [];
+  for (const channel of channels) {
+    try {
+      return await chromium.launch({ channel });
+    } catch (error) {
+      failures.push(`${channel}: ${String(error.message).split('\n')[0]}`);
+    }
+  }
+  throw new Error(`no installed browser could be launched (${failures.join('; ')})`);
 }
 
 export async function openPoolPage(browser) {

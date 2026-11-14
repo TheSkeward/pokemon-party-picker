@@ -1,0 +1,54 @@
+name: Browser specs
+
+# The specs under test/e2e drive the built site in a real browser. They are
+# the only tests of the page controller and the app shell, which no unit
+# test can load. They run beside the deploy rather than in front of it: a
+# spec that depends on timing must be able to fail without holding the
+# site back, and a failure here still arrives as a failed run.
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/**"
+      - "test/e2e/**"
+      - "scripts/run-e2e.mjs"
+      - "index.html"
+      - "pool.html"
+      - "vite.config.*"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/e2e.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # The runner's own Chrome, through playwright-core: nothing to download.
+      - name: Run the browser specs
+        run: npm run e2e
+        env:
+          E2E_BROWSER_CHANNEL: chrome
