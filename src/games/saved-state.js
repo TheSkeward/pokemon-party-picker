@@ -10,7 +10,7 @@ import {
   readLocalStorage,
   removeLocalStorage,
   writeLocalStorage,
-} from '../storage/safe-local-storage';
+} from '../storage/safe-local-storage.js';
 
 /**
  * The active game's localStorage key for a kind of saved state. The donor

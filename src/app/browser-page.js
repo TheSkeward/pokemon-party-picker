@@ -3,25 +3,25 @@ import {
   getAggregateRows,
   getDatasetLabel,
   getMovesetEntry,
-} from '../data';
+} from '../data.js';
 import { currentAttr, escapeAttr, escapeHtml } from '../utils/html.js';
 import {
   ITEM_USAGE_TABLE,
   renderItemUsageControls,
   renderItemUsageTable,
-} from '../views/item-usage-view';
+} from '../views/item-usage-view.js';
 import {
   MOVE_USAGE_TABLE,
   renderMoveUsageControls,
   renderMoveUsageTable,
-} from '../views/move-usage-view';
-import { renderMovesetPanel } from '../views/moveset-view';
+} from '../views/move-usage-view.js';
+import { renderMovesetPanel } from '../views/moveset-view.js';
 import {
   POKEMON_USAGE_TABLE,
   renderPokemonUsageControls,
   renderPokemonUsageTable,
-} from '../views/pokemon-usage-view';
-import { USAGE_TABLES } from '../views/usage-tables';
+} from '../views/pokemon-usage-view.js';
+import { USAGE_TABLES } from '../views/usage-tables.js';
 
 const TABLE_RENDERERS = {
   [POKEMON_USAGE_TABLE.id]: renderPokemonTable,

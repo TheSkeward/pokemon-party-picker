@@ -1,7 +1,7 @@
 import {
   readLocalStorage,
   writeLocalStorage,
-} from '../storage/safe-local-storage';
+} from '../storage/safe-local-storage.js';
 
 // Persistent open/closed state for <details> groups. Full-page re-renders
 // rebuild every group from HTML strings; the user's last toggle wins across

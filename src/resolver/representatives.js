@@ -3,7 +3,7 @@ import {
   resolveBestAvailableLightBundle,
   resolveQueryEntries,
   splitQueryNames,
-} from '../data';
+} from '../data.js';
 import { toId as normalizeName } from '../utils/ids.js';
 import { getCanonicalLineCandidates } from '../teamBuilder/usage-line-ranking.js';
 

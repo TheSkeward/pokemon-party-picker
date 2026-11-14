@@ -1,10 +1,10 @@
-import { DEFAULT_STATE } from './state';
+import { DEFAULT_STATE } from './state.js';
 import {
   MIN_LEARNER_CHOICES,
   MOVE_USAGE_TABLE,
-} from './views/move-usage-view';
-import { POKEMON_USAGE_TABLE } from './views/pokemon-usage-view';
-import { USAGE_TABLES, usageTableById } from './views/usage-tables';
+} from './views/move-usage-view.js';
+import { POKEMON_USAGE_TABLE } from './views/pokemon-usage-view.js';
+import { USAGE_TABLES, usageTableById } from './views/usage-tables.js';
 
 const VALID_SORT_DIRS = new Set(['asc', 'desc']);
 const VALID_VIEWS = new Set(['resolver', 'pool', 'browser']);

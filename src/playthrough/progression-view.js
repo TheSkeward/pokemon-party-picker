@@ -5,7 +5,7 @@ import {
   describeMoveMeta,
   getMoveMeta,
   getTypeColor,
-} from '../move-meta';
+} from '../move-meta.js';
 import { legalityRules, mechanics, moveSources } from '../games/legality.js';
 import {
   accessFields,
@@ -23,7 +23,7 @@ import {
   getExpectedItemChanges,
   getItemUnlockBadge,
 } from '../games/items.js';
-import { MAX_TRACKED_ITEM_COUNT, MAX_OPPONENT_TYPE_BIAS } from './progression';
+import { MAX_TRACKED_ITEM_COUNT, MAX_OPPONENT_TYPE_BIAS } from './progression.js';
 import { analysisTypes } from './type-chart.js';
 import { dex } from '../games/dex.js';
 import { getActiveGame } from '../games/registry.js';

@@ -4,13 +4,13 @@ import { escapeHtml, escapeAttr, sortAttr } from '../utils/html.js';
 const RUNNING_BUILD_ID =
   typeof __BUILD_ID__ !== 'undefined' ? String(__BUILD_ID__) : 'dev';
 import { gamesToLikelySee } from './trace-usage.js';
-import { renderMovesetPanel } from '../views/moveset-view';
-import { renderLegalMovesPanel } from '../playthrough/legal-moves-view';
+import { renderMovesetPanel } from '../views/moveset-view.js';
+import { renderLegalMovesPanel } from '../playthrough/legal-moves-view.js';
 import {
   renderBadgePicker,
   renderProgressionPanel,
   renderOpponentTypeBias,
-} from '../playthrough/progression-view';
+} from '../playthrough/progression-view.js';
 import {
   MAX_TEAM_SLOTS,
   teamSlotsOf,
@@ -19,13 +19,13 @@ import { detailsStateAttrs } from '../utils/details-state.js';
 import { accessFields, isAccessOpen } from '../games/evolution.js';
 import { moveSources } from '../games/legality.js';
 import { checkpointShortLabel, getCheckpoint } from '../games/schedule.js';
-import { renderTeamAnalysisPanel } from './team-analysis-view';
+import { renderTeamAnalysisPanel } from './team-analysis-view.js';
 import { OptimizePhase } from './optimize-phase.js';
 import { getCurrentSpeciesForChoice } from '../playthrough/current-species.js';
 import { describeEvolutionPath } from '../playthrough/evolution-requirements.js';
-import { teamMemberKey } from './item-recommendations';
-import { parseKeptNames, withDonors } from './pool-parsing';
-import { normalizeName } from './name-utils';
+import { teamMemberKey } from './item-recommendations.js';
+import { parseKeptNames, withDonors } from './pool-parsing.js';
+import { normalizeName } from './name-utils.js';
 import {
   getLineCeilingRanking,
   getLineTraceRanking,

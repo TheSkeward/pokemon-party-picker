@@ -5,7 +5,7 @@ import {
   getCategoryColor,
   getMoveMetaById,
   getTypeColor,
-} from '../move-meta';
+} from '../move-meta.js';
 import {
   badgePhrase,
   renderHeaderRow,

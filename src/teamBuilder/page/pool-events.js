@@ -5,14 +5,14 @@
 import {
   loadSavedProgression,
   saveProgression,
-} from '../../playthrough/progression';
-import { buildPoolAvailabilityText } from '../availability-export';
+} from '../../playthrough/progression.js';
+import { buildPoolAvailabilityText } from '../availability-export.js';
 import {
   buildGamestateExport,
   parseGamestateImport,
 } from '../gamestate-backup.js';
-import { withPoolAnnotations } from '../input-groups';
-import { withDonors } from '../pool-parsing';
+import { withPoolAnnotations } from '../input-groups.js';
+import { withDonors } from '../pool-parsing.js';
 import { setPoolStatus } from './patches.js';
 import { clearSavedPool, saveDonors, savePool } from './saved-inputs.js';
 

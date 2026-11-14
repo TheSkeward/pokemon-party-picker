@@ -25,7 +25,7 @@ import {
   setProgressionOptions,
   updateProgressionField,
   updateProgressionOption,
-} from '../../playthrough/progression';
+} from '../../playthrough/progression.js';
 import { toId } from '../../utils/ids.js';
 import {
   recountOptionGroup,

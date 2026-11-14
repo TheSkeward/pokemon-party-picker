@@ -4,7 +4,7 @@ import {
   getMoveSourcePriority,
   loadLegalMoveData,
   lockedMoveIdsFor,
-} from '../playthrough/legal-moves';
+} from '../playthrough/legal-moves.js';
 import { getCurrentSpeciesForChoice } from '../playthrough/current-species.js';
 import {
   applyBreedingContextToProgression,
@@ -41,7 +41,7 @@ import {
 } from './damage-model.js';
 import { loadTopSet } from './top-spread.js';
 import { formatAbilityPath, resolveBuildAbilities } from './ability-path.js';
-import { withPoolAnnotations } from './input-groups';
+import { withPoolAnnotations } from './input-groups.js';
 import { hydrateLegalMove, isInertInFamily } from '../move-meta.js';
 import {
   CANONICAL_SET_SIZE,

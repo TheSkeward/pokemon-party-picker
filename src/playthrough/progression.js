@@ -1,7 +1,7 @@
 import {
   removeLocalStorage,
   writeLocalStorage,
-} from '../storage/safe-local-storage';
+} from '../storage/safe-local-storage.js';
 import { mechanics, moveSources } from '../games/legality.js';
 import { gameItems } from '../games/items.js';
 import { analysisTypes } from './type-chart.js';

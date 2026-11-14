@@ -4,7 +4,7 @@ import {
   getMoveMeta,
   getTypeColor,
   describeMoveMeta,
-} from '../move-meta';
+} from '../move-meta.js';
 import { toId } from '../utils/ids.js';
 import { describeNature } from '../natures.js';
 import { computeFinalStats } from './damage-model.js';
@@ -15,7 +15,7 @@ import {
   formatEvLine,
   formatTeamPokepaste,
   analysisTypes,
-} from './team-analysis';
+} from './team-analysis.js';
 import { STAT_KEYS } from '../utils/stats.js';
 import { getActiveGame } from '../games/registry.js';
 import { trackReads } from '../utils/track-reads.js';

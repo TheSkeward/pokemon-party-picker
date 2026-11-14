@@ -12,7 +12,7 @@ import {
   loadMoveUsage,
   loadPokemonIndex,
   splitQueryNames,
-} from './data';
+} from './data.js';
 import {
   activateGameForFamily,
   gameForFamily,
@@ -20,31 +20,31 @@ import {
 } from './games/registry.js';
 import { applyGameTheme } from './app/theme.js';
 import { loadManifest } from './manifest.js';
-import { bindAppEvents } from './app/app-events';
-import { renderBrowserPage } from './app/browser-page';
-import { captureFocusState, restoreFocusState } from './app/focus-state';
-import { renderFatalAppError, renderAppShell } from './app/app-shell-view';
-import { renderResolverPage } from './app/resolver-page';
-import { readStateFromUrl, writeStateToUrl } from './router';
+import { bindAppEvents } from './app/app-events.js';
+import { renderBrowserPage } from './app/browser-page.js';
+import { captureFocusState, restoreFocusState } from './app/focus-state.js';
+import { renderFatalAppError, renderAppShell } from './app/app-shell-view.js';
+import { renderResolverPage } from './app/resolver-page.js';
+import { readStateFromUrl, writeStateToUrl } from './router.js';
 import {
   DEFAULT_STATE,
   getState,
   replaceState,
   setState,
   setTableState,
-} from './state';
-import { ITEM_USAGE_TABLE } from './views/item-usage-view';
-import { MOVE_USAGE_TABLE } from './views/move-usage-view';
-import { POKEMON_USAGE_TABLE } from './views/pokemon-usage-view';
-import { nextSort } from './views/table-parts';
-import { usageTableById } from './views/usage-tables';
-import { mountPoolOptimizer } from './pool-widget';
+} from './state.js';
+import { ITEM_USAGE_TABLE } from './views/item-usage-view.js';
+import { MOVE_USAGE_TABLE } from './views/move-usage-view.js';
+import { POKEMON_USAGE_TABLE } from './views/pokemon-usage-view.js';
+import { nextSort } from './views/table-parts.js';
+import { usageTableById } from './views/usage-tables.js';
+import { mountPoolOptimizer } from './pool-widget.js';
 import {
   computeResolverRepresentativeResults,
   unmatchedQueryNames,
-} from './resolver/representatives';
-import { createPrecomputedSetDetailsLoader } from './setDetails/precomputed-set-details';
-import { startUpdateNotifier } from './update-notifier';
+} from './resolver/representatives.js';
+import { createPrecomputedSetDetailsLoader } from './setDetails/precomputed-set-details.js';
+import { startUpdateNotifier } from './update-notifier.js';
 
 const app = document.querySelector('#app');
 // The usage tables that read one small file per family, and its loader.

@@ -10,12 +10,12 @@ import {
   loadAvailability,
   loadFormatsIndex,
   loadPokemonIndex,
-} from './data';
+} from './data.js';
 import { applyGameTheme } from './app/theme.js';
 import { activateGameForFamily, getActiveGame } from './games/registry.js';
 import { loadManifest } from './manifest.js';
-import { loadSavedProgression } from './playthrough/progression';
-import { assignTeamItems } from './teamBuilder/item-recommendations';
+import { loadSavedProgression } from './playthrough/progression.js';
+import { assignTeamItems } from './teamBuilder/item-recommendations.js';
 import { OptimizePhase } from './teamBuilder/optimize-phase.js';
 import { bindPoolControls } from './teamBuilder/page/pool-events.js';
 import {
@@ -42,12 +42,12 @@ import {
 import {
   absorbPoolIntoDonors,
   getPoolStats,
-} from './teamBuilder/pool-parsing';
-import { createTeamBuilderSetDetailsLoader } from './teamBuilder/set-details-loader';
+} from './teamBuilder/pool-parsing.js';
+import { createTeamBuilderSetDetailsLoader } from './teamBuilder/set-details-loader.js';
 import {
   renderTeamBuilderPage,
   teamSortOf,
-} from './teamBuilder/team-builder-view';
+} from './teamBuilder/team-builder-view.js';
 import { bindPersistentDetails } from './utils/details-state.js';
 
 /**

@@ -2,13 +2,13 @@ import { getCurrentSpeciesForChoice } from '../playthrough/current-species.js';
 import {
   getAvailableMoves,
   loadLegalMoveData,
-} from '../playthrough/legal-moves';
+} from '../playthrough/legal-moves.js';
 import { applyBreedingContextToProgression } from '../playthrough/breeding.js';
 import {
   applySketchContextToProgression,
   buildMoveTransferContexts,
 } from '../playthrough/sketch.js';
-import { MAX_TRACKED_ITEM_COUNT } from '../playthrough/progression';
+import { MAX_TRACKED_ITEM_COUNT } from '../playthrough/progression.js';
 import { dex } from '../games/dex.js';
 
 /**

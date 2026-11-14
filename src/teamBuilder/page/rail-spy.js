@@ -1,7 +1,7 @@
 /**
  * @fileoverview Marks, on the team rail, the section the reader is in.
  */
-import { TEAM_RAIL_SECTIONS, currentRailSection } from '../team-builder-view';
+import { TEAM_RAIL_SECTIONS, currentRailSection } from '../team-builder-view.js';
 
 /**
  * @param {!Element} root The page; a render replaces the rail in it.

@@ -1,4 +1,4 @@
-import { resolveBestAvailableLightBundle } from '../data';
+import { resolveBestAvailableLightBundle } from '../data.js';
 
 /**
  * @return {Promise<{usage: ?Object, leads: ?Object, ranking: ?Object,

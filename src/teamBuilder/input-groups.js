@@ -1,10 +1,10 @@
-import { resolveQueryEntries } from '../data';
+import { resolveQueryEntries } from '../data.js';
 import {
   parseLockedMoves,
   parseMetLevels,
   parsePoolTokens,
-} from './pool-parsing';
-import { normalizeName } from './name-utils';
+} from './pool-parsing.js';
+import { normalizeName } from './name-utils.js';
 import { getMoveMeta } from '../move-meta.js';
 import { toId } from '../utils/ids.js';
 

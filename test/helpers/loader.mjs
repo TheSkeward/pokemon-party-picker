@@ -1,23 +1,7 @@
-// Node module-loader hooks so the real app modules run under node --test:
-// appends `.js` to extensionless relative imports (Vite resolves these; plain
-// Node doesn't) and rewrites `import.meta.env` to a global the harness sets.
-import { existsSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-
-export async function resolve(specifier, context, next) {
-  if (/^[./]/.test(specifier) && !/\.(m?js|cjs|json)$/.test(specifier)) {
-    try {
-      const candidate = new URL(specifier + '.js', context.parentURL);
-      if (existsSync(fileURLToPath(candidate))) {
-        const resolved = await next(specifier + '.js', context);
-        return { ...resolved, shortCircuit: true };
-      }
-    } catch {
-      /* fall through to the default resolver */
-    }
-  }
-  return next(specifier, context);
-}
+// Node module-loader hook so the real app modules run under node --test:
+// rewrites `import.meta.env`, which Vite defines and plain Node does not,
+// to a global the harness sets. Imports resolve as Node resolves them, so
+// a relative import without its extension fails here before it ships.
 
 export async function load(url, context, next) {
   if (url.startsWith('file:') && url.endsWith('.js')) {

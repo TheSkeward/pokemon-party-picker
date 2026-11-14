@@ -35,8 +35,8 @@ import {
   getAvailableMoves,
   loadLegalMoveData,
   lockedMoveIdsFor,
-} from '../playthrough/legal-moves';
-import { buildCandidateLegalityProfile } from './team-analysis';
+} from '../playthrough/legal-moves.js';
+import { buildCandidateLegalityProfile } from './team-analysis.js';
 import { loadTopSet } from './top-spread.js';
 import { resolveBuildAbilities } from './ability-path.js';
 import { computeSetReadiness } from '../playthrough/set-readiness.js';
@@ -44,14 +44,14 @@ import {
   buildInputGroups,
   unknownMoveLocks,
   withPoolAnnotations,
-} from './input-groups';
+} from './input-groups.js';
 import { isInertInFamily } from '../move-meta.js';
 import {
   parseAbilityAnnotations,
   parseLockedNames,
   withDonors,
-} from './pool-parsing';
-import { normalizeName } from './name-utils';
+} from './pool-parsing.js';
+import { normalizeName } from './name-utils.js';
 import {
   tunable,
   scoringOverridesSignature,
@@ -66,9 +66,9 @@ import {
   computeUsageRamp,
   hasCompetitivePriorEvidence,
   scoreCandidate,
-} from './candidate-scoring';
-import { resolveRepresentativeLightBundle } from './representative-bundle';
-import { choosePoolTeam, orderLineBuilds } from './team-selection';
+} from './candidate-scoring.js';
+import { resolveRepresentativeLightBundle } from './representative-bundle.js';
+import { choosePoolTeam, orderLineBuilds } from './team-selection.js';
 import { attachCoreLift } from './core-completion.js';
 import { attachTeammateLift } from './teammate-synergy.js';
 import { loadPersistedResult, persistResult } from './result-cache-store.js';

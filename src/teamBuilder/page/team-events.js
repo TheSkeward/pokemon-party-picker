@@ -3,7 +3,7 @@
  * gamestate chips, the table's sort, rows and locks, the bench chips, and
  * the buttons under the analysis.
  */
-import { setPoolEntryLock } from '../pool-parsing';
+import { setPoolEntryLock } from '../pool-parsing.js';
 import { buildPerformanceReport } from '../telemetry.js';
 import { setPoolStatus } from './patches.js';
 import { saveTeamSort } from './saved-inputs.js';

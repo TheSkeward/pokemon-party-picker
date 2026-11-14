@@ -8,7 +8,7 @@ import {
   readLocalStorage,
   removeLocalStorage,
   writeLocalStorage,
-} from '../../storage/safe-local-storage';
+} from '../../storage/safe-local-storage.js';
 
 // Frozen at the project's original name so saved preferences survive.
 const TEAM_SORT_STORAGE_KEY = 'pokemon-usage-viewer:pool-team-sort:v1';

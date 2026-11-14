@@ -1,7 +1,7 @@
 import {
   createPrecomputedSetDetailsLoader,
   describePrecomputedSetSource,
-} from '../setDetails/precomputed-set-details';
+} from '../setDetails/precomputed-set-details.js';
 
 /**
  * @param {{getFamily: function(): string, onUpdate: function(): void}} hooks

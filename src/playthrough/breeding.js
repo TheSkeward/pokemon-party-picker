@@ -1,9 +1,9 @@
-import { buildInputGroups } from '../teamBuilder/input-groups';
+import { buildInputGroups } from '../teamBuilder/input-groups.js';
 import { getCurrentSpecies } from './current-species.js';
 import {
   getAvailableMoves,
   loadLegalMoveData,
-} from './legal-moves';
+} from './legal-moves.js';
 import { toId } from '../utils/ids.js';
 import { dex } from '../games/dex.js';
 

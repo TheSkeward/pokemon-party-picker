@@ -9,14 +9,14 @@
  * since a render replaces them.
  */
 import { getCurrentSpeciesForChoice } from '../../playthrough/current-species.js';
-import { renderLegalMovesPanel } from '../../playthrough/legal-moves-view';
-import { getPoolStats, withDonors } from '../pool-parsing';
-import { renderTeamAnalysisPanel } from '../team-analysis-view';
+import { renderLegalMovesPanel } from '../../playthrough/legal-moves-view.js';
+import { getPoolStats, withDonors } from '../pool-parsing.js';
+import { renderTeamAnalysisPanel } from '../team-analysis-view.js';
 import {
   donorBoxLabel,
   getSortedTeam,
   renderGamestateStrip,
-} from '../team-builder-view';
+} from '../team-builder-view.js';
 import { lineUsageByInputId } from '../usage-line-ranking.js';
 
 const STALE_NOTE =

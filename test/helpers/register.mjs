@@ -1,7 +1,8 @@
-// Entry for `node --import`: installs the loader hooks so app modules resolve,
-// then installs the committed singles utility prior. The browser loads the
-// prior per family before any analysis; the tests see the same table from
-// the start, so a unit test of the set builder reads the data the app does.
+// Entry for `node --import`: installs the loader hook that stands in for
+// Vite's `import.meta.env`, then the committed singles utility prior. The
+// browser loads the prior per family before any analysis; the tests see
+// the same table from the start, so a unit test of the set builder reads
+// the data the app does.
 import { readFileSync } from 'node:fs';
 import { register } from 'node:module';
 register('./loader.mjs', import.meta.url);

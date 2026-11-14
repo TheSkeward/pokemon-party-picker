@@ -5,7 +5,7 @@ import {
   getCategoryColor,
   describeMoveMeta,
   badgeStyle,
-} from '../move-meta';
+} from '../move-meta.js';
 import { describeNature } from '../natures.js';
 import { computeFinalStats, parseSpread } from '../teamBuilder/damage-model.js';
 import { toId } from '../utils/ids.js';

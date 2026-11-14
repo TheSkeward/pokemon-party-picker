@@ -21,13 +21,13 @@
 import { evolutionItemsAbove } from '../../playthrough/evolution-requirements.js';
 import { computeTeamConfidence } from '../confidence.js';
 import { computeInvestmentPlan } from '../investment.js';
-import { loadTeamItemUsage } from '../item-recommendations';
+import { loadTeamItemUsage } from '../item-recommendations.js';
 import { OptimizePhase } from '../optimize-phase.js';
 import { ProgressPhase } from '../optimize-progress.js';
-import { getPoolStats, normalizePoolText, withDonors } from '../pool-parsing';
+import { getPoolStats, normalizePoolText, withDonors } from '../pool-parsing.js';
 import { setScoringOverrides } from '../scoring-constants.js';
-import { getTeamItemContext } from '../team-analysis';
-import { optimizeTeamFromPool, persistPostAnalysis } from '../team-optimizer';
+import { getTeamItemContext } from '../team-analysis.js';
+import { optimizeTeamFromPool, persistPostAnalysis } from '../team-optimizer.js';
 import { recordOptimizerSample } from '../telemetry.js';
 import { SCORED_POOL_LIMIT } from '../usage-line-ranking.js';
 import { postAnalysisSkipReason } from './post-analysis-limits.js';

@@ -1,13 +1,13 @@
-import { getLineRepresentativeCandidates } from '../data';
+import { getLineRepresentativeCandidates } from '../data.js';
 import {
   canHatchLine,
 } from '../playthrough/breeding.js';
 import {
   isStrictPreEvolutionOf,
 } from '../playthrough/current-species.js';
-import { buildInputGroups } from './input-groups';
-import { normalizeName } from './name-utils';
-import { parseAbilityAnnotations } from './pool-parsing';
+import { buildInputGroups } from './input-groups.js';
+import { normalizeName } from './name-utils.js';
+import { parseAbilityAnnotations } from './pool-parsing.js';
 import { dex } from '../games/dex.js';
 
 /**

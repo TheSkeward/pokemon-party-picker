@@ -1,9 +1,9 @@
 import { escapeHtml } from '../utils/html.js';
-import { getAvailabilityLabel } from '../data';
-import { describePrecomputedSetSource } from '../setDetails/precomputed-set-details';
-import { renderMovesetPanel } from '../views/moveset-view';
-import { renderResolverControls } from '../views/resolver-controls-view';
-import { renderResolverResults } from '../views/resolver-results-view';
+import { getAvailabilityLabel } from '../data.js';
+import { describePrecomputedSetSource } from '../setDetails/precomputed-set-details.js';
+import { renderMovesetPanel } from '../views/moveset-view.js';
+import { renderResolverControls } from '../views/resolver-controls-view.js';
+import { renderResolverResults } from '../views/resolver-results-view.js';
 
 /**
  * Renders the Set Lookup page (controls, results table, set-detail panel)

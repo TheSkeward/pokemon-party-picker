@@ -4,7 +4,7 @@ import {
   getAvailableMoves,
   getLegalMoveId,
   loadLegalMoveData,
-} from './legal-moves';
+} from './legal-moves.js';
 import {
   applyBreedingContextToProgression,
 } from './breeding.js';
@@ -12,7 +12,7 @@ import {
   applySketchContextToProgression,
   buildMoveTransferContexts,
 } from './sketch.js';
-import { withPoolAnnotations } from '../teamBuilder/input-groups';
+import { withPoolAnnotations } from '../teamBuilder/input-groups.js';
 import { getActiveGame } from '../games/registry.js';
 import { mechanics } from '../games/legality.js';
 
