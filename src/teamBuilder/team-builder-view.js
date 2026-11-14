@@ -732,6 +732,12 @@ function renderExplanationsSection(state) {
 // ---------------------------------------------------------------- "Best six
 // right now" vs "worth training soon" are different products; future value
 // lives HERE, never in selection.
+// A score change with its sign. A line's score can fall at a higher cap,
+// and "+-3" is what a bare plus made of it.
+function signedPoints(value) {
+  return value < 0 ? `−${Math.abs(value)}` : `+${value}`;
+}
+
 function renderInvestmentSection(state) {
   if (state.phase === OptimizePhase.ANALYZING && !state.investment) {
     return state.confidence
@@ -753,7 +759,7 @@ function renderInvestmentSection(state) {
     .map((entry) => {
       const bits = [];
       if (entry.evolves) bits.push(`evolves into ${escapeHtml(entry.evolvesInto || '?')}`);
-      bits.push(`+${entry.gain} value at cap ${entry.cap}`);
+      bits.push(`${signedPoints(entry.gain)} value at cap ${entry.cap}`);
       if (entry.seatsLater) bits.push('projected to SEAT');
       return `<li><strong>${escapeHtml(entry.inputName)}</strong> — ${bits.join(', ')}</li>`;
     })
@@ -766,7 +772,7 @@ function renderInvestmentSection(state) {
     .slice(0, 6)
     .map(
       (entry) =>
-        `<li>${escapeHtml(entry.inputName)} — +${entry.gain} at cap ${entry.cap}</li>`,
+        `<li>${escapeHtml(entry.inputName)} — ${signedPoints(entry.gain)} at cap ${entry.cap}</li>`,
     )
     .join('');
 

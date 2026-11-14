@@ -317,7 +317,10 @@ const MAX_RESULT_CACHE = 400;
 // its hold is not charged; lines with such a lock change sets and scores.
 // v93: a progression with no level cap is scored at cap 100, not 0; its
 // usage trust and scores change.
-const RESULT_CACHE_VERSION = '93';
+// v94: the investment plan kept with a result files a Pokémon that seats at
+// an upcoming cap under "train", whichever cap its score rises most at;
+// plans stored under the old rule are retired with their results.
+const RESULT_CACHE_VERSION = '94';
 
 // The memoized result of a pool: the one in memory, else the one persisted
 // by an earlier page load, which joins the memo. So a reload followed by the

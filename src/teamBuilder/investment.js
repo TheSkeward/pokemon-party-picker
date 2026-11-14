@@ -108,9 +108,18 @@ export async function computeInvestmentPlan({
   return buildInvestmentPlan({ nowByInput, teamIds, result, futureResults });
 }
 
-// Assembles the plan from whichever future caps have landed so far — pure so
-// the progressive partial and the final plan are the same computation.
-function buildInvestmentPlan({ nowByInput, teamIds, result, futureResults }) {
+/**
+ * Assembles the plan from whichever future caps have landed so far. Pure, so
+ * the progressive partial and the final plan are the same computation.
+ * @param {{nowByInput: !Map<string, !Object>, teamIds: !Set<string>,
+ *     result: !Object, futureResults: !Array<{cap: number, result: !Object}>}}
+ *     params Each line's choice today, today's team, today's result, and the
+ *     result at each upcoming cap, nearest first.
+ * @return {{caps: !Array<number>, trainSoon: !Array<!Object>,
+ *     holdOff: !Array<!Object>, closeBench: !Array<!Object>}}
+ */
+export function buildInvestmentPlan(
+  { nowByInput, teamIds, result, futureResults }) {
   const caps = futureResults.map((entry) => entry.cap);
   const trainSoon = [];
   const holdOff = [];
@@ -124,17 +133,22 @@ function buildInvestmentPlan({ nowByInput, teamIds, result, futureResults }) {
       );
       const futureChoice = futureLine?.best || futureLine?.bestNonMega;
       if (!futureChoice) continue;
-      const gain = (futureChoice.score ?? 0) - (nowChoice.score ?? 0);
+      const gain =
+        Math.round((futureChoice.score ?? 0) - (nowChoice.score ?? 0));
       const evolves =
         futureChoice.legalityProfile?.currentId !==
         nowChoice.legalityProfile?.currentId;
       const seatsLater = future.team.some(
         (choice) => choice.inputPokemonId === inputId,
       );
-      if (!best || gain > best.gain) {
-        best =
-          { cap, gain: Math.round(gain), evolves, seatsLater, futureChoice };
-      }
+      // One cap speaks for the mon: one where it seats before one where it
+      // only gains, then the larger gain, then the nearer cap. By gain alone,
+      // a mon that seats at the next cap was filed under "do not invest yet"
+      // whenever its score rose a point more at the cap after.
+      const better = !best ||
+        (seatsLater && !best.seatsLater) ||
+        (seatsLater === best.seatsLater && gain > best.gain);
+      if (better) best = { cap, gain, evolves, seatsLater, futureChoice };
     }
     if (!best) continue;
     const entry = {
