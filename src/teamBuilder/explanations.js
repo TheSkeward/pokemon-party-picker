@@ -157,7 +157,9 @@ export function explainSeatedChoice(choice, team, confidenceEntry) {
       lines.push(
         sensitivity > 100
           ? `Assumes ${path} — the score leans on the starting ability (−${sensitivity} with the other ability); pin it with "${choice.inputName} (${inputAbility})" if yours matches.`
-          : `Assumes ${path}; the starting ability is not required for inclusion (−${sensitivity} with the other ability).`,
+          : sensitivity > 0
+            ? `Assumes ${path}; the starting ability is not required for inclusion (−${sensitivity} with the other ability).`
+            : `Assumes ${path}; the score does not depend on the starting ability.`,
       );
     }
   } else if (profile.assumedAbility) {
@@ -178,11 +180,15 @@ export function explainSeatedChoice(choice, team, confidenceEntry) {
           : `Ability: ${path} (yours).`,
       );
     } else {
+      // No difference is said as that: "−0 with the other ability" read
+      // as a figure, and a species with one ability has no other.
       const sensitivity = choice.abilitySensitivity || 0;
       lines.push(
         sensitivity > 100
           ? `Assumes ${path} — the score leans on the current ability (−${sensitivity} with the other ability); pin it with "${choice.inputName} (${inputAbility})" if yours matches.`
-          : `Assumes ${path}; not required for inclusion (−${sensitivity} with the other ability).`,
+          : sensitivity > 0
+            ? `Assumes ${path}; not required for inclusion (−${sensitivity} with the other ability).`
+            : `Assumes ${path}; the score does not depend on it.`,
       );
     }
   }

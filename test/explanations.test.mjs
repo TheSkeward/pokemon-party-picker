@@ -108,10 +108,15 @@ test('an assumed ability says how much rides on it', () => {
     'Assumes Speed Boost — the score leans on the current ability (−233 ' +
       'with the other ability); pin it with "Torchic (Speed Boost)" if ' +
       'yours matches.');
+  // No difference is said as that, not as a figure of zero: a species with
+  // one ability has no other to compare.
   assert.equal(
     ability({ assumedAbility: 'Leaf Guard', targetAbility: 'Technician' }, 0),
-    'Assumes Leaf Guard now, then Technician after evolution; not required ' +
-      'for inclusion (−0 with the other ability).');
+    'Assumes Leaf Guard now, then Technician after evolution; the score ' +
+      'does not depend on it.');
+  assert.equal(
+    ability({ assumedAbility: 'Wonder Guard' }),
+    'Assumes Wonder Guard; the score does not depend on it.');
 });
 
 test('a pinned ability is stated as the player\'s own', () => {
@@ -155,6 +160,10 @@ test('a Mega names the ability before and after', () => {
     ability({ preMegaAbility: 'Levitate', assumedAbility: 'Shadow Tag' }, 12),
     'Assumes Levitate before Mega Evolution, then Shadow Tag; the starting ' +
       'ability is not required for inclusion (−12 with the other ability).');
+  assert.equal(
+    ability({ preMegaAbility: 'Levitate', assumedAbility: 'Shadow Tag' }, 0),
+    'Assumes Levitate before Mega Evolution, then Shadow Tag; the score ' +
+      'does not depend on the starting ability.');
   assert.equal(
     ability({
       preMegaAbility: 'Intimidate', assumedAbility: 'Mold Breaker',
