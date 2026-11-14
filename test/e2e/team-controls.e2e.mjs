@@ -60,10 +60,10 @@ try {
   // address and across a reload.
   await page.click('[data-team-sort="current"]');
   const ascending = await pickNames(page);
+  const alphabetical = [...ascending].sort((a, b) => a.localeCompare(b));
   check(
     'names sort A to Z',
-    ascending.join() === [...ascending].sort((a, b) => a.localeCompare(b)).join(),
-    ascending.join());
+    ascending.join() === alphabetical.join(), ascending.join());
   await page.click('[data-team-sort="current"]');
   check(
     'a second click reverses the order',
