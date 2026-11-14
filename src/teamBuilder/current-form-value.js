@@ -344,7 +344,7 @@ export function hasReliableTempoRamp(profile) {
  * with no infrastructure role and damaging priority attacks do not qualify.
  * @return {boolean}
  */
-export function isPriorityUtilityMove(move, assumedAbility = null) {
+function isPriorityUtilityMove(move, assumedAbility = null) {
   if (move?.category !== 'Status') return false;
   const hasUtilityRole = (move.roles || []).some(
     (role) => role !== 'priority' && (ROLE_WEIGHTS[role] || 0) > 0,

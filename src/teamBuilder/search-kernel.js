@@ -280,7 +280,7 @@ export function getTeamScore(team, opponentTypeBias = {}) {
  * @param {Object} choice
  * @return {number} Usage %, floored at 0.
  */
-export function getUsagePercent(choice) {
+function getUsagePercent(choice) {
   return Math.max(0, choice.bundle?.usage?.value || 0);
 }
 
@@ -436,7 +436,7 @@ function biasCounterExemption(profile, opponentTypeBias = {}) {
  * @param {Object} b
  * @return {number}
  */
-export function compareChoices(a, b) {
+function compareChoices(a, b) {
   return (
     b.score - a.score ||
     getUsagePercent(b) - getUsagePercent(a) ||
@@ -544,7 +544,7 @@ export function evaluateTeam(team, megaUsed, targetSize, opponentTypeBias) {
 }
 
 /** @return {string} The evaluated team's identity key, memoized. */
-export function identityOf(evaluated) {
+function identityOf(evaluated) {
   if (evaluated._identityKey === undefined) {
     evaluated._identityKey = teamIdentityKey(evaluated.team);
   }
@@ -623,7 +623,7 @@ export function getRealizedTeamScore(team, opponentTypeBias = {}) {
 }
 
 /** @return {number} Team size counted no further than the target. */
-export function getTeamSizePriority(team, targetSize) {
+function getTeamSizePriority(team, targetSize) {
   return Math.min(team.length, targetSize);
 }
 
@@ -633,7 +633,7 @@ export function getTeamSizePriority(team, targetSize) {
  * Exact C(n, k) as a Number (the values here fit in a double precisely).
  * @return {number}
  */
-export function comb(n, k) {
+function comb(n, k) {
   if (k < 0 || k > n || n < 0) return 0;
   const r = Math.min(k, n - k);
   let result = 1;
@@ -701,7 +701,7 @@ function unrankCombination(rank, n, k) {
  * must stay range-relative: a fixed stride leaves a short worker range with
  * under two reports, so its progress sits silent and then jumps.
  */
-export const SEARCH_PROGRESS_MAX_STRIDE = 65_536;
+const SEARCH_PROGRESS_MAX_STRIDE = 65_536;
 const SEARCH_PROGRESS_MIN_STRIDE = 2_048;
 const SEARCH_PROGRESS_REPORTS_PER_RANGE = 20;
 

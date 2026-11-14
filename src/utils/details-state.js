@@ -34,7 +34,7 @@ export function detailsStateAttrs(id, defaultOpen) {
  * @param {string} id
  * @param {boolean} open
  */
-export function saveDetailsOpen(id, open) {
+function saveDetailsOpen(id, open) {
   if (!id) return;
   const map = readMap();
   if (map[id] === Boolean(open)) return;

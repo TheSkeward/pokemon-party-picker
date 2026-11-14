@@ -29,7 +29,7 @@ async function loadAvailableIds(family) {
  * @return {Promise<?Object>} Teammate-lift entry; null when the mon has no
  *     index file or the fetch fails.
  */
-export async function loadTeammateLift({ family, pokemonId }) {
+async function loadTeammateLift({ family, pokemonId }) {
   if (!family || !pokemonId) return null;
   const available = await loadAvailableIds(family);
   if (available && !available.has(pokemonId)) return null;

@@ -28,7 +28,7 @@ const STATE_TOKENS = Object.freeze({
  * @param {!Object} theme A descriptor's `theme`.
  * @return {!Array<!Array<string>>} `[property, value]` pairs.
  */
-export function themeProperties(theme) {
+function themeProperties(theme) {
   return [
     ['color-scheme', theme.scheme],
     ...Object.entries(SHELL_TOKENS)

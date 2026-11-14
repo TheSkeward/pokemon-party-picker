@@ -74,7 +74,7 @@ export function loadLegalMoveData(pokemonId) {
  * @param {?string} formId
  * @return {number}
  */
-export function arrivalLevelOf(formId) {
+function arrivalLevelOf(formId) {
   const form = dex().progressionSpecies[formId];
   if (!form?.prevoId) return 1;
   return (form.evoType || '') === '' && Number.isFinite(form.evoLevel)
@@ -111,7 +111,7 @@ function evolutionDepartureLevel(child) {
  * @param {{formArrivalLevel: number, learnLevel: number}} b
  * @return {number}
  */
-export function compareEvolutionRouteOptions(a, b) {
+function compareEvolutionRouteOptions(a, b) {
   return b.formArrivalLevel - a.formArrivalLevel || a.learnLevel - b.learnLevel;
 }
 

@@ -57,7 +57,7 @@ export function removeLocalStorage(key) {
 }
 
 /** Frees quota by removing entries under the known cache prefixes. */
-export function clearLargeLocalStorageCaches() {
+function clearLargeLocalStorageCaches() {
   try {
     for (const key of Object.keys(localStorage)) {
       if (CACHE_KEY_PREFIXES.some((prefix) => key.startsWith(prefix))) {

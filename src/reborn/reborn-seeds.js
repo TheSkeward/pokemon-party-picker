@@ -38,7 +38,7 @@ export const GEN7_TERRAIN_SEEDS = [
  * Magical (Psychic Terrain). An already-owned terrain seed migrates to its
  * replacement.
  */
-export const TERRAIN_SEED_REPLACEMENTS = {
+const TERRAIN_SEED_REPLACEMENTS = {
   'Electric Seed': 'Elemental Seed',
   'Grassy Seed': 'Elemental Seed',
   'Misty Seed': 'Elemental Seed',

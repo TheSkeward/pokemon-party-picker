@@ -90,7 +90,7 @@ function itemEligibleForMember(itemId, context) {
 }
 
 /** @const {string} */
-export const FIELD_EXTENDER_ITEM_ID = 'amplifieldrock';
+const FIELD_EXTENDER_ITEM_ID = 'amplifieldrock';
 // Measured conditional propensity of the nearest mainline analog (Light Clay
 // held given screens usage, rawCount-weighted across gen7) — the fraction of
 // setter sets that pay the item slot for the duration extender.

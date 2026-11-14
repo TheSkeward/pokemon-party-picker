@@ -40,7 +40,7 @@ const MAX_SAMPLES = 500;
  * investment) done. Schema 2 measured only resolve+search; the schema bump
  * retires those samples via the env signature.
  */
-export const TELEMETRY_SCHEMA = 3;
+const TELEMETRY_SCHEMA = 3;
 
 /**
  * Cache temperature of a run:
@@ -48,7 +48,7 @@ export const TELEMETRY_SCHEMA = 3;
  *   "warm"   — some line-cache hits and/or an incremental search;
  *   "cold"   — every line resolved and the search ran from scratch.
  */
-export const CACHE_STATES = Object.freeze(['cold', 'warm', 'result']);
+const CACHE_STATES = Object.freeze(['cold', 'warm', 'result']);
 
 // The running bundle's build id (vite `define`); absent in dev/Node.
 const BUILD_ID =
@@ -58,7 +58,7 @@ const BUILD_ID =
  * @param {?string} dataSignature
  * @return {{schema: number, build: string, scoring: string, data: string}}
  */
-export function telemetryEnv(dataSignature) {
+function telemetryEnv(dataSignature) {
   return {
     schema: TELEMETRY_SCHEMA,
     build: BUILD_ID,

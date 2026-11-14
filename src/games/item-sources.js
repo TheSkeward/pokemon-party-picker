@@ -36,7 +36,7 @@ let ItemSource;
 let SupplyStep;
 
 /** @const {!Set<string>} The kinds that restock an item without limit. */
-export const RENEWABLE_SOURCE_KINDS = new Set([
+const RENEWABLE_SOURCE_KINDS = new Set([
   'shop',
   'wild',
   'pickup',

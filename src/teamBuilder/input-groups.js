@@ -16,7 +16,7 @@ import { toId } from '../utils/ids.js';
  * @param {Array<Object>} pokemonIndex
  * @return {!Object<string, number>}
  */
-export function metLevelsByPokemonId(query, pokemonIndex) {
+function metLevelsByPokemonId(query, pokemonIndex) {
   const byName = parseMetLevels(query, pokemonIndex);
   const byId = {};
   if (!byName.size) return byId;

@@ -35,7 +35,7 @@ function loadAvailableIds(family) {
  * @return {Promise<?Object>} Core-index entry; null when the mon has no
  *     entry or the fetch fails.
  */
-export async function loadCoreEntry({ family, pokemonId }) {
+async function loadCoreEntry({ family, pokemonId }) {
   if (!family || !pokemonId) return null;
   const available = await loadAvailableIds(family);
   if (!available.has(pokemonId)) return null;

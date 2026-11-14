@@ -20,7 +20,7 @@ import { dex } from '../games/dex.js';
  * @param {?Map<string, string>=} abilityAnnotations
  * @return {boolean}
  */
-export function describesIndividual(
+function describesIndividual(
   input,
   progression = {},
   abilityAnnotations = null,

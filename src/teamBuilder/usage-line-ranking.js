@@ -150,7 +150,7 @@ export function compareLineUsageBestFirst(a, b) {
  * Same ordering without display-name tie breakers. This is used to choose one
  * owned input when several resolve to the same bench entry.
  */
-export function compareLineUsageStrength(a, b) {
+function compareLineUsageStrength(a, b) {
   if (Boolean(a.ceiling) !== Boolean(b.ceiling)) return a.ceiling ? -1 : 1;
   if (a.ceiling && b.ceiling) {
     return (

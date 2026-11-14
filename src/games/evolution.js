@@ -69,7 +69,7 @@ export function evolutionItemsSpentFromList() {
 }
 
 /** The gate on Mega Evolution itself: the game's Mega ring. */
-export const MEGA_RING_ACCESS_KEY = 'evoAccessMegaRing';
+const MEGA_RING_ACCESS_KEY = 'evoAccessMegaRing';
 
 /**
  * Whether Mega Evolution is available under a progression: the ring gate is

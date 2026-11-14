@@ -21,8 +21,8 @@ const REFERENCE_POWER = 80;
  * Protect, status), and of one used once per switch-in (setup, hazards,
  * screens). PP at or above the count costs nothing.
  */
-export const LONG_FIGHT_CLICKS = 12;
-export const STINTS_PER_FIGHT = 3;
+const LONG_FIGHT_CLICKS = 12;
+const STINTS_PER_FIGHT = 3;
 const ONCE_PER_STINT_ROLES = new Set(['setup', 'hazard_set', 'screen']);
 
 /** Attacks whose power follows the target's weight. */

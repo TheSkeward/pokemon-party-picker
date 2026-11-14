@@ -159,7 +159,7 @@ export function getMovesetEntry(movesetData, pokemonId) {
   return movesetData?.pokemon?.[pokemonId] || null;
 }
 /** @return {!Array<string>} Sorted month keys. */
-export function getAvailabilityMonths(availability) {
+function getAvailabilityMonths(availability) {
   return Object.keys(availability?.months || {}).sort();
 }
 /** @return {string} */

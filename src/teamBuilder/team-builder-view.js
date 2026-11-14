@@ -216,7 +216,7 @@ export function donorBoxLabel(count) {
 }
 
 /** The donor box's hover text: what it is for and how it grows. */
-export const DONOR_BOX_TITLE =
+const DONOR_BOX_TITLE =
   'Your whole box. Everything you add to the pool lands here and stays ' +
   'when you remove it; donors supply egg moves, Sketch partners and move ' +
   'transfers, and only the pool is fielded.';
@@ -1424,7 +1424,7 @@ function getSelectedTeamChoice({ setDetails, state }) {
  * The columns the team table sorts by; the first is the default, and the
  * only one a name-less saved sort falls back to.
  */
-export const TEAM_SORTS = Object.freeze(['score', 'current', 'tier', 'lead']);
+const TEAM_SORTS = Object.freeze(['score', 'current', 'tier', 'lead']);
 
 /**
  * @param {?string} value A saved or linked sort column.

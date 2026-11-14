@@ -93,7 +93,7 @@ export function levelCapAtBadges(badges) {
  * @param {?string} id
  * @return {number} Position in timeline order; -1 for unknown ids.
  */
-export function getCheckpointOrdinal(id) {
+function getCheckpointOrdinal(id) {
   const entry = indexOf().get(String(id || ''));
   return entry ? entry.index : -1;
 }

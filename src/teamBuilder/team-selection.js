@@ -204,7 +204,7 @@ const isFallbackBuild = (build) =>
  *     has one.
  * @return {number}
  */
-export function hedgeBuildMargin(build, standard) {
+function hedgeBuildMargin(build, standard) {
   if (!standard || build === standard) return 0;
   if (build.buildKey === 'default' || isFallbackBuild(build)) return 0;
   return tunable('HEDGE_BUILD_MARGIN') * Math.max(0, standard.score || 0);

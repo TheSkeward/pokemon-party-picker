@@ -228,7 +228,7 @@ export function teamItemShortages(members, ownedItems = {}) {
  * @param {Set<string>} recommendedIds
  * @return {number}
  */
-export function teamSimilarity(team, recommendedIds = new Set()) {
+function teamSimilarity(team, recommendedIds = new Set()) {
   return (team.members || []).filter((member) =>
     recommendedIds.has(toId(member.speciesId)),
   ).length;
@@ -242,7 +242,7 @@ export function teamSimilarity(team, recommendedIds = new Set()) {
  * @param {Set<string>} recommendedIds
  * @return {number}
  */
-export function compareRealTeams(a, b, recommendedIds = new Set()) {
+function compareRealTeams(a, b, recommendedIds = new Set()) {
   return (
     (b.weight || 0) - (a.weight || 0) ||
     (b.count || 0) - (a.count || 0) ||

@@ -272,7 +272,7 @@ export function computeUsageRamp(legalityProfile, levelCap) {
  * @param {number} currentValue
  * @return {number}
  */
-export function usageRankScore(rank, currentValue = 0) {
+function usageRankScore(rank, currentValue = 0) {
   const totalTiers = Math.max(1, rank.totalTiers || 1);
   const tierIndex = Math.max(0, totalTiers - rank.tierRank);
   const quantum = tunable('USAGE_QUANTUM');

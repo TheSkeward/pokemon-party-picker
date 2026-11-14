@@ -8,7 +8,7 @@ import { gameForFamily } from '../games/registry.js';
  * @return {!Array<{label: string, title: string,
  *     families: !Array<{id: string, label: string}>}>}
  */
-export function familiesByGame(families) {
+function familiesByGame(families) {
   const groups = new Map();
   for (const family of families) {
     const game = gameForFamily(family.id);

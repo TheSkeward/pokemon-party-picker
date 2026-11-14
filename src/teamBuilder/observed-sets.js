@@ -27,7 +27,7 @@ async function loadAvailableIds(family) {
  * @return {Promise<?Object>} Observed-sets detail; null when the mon has no
  *     observed sets or the fetch fails.
  */
-export async function loadObservedSets({ family, pokemonId }) {
+async function loadObservedSets({ family, pokemonId }) {
   if (!family || !pokemonId) return null;
   const available = await loadAvailableIds(family);
   if (!available.has(pokemonId)) return null;
