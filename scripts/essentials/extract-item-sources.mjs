@@ -20,6 +20,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import {
+  creationFormReader,
+  readMapLists,
+  withCreationForms,
+} from './creation-forms.mjs';
 import { Names } from './event-commands.mjs';
 import { formatJson, formatJsonRows } from './format-json.mjs';
 import {
@@ -69,6 +74,9 @@ import { extractWildItems } from './wild-items.mjs';
  * the map rate the type draws on (`land` for `landrate`).
  * `encounterRules` reads what else the encounters extract states for the
  * game, such as how a form-keyed slot picks its form.
+ * `formsByCreationRule` says that a slot which names no form is met in
+ * the form its species' creation rule gives (creation-forms.mjs), as
+ * the game's generator does it.
  *
  * `scriptRules` reads the script-side item rules map events lean on, each
  * under its key in the extract (script-item-rules.mjs has the readers and
@@ -89,6 +97,7 @@ import { extractWildItems } from './wild-items.mjs';
  *   formsInheritWildItems: boolean,
  *   encounterTypes: !Array<!Array<string>>,
  *   encounterRules: function(!GameInstall): !Object,
+ *   formsByCreationRule: (boolean|undefined),
  *   scriptRules: function(!GameInstall): !Object<string, !Object>,
  *   eventCalls: !EventCalls,
  * }}
@@ -138,8 +147,8 @@ export function extractItemSources(installDir, adapter, outDir) {
     console.log(`[${adapter.logTag}] ${stem}: ${kb} KB`);
   };
 
-  const wild = extractWildItems(
-    install.parse('mons.dat'), adapter.formsInheritWildItems);
+  const mons = install.parse('mons.dat');
+  const wild = extractWildItems(mons, adapter.formsInheritWildItems);
   const holdChances = adapter.holdChances.read(
     ...adapter.holdChances.files.map((file) => install.source(file)));
   write(
@@ -156,10 +165,18 @@ export function extractItemSources(installDir, adapter, outDir) {
   const system = install.load('System.rxdata');
   const mapSwitches =
     mapSwitchReader(readNamedSwitches(constants), system);
-  const tables = extractEncounters(mapData, mapInfos, adapter.encounterTypes);
+  const read = extractEncounters(mapData, mapInfos, adapter.encounterTypes);
+  const tables = adapter.formsByCreationRule
+    ? withCreationForms(
+      read, creationFormReader(mons, readMapLists(constants)))
+    : read;
   write(
     stems.encounters,
-    ['maps.dat', 'MapInfos.rxdata', 'Scripts/Encounters.rb'],
+    [
+      'maps.dat', 'MapInfos.rxdata', 'Scripts/Encounters.rb',
+      ...(adapter.formsByCreationRule
+        ? ['mons.dat', adapter.constantsFile] : []),
+    ],
     {
       encounterTypes: adapter.encounterTypes.map(([type, density]) => ({
         type,

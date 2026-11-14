@@ -163,14 +163,14 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"single","badge":13,"count":1,"via":"item ball"},
   ],
   cellbattery: [
+    {"kind":"wild","badge":5,"via":"Alolan Geodude (5%), Tanzan Mountain"},
     {"kind":"single","badge":12,"count":1,"via":"item ball"},
-    {"kind":"wild","badge":13,"via":"Charjabug (5%), Peridot Ward"},
     {"kind":"shop","badge":18,"via":"Nightclub Interior, Battle Floor Points"},
   ],
   charcoal: [
     {"kind":"single","badge":4,"count":1,"via":"hidden item"},
     {"kind":"shop","badge":8,"via":""},
-    {"kind":"wild","badge":11,"via":"Vulpix (5%), Ametrine City"},
+    {"kind":"wild","badge":13,"via":"Torkoal (5%), Chrysolia Spring B1F"},
   ],
   charizarditex: [
     {"kind":"single","badge":11,"count":1,"via":"item ball"},

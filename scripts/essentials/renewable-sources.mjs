@@ -24,7 +24,8 @@ const METHOD_WORDS = {
  * @param {{holdChances: !Object, itemNames: !Object<string, string>,
  *     species: !Object<string, !Object>}} wildItems The wild-items extract.
  * @param {{maps: !Array<!Object>}} encounters The encounters extract. A
- *     slot may name the form it is met in (the extract's slotForms rule).
+ *     slot may name the form it is met in (the extract's slotForms or
+ *     creationForms rule).
  * @param {function(!Object, string): ?number} badgeOf Given an encounter
  *     map and one of its encounter types, the badge count at which that
  *     table can be met; null when it is not dated, which drops the table.
@@ -68,9 +69,9 @@ export function wildHeldSources(wildItems, encounters, badgeOf) {
 // The species and form of each wild Pokémon a table's slots can produce,
 // once each. A slot that names no form is met in the species' first; a
 // number is that form, counted in the order the wild-items extract lists a
-// species' forms; a list is any of its forms. A name is a rule the game
-// picks the form by (the season, the hour), so which form holds what is not
-// known here and the slot claims no holder.
+// species' forms; a list is any of the forms it names. A name is a rule
+// the game picks the form by, so which form holds what is not known here
+// and the slot claims no holder.
 function slotHolders(slots) {
   const holders = new Map();
   for (const { species, form } of slots) {

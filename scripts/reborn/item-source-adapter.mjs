@@ -2,6 +2,7 @@
  * @fileoverview Where Pokémon Reborn keeps the rules its item sources are
  * extracted from, for essentials/extract-item-sources.mjs.
  */
+import { readCreationFormRule } from '../essentials/creation-forms.mjs';
 import {
   ENGINE_GIVE_CALLS,
   selfSwitchLoopResets,
@@ -51,8 +52,12 @@ export const REBORN_ITEM_SOURCE_ADAPTER = {
     ['LandNight', 'land'],
     ['BugContest', 'land'],
   ],
-  // A table keys its slots by species alone.
-  encounterRules: () => ({}),
+  // A table keys its slots by species alone; where a species has a
+  // creation rule, pbGenerateWildPokemon lets that pick the form.
+  encounterRules: (install) => ({
+    creationForms: readCreationFormRule(install.source('Scripts/Field.rb')),
+  }),
+  formsByCreationRule: true,
 
   scriptRules: (install) => ({
     mining: readMiningTable(install.source('Scripts/MinigameMining.rb')),
