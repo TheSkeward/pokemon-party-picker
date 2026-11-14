@@ -89,16 +89,19 @@ export function renderSearchField(tableState, placeholder) {
 
 /**
  * @param {!Array<!Array<string>>} columns One [field, label] pair per
- *     column, in order.
+ *     column, in order, with the cells' class as a third entry where the
+ *     column has one ("num" for a column of figures). A table's rows
+ *     give the same class to the same cell.
  * @param {!TableState} tableState
  * @return {string} The header row, each cell a sort button with the sorted
  *     column's arrow.
  */
 export function renderHeaderRow(columns, tableState) {
-  const cells = columns.map(([field, label]) => {
+  const cells = columns.map(([field, label, cellClass]) => {
     const isActive = tableState.sortBy === field;
     const arrow = !isActive ? '' : tableState.sortDir === 'asc' ? ' ↑' : ' ↓';
-    return `<th${sortAttr(isActive, tableState.sortDir)}><button class="sort-button ${isActive ? 'active' : ''}" data-sort-by="${escapeAttr(field)}">${escapeHtml(label)}${arrow}</button></th>`;
+    const classAttr = cellClass ? ` class="${cellClass}"` : '';
+    return `<th${classAttr}${sortAttr(isActive, tableState.sortDir)}><button class="sort-button ${isActive ? 'active' : ''}" data-sort-by="${escapeAttr(field)}">${escapeHtml(label)}${arrow}</button></th>`;
   });
   return `<tr>${cells.join('')}</tr>`;
 }

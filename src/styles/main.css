@@ -398,11 +398,16 @@ button:hover {
 .static-rows tbody tr {
   cursor: default;
 }
-.move-usage-table th:nth-child(n + 5),
-.move-usage-table td:nth-child(n + 5),
-.item-usage-table th:nth-child(n + 3),
-.item-usage-table td:nth-child(n + 3) {
+/* Columns are styled by what they hold, named on the cell, never by
+   where they stand: a column added or dropped then moves no rule onto
+   the wrong one. A column of figures reads down its right edge. */
+.usage-table th.num,
+.usage-table td.num {
   text-align: right;
+}
+/* A rank labels its row; it is not one of the row's figures. */
+.usage-table td.rank {
+  color: var(--text-muted);
 }
 /* "TM34 badge 5" stays on one line; two sources may wrap between them. */
 .table-source {
@@ -411,25 +416,6 @@ button:hover {
 .usage-browser-table tbody tr.selected,
 .resolver-results-table tbody tr.selected {
   background: color-mix(in srgb, var(--hairline) 60%, transparent);
-}
-.usage-browser-table th:nth-child(1),
-.usage-browser-table td:nth-child(1),
-.usage-browser-table th:nth-child(3),
-.usage-browser-table td:nth-child(3),
-.usage-browser-table th:nth-child(4),
-.usage-browser-table td:nth-child(4),
-.usage-browser-table th:nth-child(5),
-.usage-browser-table td:nth-child(5) {
-  text-align: right;
-}
-.usage-browser-table td:nth-child(1) {
-  color: var(--text-muted);
-}
-.resolver-results-table th:nth-child(2),
-.resolver-results-table td:nth-child(2),
-.resolver-results-table th:nth-child(3),
-.resolver-results-table td:nth-child(3) {
-  text-align: right;
 }
 .source-lines {
   display: grid;
@@ -746,10 +732,10 @@ button:hover {
 
 /* A pick's name and its two small buttons stay on one line; the notes
    beneath them wrap as before. */
-.team-results-panel .usage-table td:nth-child(2) {
+.team-results-panel .usage-table td.pick {
   white-space: nowrap;
 }
-.team-results-panel .usage-table td:nth-child(2) > div {
+.team-results-panel .usage-table td.pick > div {
   white-space: normal;
 }
 
@@ -2135,27 +2121,13 @@ html {
   background: color-mix(in srgb, var(--state-warn) 14%, transparent);
 }
 
-/* Team-builder results table: column-specific rules on top of the shared
-   dex-table idiom (alignment, muted rank/notes, striped picks). The
-   columns are rank, pick, usage, lead, score, notes. */
-.team-results-panel .usage-table td:nth-child(3) {
+/* Team-builder results table: its own columns on top of the shared
+   table idiom (figures and rank above), and striped picks. */
+.team-results-panel .usage-table td.usage {
   white-space: nowrap;
 }
 
-.team-results-panel .usage-table th:nth-child(1),
-.team-results-panel .usage-table td:nth-child(1),
-.team-results-panel .usage-table th:nth-child(4),
-.team-results-panel .usage-table td:nth-child(4),
-.team-results-panel .usage-table th:nth-child(5),
-.team-results-panel .usage-table td:nth-child(5) {
-  text-align: right;
-}
-
-.team-results-panel .usage-table td:nth-child(1) {
-  color: var(--text-muted);
-}
-
-.team-results-panel .usage-table td:nth-child(6) {
+.team-results-panel .usage-table td.notes {
   color: var(--text-muted);
   font-size: var(--type-s);
 }

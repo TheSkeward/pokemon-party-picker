@@ -50,7 +50,7 @@ test('ranked mon headlines its meaningful tier, AG appearance demoted to fallbac
   assert.match(html, /Gen 7 UU @ 1760 — canonical/);
   // The Usage % cell carries the meaningful-tier value; the AG appearance
   // value must not surface anywhere in the row.
-  assert.match(html, /<td>42\.74<\/td>/);
+  assert.match(html, /<td class="num">42\.74<\/td>/);
   assert.doesNotMatch(html, /0\.41/);
   assert.match(html, /fallback: Gen 7 AG @ 1760/);
 });

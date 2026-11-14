@@ -54,9 +54,9 @@ const COLUMNS = [
   ['type', 'Type'],
   ['category', 'Category'],
   ['taught', 'Taught by'],
-  ['prior', 'Run by learners'],
-  ['learners', 'Learners'],
-  ['carry', 'On all sets'],
+  ['prior', 'Run by learners', 'num'],
+  ['learners', 'Learners', 'num'],
+  ['carry', 'On all sets', 'num'],
 ];
 
 /**
@@ -180,7 +180,7 @@ export function renderMoveUsageTable(container, table, state, options = {}) {
 }
 
 function renderRow(row) {
-  return `<tr><td>${escapeHtml(row.name)}</td><td>${renderBadge(row.type, getTypeColor(row.type))}</td><td>${renderBadge(row.category, getCategoryColor(row.category))}</td><td>${row.taught.map(renderRoute).join(', ')}</td><td>${row.prior.toFixed(1)}%</td><td>${row.learners}</td><td>${row.carry.toFixed(2)}%</td></tr>`;
+  return `<tr><td>${escapeHtml(row.name)}</td><td>${renderBadge(row.type, getTypeColor(row.type))}</td><td>${renderBadge(row.category, getCategoryColor(row.category))}</td><td>${row.taught.map(renderRoute).join(', ')}</td><td class="num">${row.prior.toFixed(1)}%</td><td class="num">${row.learners}</td><td class="num">${row.carry.toFixed(2)}%</td></tr>`;
 }
 
 // "TM34 badge 5": the label, then when the route opens. The game's own

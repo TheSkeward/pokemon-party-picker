@@ -76,6 +76,21 @@ try {
   await page.click('.team-pick-row .row-link');
   await page.waitForSelector('#team-builder-set-details-root');
   check('a row opens its set', Boolean(await page.$('.team-pick-row.selected-row')));
+  // Rank, lead rate and score read down their right edge. The set panel
+  // under the row is one cell where the rank stands: it must not take the
+  // rank's alignment and colour, as it did when columns went by position.
+  const alignment = await page.evaluate(() => {
+    const align = (cell) => getComputedStyle(cell).textAlign;
+    return {
+      row: [...document.querySelector('.team-pick-row').children].map(align),
+      set: align(document.querySelector('.team-builder-set-row > td')),
+    };
+  });
+  check(
+    'the figures are right-aligned, the rest left',
+    alignment.row.join() === 'right,left,left,right,right,left',
+    alignment.row.join());
+  check('the set panel reads from the left', alignment.set === 'left');
   await page.click('.team-pick-row.selected-row [data-jump-set-card]');
   check('"moves" marks the set card it jumps to',
     Boolean(await page.$('.is-jump-target')));

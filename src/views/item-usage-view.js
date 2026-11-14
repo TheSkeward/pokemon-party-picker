@@ -54,8 +54,8 @@ export const ITEM_USAGE_TABLE = {
 const COLUMNS = [
   ['name', 'Item'],
   ['obtained', 'Obtained'],
-  ['carry', 'On all sets'],
-  ['top', 'Top item for'],
+  ['carry', 'On all sets', 'num'],
+  ['top', 'Top item for', 'num'],
 ];
 
 /**
@@ -153,7 +153,7 @@ export function renderItemUsageTable(container, table, state, options = {}) {
 }
 
 function renderRow(row) {
-  return `<tr><td>${escapeHtml(row.name)}</td><td>${renderSupply(row)}</td><td>${row.carry.toFixed(2)}%</td><td>${row.top}</td></tr>`;
+  return `<tr><td>${escapeHtml(row.name)}</td><td>${renderSupply(row)}</td><td class="num">${row.carry.toFixed(2)}%</td><td class="num">${row.top}</td></tr>`;
 }
 
 function renderSupply(row) {

@@ -480,11 +480,11 @@ function renderResult({
         <table class="usage-table">
           <thead>
             <tr>
-              <th>#</th>
+              <th class="num">#</th>
               ${renderSortHeader('current', 'Pick', state)}
               ${renderSortHeader('tier', 'Usage', state)}
-              ${renderSortHeader('lead', 'Lead %', state)}
-              ${renderSortHeader('score', 'Score', state)}
+              ${renderSortHeader('lead', 'Lead %', state, 'num')}
+              ${renderSortHeader('score', 'Score', state, 'num')}
               <th>Notes</th>
             </tr>
           </thead>
@@ -1240,12 +1240,13 @@ function formatItemPercent(value) {
   return value >= 2 ? `${Math.round(value)}%` : `${value.toFixed(1)}%`;
 }
 
-function renderSortHeader(sortBy, label, state) {
+// `cellClass` is the class the column's cells carry ("num" for figures).
+function renderSortHeader(sortBy, label, state, cellClass = '') {
   const active = state.teamSort === sortBy;
   const arrow = active ? (state.teamSortDir === 'asc' ? ' ▲' : ' ▼') : '';
 
   return `
-    <th${sortAttr(active, state.teamSortDir)}>
+    <th${cellClass ? ` class="${cellClass}"` : ''}${sortAttr(active, state.teamSortDir)}>
       <button class="sort-header-button ${active ? 'active' : ''}" data-team-sort="${escapeHtml(sortBy)}">
         ${escapeHtml(label)}${arrow}
       </button>
@@ -1300,18 +1301,18 @@ function renderTeamRow({
       data-team-pokemon-id="${escapeHtml(row.pokemonId)}"
       title="Inspect ${escapeHtml(row.name)} set"
     >
-      <td>${index + 1}</td>
-      <td>
+      <td class="num rank">${index + 1}</td>
+      <td class="pick">
         <button type="button" class="row-link" aria-pressed="${selected}"><strong>${escapeHtml(currentName)}</strong></button>
         <button type="button" class="set-card-jump" data-jump-set-card="${escapeAttr(currentSpecies?.id || row.pokemonId)}" aria-label="${escapeAttr(`${currentName}'s moves`)}" title="Jump to this pick's recommended set below">moves ↓</button>
         <button type="button" class="set-card-jump" data-lock-toggle="${escapeAttr(row.inputName || '')}" data-lock-state="${row.locked ? 'locked' : 'free'}" aria-label="${escapeAttr(`${row.locked ? 'Unlock' : 'Lock'} ${currentName}`)}" title="${row.locked ? 'Unlock this pick so the optimizer may reconsider its slot' : 'Lock this pick into the team and re-optimize the other slots'}">${row.locked ? 'unlock' : 'lock'}</button>
         ${pathNote ? `<div class="representative-note">${escapeHtml(pathNote)}</div>` : ''}
         ${renderItemRec(recommendedItem)}
       </td>
-      <td>${renderMeaningfulUsage(row, formatsIndex, lineUsage)}</td>
-      <td>${formatPercent(row.bundle?.leads?.value)}</td>
-      <td>${Number.isFinite(row.score) ? Math.round(row.score).toLocaleString() : ''}</td>
-      <td data-team-note>${escapeHtml(note)}</td>
+      <td class="usage">${renderMeaningfulUsage(row, formatsIndex, lineUsage)}</td>
+      <td class="num">${formatPercent(row.bundle?.leads?.value)}</td>
+      <td class="num">${Number.isFinite(row.score) ? Math.round(row.score).toLocaleString() : ''}</td>
+      <td class="notes" data-team-note>${escapeHtml(note)}</td>
     </tr>
 
     ${

@@ -45,8 +45,8 @@ export function renderResolverResults(
     <section class="panel">
       <div class="panel-header"><div><h2>Set Lookup Results</h2><p>${rows.length} Pokémon resolved for ${selectionLabel}</p>${unmatchedNotice}<p>Usage % and Source show the canonical tier — the first tier the Pokémon is meaningfully played in (its best trace tier when it never clears the bar). Shallower fallback tiers are noted and their sets appear tagged in the details below. Sorted by Lead % descending. Click a row to load movesets.</p></div></div>
       ${loadingNotice}
-      <div class="table-wrap"><table class="usage-table resolver-results-table"><thead><tr><th>Pokémon</th><th>Usage %</th><th>Lead %</th><th>Source</th></tr></thead><tbody>
-        ${rows.map((row) => `<tr data-resolver-pokemon-id="${row.pokemonId}" class="${row.pokemonId === state.resolverSelectedPokemon ? 'selected' : ''}"><td><button type="button" class="row-link" aria-pressed="${row.pokemonId === state.resolverSelectedPokemon}">${renderPokemonCell(row)}</button></td><td>${renderUsageCell(row.bundle)}</td><td>${row.bundle.leads ? row.bundle.leads.value.toFixed(1) : '—'}</td><td>${renderSourceCell(row.bundle, formatsIndex)}</td></tr>`).join('')}
+      <div class="table-wrap"><table class="usage-table resolver-results-table"><thead><tr><th>Pokémon</th><th class="num">Usage %</th><th class="num">Lead %</th><th>Source</th></tr></thead><tbody>
+        ${rows.map((row) => `<tr data-resolver-pokemon-id="${row.pokemonId}" class="${row.pokemonId === state.resolverSelectedPokemon ? 'selected' : ''}"><td><button type="button" class="row-link" aria-pressed="${row.pokemonId === state.resolverSelectedPokemon}">${renderPokemonCell(row)}</button></td><td class="num">${renderUsageCell(row.bundle)}</td><td class="num">${row.bundle.leads ? row.bundle.leads.value.toFixed(1) : '—'}</td><td>${renderSourceCell(row.bundle, formatsIndex)}</td></tr>`).join('')}
       </tbody></table></div>
     </section>`;
 }
