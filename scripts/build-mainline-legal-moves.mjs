@@ -1,8 +1,8 @@
 /**
  * @fileoverview Builds per-Pokémon legal-move files for a mainline game from
- * its generation's {@code @pkmn/dex} learnsets, in the shape the Reborn
- * builder writes (build-reborn-legal-moves.mjs) so the engine reads every
- * game alike:
+ * its generation's {@code @pkmn/dex} learnsets, in the shape every game's
+ * builder writes (legal-moves/core.mjs) so the engine reads every game
+ * alike:
  *
  *   node scripts/build-mainline-legal-moves.mjs <gameId> [levelUpTable.json]
  *
@@ -24,15 +24,18 @@
  * Chatter and Struggle.
  */
 
-import fs from 'node:fs/promises';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { Dex } from '@pkmn/dex';
 import { getGame, listGames } from '../src/games/registry.js';
-
-const UNSKETCHABLE_MOVES = new Set(['chatter', 'struggle']);
-
-const toId = (s) => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
+import { toId } from '../src/utils/ids.js';
+import {
+  UNSKETCHABLE_MOVES,
+  createSourceTable,
+  preEvolutionIds,
+  resetOutputDir,
+  writeLegalMoves,
+} from './legal-moves/core.mjs';
 
 function parseGameArg() {
   const game = getGame(process.argv[2] || '');
@@ -131,21 +134,13 @@ async function main() {
     return entries;
   }
 
-  await fs.rm(outputDir, { recursive: true, force: true });
-  await fs.mkdir(outputDir, { recursive: true });
+  await resetOutputDir(outputDir);
 
   let written = 0;
   for (const species of universe) {
     const learnset = await learnsetOf(species);
-    const sourcesByMove = new Map();
-    const get = (moveId) => {
-      if (!sourcesByMove.has(moveId)) {
-        sourcesByMove.set(moveId, {
-          levelUp: [], tm: false, tmx: false, tutor: false, egg: false,
-        });
-      }
-      return sourcesByMove.get(moveId);
-    };
+    const table = createSourceTable();
+    const { get } = table;
 
     for (const [moveId, codes] of Object.entries(learnset.entries)) {
       for (const code of codes) {
@@ -167,48 +162,33 @@ async function main() {
       }
     }
 
-    const preEvoLevelUp = new Map();
-    for (const preEvoId of getPreEvolutionIds(dex, species)) {
+    for (const preEvoId of preEvolutionIds(dex, species)) {
       const preLearnset = await learnsetOf(dex.species.get(preEvoId));
       for (const [moveId, codes] of Object.entries(preLearnset.entries)) {
         for (const code of codes) {
           if (code[0] === 'E') get(moveId).egg = true;
           if (code[0] !== 'L') continue;
           const level = Number.parseInt(code.slice(1), 10);
-          if (!(level > 0)) continue;
-          if (!preEvoLevelUp.has(moveId)) preEvoLevelUp.set(moveId, []);
-          preEvoLevelUp.get(moveId).push({ level, from: preEvoId });
+          if (level > 0) table.inheritLevelUp(moveId, level, preEvoId);
         }
       }
     }
-    for (const moveId of preEvoLevelUp.keys()) get(moveId);
 
     if (species.id === 'smeargle') {
       for (const moveId of sketchUniverse) get(moveId).sketch = true;
     }
 
-    const moves = [];
-    for (const [moveId, sources] of sourcesByMove) {
-      if (!dex.moves.get(moveId)?.exists) continue;
-      moves.push({
-        id: moveId,
-        sources: normalizeSources(sources, preEvoLevelUp.get(moveId)),
-      });
-    }
-    moves.sort((a, b) => a.id.localeCompare(b.id));
+    const moves = table.moves(dex);
     if (!moves.length) continue;
 
-    await fs.writeFile(
-      path.join(outputDir, `${species.id}.json`),
-      JSON.stringify({
-        pokemonId: species.id,
-        pokemonName: species.name,
-        types: species.types,
-        learnsetPokemonId: learnset.id,
-        learnsetPokemonName: learnset.name,
-        moves,
-      }) + '\n',
-    );
+    await writeLegalMoves(outputDir, {
+      pokemonId: species.id,
+      pokemonName: species.name,
+      types: species.types,
+      learnsetPokemonId: learnset.id,
+      learnsetPokemonName: learnset.name,
+      moves,
+    });
     written += 1;
   }
   console.log(
@@ -217,47 +197,6 @@ async function main() {
   if (missingFromTable.length) {
     console.log(`  not in the level-up table: ${missingFromTable.join(', ')}`);
   }
-}
-
-// Pre-evolution ids (closest first), walked from the base species so forms
-// inherit the base line's chain.
-function getPreEvolutionIds(dex, species) {
-  let current = species.baseSpecies !== species.name
-    ? dex.species.get(toId(species.baseSpecies))
-    : species;
-  const ids = [];
-  const seen = new Set();
-  while (current?.prevo && !seen.has(current.id)) {
-    seen.add(current.id);
-    const prevo = dex.species.get(toId(current.prevo));
-    if (!prevo?.exists) break;
-    ids.push(prevo.id);
-    current = prevo;
-  }
-  return ids;
-}
-
-function normalizeSources(sources, preEvolutionLevels) {
-  const { evolutionMove, sketch, ...base } = sources;
-  const normalized = {
-    ...base,
-    levelUp: [...new Set(sources.levelUp)].sort((a, b) => a - b),
-  };
-  const seen = new Set();
-  const preEvolutionLevelUp = (preEvolutionLevels || [])
-    .filter((entry) => {
-      const key = `${entry.level}|${entry.from}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    })
-    .sort((a, b) => a.level - b.level || a.from.localeCompare(b.from));
-  if (preEvolutionLevelUp.length) {
-    normalized.preEvolutionLevelUp = preEvolutionLevelUp;
-  }
-  if (evolutionMove) normalized.evolutionMove = true;
-  if (sketch) normalized.sketch = true;
-  return normalized;
 }
 
 await main();
