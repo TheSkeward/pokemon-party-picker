@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { toId } from '../src/utils/ids.js';
+import { movesetBlocks, sectionEntries } from './smogon-moveset-text.mjs';
 
 import {
   CUTOFF_PRIORITY,
@@ -602,66 +603,20 @@ function parseUsageStats(text) {
 }
 
 function parseMovesetFile(text, month, formatId, cutoff) {
-  const normalizedText = text.replace(/\r/g, '');
   const pokemon = {};
-
-  const monBlockRegex =
-    /\+-+\+\s*\|\s*([^|\n]+?)\s*\|\s*\+-+\+\s*\|\s*Raw count:\s*([\d,]+)\s*([\s\S]*?)(?=\+-+\+\s*\|\s*[^|\n]+?\s*\|\s*\+-+\+\s*\|\s*Raw count:|$)/g;
-
-  let match;
-
-  while ((match = monBlockRegex.exec(normalizedText)) !== null) {
-    const name = match[1].trim();
-    const pokemonId = toId(name);
-    const rawCount = Number.parseInt(match[2].replaceAll(',', ''), 10);
-    const body = match[3];
-
-    pokemon[pokemonId] = {
-      pokemonId,
-      name,
-      rawCount,
-      abilities: extractSectionEntries(body, 'Abilities'),
-      items: extractSectionEntries(body, 'Items'),
-      spreads: extractSectionEntries(body, 'Spreads'),
-      moves: extractSectionEntries(body, 'Moves'),
+  for (const { body, ...block } of movesetBlocks(text)) {
+    pokemon[block.pokemonId] = {
+      ...block,
+      abilities: sectionEntries(body, 'Abilities'),
+      items: sectionEntries(body, 'Items'),
+      spreads: sectionEntries(body, 'Spreads'),
+      moves: sectionEntries(body, 'Moves'),
     };
   }
-
   return {
     source: { month, formatId, cutoff, dataKind: 'moveset' },
     pokemon,
   };
-}
-
-function extractSectionEntries(body, sectionName) {
-  const escaped = escapeRegex(sectionName);
-  const boundary = '(?:Abilities|Items|Spreads|Moves|Teammates|Checks and Counters)';
-
-  const sectionRegex = new RegExp(
-    `\\+[-+]+\\+\\s*\\|\\s*${escaped}\\s*\\|\\s*([\\s\\S]*?)(?=\\+[-+]+\\+\\s*\\|\\s*${boundary}\\s*\\||$)`,
-    'i',
-  );
-
-  const sectionMatch = body.match(sectionRegex);
-  if (!sectionMatch) return [];
-
-  const sectionBody = sectionMatch[1];
-  const entries = [];
-  const entryRegex = /\|\s*([^|]+?)\s+([\d.]+)%\s*(?=\||$)/g;
-
-  let entryMatch;
-  while ((entryMatch = entryRegex.exec(sectionBody)) !== null) {
-    const name = entryMatch[1].trim();
-    const usage = Number.parseFloat(entryMatch[2]);
-    if (!name || !Number.isFinite(usage)) continue;
-    entries.push({ name, usage });
-  }
-
-  return entries;
-}
-
-function escapeRegex(value) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function createEmptyAvailability() {
