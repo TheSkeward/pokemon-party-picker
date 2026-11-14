@@ -167,8 +167,17 @@ async function computeResolverResults() {
   });
 }
 
+// The Team Builder now on the page, when that is the page shown.
+let poolPage = null;
+
 function renderApp() {
   const state = getState();
+
+  // Every render rebuilds the page, and the Team Builder owns a run, timers
+  // and listeners that would outlive it: the one on the page is retired
+  // first, whether or not another takes its place.
+  poolPage?.destroy();
+  poolPage = null;
 
   renderAppShell(app, state, orderFamilies(listFamilies(availability)));
 
@@ -185,7 +194,7 @@ function renderApp() {
       unmatchedNames: resolverUnmatched,
     });
   } else if (state.view === 'pool') {
-    renderPoolPage(pageRoot);
+    poolPage = renderPoolPage(pageRoot);
   } else {
     // Named as the family's tab names it: the game, then the family.
     const family =
@@ -207,7 +216,7 @@ function renderApp() {
 function renderPoolPage(pageRoot) {
   pageRoot.innerHTML = `<section id="pool-root" class="page-stack"></section>`;
 
-  mountPoolOptimizer(document.querySelector('#pool-root'), {
+  return mountPoolOptimizer(document.querySelector('#pool-root'), {
     embedded: true,
     family: getState().family,
   });

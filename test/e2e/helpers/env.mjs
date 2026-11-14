@@ -35,6 +35,9 @@ export async function launchBrowser() {
 export async function openPoolPage(browser) {
   const page = await browser.newPage();
   await page.goto(`${BASE_URL}/pool.html`, { waitUntil: 'networkidle' });
+  // The page has rendered, which a quiet network does not promise on a
+  // cold runner.
+  await page.waitForSelector('#optimize-button', { timeout: 60_000 });
   return page;
 }
 

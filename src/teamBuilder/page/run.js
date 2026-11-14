@@ -8,7 +8,9 @@
  * started or an edit has disowned it. And no optimizer scoring runs while
  * a sweep setting is in force: the sweep changes the scoring constants for
  * the whole thread, so an optimize asks a live analysis to stop and waits
- * for it before it scores anything.
+ * for it before it scores anything. That wait crosses pages: the Team
+ * Builder is mounted afresh each time the app shell renders, and the page
+ * it replaces may have left an analysis running.
  *
  * The run owns these fields of the page's state: `result`, the stamp of
  * the progression it was optimized against (`resultProgressionKey`,
@@ -46,6 +48,10 @@ export const BATCH_EDIT_REOPTIMIZE_DELAY_MS = 5000;
 // How long the analysis waits for the Sets & coverage panel before it
 // starts regardless, so a wedged panel never blocks it.
 const PANEL_WAIT_MS = 20_000;
+
+// The analysis now running on the thread, whichever page started it; each
+// new one starts when the last has ended.
+let liveAnalysis = Promise.resolve();
 
 function waitForPaint() {
   return new Promise((resolve) => {
@@ -117,7 +123,8 @@ function recordPipelineSample(result, pipeline) {
  * @return {{optimize: function(!Object=): !Promise,
  *     analyzeDeferred: function(), discardResult: function(): boolean,
  *     isResultStale: function(): boolean,
- *     scheduleReoptimize: function(boolean, number=)}}
+ *     scheduleReoptimize: function(boolean, number=),
+ *     dispose: function()}}
  */
 export function createOptimizeRun(page) {
   const { state, data, setDetails } = page;
@@ -125,8 +132,14 @@ export function createOptimizeRun(page) {
 
   let runToken = 0;
   let sweepAbortRequested = false;
-  let activeAnalysis = Promise.resolve();
   let reoptimizeTimer = null;
+  let disposed = false;
+
+  // Starts an analysis once the thread's last one has ended.
+  function startAnalysis(result, pipeline) {
+    const start = () => analyze(result, pipeline);
+    liveAnalysis = liveAnalysis.then(start, start);
+  }
 
   /** @return {boolean} Whether the progression has moved on from the team. */
   function isResultStale() {
@@ -173,13 +186,14 @@ export function createOptimizeRun(page) {
    *     for the panel's button.
    */
   async function optimize({ exhaustive = true, background = false } = {}) {
+    if (disposed) return;
     setDetails.cancel();
 
     const token = ++runToken;
     const superseded = () => token !== runToken;
     // Ask a live sweep to stop at its next setting, and wait for it.
     sweepAbortRequested = true;
-    await activeAnalysis;
+    await liveAnalysis;
     if (superseded()) return;
 
     state.phase = OptimizePhase.OPTIMIZING;
@@ -274,7 +288,7 @@ export function createOptimizeRun(page) {
 
       // The analysis is computed after the team renders so the click stays
       // quick; each part re-renders as it lands.
-      activeAnalysis = analyze(result, {
+      startAnalysis(result, {
         pipelineStart,
         phases,
         totalMs: Date.now() - pipelineStart,
@@ -311,12 +325,14 @@ export function createOptimizeRun(page) {
    *     recorded; null from the button.
    */
   async function analyze(forResult, pipeline = null) {
+    const current = () => !disposed && state.result === forResult;
+    // Its page was left, or its result replaced, while it waited its turn.
+    if (!current()) return;
     sweepAbortRequested = false;
     state.phase = OptimizePhase.ANALYZING;
     state.confidence = null;
     state.investment = null;
     state.postAnalysisSkipReason = null;
-    const current = () => state.result === forResult;
     const shouldAbort = () => sweepAbortRequested || !current();
     let superseded = false;
     try {
@@ -440,7 +456,10 @@ export function createOptimizeRun(page) {
     if (!state.result || state.phase !== OptimizePhase.ANALYSIS_DEFERRED) {
       return;
     }
-    activeAnalysis = analyze(state.result, null);
+    // Named now, so a second click while the first waits its turn is not
+    // a second analysis.
+    state.phase = OptimizePhase.ANALYZING;
+    startAnalysis(state.result, null);
   }
 
   /**
@@ -461,11 +480,26 @@ export function createOptimizeRun(page) {
     }, delayMs);
   }
 
+  /**
+   * Retires the run with its page: an optimize in flight is disowned, a
+   * sweep stops at its next setting, and nothing more is scheduled or
+   * rendered.
+   */
+  function dispose() {
+    disposed = true;
+    runToken += 1;
+    sweepAbortRequested = true;
+    progress.stop();
+    if (reoptimizeTimer) clearTimeout(reoptimizeTimer);
+    reoptimizeTimer = null;
+  }
+
   return {
     optimize,
     analyzeDeferred,
     discardResult,
     isResultStale,
     scheduleReoptimize,
+    dispose,
   };
 }

@@ -73,6 +73,9 @@ export let TeamBuilderPage;
  * @param {!Element} container
  * @param {{embedded: (boolean|undefined), family: (string|undefined)}=}
  *     options `embedded` suppresses the widget's own URL query-param writes.
+ * @return {{destroy: function()}} `destroy` retires the page: call it
+ *     before the container is emptied or replaced. The page owns a run,
+ *     timers and a scroll listener, which otherwise outlive its DOM.
  */
 export function mountPoolOptimizer(container, options = {}) {
   const app = container;
@@ -134,8 +137,9 @@ export function mountPoolOptimizer(container, options = {}) {
     recomputeItemRecommendations,
   };
   page.run = createOptimizeRun(page);
-  const wireRailSpy = createRailSpy(app);
+  const railSpy = createRailSpy(app);
   bindGamestateChips(app);
+  let destroyed = false;
 
   init().catch((error) => {
     console.error(error);
@@ -168,6 +172,7 @@ export function mountPoolOptimizer(container, options = {}) {
     if (!data.availability?.familyConfigs?.[state.family]) {
       state.family = getActiveGame().families[0];
     }
+    if (destroyed) return;
 
     if (state.query.trim()) {
       savePool(state.query);
@@ -185,6 +190,7 @@ export function mountPoolOptimizer(container, options = {}) {
   // renders are ones the player did not ask for (the analysis landing, a
   // debounced re-optimize).
   function render() {
+    if (destroyed) return null;
     state.resultProgressionStale = page.run.isResultStale();
     const scrollX = window.scrollX;
     const scrollY = window.scrollY;
@@ -210,7 +216,7 @@ export function mountPoolOptimizer(container, options = {}) {
     bindTeamControls(page);
     bindPoolControls(page);
     bindProgressionControls(page);
-    wireRailSpy();
+    railSpy.wire();
     restoreTextFocus(app, focused);
     window.scrollTo(scrollX, scrollY);
     return handle;
@@ -255,6 +261,15 @@ export function mountPoolOptimizer(container, options = {}) {
       `${window.location.pathname}?${params.toString()}`,
     );
   }
+
+  function destroy() {
+    destroyed = true;
+    page.run.dispose();
+    setDetails.cancel();
+    railSpy.stop();
+  }
+
+  return { destroy };
 }
 
 function getParam(name) {

@@ -5,15 +5,18 @@ import { TEAM_RAIL_SECTIONS, currentRailSection } from '../team-builder-view';
 
 /**
  * @param {!Element} root The page; a render replaces the rail in it.
- * @return {function()} Wires the spy to the rail now in the page. Call
- *     after each render: it retires the listener it set up before, so one
- *     scroll listener is live at a time.
+ * @return {{wire: function(), stop: function()}} `wire` attaches the spy
+ *     to the rail now in the page. Call it after each render: it retires
+ *     the listener it set up before, so one scroll listener is live at a
+ *     time. `stop` retires it for good.
  */
 export function createRailSpy(root) {
   let teardown = null;
 
-  return function wire() {
-    teardown?.();
+  const stop = () => teardown?.();
+
+  function wire() {
+    stop();
     const rail = root.querySelector('.team-rail');
     if (!rail) return;
     // Measured once per frame however often the page scrolls.
@@ -46,5 +49,7 @@ export function createRailSpy(root) {
       if (frame) cancelAnimationFrame(frame);
       teardown = null;
     };
-  };
+  }
+
+  return { wire, stop };
 }

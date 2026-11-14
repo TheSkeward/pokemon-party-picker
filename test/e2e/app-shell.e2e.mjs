@@ -15,6 +15,10 @@ try {
   await page.goto(`${BASE_URL}/?view=resolver&family=singles`, {
     waitUntil: 'networkidle',
   });
+  // A quiet network is not a rendered page: on a cold runner the bundle
+  // was still starting when the first check looked.
+  await page.waitForSelector(
+    '.game-nav [aria-pressed="true"]', { timeout: 60_000 });
 
   check(
     'the game and its format are the pressed choices',
