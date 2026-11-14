@@ -342,7 +342,7 @@ function renderPoolControls({
 
         <label class="pool-list">
           <span title="${escapeAttr(DONOR_BOX_TITLE)}">${escapeHtml(donorBoxLabel(donorStats.uniqueCount))}</span>
-          <textarea id="donor-query-input" rows="10" placeholder="Ditto, Smeargle, the rest of your PC boxes...">${escapeHtml(state.donorQuery || '')}</textarea>
+          <textarea id="donor-query-input" rows="3" placeholder="Ditto, Smeargle, the rest of your PC boxes...">${escapeHtml(state.donorQuery || '')}</textarea>
         </label>
       </div>
 

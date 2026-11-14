@@ -680,13 +680,19 @@ button:hover {
 .toolbar label[hidden] {
   display: none;
 }
-/* Each box is as tall as the names in it, from three lines to half the
-   screen; a browser without field-sizing keeps the rows it is given. */
+/* The pool box is as tall as the names in it, from three lines to half the
+   screen; a browser without field-sizing keeps the rows it is given. The
+   donor box takes the pool's height and scrolls. It must not size to its
+   own content: the pool's names join it when the pool box loses focus,
+   which is the press of the Optimize button, and a box that grew at that
+   moment moved the button out from under the click. */
 .pool-list textarea {
   flex: 1;
-  field-sizing: content;
   min-height: calc(3lh + 2 * var(--space-2));
   max-height: 50vh;
+}
+#pool-query-input {
+  field-sizing: content;
 }
 /* One wrapping row of actions, the destructive one pushed to the far end,
    the status line beneath. Shared by the pool and the progression panel,
