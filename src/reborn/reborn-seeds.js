@@ -10,6 +10,8 @@
  * player is on is a playthrough variable, not a property of the Pokémon.
  */
 
+import { toId } from '../utils/ids.js';
+
 /** The four Reborn Field Seeds. Display names. */
 export const REBORN_SEEDS = [
   'Elemental Seed',
@@ -43,16 +45,14 @@ export const TERRAIN_SEED_REPLACEMENTS = {
   'Psychic Seed': 'Magical Seed',
 };
 
-const seedId = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '');
-
 /**
  * id -> replacement id, for migrating saved inventory off the hidden seeds.
  * @type {Object<string, string>}
  */
 export const TERRAIN_SEED_MIGRATION = Object.fromEntries(
   Object.entries(TERRAIN_SEED_REPLACEMENTS).map(([from, to]) => [
-    seedId(from),
-    seedId(to),
+    toId(from),
+    toId(to),
   ]),
 );
 

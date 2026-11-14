@@ -8,10 +8,10 @@
 
 import { readFileSync } from 'node:fs';
 import { Dex } from '@pkmn/dex';
+import { toId } from '../../src/utils/ids.js';
 import { parseMarshal, RubySymbol } from '../essentials/parse-marshal.mjs';
 
 const dex = Dex.forGen(7);
-const toId = (s) => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
 
 // Reborn move-name → our move id where they differ.
 const MOVE_ALIASES = { vicegrip: 'visegrip', hijumpkick: 'highjumpkick' };

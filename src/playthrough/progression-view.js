@@ -27,6 +27,7 @@ import { MAX_TRACKED_ITEM_COUNT, MAX_OPPONENT_TYPE_BIAS } from './progression';
 import { analysisTypes } from './type-chart.js';
 import { dex } from '../games/dex.js';
 import { getActiveGame } from '../games/registry.js';
+import { toId } from '../utils/ids.js';
 
 // Says where the evolution items went, in a game that lists no box for
 // them: the held-item list pays for them, a copy an evolution.
@@ -94,9 +95,7 @@ export function renderProgressionPanel(
               // first source; an area or method gate with the schedule's
               // unlock.
               const badge = field.item
-                ? getItemUnlockBadge(
-                  field.item.toLowerCase().replace(/[^a-z0-9]+/g, ''),
-                )
+                ? getItemUnlockBadge(toId(field.item))
                 : getUnlockBadge(field.key);
               return `
                 <label class="checkbox-label">

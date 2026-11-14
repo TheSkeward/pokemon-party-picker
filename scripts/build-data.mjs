@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { toId } from '../src/utils/ids.js';
 
 import {
   CUTOFF_PRIORITY,
@@ -589,7 +590,7 @@ function parseUsageStats(text) {
     }
 
     rows.push({
-      pokemonId: toPokemonId(name),
+      pokemonId: toId(name),
       name,
       rank,
       usage,
@@ -611,7 +612,7 @@ function parseMovesetFile(text, month, formatId, cutoff) {
 
   while ((match = monBlockRegex.exec(normalizedText)) !== null) {
     const name = match[1].trim();
-    const pokemonId = toPokemonId(name);
+    const pokemonId = toId(name);
     const rawCount = Number.parseInt(match[2].replaceAll(',', ''), 10);
     const body = match[3];
 
@@ -661,10 +662,6 @@ function extractSectionEntries(body, sectionName) {
 
 function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-function toPokemonId(name) {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, '');
 }
 
 function createEmptyAvailability() {

@@ -20,6 +20,7 @@
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { toId } from '../src/utils/ids.js';
 import { STATS_ROOT } from './config.mjs';
 
 const OUT_DIR = path.resolve('site-data', 'data', 'gen5-items');
@@ -196,7 +197,7 @@ function parseMovesetItems(text) {
   let match;
   while ((match = monBlockRegex.exec(normalizedText)) !== null) {
     const name = match[1].trim();
-    const pokemonId = toPokemonId(name);
+    const pokemonId = toId(name);
     const rawCount = Number.parseInt(match[2].replaceAll(',', ''), 10);
     const body = match[3];
 
@@ -239,10 +240,6 @@ function extractSectionEntries(body, sectionName) {
   }
 
   return entries;
-}
-
-function toPokemonId(name) {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, '');
 }
 
 function escapeRegex(value) {

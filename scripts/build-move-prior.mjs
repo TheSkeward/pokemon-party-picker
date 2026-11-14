@@ -6,6 +6,7 @@
  */
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { toId } from '../src/utils/ids.js';
 import { FAMILY_CONFIGS } from './config.mjs';
 import { DATA_ROOT } from './set-index/constants.mjs';
 import { readJson, writeJson } from './set-index/io.mjs';
@@ -18,8 +19,6 @@ const LEARNSET_DIR_BY_GEN = {
   7: 'reborn-legal-moves',
   9: 'rejuv-legal-moves',
 };
-
-const toId = (text) => String(text).toLowerCase().replace(/[^a-z0-9]/g, '');
 
 async function listJson(dir) {
   try {
