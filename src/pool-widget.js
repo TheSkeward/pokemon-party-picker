@@ -1,3 +1,9 @@
+/**
+ * @fileoverview The Team Builder page. This module holds the page's state
+ * and its one full render, and composes the parts under teamBuilder/page:
+ * the optimize run, the event bindings of each panel, and the updates that
+ * patch the page without a render.
+ */
 import { escapeHtml } from './utils/html.js';
 import {
   listFamilies,
@@ -5,99 +11,63 @@ import {
   loadFormatsIndex,
   loadPokemonIndex,
 } from './data';
+import { applyGameTheme } from './app/theme.js';
+import { activateGameForFamily, getActiveGame } from './games/registry.js';
+import { loadManifest } from './manifest.js';
+import { loadSavedProgression } from './playthrough/progression';
+import { assignTeamItems } from './teamBuilder/item-recommendations';
+import { OptimizePhase } from './teamBuilder/optimize-phase.js';
+import { bindPoolControls } from './teamBuilder/page/pool-events.js';
 import {
-  getSortedTeam,
-  renderGamestateStrip,
-  TEAM_RAIL_SECTIONS,
-  currentRailSection,
-  donorBoxLabel,
-  renderTeamBuilderPage,
-  teamSortOf,
-} from './teamBuilder/team-builder-view';
-import { createTeamBuilderSetDetailsLoader } from './teamBuilder/set-details-loader';
+  bindProgressionControls,
+} from './teamBuilder/page/progression-events.js';
+import { showDonorBox } from './teamBuilder/page/patches.js';
+import { createRailSpy } from './teamBuilder/page/rail-spy.js';
+import { createOptimizeRun } from './teamBuilder/page/run.js';
+import {
+  loadSavedDonors,
+  loadSavedPool,
+  loadSavedTeamSort,
+  saveDonors,
+  savePool,
+} from './teamBuilder/page/saved-inputs.js';
+import {
+  bindGamestateChips,
+  bindTeamControls,
+} from './teamBuilder/page/team-events.js';
+import {
+  captureTextFocus,
+  restoreTextFocus,
+} from './teamBuilder/page/text-focus.js';
 import {
   absorbPoolIntoDonors,
   getPoolStats,
-  normalizePoolText,
-  setPoolEntryLock,
-  withDonors,
 } from './teamBuilder/pool-parsing';
+import { createTeamBuilderSetDetailsLoader } from './teamBuilder/set-details-loader';
 import {
-  optimizeTeamFromPool,
-  persistPostAnalysis,
-} from './teamBuilder/team-optimizer';
-import {
-  SCORED_POOL_LIMIT,
-  lineUsageByInputId,
-} from './teamBuilder/usage-line-ranking.js';
-import { computeTeamConfidence } from './teamBuilder/confidence.js';
-import { computeInvestmentPlan } from './teamBuilder/investment.js';
-import { OptimizePhase } from './teamBuilder/optimize-phase.js';
-import {
-  ProgressPhase,
-  SearchStage,
-} from './teamBuilder/optimize-progress.js';
-import { setScoringOverrides } from './teamBuilder/scoring-constants.js';
-import {
-  buildPerformanceReport,
-  estimateRunBudget,
-  recordOptimizerSample,
-} from './teamBuilder/telemetry.js';
-import { loadManifest } from './manifest.js';
-import { activateGameForFamily, getActiveGame } from './games/registry.js';
-import { readSavedState, savedStateKey } from './games/saved-state.js';
-import { applyGameTheme } from './app/theme.js';
-import { renderLegalMovesPanel } from './playthrough/legal-moves-view';
-import { renderTeamAnalysisPanel } from './teamBuilder/team-analysis-view';
-import { getCurrentSpeciesForChoice } from './playthrough/current-species.js';
-import { evolutionItemsAbove } from './playthrough/evolution-requirements.js';
-import {
-  clearOwnedItems,
-  applyCheckpoint,
-  clearSavedProgression,
-  loadSavedProgression,
-  MAX_TRACKED_ITEM_COUNT,
-  saveProgression,
-  setOpponentTypeBias,
-  setOwnedItemCount,
-  setOwnedItemCounts,
-  setProgressionOptions,
-  updateProgressionField,
-  updateProgressionOption,
-} from './playthrough/progression';
-import { getCheckpoint } from './games/schedule.js';
-import { toId } from './utils/ids.js';
+  renderTeamBuilderPage,
+  teamSortOf,
+} from './teamBuilder/team-builder-view';
 import { bindPersistentDetails } from './utils/details-state.js';
-import {
-  gameItems,
-  getExpectedItemChanges,
-} from './games/items.js';
-import { buildPoolAvailabilityText } from './teamBuilder/availability-export';
-import { withPoolAnnotations } from './teamBuilder/input-groups';
-import {
-  assignTeamItems,
-  loadTeamItemUsage,
-} from './teamBuilder/item-recommendations';
-import { getTeamItemContext } from './teamBuilder/team-analysis';
-import {
-  buildGamestateExport,
-  parseGamestateImport,
-} from './teamBuilder/gamestate-backup.js';
-import {
-  readLocalStorage,
-  removeLocalStorage,
-  writeLocalStorage,
-} from './storage/safe-local-storage';
-import { dex } from './games/dex.js';
 
-// Per-game: each game's owned pool is its own saved state (the descriptor
-// pins Reborn's pre-registry literal so existing saves survive).
-const poolStorageKey = () => getActiveGame().storage.pool;
-// Frozen at the project's original name so saved preferences survive.
-const TEAM_SORT_STORAGE_KEY = 'pokemon-usage-viewer:pool-team-sort:v1';
-const TEAM_SORT_DIR_STORAGE_KEY = 'pokemon-usage-viewer:pool-team-sort-dir:v1';
-const POST_ANALYSIS_MAX_POOL_SIZE = 80;
-const POST_ANALYSIS_MAX_BUILDS = 200;
+/**
+ * The page as its parts see it: the root element, the state the view
+ * renders from, the loaded data, and the operations that belong to no one
+ * panel. `run` is the optimize run (teamBuilder/page/run.js).
+ * @typedef {{
+ *   app: !Element,
+ *   state: !Object,
+ *   data: {availability: ?Object, formatsIndex: !Array<!Object>,
+ *       pokemonIndex: !Array<!Object>},
+ *   setDetails: !Object,
+ *   run: !Object,
+ *   render: function(): ?Object,
+ *   writeUrl: function(),
+ *   absorbPool: function(),
+ *   recomputeItemRecommendations: function(),
+ * }}
+ */
+export let TeamBuilderPage;
 
 /**
  * @param {!Element} container
@@ -114,9 +84,8 @@ export function mountPoolOptimizer(container, options = {}) {
     options.family || getParam('family') || getActiveGame().families[0];
   const gameReady = activateGameForFamily(initialFamily);
 
-  let availability = null;
-  let formatsIndex = [];
-  let pokemonIndex = [];
+  const data = { availability: null, formatsIndex: [], pokemonIndex: [] };
+  const savedSort = loadSavedTeamSort();
 
   const state = {
     family: initialFamily,
@@ -127,8 +96,8 @@ export function mountPoolOptimizer(container, options = {}) {
     progression: loadSavedProgression(),
     // Default sort is the score the seats were actually chosen by — Lead % is
     // a ladder stat, informative but not the seating order.
-    teamSort: teamSortOf(getParam('teamSort') || loadSavedTeamSort()),
-    teamSortDir: getParam('teamSortDir') || loadSavedTeamSortDir() || 'desc',
+    teamSort: teamSortOf(getParam('teamSort') || savedSort.sort),
+    teamSortDir: getParam('teamSortDir') || savedSort.direction || 'desc',
     result: null,
     resultProgressionKey: '',
     // The evolution items the result's lines can spend
@@ -152,12 +121,21 @@ export function mountPoolOptimizer(container, options = {}) {
     onUpdate: () => render(),
   });
 
-  // Optimize-run serialization: the newest run owns the UI, and no optimizer
-  // scoring may execute while a confidence sweep holds the global scoring
-  // overrides.
-  let optimizeRunToken = 0;
-  let sweepAbortRequested = false;
-  let activeAnalysis = Promise.resolve();
+  /** @type {!TeamBuilderPage} */
+  const page = {
+    app,
+    state,
+    data,
+    setDetails,
+    run: null,
+    render,
+    writeUrl,
+    absorbPool,
+    recomputeItemRecommendations,
+  };
+  page.run = createOptimizeRun(page);
+  const wireRailSpy = createRailSpy(app);
+  bindGamestateChips(app);
 
   init().catch((error) => {
     console.error(error);
@@ -179,14 +157,15 @@ export function mountPoolOptimizer(container, options = {}) {
     // below carries ?v=<dataSignature> and can't be served from a previous
     // deploy's CDN cache. Also the debug footer's provenance.
     state.manifest = await loadManifest();
-    [formatsIndex, availability, pokemonIndex] = await Promise.all([
-      loadFormatsIndex(),
-      loadAvailability(),
-      loadPokemonIndex(),
-    ]);
+    [data.formatsIndex, data.availability, data.pokemonIndex] =
+      await Promise.all([
+        loadFormatsIndex(),
+        loadAvailability(),
+        loadPokemonIndex(),
+      ]);
     // A family the usage data does not have (a stale link) falls back to
     // the active game's default; the game itself did not change above.
-    if (!availability?.familyConfigs?.[state.family]) {
+    if (!data.availability?.familyConfigs?.[state.family]) {
       state.family = getActiveGame().families[0];
     }
 
@@ -194,1164 +173,60 @@ export function mountPoolOptimizer(container, options = {}) {
       savePool(state.query);
       absorbPool();
       render();
-      void computeAndRender({ exhaustive: false, background: true });
+      void page.run.optimize({ exhaustive: false, background: true });
     } else {
       render();
     }
   }
 
-  async function computeAndRender(
-    { exhaustive = true, background = false } = {}) {
-    setDetails.cancel();
-
-    // Newest-run-wins token: any older in-flight run becomes a no-op the
-    // moment a newer one starts — it must not write state.result (a slow
-    // stale run would overwrite the newer result already on screen).
-    const runToken = ++optimizeRunToken;
-    // Ask any live confidence sweep to stop at its next setting boundary and
-    // WAIT for it: sweep settings run under global scoring overrides, and an
-    // optimize that executes inside that window would be scored under sweep
-    // constants but cached/persisted under the base signature.
-    sweepAbortRequested = true;
-    await activeAnalysis;
-    if (runToken !== optimizeRunToken) return;
-
-    state.phase = OptimizePhase.OPTIMIZING;
-    state.statusMessage = 'Optimizing pool...';
-    state.confidence = null;
-    state.investment = null;
-    state.postAnalysisSkipReason = null;
-    render();
-    startOptimizeProgress(
-      Math.min(
-        getPoolStats(state.query, pokemonIndex).uniqueCount,
-        SCORED_POOL_LIMIT,
-      ),
-    );
-    await waitForPaint();
-    if (runToken !== optimizeRunToken) return;
-
-    // User-perceived pipeline clock: everything between "click" and the team
-    // being on screen counts (item loading and rendering included), not just
-    // the optimizer core. Recorded into telemetry when post-analysis completes.
-    const pipelineStart = Date.now();
-    const phases = {};
-
-    try {
-      state.query = normalizePoolText(state.query, pokemonIndex);
-      absorbPool();
-
-      const saved = savePool(state.query);
-
-      // Snapshot the inputs this run is actually computed against — stamping
-      // from live state after the await would let an edit made mid-optimize
-      // mark the old-input result as fresh.
-      const runProgression = state.progression;
-
-      const result = await optimizeTeamFromPool({
-        availability,
-        family: state.family,
-        pokemonIndex,
-        progression: state.progression,
-        query: state.query,
-        donorQuery: state.donorQuery,
-        onProgress: updateOptimizeProgress,
-        // The explicit Optimize button (and other direct triggers) run an exact
-        // search; only background auto-reoptimize accepts the fast
-        // approximation when the pool is too large to enumerate exactly.
-        exhaustive,
-      });
-      if (runToken !== optimizeRunToken) return;
-      state.result = result;
-      state.resultEvolutionItemIds = evolutionItemsAbove(
-        result.lines
-          .filter((line) => !line.unresolved)
-          .map((line) => line.inputName),
-      );
-      state.resultProgressionKey =
-        getProgressionKey(runProgression, state.resultEvolutionItemIds);
-      const meta = state.result.telemetryMeta;
-      if (meta) {
-        phases.setup = meta.setupMs;
-        phases.resolve = meta.resolveMs;
-        phases.search = meta.searchMs;
-      }
-
-      // Resolve each member's recommended-move types + real top-set ability
-      // once, so gem item recommendations can be gated (type must match a
-      // recommended move; Unburden boost only when Unburden is actually the
-      // set's ability).
-      updateOptimizeProgress({ phase: ProgressPhase.ITEMS });
-      const itemsStart = Date.now();
-      const teamItemContext = await getTeamItemContext(
-        state.result.team,
-        state.progression,
-        {
-          family: state.family,
-          pokemonIndex,
-          query: withDonors(state.query, state.donorQuery),
-        },
-      );
-      if (runToken !== optimizeRunToken) return;
-      state.teamItemContext = teamItemContext;
-      state.teamItemUsage = await loadTeamItemUsage({
-        team: state.result.team,
-        family: state.family,
-        itemContext: state.teamItemContext,
-      });
-      if (runToken !== optimizeRunToken) return;
-      recomputeItemRecommendations();
-      phases.items = Date.now() - itemsStart;
-
-      setDetails.cancel();
-
-      stopOptimizeProgress();
-      // The team is in. The analysis step owns the phase from here, so the
-      // render below shows its panels as pending rather than the optimize bar.
-      state.phase = OptimizePhase.ANALYZING;
-      const polishSwapCount = state.result.searchPolish?.swaps?.length || 0;
-      const approxNote = [
-        state.result.searchExact
-          ? ''
-          : ' Pool too large for an exact search — used a fast approximate one.',
-        // A repair by the swap audit means the shortlist heuristics missed a
-        // seat; the healthy case (audit ran, nothing found) is reported in
-        // the provenance footer instead.
-        polishSwapCount
-          ? ` The full-pool swap audit then improved it (${polishSwapCount} swap${polishSwapCount === 1 ? '' : 's'}).`
-          : '',
-        state.result.degraded
-          ? ' Some data failed to load, so parts of the pool were skipped — optimize again to retry.'
-          : '',
-      ].join('');
-      state.statusMessage = saved
-        ? `${getOptimizationSummary(state.result)}${approxNote}`
-        : `${getOptimizationSummary(state.result)}${approxNote} Pool could not be saved locally; browser storage is full.`;
-
-      writeUrl();
-      const renderStart = Date.now();
-      const handle = render();
-      phases.render = Date.now() - renderStart;
-      const totalMs = Date.now() - pipelineStart;
-
-      // First-class confidence + investment analysis, computed AFTER the team
-      // renders so "click optimize" stays snappy; each re-renders when it lands
-      // (guarded against a newer optimize having replaced the result).
-      activeAnalysis = runPostAnalysis(state.result, {
-        pipelineStart,
-        phases,
-        totalMs,
-        background,
-        analysisPanelReady: handle?.analysisPanelReady || null,
-      });
-    } catch (error) {
-      if (runToken !== optimizeRunToken) return;
-      console.error('Team Builder optimization failed', error);
-
-      stopOptimizeProgress();
-      state.phase = OptimizePhase.FAILED;
-      state.result = null;
-      state.statusMessage = `Optimization failed: ${error?.message || error}`;
-
-      setDetails.cancel();
-      render();
-    }
-  }
-
-  // Confidence sweep + investment plan, run after each optimize. The sweep
-  // sets global scoring overrides per setting; a user optimize started
-  // mid-sweep requests an abort (checked between settings) and WAITS for
-  // this promise, so no optimizer scoring ever executes inside an override
-  // window (overrides poisoned under the base cache signature otherwise).
-  async function runPostAnalysis(forResult, pipeline = null) {
-    sweepAbortRequested = false;
-    // Entered from an optimize and from the deferred panel's button alike:
-    // the step is analyzing until it settles or exits early below.
-    state.phase = OptimizePhase.ANALYZING;
-    state.confidence = null;
-    state.investment = null;
-    state.postAnalysisSkipReason = null;
-    let superseded = false;
-    try {
-      if (forResult.postAnalysis) {
-        state.confidence = forResult.postAnalysis.confidence || null;
-        state.investment = forResult.postAnalysis.investment || null;
-        state.phase = OptimizePhase.COMPLETE;
-        if (pipeline) {
-          pipeline.phases.confidence = 0;
-          pipeline.phases.investment = 0;
-        }
-        render();
-        return;
-      }
-
-      const skipReason = getPostAnalysisSkipReason(forResult);
-      if (skipReason) {
-        state.postAnalysisSkipReason = skipReason;
-        state.phase = OptimizePhase.ANALYSIS_SKIPPED;
-        if (pipeline) {
-          pipeline.phases.confidence = 0;
-          pipeline.phases.investment = 0;
-        }
-        render();
-        return;
-      }
-
-      // Background-triggered optimizes (page load with a saved pool, the
-      // auto-reoptimize debounce, gamestate import) never PAY for a cold
-      // post-analysis — the investment plan alone is two more full optimizer
-      // runs at future caps, minutes of saturated cores on a real pool. A
-      // persisted post-analysis (the forResult.postAnalysis hit above) still
-      // restores instantly; when there is none, the panel offers a
-      // compute-now button, and an explicit Optimize click computes
-      // everything as before.
-      if (pipeline?.background) {
-        state.phase = OptimizePhase.ANALYSIS_DEFERRED;
-        pipeline.phases.confidence = 0;
-        pipeline.phases.investment = 0;
-        render();
-        return;
-      }
-
-      const pendingHandle = render();
-      // Wait for the movesets (Team Analysis panel) to land before starting
-      // the sweep: its settings run as long synchronous blocks that starve
-      // every pending async continuation, delaying the panel the user is
-      // actually reading. The panel build is memoized, so awaiting THIS
-      // render's handle is the same build computeAndRender kicked off.
-      // Bounded so a wedged panel can never block the analysis.
-      const panelReady =
-        pendingHandle?.analysisPanelReady ||
-        pipeline?.analysisPanelReady ||
-        null;
-      if (panelReady) {
-        await Promise.race([
-          panelReady.catch(() => {}),
-          new Promise((resolve) => setTimeout(resolve, 20_000)),
-        ]);
-        if (pipeline) {
-          pipeline.movesetMs = Date.now() - pipeline.pipelineStart;
-        }
-        if (state.result !== forResult) {
-          superseded = true;
-          return;
-        }
-      }
-
-      const confidenceStart = Date.now();
-      const confidence = await computeTeamConfidence({
-        result: forResult,
-        availability,
-        family: state.family,
-        progression: state.progression,
-        shouldAbort: () => sweepAbortRequested || state.result !== forResult,
-      });
-      if (!confidence || state.result !== forResult) {
-        superseded = true; // superseded by a newer optimize (or sweep aborted)
-        return;
-      }
-      if (pipeline) pipeline.phases.confidence = Date.now() - confidenceStart;
-      state.confidence = confidence;
-      render();
-
-      const investmentStart = Date.now();
-      const investment = await computeInvestmentPlan({
-        availability,
-        family: state.family,
-        pokemonIndex,
-        progression: state.progression,
-        query: state.query,
-        donorQuery: state.donorQuery,
-        result: forResult,
-        shouldAbort: () => sweepAbortRequested || state.result !== forResult,
-        // Progressive: render the first future cap's plan as soon as it
-        // lands (marked partial in the panel) instead of sitting on it
-        // until the second cap finishes.
-        onPartial: (partialPlan) => {
-          if (sweepAbortRequested || state.result !== forResult) return;
-          state.investment = partialPlan;
-          render();
-        },
-      });
-      if (state.result !== forResult) {
-        superseded = true;
-        return;
-      }
-      if (pipeline) pipeline.phases.investment = Date.now() - investmentStart;
-      state.investment = investment;
-      // Both landed for the CURRENT result: write them through to the cached
-      // record so the next hit on this gamestate (memo or reload) restores
-      // the panels instead of recomputing them. Guarded on the abort flag: an
-      // abort mid-investment ALSO returns null, and persisting that null
-      // would replay an empty investment panel on every future hit —
-      // a legitimate null (endgame: no future caps) persists fine.
-      if (!sweepAbortRequested) {
-        persistPostAnalysis(forResult, { confidence, investment });
-      }
-    } catch (error) {
-      console.warn('Post-analysis failed', error);
-    } finally {
-      setScoringOverrides(null);
-      if (state.result === forResult) {
-        // A step still analyzing has settled, panels landed or not; the
-        // deferred and skipped exits above already named their phase.
-        if (state.phase === OptimizePhase.ANALYZING) {
-          state.phase = OptimizePhase.COMPLETE;
-        }
-        // One telemetry sample per completed interactive pipeline: optimizer
-        // phases from telemetryMeta, item/render/analysis phases measured
-        // here. Superseded runs are dropped — partial timings would skew the
-        // distributions. Recorded before the final render so the footer's
-        // numbers include this run.
-        if (pipeline && !superseded && forResult.telemetryMeta) {
-          const meta = forResult.telemetryMeta;
-          try {
-            recordOptimizerSample({
-              cache: meta.cache,
-              resolveMs: meta.resolveMs,
-              searchMs: meta.searchMs,
-              poolSize: meta.poolSize,
-              builds: meta.builds,
-              dataSignature: meta.dataSignature,
-              phases: pipeline.phases,
-              totalMs: pipeline.totalMs,
-              movesetMs: pipeline.movesetMs ?? null,
-              fullMs: Date.now() - pipeline.pipelineStart,
-              // Shortlist-quality signal: repairs applied by the full-pool
-              // swap audit (null on exact paths where no audit runs). The
-              // aggregate repair RATE across runs is the answer to "are the
-              // shortlist heuristics good enough".
-              polishSwaps: forResult.searchPolish
-                ? forResult.searchPolish.swaps.length
-                : null,
-              polishGain: forResult.searchPolish
-                ? forResult.searchPolish.swaps.reduce(
-                  (sum, swap) => sum + (swap.gain || 0),
-                  0,
-                )
-                : null,
-            });
-          } catch {
-            // Telemetry must never break the pipeline.
-          }
-        }
-        render();
-      }
-    }
-  }
-
-  function getPostAnalysisSkipReason(result) {
-    const poolSize =
-      result?.telemetryMeta?.poolSize || (result?.lines || []).length || 0;
-    const builds = result?.telemetryMeta?.builds || countResultBuilds(result);
-    if (
-      poolSize <= POST_ANALYSIS_MAX_POOL_SIZE &&
-      builds <= POST_ANALYSIS_MAX_BUILDS
-    ) {
-      return null;
-    }
-
-    return {
-      poolSize,
-      builds,
-      poolLimit: POST_ANALYSIS_MAX_POOL_SIZE,
-      buildLimit: POST_ANALYSIS_MAX_BUILDS,
-    };
-  }
-
-  function countResultBuilds(result) {
-    return (result?.lines || []).reduce((total, line) => {
-      const representative = line.best || line.bestNonMega;
-      if (!representative) return total;
-      const alternatives = representative?.buildAlternatives;
-      return total + (Array.isArray(alternatives) ? alternatives.length : 1);
-    }, 0);
-  }
-
-  // After a progression change that invalidates the optimized team, re-run the
-  // optimizer automatically. Debounced so rapid edits — dragging a bias
-  // slider, toggling several TMs — settle into one re-optimize.
-  // Batch-style edits (a shop haul of items, a badge's worth of TM/tutor
-  // checkboxes) pass the LONG delay: they arrive as bursts of actions each a
-  // few seconds apart, and must not pay a full recompute per pause.
-  const AUTO_REOPTIMIZE_DELAY_MS = 600;
-  const BATCH_EDIT_REOPTIMIZE_DELAY_MS = 5000;
-  let autoReoptimizeTimer = null;
-
-  function scheduleAutoReoptimize(stale, delayMs = AUTO_REOPTIMIZE_DELAY_MS) {
-    if (!stale || !state.result || !state.query.trim()) return;
-
-    if (autoReoptimizeTimer) clearTimeout(autoReoptimizeTimer);
-    autoReoptimizeTimer = setTimeout(() => {
-      autoReoptimizeTimer = null;
-      if (state.phase === OptimizePhase.OPTIMIZING) {
-        scheduleAutoReoptimize(true, delayMs);
-        return;
-      }
-      void computeAndRender({ exhaustive: false, background: true });
-    }, delayMs);
-  }
-
+  // The one full render. It rebuilds the page's DOM, which resets the
+  // viewport to wherever the new layout lands and drops the focused
+  // control, so the scroll and the text box in use are put back: most
+  // renders are ones the player did not ask for (the analysis landing, a
+  // debounced re-optimize).
   function render() {
-    state.resultProgressionStale = markResultProgressionStale();
-
-    // A render rebuilds the whole page DOM, which resets the viewport to
-    // wherever the shrunk/grown layout lands and drops the focused control.
-    // Renders the user did not ask for (the post-optimize analysis landing,
-    // a debounced re-optimize) restore the scroll they had and hand back the
-    // text box they were working in, selection included, so a name they
-    // dragged over in the pool stays selected.
+    state.resultProgressionStale = page.run.isResultStale();
     const scrollX = window.scrollX;
     const scrollY = window.scrollY;
-    const focused = captureTextFocus();
+    const focused = captureTextFocus(app);
 
     const handle = renderTeamBuilderPage({
       app,
-      baseUrl: baseUrl(),
+      baseUrl: import.meta.env.BASE_URL || '/',
       embedded,
-      families: listFamilies(availability),
+      families: listFamilies(data.availability),
       familyLabel:
-        availability?.familyConfigs?.[state.family]?.label || state.family,
-      formatsIndex,
-      pokemonIndex,
-      poolStats: getPoolStats(state.query, pokemonIndex),
-      donorStats: getPoolStats(state.donorQuery, pokemonIndex),
+        data.availability?.familyConfigs?.[state.family]?.label ||
+        state.family,
+      formatsIndex: data.formatsIndex,
+      pokemonIndex: data.pokemonIndex,
+      poolStats: getPoolStats(state.query, data.pokemonIndex),
+      donorStats: getPoolStats(state.donorQuery, data.pokemonIndex),
       setDetails,
       state,
     });
 
-    bindEvents();
-    restoreTextFocus(focused);
+    bindPersistentDetails(app);
+    bindTeamControls(page);
+    bindPoolControls(page);
+    bindProgressionControls(page);
+    wireRailSpy();
+    restoreTextFocus(app, focused);
     window.scrollTo(scrollX, scrollY);
     return handle;
   }
 
-  // The focused text control inside the widget, by id, with the selection
-  // and scroll a rebuild would lose. Null when focus is elsewhere.
-  function captureTextFocus() {
-    const active = document.activeElement;
-    if (!active || !active.id || !app.contains(active)) return null;
-    if (active.tagName !== 'TEXTAREA' && active.tagName !== 'INPUT') {
-      return null;
-    }
-    return {
-      id: active.id,
-      value: active.value,
-      start: active.selectionStart,
-      end: active.selectionEnd,
-      direction: active.selectionDirection,
-      scrollTop: active.scrollTop,
-    };
-  }
-
-  function restoreTextFocus(focused) {
-    if (!focused) return;
-    const element = app.querySelector(`#${CSS.escape(focused.id)}`);
-    if (!element) return;
-    element.focus({ preventScroll: true });
-    if (focused.start == null || typeof element.setSelectionRange !== 'function') {
-      return;
-    }
-    // The rebuilt control usually carries the same text. When the render
-    // changed it (a normalize rewrites the pool), keep the selected words
-    // where they now sit, or give up the selection rather than guess.
-    let { start, end } = focused;
-    if (element.value !== focused.value) {
-      const selected = focused.value.slice(focused.start, focused.end);
-      const at = selected ? element.value.indexOf(selected) : -1;
-      if (at < 0) return;
-      start = at;
-      end = at + selected.length;
-    }
-    try {
-      element.setSelectionRange(start, end, focused.direction || 'none');
-    } catch {
-      // Some input types carry no selection; focus alone is enough there.
-    }
-    element.scrollTop = focused.scrollTop;
-  }
-
-  function bindEvents() {
-    bindPersistentDetails(app);
-
-    // Gamestate-strip chips: open (and scroll to) the control that changes
-    // the clicked assumption — a control beside Optimize, the collapsed
-    // progression panel, one of its groups, or the bias group. Delegated (bound
-    // once per widget) because light progression edits replace the strip's
-    // DOM in place without a full re-render.
-    if (!app.__gamestateChipsDelegated) {
-      app.__gamestateChipsDelegated = true;
-      app.addEventListener('click', (event) => {
-        const chipButton = event.target.closest('[data-open-progression]');
-        if (!chipButton || !app.contains(chipButton)) return;
-        const targetId = chipButton.dataset.openProgression;
-        const control = targetId
-          ? app.querySelector(`[data-chip-target="${targetId}"]`)
-          : null;
-        if (control) {
-          control.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          control.focus({ preventScroll: true });
-          return;
-        }
-        const wrapper = app.querySelector(
-          'details[data-details-id="progression-panel"]',
-        );
-        const target = targetId
-          ? app.querySelector(`details[data-details-id="${targetId}"]`)
-          : null;
-        if (wrapper && (!target || wrapper.contains(target))) {
-          wrapper.open = true;
-        }
-        if (target) target.open = true;
-        (target || wrapper)?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-        });
-      });
-    }
-
-    // "moves ↓" on a team row: jump to that pick's set card in Team Analysis
-    // (the row's own click keeps opening the inline usage-set details).
-    app.querySelectorAll('[data-jump-set-card]').forEach((jumpButton) => {
-      jumpButton.addEventListener('click', (event) => {
-        event.stopPropagation();
-        const card =
-          app.querySelector(
-            `[data-set-card="${jumpButton.dataset.jumpSetCard}"]`,
-          ) || app.querySelector('#reborn-team-analysis-root');
-        if (!card) return;
-        // Land the card under the rail and mark it for a moment: three
-        // cards share a row, so a centred scroll alone did not say which.
-        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        card.classList.add('is-jump-target');
-        setTimeout(() => card.classList.remove('is-jump-target'), 1800);
-      });
-    });
-
-    wireTeamRailSpy();
-
-    app
-      .querySelector('#family-input')
-      ?.addEventListener('change', (event) => {
-        // Standalone page only: another family may be another game, with
-        // its own saved pool and progression, so start over from the URL.
-        state.family = event.target.value;
-        writeUrl();
-        window.location.reload();
-      });
-
-    app.querySelectorAll('[data-team-sort]').forEach((button) => {
-      button.addEventListener('click', () => {
-        const nextSort = button.dataset.teamSort;
-
-        if (state.teamSort === nextSort) {
-          state.teamSortDir = state.teamSortDir === 'asc' ? 'desc' : 'asc';
-        } else {
-          state.teamSort = nextSort;
-          // Names read A to Z first; figures, best first.
-          state.teamSortDir = nextSort === 'current' ? 'asc' : 'desc';
-        }
-
-        saveTeamSort(state.teamSort);
-        saveTeamSortDir(state.teamSortDir);
-        writeUrl();
-        render();
-      });
-    });
-
-    // Lock controls: a team row's lock/unlock button and every bench chip
-    // rewrite the pool text (canonical form, as Optimize does) and re-run the
-    // optimizer. The lock lives in the text, so it survives saves, exports,
-    // and the URL like any other pool entry.
-    const setLock = (name, locked) => {
-      state.query = setPoolEntryLock(state.query, name, locked, pokemonIndex);
-      computeAndRender();
-    };
-    app.querySelectorAll('[data-lock-toggle]').forEach((button) => {
-      button.addEventListener('click', (event) => {
-        event.stopPropagation();
-        setLock(
-          button.dataset.lockToggle,
-          button.dataset.lockState !== 'locked',
-        );
-      });
-    });
-    app.querySelectorAll('[data-lock-input]').forEach((chip) => {
-      chip.addEventListener('click', () => {
-        setLock(chip.dataset.lockInput, true);
-      });
-    });
-
-    app.querySelectorAll('[data-pool-set-id]').forEach((row) => {
-      row.addEventListener('click', () => {
-        setDetails.select(row.dataset.poolSetId);
-      });
-    });
-
-    app.querySelectorAll('[data-progression-field]').forEach((control) => {
-      const eventName = control.type === 'checkbox' ? 'change' : 'input';
-
-      control.addEventListener(eventName, () => {
-        state.progression = updateProgressionField(
-          state.progression,
-          control.dataset.progressionField,
-          control.type === 'checkbox' ? control.checked : control.value,
-        );
-
-        const saved = saveProgression(state.progression);
-        const stale = markResultProgressionStale();
-
-        updateProgressionStatusMessage(
-          saved
-            ? getProgressionSavedMessage(stale)
-            : 'Progression could not be saved locally; browser storage is full.',
-        );
-
-        refreshSelectedLegalMovesPanel();
-        refreshTeamAnalysisPanel();
-        refreshOptimizedTeamProgressionState(stale);
-        refreshGamestateStrip();
-        scheduleAutoReoptimize(stale);
-      });
-    });
-
-    app.querySelector('[data-progression-checkpoint]')?.addEventListener(
-      'change',
-      (event) => {
-        state.progression = applyCheckpoint(
-          state.progression,
-          event.target.value,
-        );
-
-        const saved = saveProgression(state.progression);
-        const stale = markResultProgressionStale();
-
-        updateProgressionStatusMessage(
-          saved
-            ? getProgressionSavedMessage(stale)
-            : 'Progression could not be saved locally; browser storage is full.',
-        );
-
-        // Full re-render: the derived cap note, the "obtainable now" option
-        // annotations, and the gamestate strip all follow the badge count.
-        render();
-        scheduleAutoReoptimize(stale);
-      },
-    );
-
-    app.querySelectorAll('[data-progression-option-list]').forEach((control) => {
-      control.addEventListener('change', () => {
-        const field = control.dataset.progressionOptionList;
-        state.progression = updateProgressionOption(
-          state.progression,
-          field,
-          control.value,
-          control.checked,
-        );
-
-        const saved = saveProgression(state.progression);
-        const stale = markResultProgressionStale();
-
-        updateProgressionStatusMessage(
-          saved
-            ? getProgressionSavedMessage(stale)
-            : 'Progression could not be saved locally; browser storage is full.',
-        );
-
-        // DELIBERATELY no render(): the clicked checkbox is already visually
-        // correct, and the full-page rebuild both moves the viewport and
-        // makes a burst of checks feel glacial. Instead: sync any twin
-        // renderings of the same option (the obtainable rail duplicates rows
-        // from the main list), retoggle the highlight, and recount the
-        // summary in place. The next real render arrives with the settled
-        // re-optimize.
-        patchOptionCheckboxes(field, control.value, control.checked);
-        patchOptionGroupCount(field);
-        if (!state.result) {
-          // Without a result there is no auto-reoptimize to deliver the
-          // next render (stale banner, gamestate strip) — fall back to a
-          // full render; there's also no team table above to jump.
-          render();
-        }
-        scheduleAutoReoptimize(stale, BATCH_EDIT_REOPTIMIZE_DELAY_MS);
-      });
-    });
-
-    app.querySelectorAll('[data-progression-subgroup-all]').forEach((button) => {
-      button.addEventListener('click', () => {
-        const field = button.dataset.progressionSubgroupAll;
-        const ids = String(button.dataset.progressionOptionIds || '')
-          .split(',')
-          .filter(Boolean);
-        if (!ids.length) return;
-        // UNION with the existing selection (unlike the group-level "Select
-        // all", which replaces it): "I found this tutor" must not unteach
-        // every other location.
-        state.progression =
-          setProgressionOptions(state.progression, field, [
-            ...new Set([...(state.progression[field] || []), ...ids]),
-          ]);
-
-        const saved = saveProgression(state.progression);
-        const stale = markResultProgressionStale();
-        updateProgressionStatusMessage(
-          saved
-            ? getProgressionSavedMessage(stale)
-            : 'Progression could not be saved locally; browser storage is full.',
-        );
-        render();
-        scheduleAutoReoptimize(stale, BATCH_EDIT_REOPTIMIZE_DELAY_MS);
-      });
-    });
-
-    app.querySelectorAll('[data-progression-option-bulk]').forEach((button) => {
-      button.addEventListener('click', () => {
-        const field = button.dataset.progressionOptionBulk;
-        const action = button.dataset.progressionOptionAction;
-        const optionIds =
-          action === 'select'
-            ? String(button.dataset.progressionOptionIds || '')
-              .split(',')
-              .filter(Boolean)
-            : [];
-
-        state.progression = setProgressionOptions(
-          state.progression,
-          field,
-          optionIds,
-        );
-
-        const saved = saveProgression(state.progression);
-        const stale = markResultProgressionStale();
-
-        updateProgressionStatusMessage(
-          saved
-            ? getProgressionSavedMessage(stale)
-            : 'Progression could not be saved locally; browser storage is full.',
-        );
-
-        render();
-        scheduleAutoReoptimize(stale);
-      });
-    });
-
-    // Shared add path for the button AND Enter in the search box: the item is
-    // added at the sticky picker count (default 6+ — most tracked items are
-    // renewable shop stock), never LOWERING an existing stack, and focus
-    // returns to the search box so shop hauls chain type-Enter-type-Enter.
-    const addOwnedItemFromSearch = () => {
-      const input = app.querySelector('[data-item-add-input]');
-      const itemId = toId(input?.value || '');
-      const knownExtra = gameItems().extraInventoryItems.some(
-        (item) => item.id === itemId,
-      );
-
-      if (!itemId || (!dex().heldItemsById[itemId] && !knownExtra)) {
-        updateProgressionStatusMessage(
-          'Item not recognized; pick one from the suggestions.',
-        );
-        return;
-      }
-
-      if (gameItems().hiddenInventoryItemIds.has(itemId)) {
-        updateProgressionStatusMessage(
-          'That item is replaced in this game; use its replacement instead.',
-        );
-        return;
-      }
-
-      const picked =
-        Number.parseInt(
-          app.querySelector('[data-item-add-count]')?.value,
-          10,
-        ) || MAX_TRACKED_ITEM_COUNT;
-      const current = state.progression.ownedItems?.[itemId] || 0;
-      applyOwnedItemChange(
-        itemId,
-        Math.min(MAX_TRACKED_ITEM_COUNT, current + picked),
-        {
-          refocusAdd: true,
-          flashItemId: itemId,
-        },
-      );
-    };
-
-    app
-      .querySelector('[data-item-add-button]')
-      ?.addEventListener('click', addOwnedItemFromSearch);
-    app
-      .querySelector('[data-item-add-input]')
-      ?.addEventListener('keydown', (event) => {
-        if (event.key !== 'Enter') return;
-        event.preventDefault();
-        addOwnedItemFromSearch();
-      });
-
-    app
-      .querySelector('[data-expected-sync-button]')
-      ?.addEventListener('click', () => {
-        const badges =
-          getCheckpoint(state.progression.checkpoint)?.badges ?? null;
-        const changes = getExpectedItemChanges(
-          badges,
-          state.progression.ownedItems || {},
-        );
-        if (!changes.length) return;
-        state.progression = setOwnedItemCounts(
-          state.progression,
-          Object.fromEntries(changes.map((item) => [item.id, item.count])),
-        );
-        finishOwnedItemsEdit(
-          `Set ${changes.length} item${changes.length === 1 ? '' : 's'} to the expected count.`,
-        );
-      });
-
-    app
-      .querySelector('[data-owned-items-clear-button]')
-      ?.addEventListener('click', () => {
-        const tracked =
-          Object.keys(state.progression.ownedItems || {}).length;
-        if (
-          !tracked ||
-          !window.confirm(`Remove all ${tracked} held items from the list?`)
-        ) {
-          return;
-        }
-        state.progression = clearOwnedItems(state.progression);
-        finishOwnedItemsEdit(`Removed ${tracked} held items.`);
-      });
-
-    app.querySelectorAll('[data-owned-item-count]').forEach((control) => {
-      control.addEventListener('change', () => {
-        applyOwnedItemChange(control.dataset.itemId, control.value);
-      });
-    });
-
-    app.querySelectorAll('[data-bias-type]').forEach((control) => {
-      // Update the value readout live while dragging without re-rendering
-      // (which would drop slider focus), then commit on release.
-      control.addEventListener('input', () => {
-        const valueEl = app.querySelector(
-          `[data-bias-value="${control.dataset.biasType}"]`,
-        );
-        if (valueEl) valueEl.textContent = control.value;
-      });
-      control.addEventListener('change', () => {
-        applyOpponentBiasChange(control.dataset.biasType, control.value);
-      });
-    });
-
-    app.querySelectorAll('[data-owned-item-remove]').forEach((button) => {
-      button.addEventListener('click', () => {
-        applyOwnedItemChange(button.dataset.itemId, 0);
-      });
-    });
-
-    app
-      .querySelector('#generate-availability-button')
-      ?.addEventListener('click', () => {
-        void generateAvailabilityList();
-      });
-
-    app
-      .querySelector('#copy-availability-button')
-      ?.addEventListener('click', async () => {
-        try {
-          await navigator.clipboard.writeText(state.availabilityText || '');
-          updatePoolStatusMessage('Availability list copied to clipboard');
-        } catch {
-          updatePoolStatusMessage('Clipboard copy failed');
-        }
-      });
-
-    app
-      .querySelector('#close-availability-button')
-      ?.addEventListener('click', () => {
-        state.availabilityText = '';
-        render();
-      });
-
-    app
-      .querySelector('#pool-query-input')
-      ?.addEventListener('input', (event) => {
-        state.query = event.target.value;
-
-        const saved = savePool(state.query);
-
-        const interrupted = discardResult();
-        state.resultProgressionKey = '';
-        state.availabilityText = '';
-        state.teamItemUsage = null;
-        state.teamItemContext = null;
-        state.itemRecommendations = {};
-        setDetails.cancel();
-
-        state.statusMessage = saved
-          ? 'Saved locally'
-          : 'Not saved locally; browser storage is full.';
-
-        writeUrl();
-        // An interrupted run's progress panel comes down; the box keeps its
-        // focus and selection through the render.
-        if (interrupted) render();
-        updatePoolStatusMessage(state.statusMessage);
-      });
-
-    // The pool's entries join the donor box when the edit is committed
-    // (blur), not on every keystroke, so a half-typed name never lands.
-    app
-      .querySelector('#pool-query-input')
-      ?.addEventListener('change', () => {
-        absorbPool();
-      });
-
-    app
-      .querySelector('#donor-query-input')
-      ?.addEventListener('input', (event) => {
-        state.donorQuery = event.target.value;
-        const saved = saveDonors(state.donorQuery);
-        // Donors change what the pool can breed or Sketch, so the result
-        // and everything derived from it are stale.
-        const interrupted = discardResult();
-        state.resultProgressionKey = '';
-        state.availabilityText = '';
-        state.teamItemUsage = null;
-        state.teamItemContext = null;
-        state.itemRecommendations = {};
-        setDetails.cancel();
-        state.statusMessage = saved
-          ? 'Saved locally'
-          : 'Not saved locally; browser storage is full.';
-        if (interrupted) render();
-        updatePoolStatusMessage(state.statusMessage);
-      });
-
-    app
-      .querySelector('#optimize-button')
-      ?.addEventListener('click', async () => {
-        await computeAndRender();
-      });
-
-    app
-      .querySelector('#compute-post-analysis-button')
-      ?.addEventListener('click', () => {
-        if (!state.result || state.phase !== OptimizePhase.ANALYSIS_DEFERRED) {
-          return;
-        }
-        activeAnalysis = runPostAnalysis(state.result, null);
-      });
-
-    app
-      .querySelector('#copy-pool-button')
-      ?.addEventListener('click', async () => {
-        await copyPool();
-      });
-
-    app
-      .querySelector('#copy-perf-report-button')
-      ?.addEventListener('click', async () => {
-        try {
-          await navigator.clipboard.writeText(
-            JSON.stringify(buildPerformanceReport(), null, 2),
-          );
-          updatePoolStatusMessage('Performance report copied to clipboard');
-        } catch {
-          updatePoolStatusMessage('Clipboard copy failed');
-        }
-      });
-
-    app
-      .querySelector('#export-gamestate-button')
-      ?.addEventListener('click', async () => {
-        // To the clipboard like the pool and availability copies: the user
-        // pastes it wherever the backup lives, or straight into a chat.
-        const text = buildGamestateExport({
-          query: state.query,
-          donorQuery: state.donorQuery,
-          progression: state.progression,
-        });
-        try {
-          await navigator.clipboard.writeText(text);
-          updatePoolStatusMessage('Gamestate copied to clipboard');
-        } catch {
-          updatePoolStatusMessage('Clipboard copy failed');
-        }
-      });
-
-    app
-      .querySelector('#import-gamestate-button')
-      ?.addEventListener('click', () => {
-        app.querySelector('#import-gamestate-input')?.click();
-      });
-
-    app
-      .querySelector('#import-gamestate-input')
-      ?.addEventListener('change', async (event) => {
-        const file = event.target.files?.[0];
-        event.target.value = '';
-        if (!file) return;
-        let imported;
-        try {
-          imported = parseGamestateImport(await file.text());
-        } catch (error) {
-          updatePoolStatusMessage(`Import failed: ${error.message}`);
-          return;
-        }
-        if (
-          state.query.trim() &&
-          !window.confirm(
-            'Replace the current pool and progression with the imported gamestate?',
-          )
-        ) {
-          return;
-        }
-        state.query = imported.pool;
-        savePool(state.query);
-        state.donorQuery = imported.donors || '';
-        saveDonors(state.donorQuery);
-        absorbPool();
-        // Round-trip the imported progression through the normal save/load
-        // path so it gets the same normalization (terrain-seed migration,
-        // count clamps, unknown-field drops) as any other stored state.
-        saveProgression(imported.progression);
-        state.progression = loadSavedProgression();
-        discardResult();
-        recomputeItemRecommendations();
-        render();
-        updatePoolStatusMessage('Gamestate imported. Optimizing…');
-        void computeAndRender({ exhaustive: false, background: true });
-      });
-
-    app.querySelector('#clear-pool-button')?.addEventListener('click', () => {
-      const confirmed = window.confirm(
-        'Clear the saved owned Pokémon pool from this browser?',
-      );
-      if (!confirmed) return;
-
-      // The donor box is the whole box and outlives the pool: clearing the
-      // pool empties the fieldable subset only.
-      state.query = '';
-      discardResult();
-      state.resultProgressionKey = '';
-      state.statusMessage = 'Saved pool cleared';
-
-      setDetails.cancel();
-      removeLocalStorage(poolStorageKey());
-      writeUrl();
-      render();
-    });
-
-    app
-      .querySelector('#clear-progression-button')
-      ?.addEventListener('click', () => {
-        const confirmed = window.confirm(
-          `Clear saved ${getActiveGame().shortLabel} progression from this browser?`,
-        );
-        if (!confirmed) return;
-
-        clearSavedProgression();
-        state.progression = loadSavedProgression();
-        render();
-      });
-  }
-
-  async function copyPool() {
-    const text = state.query.trim();
-
-    if (!text) {
-      state.statusMessage = 'Nothing to copy';
-      render();
-      return;
-    }
-
-    try {
-      await navigator.clipboard.writeText(text);
-      state.statusMessage = 'Copied pool to clipboard';
-    } catch {
-      state.statusMessage = 'Clipboard copy failed';
-    }
-
-    render();
-  }
-
-  function applyOwnedItemChange(
-    itemId, count, { refocusAdd, flashItemId } = {}) {
-    state.progression = setOwnedItemCount(
-      state.progression,
-      itemId,
-      count,
-    );
-    finishOwnedItemsEdit(null, { refocusAdd, flashItemId });
-  }
-
-  // Common tail of every inventory edit (single change or shop sync): save,
-  // re-render, and schedule the re-optimize on the LONG debounce — entering a
-  // shop haul is a burst of edits, and ten edits should cost one recompute,
-  // not up to ten interleaved with the typing.
-  function finishOwnedItemsEdit(message, { refocusAdd, flashItemId } = {}) {
-    const saved = saveProgression(state.progression);
-    state.statusMessage = saved
-      ? 'Saved locally'
-      : 'Held items could not be saved locally; browser storage is full.';
-
-    recomputeItemRecommendations();
-    const stale = markResultProgressionStale();
-    render();
-    if (message || stale) {
-      updateProgressionStatusMessage(
-        [message, stale ? 'Re-optimizing after edits settle…' : null]
-          .filter(Boolean)
-          .join(' '),
-      );
-    }
-    // The render replaced the DOM: restore the search box focus so adds can
-    // chain, and flash/scroll the touched row so it's findable in the
-    // alphabetical list without scanning.
-    if (refocusAdd) {
-      app.querySelector('[data-item-add-input]')?.focus();
-    }
-    if (flashItemId) {
-      const row = app
-        .querySelector(`[data-owned-item-count][data-item-id="${flashItemId}"]`)
-        ?.closest('.item-inventory-row');
-      if (row) {
-        row.classList.add('item-row-flash');
-        row.scrollIntoView({ block: 'nearest' });
-      }
-    }
-    scheduleAutoReoptimize(stale, BATCH_EDIT_REOPTIMIZE_DELAY_MS);
-  }
-
-  function applyOpponentBiasChange(type, level) {
-    state.progression = setOpponentTypeBias(
-      state.progression,
-      type,
-      level,
-    );
-
-    const saved = saveProgression(state.progression);
-    const stale = markResultProgressionStale();
-
-    updateProgressionStatusMessage(
-      saved
-        ? getProgressionSavedMessage(stale)
-        : 'Progression could not be saved locally; browser storage is full.',
-    );
-
-    // Bias only affects optimization, so flag the current team stale; no
-    // re-render (keeps slider focus during a drag).
-    refreshOptimizedTeamProgressionState(stale);
-    refreshGamestateStrip();
-    scheduleAutoReoptimize(stale);
-  }
-
-  // Light progression edits (a ticked box, a bias drag) deliberately skip
-  // the full re-render; keep the modern layout's gamestate strip honest by
-  // rebuilding just its chips in place. Chip clicks stay live because their
-  // handler is delegated to the widget root.
-  function refreshGamestateStrip() {
-    const strip = app.querySelector('.gamestate-strip');
-    if (strip) strip.outerHTML = renderGamestateStrip(state.progression);
+  // Every Pokémon in the pool joins the donor box, which only ever grows:
+  // the box is everything the player has listed, the pool its fieldable
+  // subset. The box is updated in place, so the pool box the player is
+  // editing keeps its focus.
+  function absorbPool() {
+    const absorbed = absorbPoolIntoDonors(
+      state.donorQuery, state.query, data.pokemonIndex);
+    if (absorbed === state.donorQuery) return;
+    state.donorQuery = absorbed;
+    saveDonors(absorbed);
+    showDonorBox(page);
   }
 
   function recomputeItemRecommendations() {
@@ -1359,7 +234,6 @@ export function mountPoolOptimizer(container, options = {}) {
       state.itemRecommendations = {};
       return;
     }
-
     state.itemRecommendations = assignTeamItems({
       team: state.result.team,
       usageByMember: state.teamItemUsage,
@@ -1369,441 +243,12 @@ export function mountPoolOptimizer(container, options = {}) {
     });
   }
 
-  async function generateAvailabilityList() {
-    if (!state.result?.lines?.length) {
-      state.statusMessage =
-        'Optimize the team first so your pool is resolved, then generate the list.';
-      render();
-      return;
-    }
-
-    updatePoolStatusMessage('Generating availability list…');
-
-    try {
-      const poolQuery = withDonors(state.query, state.donorQuery);
-      const text = await buildPoolAvailabilityText({
-        lines: state.result.lines,
-        pokemonIndex,
-        poolQuery,
-        progression: withPoolAnnotations(
-          state.progression, poolQuery, pokemonIndex,
-        ),
-      });
-
-      state.availabilityText = text;
-
-      let copied = false;
-      try {
-        await navigator.clipboard.writeText(text);
-        copied = true;
-      } catch {
-        copied = false;
-      }
-
-      state.statusMessage = copied
-        ? 'Availability list copied to clipboard'
-        : 'Availability list ready below';
-
-      render();
-    } catch (error) {
-      updatePoolStatusMessage(
-        `Could not generate list: ${error?.message || error}`,
-      );
-    }
-  }
-
-  // Adaptive optimize progress: the bar spans the WHOLE optimizer window using
-  // per-phase time budgets estimated from this browser's telemetry history for
-  // this pool size (static defaults on the very first run). Countable work
-  // (line scoring) advances by real fraction; time-only phases (the search)
-  // advance by elapsed-vs-budget with an asymptotic tail — so the bar keeps
-  // moving through the slow part instead of parking at 100% and pulsing.
-  // Width = elapsed / (elapsed + estimated remaining), capped at 97% until the
-  // run actually finishes. A ticker repaints during phases that emit no
-  // progress events.
-  let optimizeProgress = null;
-
-  function startOptimizeProgress(poolSize) {
-    stopOptimizeProgress();
-    optimizeProgress = {
-      start: Date.now(),
-      phase: ProgressPhase.RESOLVE,
-      phaseStart: Date.now(),
-      completed: 0,
-      total: poolSize || 0,
-      budget: estimateRunBudget(poolSize),
-      timer: setInterval(paintOptimizeProgress, 150),
-    };
-    paintOptimizeProgress();
-  }
-
-  function stopOptimizeProgress() {
-    if (optimizeProgress?.timer) clearInterval(optimizeProgress.timer);
-    optimizeProgress = null;
-  }
-
-  function paintOptimizeProgress() {
-    const model = optimizeProgress;
-    const bar = app.querySelector('[data-optimize-progress-bar]');
-    if (!model || !bar) return;
-
-    const now = Date.now();
-    const elapsed = now - model.start;
-    const phaseElapsed = now - model.phaseStart;
-    const budget = model.budget;
-    let remaining;
-    if (model.phase === ProgressPhase.RANK) {
-      const fraction = model.total ? model.completed / model.total : 0;
-      remaining =
-        500 * (1 - fraction) +
-        budget.resolveMs +
-        budget.searchMs +
-        budget.tailMs;
-    } else if (model.phase === ProgressPhase.RESOLVE) {
-      const fraction = model.total ? model.completed / model.total : 0;
-      remaining =
-        budget.resolveMs * (1 - fraction) + budget.searchMs + budget.tailMs;
-    } else if (model.phase === ProgressPhase.SEARCH) {
-      const f = model.searchFraction || 0;
-      if (f > 0.02) {
-        // Real worker progress: project remaining time from the measured
-        // scan rate instead of the pre-run budget guess.
-        remaining = (phaseElapsed * (1 - f)) / f + budget.tailMs;
-      } else {
-        // Past its budget the remaining floor keeps the bar creeping
-        // (asymptote) rather than lying about being done.
-        remaining =
-          Math.max(budget.searchMs - phaseElapsed, budget.searchMs * 0.08) +
-          budget.tailMs;
-      }
-    } else {
-      remaining = Math.max(budget.tailMs - phaseElapsed, 120);
-    }
-    // Clamp to non-decreasing within a run: the remaining-time estimate
-    // switches formulas (budget guess → measured worker rate), which can jump
-    // the estimate up and would otherwise step the bar backwards.
-    const fraction = Math.max(
-      model.maxFraction || 0,
-      Math.min(0.97, elapsed / (elapsed + Math.max(remaining, 1))),
-    );
-    model.maxFraction = fraction;
-    bar.style.width = `${(fraction * 100).toFixed(1)}%`;
-    // Running far past the search budget: pulse to say "still working" —
-    // the estimate was wrong, not the run dead.
-    const late =
-      model.phase === ProgressPhase.SEARCH &&
-      phaseElapsed > 2 * budget.searchMs;
-    bar.style.animation = late
-      ? 'pool-progress-pulse 1.2s ease-in-out infinite'
-      : '';
-  }
-
-  function formatComboCount(value) {
-    if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
-    if (value >= 1_000) return `${Math.round(value / 1_000)}k`;
-    return String(value);
-  }
-
-  // Consumes the optimizer's progress reports (optimize-progress.js); the
-  // items phase is the widget's own, reported around item loading above.
-  function updateOptimizeProgress({
-    phase = ProgressPhase.RESOLVE, completed, total, stage, detail,
-  }) {
-    const label = app.querySelector('[data-optimize-progress-label]');
-    if (label) {
-      if (phase === ProgressPhase.RANK) {
-        label.textContent = total
-          ? `Ranking ${completed}/${total} pool lines by usage...`
-          : 'Ranking pool lines by usage...';
-      } else if (phase === ProgressPhase.SEARCH) {
-        label.textContent =
-          stage === SearchStage.SYNERGY
-            ? 'Search prep — loading teammate synergy...'
-            : stage === SearchStage.POLISH
-              ? `Search done — auditing shortlist swaps (round ${detail?.round || 1})...`
-              : stage === SearchStage.REALIZE
-                ? 'Search done — realizing best builds...'
-                : stage === SearchStage.BENCH
-                  ? 'Search done — ranking bench swaps...'
-                  : total
-                    ? `Searching team combinations — ${Math.min(99, Math.floor((100 * (completed || 0)) / total))}% of ${formatComboCount(total)}...`
-                    : 'Searching team combinations...';
-      } else if (phase === ProgressPhase.ITEMS) {
-        label.textContent = 'Loading item usage for the team...';
-      } else {
-        label.textContent = total
-          ? `Scoring ${completed}/${total} Pokémon...`
-          : 'Optimizing pool...';
-      }
-    }
-    if (optimizeProgress) {
-      if (phase !== optimizeProgress.phase) {
-        optimizeProgress.phase = phase;
-        optimizeProgress.phaseStart = Date.now();
-        optimizeProgress.searchFraction = 0;
-      }
-      if (phase === ProgressPhase.RESOLVE || phase === ProgressPhase.RANK) {
-        optimizeProgress.completed = completed || 0;
-        if (total) optimizeProgress.total = total;
-      }
-      if (phase === ProgressPhase.SEARCH && total) {
-        optimizeProgress.searchFraction = Math.min(
-          1,
-          (completed || 0) / total,
-        );
-      }
-      paintOptimizeProgress();
-    }
-  }
-
-  function updatePoolStatusMessage(message) {
-    const statusNode = app.querySelector('[data-pool-status]');
-    if (statusNode) statusNode.textContent = message || '';
-  }
-
-  function updateProgressionStatusMessage(message) {
-    const statusNode = app.querySelector('[data-progression-status]');
-    if (statusNode) statusNode.textContent = message || '';
-  }
-
-  function refreshSelectedLegalMovesPanel() {
-    const legalMovesRoot = app.querySelector('[data-reborn-legal-moves-root]');
-    const selected = getSelectedTeamChoice();
-
-    if (!legalMovesRoot || !selected) return;
-
-    renderLegalMovesPanel(legalMovesRoot, {
-      currentSpecies: getCurrentSpeciesForSelected(selected),
-      movesetEntry: setDetails.getDetail(),
-      pokemonIndex,
-      poolQuery: withDonors(state.query, state.donorQuery),
-      pokemonId: selected.pokemonId,
-      pokemonName: selected.name,
-      progression: state.progression,
-    });
-  }
-
-  // The rail underlines the section under it. One scroll listener at a time
-  // (each render rewires it), measured once per frame.
-  let teardownRailSpy = null;
-  function wireTeamRailSpy() {
-    teardownRailSpy?.();
-    const rail = app.querySelector('.team-rail');
-    if (!rail) return;
-    let frame = 0;
-    const mark = () => {
-      frame = 0;
-      const railBottom = rail.getBoundingClientRect().bottom;
-      const sections = TEAM_RAIL_SECTIONS.flatMap((id) => {
-        const element = app.querySelector(`#${id}`);
-        return element
-          ? [{ id, top: element.getBoundingClientRect().top }]
-          : [];
-      });
-      const current = currentRailSection(sections, railBottom);
-      rail.querySelectorAll('a[href^="#"]').forEach((link) => {
-        if (link.getAttribute('href') === `#${current}`) {
-          link.setAttribute('aria-current', 'true');
-        } else {
-          link.removeAttribute('aria-current');
-        }
-      });
-    };
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(mark);
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    mark();
-    teardownRailSpy = () => {
-      window.removeEventListener('scroll', onScroll);
-      if (frame) cancelAnimationFrame(frame);
-      teardownRailSpy = null;
-    };
-  }
-
-  // Every Pokémon in the pool joins the donor box, which only ever grows: the
-  // box is everything the player has listed, the pool its fieldable subset.
-  // Updates the box's textarea and count in place, so the pool textarea the
-  // player is editing keeps its focus.
-  function absorbPool() {
-    const absorbed = absorbPoolIntoDonors(
-      state.donorQuery,
-      state.query,
-      pokemonIndex,
-    );
-    if (absorbed === state.donorQuery) return;
-    state.donorQuery = absorbed;
-    saveDonors(state.donorQuery);
-    const box = app.querySelector('#donor-query-input');
-    if (!box) return;
-    box.value = state.donorQuery;
-    const label = box.closest('label')?.querySelector('span');
-    if (label) {
-      label.textContent = donorBoxLabel(
-        getPoolStats(state.donorQuery, pokemonIndex).uniqueCount,
-      );
-    }
-  }
-
-  function refreshTeamAnalysisPanel() {
-    renderTeamAnalysisPanel(app.querySelector('#reborn-team-analysis-root'), {
-      family: state.family,
-      itemAssignments: state.itemRecommendations,
-      lines: state.result?.lines || [],
-      pokemonIndex,
-      poolQuery: withDonors(state.query, state.donorQuery),
-      progression: state.progression,
-      team: getSortedTeam(
-        state.result?.team || [],
-        state.teamSort,
-        state.teamSortDir,
-        state.progression,
-        lineUsageByInputId(state.result?.lines),
-      ),
-    });
-  }
-
-  function refreshOptimizedTeamProgressionState(stale) {
-    state.resultProgressionStale = stale;
-
-    const warning = app.querySelector('[data-progression-stale-warning]');
-    if (warning) warning.hidden = !stale;
-    // The rail's picks dim with the warning: a stale team is not the team.
-    app.querySelector('.team-rail')?.toggleAttribute('data-stale', stale);
-
-    app.querySelectorAll('[data-team-note]').forEach((noteNode) => {
-      const row = getTeamChoiceForRow(noteNode.closest('[data-team-pokemon-id]'));
-      noteNode.textContent = stale
-        ? 'Progression changed; re-optimize for current scores and legal move notes.'
-        : row?.note || '';
-    });
-
-  }
-
-  function getSelectedTeamChoice() {
-    const selectedPokemonId = setDetails.getSelectedPokemonId();
-
-    if (!selectedPokemonId || !state.result?.team?.length) return null;
-
-    return (
-      state.result.team.find((row) => row.pokemonId === selectedPokemonId) ||
-      null
-    );
-  }
-
-  function getTeamChoiceForRow(rowNode) {
-    if (!rowNode) return null;
-
-    const inputId = rowNode.dataset.teamInputId;
-    const pokemonId = rowNode.dataset.teamPokemonId;
-
-    if (!inputId || !pokemonId || !state.result?.team?.length) return null;
-
-    return (
-      state.result.team.find(
-        (row) => row.inputPokemonId === inputId && row.pokemonId === pokemonId,
-      ) || null
-    );
-  }
-
-  function getCurrentSpeciesForSelected(selected) {
-    return selected
-      ? getCurrentSpeciesForChoice(selected, state.progression)
-      : null;
-  }
-
-  function getOptimizationSummary(result) {
-    if (!result) return '';
-
-    return `Optimized ${result.team.length} picks from ${result.linesConsidered} resolved inputs.`;
-  }
-
-  function markResultProgressionStale() {
-    return Boolean(
-      state.result &&
-        state.resultProgressionKey &&
-        state.resultProgressionKey !== getProgressionKey(
-          state.progression, state.resultEvolutionItemIds),
-    );
-  }
-
-  // An edit that discards the result ends the run that produced it: a sweep
-  // in flight sees the result change and stops itself, and an optimize in
-  // flight is disowned, since the team it would land is for the pool as it
-  // was. (The optimizer finishes unheard and its result stays cached.)
-  // Returns whether an optimize was interrupted, which leaves its progress
-  // panel on the page for the caller to render away.
-  function discardResult() {
-    state.result = null;
-    const interrupted = state.phase === OptimizePhase.OPTIMIZING;
-    if (interrupted) {
-      optimizeRunToken += 1;
-      stopOptimizeProgress();
-    }
-    state.phase = OptimizePhase.IDLE;
-    return interrupted;
-  }
-
-  function getProgressionSavedMessage(stale) {
-    return stale
-      ? 'Progression saved locally. Re-optimizing after edits settle…'
-      : 'Progression saved locally';
-  }
-
-  // In-place DOM patching for checkbox toggles (no re-render — see the change
-  // handler). Every rendering of the option (main list + obtainable rail)
-  // shares field+value, so sync them all and retoggle the "obtainable"
-  // highlight from the render-stamped badge flag.
-  function patchOptionCheckboxes(field, value, checked) {
-    app
-      .querySelectorAll(`[data-progression-option-list="${CSS.escape(field)}"]`)
-      .forEach((box) => {
-        if (box.value !== value) return;
-        box.checked = checked;
-        const label = box.closest('.progression-option');
-        if (!label) return;
-        label.classList.toggle(
-          'option-obtainable',
-          Boolean(label.dataset.optionBadgeOk) && !checked,
-        );
-      });
-  }
-
-  // Recount the group's "N/M selected · K obtainable now" summary from the
-  // live DOM (unique by option value — the rail duplicates rows).
-  function patchOptionGroupCount(field) {
-    const group = app.querySelector(
-      `[data-progression-group="${CSS.escape(field)}"]`,
-    );
-    const counter = group?.querySelector('[data-progression-group-count]');
-    if (!counter) return;
-
-    const seen = new Set();
-    const checked = new Set();
-    const obtainable = new Set();
-    group
-      .querySelectorAll(`[data-progression-option-list="${CSS.escape(field)}"]`)
-      .forEach((box) => {
-        seen.add(box.value);
-        if (box.checked) checked.add(box.value);
-        else if (box.closest('.progression-option')?.dataset.optionBadgeOk) {
-          obtainable.add(box.value);
-        }
-      });
-    const total = Number.parseInt(counter.dataset.optionTotal, 10) || seen.size;
-    counter.textContent = `${checked.size}/${total} selected${
-      obtainable.size ? ` · ${obtainable.size} obtainable now` : ''
-    }`;
-  }
-
   function writeUrl() {
     if (embedded) return;
-
     const params = new URLSearchParams();
     params.set('family', state.family);
     params.set('teamSort', state.teamSort);
     params.set('teamSortDir', state.teamSortDir);
-
     window.history.replaceState(
       null,
       '',
@@ -1812,91 +257,6 @@ export function mountPoolOptimizer(container, options = {}) {
   }
 }
 
-/** @return {boolean} Whether the pool text was persisted to localStorage. */
-export function savePool(value) {
-  return writeLocalStorage(poolStorageKey(), value);
-}
-
-/** @return {string} The saved pool text, or '' when none. */
-export function loadSavedPool() {
-  return readSavedState('pool');
-}
-
-/** @return {boolean} Whether the donor box text was persisted. */
-export function saveDonors(value) {
-  return writeLocalStorage(savedStateKey('donors'), value);
-}
-
-/** @return {string} The saved donor box text, or '' when none. */
-export function loadSavedDonors() {
-  return readSavedState('donors');
-}
-
-function saveTeamSort(value) {
-  writeLocalStorage(TEAM_SORT_STORAGE_KEY, value);
-}
-
-function loadSavedTeamSort() {
-  return readLocalStorage(TEAM_SORT_STORAGE_KEY, '');
-}
-
-function saveTeamSortDir(value) {
-  writeLocalStorage(TEAM_SORT_DIR_STORAGE_KEY, value);
-}
-
-function loadSavedTeamSortDir() {
-  return readLocalStorage(TEAM_SORT_DIR_STORAGE_KEY, '');
-}
-
 function getParam(name) {
   return new URLSearchParams(window.location.search).get(name);
 }
-
-function baseUrl() {
-  return import.meta.env.BASE_URL || '/';
-}
-
-function waitForPaint() {
-  return new Promise((resolve) => {
-    const fallback = setTimeout(resolve, 100);
-
-    requestAnimationFrame(() =>
-      requestAnimationFrame(() => {
-        clearTimeout(fallback);
-        resolve();
-      }),
-    );
-  });
-}
-
-function getProgressionKey(progression, usedEvolutionItemIds) {
-  // Ordinary owned items drive item recommendations (recomputed every render),
-  // not the team optimization, so they must not flag an optimized team as
-  // stale. Owned EVOLUTION items are the exception: they zero evolution
-  // friction and override access gates, and a copy evolves one candidate,
-  // so a change in how many are owned must re-optimize. Only the ones a
-  // line of the pool can spend: a Fire Stone changes nothing for a pool
-  // with nothing to use it on.
-  const { ownedItems, ...rest } = progression || {};
-  const evolutionItems = {};
-  for (const id of usedEvolutionItemIds) {
-    if (ownedItems?.[id] > 0) evolutionItems[id] = ownedItems[id];
-  }
-  // Key-order independent: plain JSON.stringify is insertion-order sensitive,
-  // and progression objects are built by several helpers — two equal
-  // progressions with different field orders would spuriously flag the team
-  // stale.
-  return stableKeyStringify({ ...rest, evolutionItems });
-}
-
-function stableKeyStringify(value) {
-  if (Array.isArray(value)) return `[${value.map(stableKeyStringify).join(',')}]`;
-  if (value && typeof value === 'object') {
-    return `{${Object.keys(value)
-      .sort()
-      .map((key) => `${JSON.stringify(key)}:${stableKeyStringify(value[key])}`)
-      .join(',')}}`;
-  }
-  return JSON.stringify(value);
-}
-
