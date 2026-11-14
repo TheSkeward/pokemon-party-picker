@@ -4,6 +4,7 @@
  * test/e2e/*.e2e.mjs as a child process, and exits non-zero if any fail.
  * These specs cover behaviors the unit suites cannot see — focus retention,
  * scroll pinning, downloads, in-place DOM patching. Run: npm run e2e
+ * Name specs to run only those: npm run e2e -- team-controls app-shell
  *
  * Needs the full site-data tree and an installed Chrome or Edge, both of
  * which a checkout on a GitHub runner has.
@@ -14,6 +15,8 @@ import { readdirSync, symlinkSync, rmSync, existsSync } from 'node:fs';
 import path from 'node:path';
 
 const PORT = 4199;
+// Parts of spec file names; with none given, every spec runs.
+const wanted = process.argv.slice(2);
 const root = process.cwd();
 const dataLink = path.join(root, 'dist', 'data');
 
@@ -72,8 +75,14 @@ try {
   await waitForServer();
   const specs = readdirSync(path.join(root, 'test', 'e2e'))
     .filter((file) => file.endsWith('.e2e.mjs'))
+    .filter((file) =>
+      !wanted.length || wanted.some((part) => file.includes(part)))
     .sort();
-  if (!specs.length) throw new Error('no specs found in test/e2e/');
+  if (!specs.length) {
+    throw new Error(wanted.length
+      ? `no spec in test/e2e/ matches ${wanted.join(', ')}`
+      : 'no specs found in test/e2e/');
+  }
   for (const spec of specs) {
     const { file, code } = await runSpec(spec);
     if (code !== 0) {
