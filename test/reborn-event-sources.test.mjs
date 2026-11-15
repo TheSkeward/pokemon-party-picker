@@ -77,6 +77,17 @@ test('an event is dated by its badge switches and episode variables', () => {
     ]),
     0,
   );
+  // So is the weather, which moves on every eight hours: the researcher
+  // who goes indoors when it rains waits for no badge.
+  assert.equal(
+    badge([{ variable: 91, name: 'Current Weather', atLeast: 1 }]), 0);
+  assert.equal(
+    badge([
+      { variable: 91, name: 'Current Weather', atLeast: 5 },
+      { switch: 139, name: 'Fifth Badge' },
+    ]),
+    5,
+  );
   // A counter still under a value, or not at one, is so from the start;
   // one that has left nothing has been raised.
   assert.equal(

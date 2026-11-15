@@ -60,6 +60,14 @@ const EPISODE_START_BADGES = [
 ];
 
 /**
+ * The variable holding the weather on the last outdoor map (Game_Screen.rb
+ * setWeather). The weather moves on every eight hours at any badge count,
+ * so an event that waits for one, like the Route 1 researcher who goes
+ * indoors when it rains, waits for nothing a badge brings.
+ */
+const WEATHER_VARIABLE = 'Current Weather';
+
+/**
  * @param {string} name A switch name.
  * @return {?number} The badge a badge switch implies; null for any other
  *     switch.
@@ -72,12 +80,13 @@ export function rebornBadgeSwitchBadge(name) {
  * @const {!EventDating} An event's switch dates it when it is a badge
  *     switch or one a map exists under; a variable dates it when it is an
  *     episode's story variable, from that episode's first badge whatever
- *     the value asked for.
+ *     the value asked for, or the weather, which gates nothing in time.
  */
 export const REBORN_EVENT_DATING = {
   switchBadge: (name) =>
     rebornBadgeSwitchBadge(name) ?? REBORN_MAP_SWITCH_BADGES[name] ?? null,
   variableBadge: (name) => {
+    if (name === WEATHER_VARIABLE) return 0;
     const episode = /^E(\d+) Story/.exec(name);
     return episode ? EPISODE_START_BADGES[Number(episode[1])] ?? null : null;
   },

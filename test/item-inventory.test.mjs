@@ -170,15 +170,20 @@ test('badge-1 shop stock includes the user-verified Obsidia berry floor', () => 
 test('a copy handed over before the listing\'s first placed copy counts', () => {
   // The listing's first Electirizer is an item ball before Terra (badge
   // 11). The game files have the Route 1 researcher hand one over for a
-  // Dunsparce, on a map reached at badge 7: a copy the listing lacks.
+  // Dunsparce, on a map reached at badge 7: a copy the listing lacks. He
+  // is a second event indoors when it rains, with a one-time gift of its
+  // own, so a second Dunsparce traded there is a second copy.
   const singles = (id) => REBORN_ITEM_SOURCES[id]
     .filter((source) => source.kind === 'single')
     .map((source) => [source.badge, source.via]);
-  assert.deepEqual(
-    singles('electirizer'), [[7, 'gift, Route 1'], [11, 'item ball']]);
+  assert.deepEqual(singles('electirizer'), [
+    [7, 'gift, Route 1'],
+    [7, 'gift, Nature Center'],
+    [11, 'item ball'],
+  ]);
   assert.equal(expectedItemCount('electirizer', 6), 0);
-  assert.equal(expectedItemCount('electirizer', 7), 1);
-  assert.equal(expectedItemCount('electirizer', 11), 2);
+  assert.equal(expectedItemCount('electirizer', 7), 2);
+  assert.equal(expectedItemCount('electirizer', 11), 3);
 
   // Where the listing's own first copy is handed over, an earlier date in
   // the files is that same copy, not a second one: the Full Incense gift
