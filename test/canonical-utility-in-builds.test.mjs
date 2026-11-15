@@ -1,12 +1,12 @@
 // Every build keeps the canonical utility moves the player can use now. The
 // coverage build may trade a canonical attack for breadth, never Rapid Spin
-// or Spikes; the utility build ranks by usage, so the canonical utility moves
-// seat first. Before this rule Forretress's four-attack coverage set won on
-// standalone value and its card showed none of the moves the set line said
-// were ready.
+// or Spikes; the utility build seats every canonical utility move before it
+// ranks the rest by usage. Before this rule Forretress's four-attack
+// coverage set won on standalone value and its card showed none of the
+// moves the set line said were ready.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { runPool, lineFor } from './helpers/harness.mjs';
+import { lineFor, progressionAt, runPool } from './helpers/harness.mjs';
 import { hydrateLegalMove } from '../src/move-meta.js';
 import {
   buildCandidateLegalityProfile,
@@ -47,6 +47,39 @@ test('the utility build seats the canonical utility moves first', () => {
   assert.deepEqual(ids.slice(0, 2), ['rapidspin', 'spikes']);
 });
 
+// A record of four status moves is the set in every build. The score cannot
+// keep Substitute, which carries no role, so the rule has to: a utility
+// build capped at three support moves had seated an attack in its place.
+const smeargle = { id: 'smeargle', name: 'Smeargle', types: ['Normal'] };
+const sketched = [
+  'batonpass', 'spore', 'stickyweb', 'substitute', 'taunt', 'seismictoss',
+  'finalgambit', 'tackle',
+].map(legal);
+const supportRecord = new Map([
+  ['batonpass', 80], ['spore', 75], ['stickyweb', 60], ['substitute', 40],
+]);
+
+test('the utility build keeps a record of four status moves whole', () => {
+  const ids = idsOf(buildCandidateLegalityProfile({
+    member: smeargle, moves: sketched, moveUsage: supportRecord,
+    levelCap: 60, movePreference: 'utility',
+  }));
+  assert.deepEqual(ids, ['batonpass', 'spore', 'stickyweb', 'substitute']);
+});
+
+test('with a seat left, the utility build still takes an attack', () => {
+  const ids = idsOf(buildCandidateLegalityProfile({
+    member: smeargle,
+    moves: sketched,
+    moveUsage: new Map([['batonpass', 80], ['spore', 75], ['stickyweb', 60]]),
+    levelCap: 60,
+    movePreference: 'utility',
+  }));
+  assert.deepEqual(ids.slice(0, 3), ['batonpass', 'spore', 'stickyweb']);
+  // Never Final Gambit: an attack that faints its user is no fill.
+  assert.equal(ids[3], 'seismictoss', ids);
+});
+
 const buildsOf = (result, inputName) => {
   const line = lineFor(result, inputName);
   const best = line.best || line.bestNonMega;
@@ -67,6 +100,23 @@ test('Forretress fields Rapid Spin and Spikes whichever build survives', async (
   }
   const fielded = idsOf(result.team[0].legalityProfile);
   assert.ok(fielded.includes('rapidspin') && fielded.includes('spikes'), fielded);
+});
+
+test('Smeargle keeps Substitute whichever build survives', async () => {
+  // Its box supplies the record's moves and a Final Gambit to sketch.
+  const result = await runPool({
+    pool: ['Smeargle', 'Scolipede', 'Parasect', 'Shuckle', 'Primeape'],
+    progression: {
+      ...progressionAt({ badge: 7, levelCap: 60 }),
+      moveRelearnerUnlocked: true,
+      daycareUnlocked: true,
+    },
+    scoreAllLines: true,
+  });
+  const record = ['batonpass', 'spore', 'stickyweb', 'substitute'];
+  for (const [key, ids] of buildsOf(result, 'Smeargle')) {
+    assert.deepEqual(ids, record, key);
+  }
 });
 
 test('Glameow keeps Fake Out in every build', async () => {

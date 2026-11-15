@@ -320,7 +320,10 @@ const MAX_RESULT_CACHE = 400;
 // v94: the investment plan kept with a result files a Pokémon that seats at
 // an upcoming cap under "train", whichever cap its score rises most at;
 // plans stored under the old rule are retired with their results.
-const RESULT_CACHE_VERSION = '94';
+// v95: Final Gambit lands once per stint and seats only where the record
+// runs it, and the utility build keeps every canonical utility move; the
+// sets and scores of the lines either rule touched change.
+const RESULT_CACHE_VERSION = '95';
 
 // The memoized result of a pool: the one in memory, else the one persisted
 // by an earlier page load, which joins the memo. So a reload followed by the

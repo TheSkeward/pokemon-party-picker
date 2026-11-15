@@ -1796,7 +1796,15 @@ function computeDamageEstimate(move, member, attackerStats) {
       `Download: +1 Atk against the ${share}% of species whose Defense is lower, +1 SpA against the rest`,
     );
   }
-  if (hitMultiplier !== 1 && power) {
+  // A fixed-damage figure never passes through base power, so its turn rate
+  // (Final Gambit's one landing per stay, Truant's alternate turns) scales
+  // the hit itself.
+  const fixedRate = isFixedDamageMove(move.id) ? hitMultiplier : 1;
+  if (fixedRate !== 1) {
+    steps.push(
+      `× ${Math.round(fixedRate * 100) / 100} for a turn's hits (one landing per stay, or Truant)`,
+    );
+  } else if (hitMultiplier !== 1 && power) {
     steps.splice(
       1, 0,
       `Base power ${power} × ${Math.round(hitMultiplier * 100) / 100} for a turn's hits (multi-hit average, recharge, escalation, delay, or Truant)`,
@@ -1811,7 +1819,7 @@ function computeDamageEstimate(move, member, attackerStats) {
   // 90 BP @ 100% move: 84 vs 90 expected). Applied after the per-hit estimate
   // so it also scales fixed-damage/OHKO moves (Fissure @ 30%).
   const accuracy = getAccuracyFactor(move, member.ability);
-  const damage = Math.round(perHit * accuracy);
+  const damage = Math.round(perHit * fixedRate * accuracy);
   if (accuracy !== 1) {
     const lifted = accuracy !== getAccuracyFactor(move)
       ? ` (${member.ability})`
@@ -2294,16 +2302,27 @@ function recommendCurrentMoves(
       );
     }
   } else if (movePreference === 'utility') {
-    // Utility build: the strongest role moves by usage, so the canonical
-    // utility moves seat first (the measured prior ranks the unrecorded
-    // ones), plus the guaranteed attack from the shared steps so it can't
-    // go fully passive. Each seat re-ranks the live list, so a Sleep Talk
-    // that outranks Rest seats right after it. A locked utility move holds
-    // one of the three seats.
+    // Utility build: every canonical utility move, as in the other builds,
+    // then the strongest role moves by usage up to three (the measured
+    // prior ranks the unrecorded ones), plus the guaranteed attack from the
+    // shared steps where a seat is left, so it can't go fully passive
+    // unless the record itself is four status moves. A cap of three alone
+    // had dropped the record's fourth for any attack at all: Smeargle's
+    // Substitute for Final Gambit. Each seat re-ranks the live list, so a
+    // Sleep Talk that outranks Rest seats right after it. A locked utility
+    // move holds one of the three seats.
     addLocked();
-    while (selected.filter((move) => move.utility).length < 3) {
-      if (!add(bestUtility(usableUtility(), selected))) break;
-    }
+    const nextUtility = () => {
+      const usable = usableUtility();
+      const canonical = bestUtility(
+        usable.filter((move) => move.canonical), selected);
+      if (canonical) return canonical;
+      return selected.filter((move) => move.utility).length < 3
+        ? bestUtility(usable, selected)
+        : undefined;
+    };
+    let next = nextUtility();
+    while (add(next)) next = nextUtility();
   } else {
     // 1. Canonical moves, each kept if available now, and a stand-in for
     // each blocked canonical status move.

@@ -11,8 +11,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { bestChoice, progressionAt, runPool } from './helpers/harness.mjs';
 import { hydrateLegalMove } from '../src/move-meta.js';
-import { EXPECTED_STINT_TURNS } from '../src/teamBuilder/damage-model.js';
 import {
+  EXPECTED_STINT_TURNS,
+  referenceHp,
+} from '../src/teamBuilder/damage-model.js';
+import {
+  buildCandidateLegalityProfile,
   getEffectiveHitMultiplier,
 } from '../src/teamBuilder/team-analysis.js';
 
@@ -38,6 +42,31 @@ test('a self-KO move lands once per stint', () => {
   const tackle = hydrateLegalMove({ id: 'tackle', sources: ['level'] });
   assert.equal(tackle.selfKO, false);
   assert.equal(getEffectiveHitMultiplier(tackle), 1);
+});
+
+test('Final Gambit lands its fixed damage once per stint', () => {
+  const legal = (id) => hydrateLegalMove({ id, sources: ['level'] });
+  assert.equal(legal('finalgambit').selfKO, true);
+  // The status moves that faint their user deal no damage: not attacks.
+  for (const id of ['memento', 'healingwish', 'lunardance']) {
+    assert.equal(legal(id).selfKO, false, id);
+  }
+  // A fixed-damage figure has no base power to scale, so the rate is taken
+  // on the hit. Priced every turn, the move made a fast attacker of any
+  // support Pokémon that could learn it.
+  const cap = 60;
+  const profile = buildCandidateLegalityProfile({
+    member: { id: 'staraptor', name: 'Staraptor', types: ['Normal', 'Flying'] },
+    moves: ['finalgambit', 'seismictoss', 'wingattack'].map(legal),
+    moveUsage: new Map([['finalgambit', 40]]),
+    levelCap: cap,
+  });
+  const damageOf = (id) => profile.recommendedMoves
+    .find((move) => move.id === id)?.estimatedDamage;
+  assert.equal(
+    damageOf('finalgambit'), Math.round(referenceHp(cap) / EXPECTED_STINT_TURNS),
+  );
+  assert.equal(damageOf('seismictoss'), cap);
 });
 
 test('Forretress at cap 45 holds a Pineco to 42 for Gyro Ball', async () => {

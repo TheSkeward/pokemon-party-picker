@@ -115,11 +115,14 @@ That makes the orb 1.375×, and Slow Start's five turns outlast the stint, so
 it stays priced as always-on.
 
 The same stint prices every multi-turn move as output per turn on the field.
-A move that faints its user (Explosion, Self-Destruct, Misty Explosion)
-lands once per stint, whichever turn it is clicked on: a suicide lead is
-one landing, not four. A recharge move lands on the odd turns and a charge
-move on the even ones,
-half the stint each; what the opponent does on the other turn is
+An attack that faints its user (Explosion, Self-Destruct, Misty Explosion,
+Final Gambit) lands once per stint, whichever turn it is clicked on: a
+suicide lead is one landing, not four. A fixed-damage move has no base
+power to scale, so it takes its turn rate on the hit itself; Final Gambit
+priced every turn at its user's full HP had made a Smeargle with three
+support moves score as a fast attacker. A recharge move lands on the odd
+turns and a charge move on the even ones, half the stint each; what the
+opponent does on the other turn is
 survivability, which the damage model prices nowhere, so a semi-invulnerable
 charge earns no more than an exposed one, and a charge the user's own weather
 skips lands every turn. Truant acts on the odd turns like a recharge move,
@@ -210,12 +213,17 @@ Every build keeps the canonical moves the player can use now. The standard
 set locks all of them; the coverage set keeps the canonical utility moves,
 sets the canonical attacks aside and rebuilds the attacks from damage, as
 the hedge against a canonical attack the ladder runs but damage says is
-dominated; the utility set ranks its utility moves by usage, so the
-canonical ones seat first. A build may trade a canonical attack for
-coverage, never a canonical utility move: a Forretress without Rapid Spin
-and Spikes is not a Forretress build, and before this rule its four-attack
-coverage set outscored the real one on standalone value with no coverage
-gain for the team.
+dominated; the utility set seats every canonical utility move, then its
+other utility moves by usage up to three. A build may trade a canonical
+attack for coverage, never a canonical utility move: a Forretress without
+Rapid Spin and Spikes is not a Forretress build, and before this rule its
+four-attack coverage set outscored the real one on standalone value with no
+coverage gain for the team. The score cannot defend such a move itself
+where the move has no priced job: Substitute carries no role and Protect
+only its priority, so a record of four status moves is kept by this rule
+or not at all. Smeargle's record is Baton Pass, Spore, Sticky Web and
+Substitute, and a utility set capped at three support moves had seated an
+attack over Substitute.
 
 The seat of a canonical attack a build cannot seat is refilled only from
 attacks the record runs meaningfully (`MIN_MEANINGFUL_USAGE_PERCENT`), else
