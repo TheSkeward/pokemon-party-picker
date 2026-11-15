@@ -11,10 +11,21 @@ import { parseAbilityAnnotations } from './pool-parsing.js';
 import { dex } from '../games/dex.js';
 
 /**
+ * Whether the pool marks an entry as exactly the species named ("Meowth="):
+ * the owner is not evolving it.
+ * @param {?Object} input
+ * @param {!Object=} progression With the pool's marks stamped in.
+ * @return {boolean}
+ */
+function isExactEntry(input, progression = {}) {
+  return Boolean(input?.id && progression?.exactByPokemon?.[input.id]);
+}
+
+/**
  * Whether a pool entry describes the Pokémon in hand rather than its line:
- * a caught ability, a move lock or a met level is a fact about one
- * individual, so that entry fields only what it can itself become, never a
- * form the line could only hatch.
+ * a caught ability, a move lock, a met level or an exact mark is a fact
+ * about one individual, so that entry fields only what it can itself
+ * become, never a form the line could only hatch.
  * @param {?Object} input
  * @param {!Object=} progression With the pool's marks stamped in.
  * @param {?Map<string, string>=} abilityAnnotations
@@ -28,6 +39,7 @@ function describesIndividual(
   if (!input?.id) return false;
   if (abilityAnnotations?.get(normalizeName(input.name))) return true;
   if ((progression?.lockedMovesByPokemon?.[input.id] || []).length) return true;
+  if (isExactEntry(input, progression)) return true;
   return progression?.metLevelByPokemon?.[input.id] != null;
 }
 
@@ -36,7 +48,11 @@ function describesIndividual(
  * Megas always qualify. Strict pre-evolutions and sibling branches require the
  * daycare on a hatchable line, because hatching is the route back down/across,
  * and an entry that describes the individual in hand (describesIndividual)
- * never takes that route: the hatch would be another Pokémon.
+ * never takes that route: the hatch would be another Pokémon. An exact entry
+ * becomes nothing but itself and its own Mega, so its line is judged by the
+ * named species' usage record alone and every reader of the choice fields
+ * that species (current-species.js keeps a pick on its representative's
+ * line).
  */
 export function getReachableLineCandidates(
   group,
@@ -53,12 +69,14 @@ export function getReachableLineCandidates(
     Boolean(progression?.daycareUnlocked) &&
     canHatchLine(input.id) &&
     !describesIndividual(input, progression, abilityAnnotations);
+  const exact = isExactEntry(input, progression);
   return getLineRepresentativeCandidates(input.id, pokemonIndex).filter(
     (candidate) => {
       if (daycareReach) return true;
       const candidateBaseId = candidate.isMega
         ? dex().progressionSpecies[candidate.id]?.baseSpeciesId || candidate.id
         : candidate.id;
+      if (exact) return candidateBaseId === input.id;
       return (
         candidateBaseId === input.id ||
         isStrictPreEvolutionOf(input.id, candidateBaseId) ||

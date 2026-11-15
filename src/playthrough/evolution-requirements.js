@@ -21,6 +21,8 @@
  *                         (moss/ice rock, magnetic field, Lanakila equivalent)
  *                         ⇒ legal with item-level friction when the game has
  *                         the location, blocked when it does not
+ *   owner's exact mark:   blocked from a pre-evolution the pool enters as
+ *                         "Meowth=": the owner is not evolving it
  *
  * Everything game-specific — what replaces trading, which gate stands in for
  * a region, which locations the game lacks, form notes, the gate list — comes
@@ -333,6 +335,21 @@ export function getEvolutionRequirement(species, access = null) {
   }
 
   const evoType = species.evoType || '';
+
+  // The owner's own mark comes first: a pre-evolution entered as "Meowth="
+  // is fielded as Meowth, whatever the game would let it become.
+  if (access?.exactByPokemon?.[species.prevoId]) {
+    const prevoName =
+      dex().progressionSpecies[species.prevoId]?.name || species.prevoId;
+    return {
+      status: 'blocked',
+      levelRequired: null,
+      friction: 0,
+      method: evoType || 'level',
+      reason: `${prevoName} is marked = in the pool, so it is kept as it is`,
+    };
+  }
+
   const condition = evoConditionText(species);
   const rules = evolutionRules();
   const gates = requiredGates(evoType, condition, species);

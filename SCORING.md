@@ -284,6 +284,15 @@ entries: `Umbreon (Synchronize)` stays an Umbreon beside a plain `Eevee`
 that may field Espeon, and its locks and ability go with it rather than
 onto a hatch they never described.
 
+An exact mark (`Meowth=`) says more: the owner is not evolving the Pokémon.
+The entry is judged by the named species' own usage record, fielded as that
+species at every cap, and its evolutions are closed to every reader of the
+pool, so it hands no move on as a form it will not take and spends no
+evolution item. The mark is the owner's choice, not a claim that the
+species is strong: nothing in the score rewards staying unevolved, so an
+ability kept this way (Pickup on a Meowth) is worth what it is worth in
+battle.
+
 Snore and Sleep Talk seat only in a set that carries Rest, or on a Comatose
 user: they act only while the user sleeps, so the ladder's Rest sets do not
 make them worth a slot in a set that cannot sleep.

@@ -301,6 +301,7 @@ export function renderTeamRail(state) {
 const POOL_ENTRY_MARKS = [
   ['Gengar!', 'locks it into the team'],
   ['Larvesta*', 'keeps it, whatever the bench says'],
+  ['Meowth=', 'stays exactly this species: never evolved'],
   ['Munna@14', 'arrived at level 14, which decides its level 1 moves'],
   ['Munna@', 'arrived too late for its level 1 moves'],
   ['Eevee (Adaptability)', 'caught with that ability'],

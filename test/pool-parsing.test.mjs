@@ -66,6 +66,38 @@ test('a keep marker survives normalization beside a lock and an annotation', asy
   assert.equal(absorbPoolIntoDonors('', 'Larvesta*', pokemonIndex), 'Larvesta');
 });
 
+test('an exact mark survives normalization beside every other mark', async () => {
+  const { parseExactNames, parseKeptNames, parseLockedNames, parseMetLevels } =
+    await import('../src/teamBuilder/pool-parsing.js');
+  const query =
+    'Meowth= (Pickup), =Phanpy, Zigzagoon!=, Aipom@12=*, Teddiursa';
+  const normalized = normalizePoolText(query, pokemonIndex);
+  assert.equal(
+    normalized,
+    'Aipom@12=*\nMeowth= (Pickup)\nPhanpy=, Teddiursa, Zigzagoon=!',
+  );
+  assert.deepEqual(
+    [...parseExactNames(normalized, pokemonIndex)].sort(),
+    ['aipom', 'meowth', 'phanpy', 'zigzagoon'],
+  );
+  // The mark changes no other mark's reading.
+  assert.deepEqual(
+    [...parseLockedNames(normalized, pokemonIndex)], ['zigzagoon']);
+  assert.deepEqual([...parseKeptNames(normalized, pokemonIndex)], ['aipom']);
+  assert.deepEqual([...parseMetLevels(normalized, pokemonIndex)], [['aipom', 12]]);
+  assert.deepEqual(
+    [...parseAbilityAnnotations(normalized, pokemonIndex)],
+    [['meowth', 'Pickup']],
+  );
+  // A sign that touches no name marks nothing, and the donor box keeps
+  // plain names only.
+  assert.equal(normalizePoolText('= Meowth', pokemonIndex), 'Meowth');
+  const { absorbPoolIntoDonors } = await import(
+    '../src/teamBuilder/pool-parsing.js',
+  );
+  assert.equal(absorbPoolIntoDonors('', 'Meowth=', pokemonIndex), 'Meowth');
+});
+
 test('a met level rides the entry and never fuses with the name', async () => {
   const { parseMetLevels } = await import(
     '../src/teamBuilder/pool-parsing.js',

@@ -1,5 +1,6 @@
 import { resolveQueryEntries } from '../data.js';
 import {
+  parseExactNames,
   parseLockedMoves,
   parseMetLevels,
   parsePoolTokens,
@@ -78,11 +79,32 @@ function resolveMoveLocks(query, pokemonIndex) {
 }
 
 /**
+ * The pool's exact marks by species id ("Meowth=" -> { meowth: true }): the
+ * entries the owner fields as exactly the species named.
+ * @param {string} query
+ * @param {Array<Object>} pokemonIndex
+ * @return {!Object<string, boolean>}
+ */
+function exactByPokemonId(query, pokemonIndex) {
+  const names = parseExactNames(query, pokemonIndex);
+  const byId = {};
+  if (!names.size) return byId;
+  for (const group of buildInputGroups(query, pokemonIndex)) {
+    if (group.unresolved) continue;
+    if (names.has(normalizeName(group.input.name))) {
+      byId[group.input.id] = true;
+    }
+  }
+  return byId;
+}
+
+/**
  * The progression with the pool's per-entry marks stamped in: met levels as
- * metLevelByPokemon and move locks as lockedMovesByPokemon, so every
- * legality pass (optimizer, analysis, legal-moves panel, availability list)
- * reads the same ones. The progression itself when the pool carries none,
- * so cache keys are untouched for pools without them.
+ * metLevelByPokemon, move locks as lockedMovesByPokemon and exact marks as
+ * exactByPokemon, so every legality pass (optimizer, analysis, legal-moves
+ * panel, availability list) reads the same ones. The progression itself
+ * when the pool carries none, so cache keys are untouched for pools without
+ * them.
  * @param {!Object} progression
  * @param {string} query
  * @param {Array<Object>} pokemonIndex
@@ -98,6 +120,10 @@ export function withPoolAnnotations(progression, query, pokemonIndex) {
   const lockedMovesByPokemon = lockedMovesByPokemonId(query, pokemonIndex);
   if (Object.keys(lockedMovesByPokemon).length) {
     marks.lockedMovesByPokemon = lockedMovesByPokemon;
+  }
+  const exactByPokemon = exactByPokemonId(query, pokemonIndex);
+  if (Object.keys(exactByPokemon).length) {
+    marks.exactByPokemon = exactByPokemon;
   }
   return Object.keys(marks).length ? { ...progression, ...marks } : progression;
 }

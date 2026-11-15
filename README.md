@@ -25,6 +25,10 @@ https://theskeward.github.io/pokemon-party-picker/
 - Keep a Pokemon by suffixing it with `*` (`Larvesta*`): the bench marks
   it as one you mean to hold onto, so it never reads as a cut. Scoring
   ignores the mark.
+- Field a Pokemon as exactly the species named by suffixing it with `=`
+  (`Meowth=`): it is built, scored and planned as that species and never
+  as an evolution, so an ability its evolution loses stays (`Meowth=
+  (Pickup)`). The card names the evolution not assumed.
 - Record the level a Pokemon arrived at with `@` (`Munna@14`). A traded or
   late-caught Pokemon knows only the four most recent level-up moves at that
   level, so its level 1 moves count only if that window still reaches them;

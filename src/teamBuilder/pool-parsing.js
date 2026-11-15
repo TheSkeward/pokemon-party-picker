@@ -86,6 +86,22 @@ export function parseKeptNames(query, pokemonIndex) {
 }
 
 /**
+ * Exact marks: a pool entry written as "Meowth=" (or "=Meowth") is fielded
+ * as exactly that species. The owner is not evolving it, so nothing the
+ * tool builds, scores or plans for the entry assumes an evolution.
+ * @param {string} query
+ * @param {Array<Object>} pokemonIndex
+ * @return {Set<string>} Normalized names of exact entries.
+ */
+export function parseExactNames(query, pokemonIndex) {
+  const exact = new Set();
+  for (const entry of poolEntries(query, pokemonIndex).values()) {
+    if (entry.exact) exact.add(normalizeName(entry.canonical));
+  }
+  return exact;
+}
+
+/**
  * Met levels: a pool entry written as "Munna@14" arrived at level 14, so it
  * never had the level-1 moves the game's starting window at 14 leaves out;
  * a bare "Munna@" arrived too late to have any of them. Anything from level
@@ -147,7 +163,7 @@ export function setPoolEntryLock(query, name, locked, pokemonIndex) {
  * @param {string} query
  * @param {Array<Object>} pokemonIndex
  * @return {string} Deduplicated canonical names, alphabetized, each keeping
- *     its lock and keep markers, ability annotation and move lock. Plain
+ *     its lock, keep and exact markers, ability annotation and move lock. Plain
  *     entries share comma-joined lines; an entry with an ability or a move
  *     lock stands on its own line.
  *     Annotations must survive normalization: the widget normalizes the pool
@@ -160,10 +176,11 @@ export function normalizePoolText(query, pokemonIndex) {
 
 /**
  * @return {Map<string, {canonical: string, ability: ?string,
- *     locked: boolean, kept: boolean, metLevel: ?(number|true),
- *     moves: !Array<string>}>} Normalized name -> entry, deduplicated; a
- *     name locked, kept or annotated on any of its occurrences keeps that
- *     fact, and its move locks accumulate in order.
+ *     locked: boolean, kept: boolean, exact: boolean,
+ *     metLevel: ?(number|true), moves: !Array<string>}>} Normalized name ->
+ *     entry, deduplicated; a name locked, kept, marked exact or annotated on
+ *     any of its occurrences keeps that fact, and its move locks accumulate
+ *     in order.
  */
 function poolEntries(query, pokemonIndex) {
   const annotations = parseAbilityAnnotations(query, pokemonIndex);
@@ -181,11 +198,13 @@ function poolEntries(query, pokemonIndex) {
         ability: annotations.get(key) || null,
         locked: false,
         kept: false,
+        exact: false,
         metLevel: null,
         moves: [],
       };
       if (hasLockMarker(part)) entry.locked = true;
       if (hasKeepMarker(part)) entry.kept = true;
+      if (hasExactMarker(part)) entry.exact = true;
       if (entry.metLevel == null) entry.metLevel = metLevelOf(part);
       for (const move of movesOf(part)) {
         if (!entry.moves.some((seen) => sameMove(seen, move))) {
@@ -203,7 +222,7 @@ function poolEntries(query, pokemonIndex) {
 // says only that it arrived too late to have them. The mark sits after the
 // name with nothing but markers behind it, so "Gengar @ Life Orb" from a
 // pasted Showdown set is a plain entry.
-const MET_MARK = /@\s*(\d{1,3})?(?=[\s!*]*$)/;
+const MET_MARK = /@\s*(\d{1,3})?(?=[\s!*=]*$)/;
 // A met level's digits anywhere in a token, for name resolution: "Porygon@2"
 // must not read as Porygon2.
 const MET_DIGITS = /@\s*\d{1,3}(?!\d)/;
@@ -260,7 +279,7 @@ function bareToken(token) {
 // marker characters.
 function hasLockMarker(token) {
   const bare = bareToken(token);
-  return /^[!*]*!\s*\S/.test(bare) || /\S\s*![!*]*$/.test(bare);
+  return /^[!*=]*!\s*\S/.test(bare) || /\S\s*![!*=]*$/.test(bare);
 }
 
 // "Larvesta*", "*Larvesta", "Larvesta!*": a star among the markers. The
@@ -268,7 +287,14 @@ function hasLockMarker(token) {
 // plain entry, not a keep.
 function hasKeepMarker(token) {
   const bare = bareToken(token);
-  return /^[!*]*\*\S/.test(bare) || /\S\s*\*[!*]*$/.test(bare);
+  return /^[!*=]*\*\S/.test(bare) || /\S\s*\*[!*=]*$/.test(bare);
+}
+
+// "Meowth=", "=Meowth", "Meowth=!": an equals sign among the markers. The
+// prefix form must touch the name, as the keep marker's does.
+function hasExactMarker(token) {
+  const bare = bareToken(token);
+  return /^[!*=]*=\S/.test(bare) || /\S\s*=[!*=]*$/.test(bare);
 }
 
 // The pool text written back: alphabetical, with each run of plain entries
@@ -301,11 +327,11 @@ function formatPoolEntries(entries) {
 }
 
 function formatPoolEntry({
-  canonical, ability, locked, kept, metLevel, moves,
+  canonical, ability, locked, kept, exact, metLevel, moves,
 }) {
   return canonical +
     (metLevel === true ? '@' : metLevel ? `@${metLevel}` : '') +
-    (locked ? '!' : '') + (kept ? '*' : '') +
+    (exact ? '=' : '') + (locked ? '!' : '') + (kept ? '*' : '') +
     (ability ? ` (${ability})` : '') +
     (moves.length ? ` {${moves.join(' / ')}}` : '');
 }
