@@ -248,6 +248,40 @@ test('Sketch prices evolution levels and lists distinct alternative routes',
     assert.match(preferredBatonPass.sourceTitle, /Other pool routes: Aipom — Level 11/);
   });
 
+test('a Sketch route for a move that faints its user says what stops it',
+  async () => {
+    const { pokemonIndex } = await loadShared();
+    const { sketchContext } = await buildMoveTransferContexts({
+      pokemonIndex,
+      progression: progressionAt({ badge: 18, levelCap: 100 }),
+      query: 'Smeargle\nVoltorb\nKoffing\nMankey\nClefairy',
+    });
+    const title = (moveId) =>
+      sketchContext.byPokemonId.smeargle.sources[moveId].sourceTitle;
+
+    // Sketch aimed at a fainted partner copies a foe instead, so each move
+    // has to be stopped after the game has counted it as used.
+    assert.match(
+      title('explosion'),
+      /Have a Pokémon with Damp on the field, which stops the move so that Electrode does not faint/,
+    );
+    assert.match(title('selfdestruct'), /Have a Pokémon with Damp on the field/);
+    assert.match(
+      title('finalgambit'),
+      /Have Mankey aim it at a Ghost type, which it does not affect/,
+    );
+    assert.match(
+      title('memento'),
+      /Have Koffing aim it at a Pokémon that is protecting itself/,
+    );
+    assert.match(
+      title('healingwish'),
+      /Bring no other Pokémon able to battle, so the move fails and Clefable does not faint/,
+    );
+    // A move that only switches its user keeps its own wording.
+    assert.match(title('uturn'), /has nobody to switch to and stays on the field/);
+  });
+
 test('team analysis prefers a selected partner already carrying the move',
   async () => {
     const { pokemonIndex } = await loadShared();

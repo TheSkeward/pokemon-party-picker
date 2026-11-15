@@ -325,7 +325,9 @@ const MAX_RESULT_CACHE = 400;
 // sets and scores of the lines either rule touched change.
 // v96: a Sketch route for a move that switches its user out says the
 // partner must have nobody to switch to; stored results carry the old text.
-const RESULT_CACHE_VERSION = '96';
+// v97: a Sketch route for a move that faints its user says what stops the
+// move short of the faint; stored results carry the old text.
+const RESULT_CACHE_VERSION = '97';
 
 // The memoized result of a pool: the one in memory, else the one persisted
 // by an earlier page load, which joins the memo. So a reload followed by the

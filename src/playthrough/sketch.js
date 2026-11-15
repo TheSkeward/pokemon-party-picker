@@ -198,13 +198,57 @@ export function rerankSketchContext(sketchContext, {
   });
 }
 
+// A partner that leaves the field cannot be sketched. Sketch copies the last
+// move its target chose; aimed at a fainted ally it goes to a foe instead
+// (Battler.rb pbFindUser), and a Pokémon that has just come in has chosen no
+// move (pbInitEffects). So a move that switches or faints its user is copied
+// only on a turn the game stops it short of that, which it does after
+// recording the move as used (Battler.rb, "Record move as having been used",
+// and the Selfdestruct check above it). What stops each move is read from
+// Reborn's battle scripts.
+
+function nobodyToSwitchTo(partnerName) {
+  return `Bring no other Pokémon able to battle, so ${partnerName} has nobody to switch to and stays on the field.`;
+}
+
+function nobodyToReplaceIt(partnerName) {
+  return `Bring no other Pokémon able to battle, so the move fails and ${partnerName} does not faint.`;
+}
+
+function dampOnTheField(partnerName) {
+  return `Have a Pokémon with Damp on the field, which stops the move so that ${partnerName} does not faint.`;
+}
+
+function ghostTarget(partnerName) {
+  return `Have ${partnerName} aim it at a Ghost type, which it does not affect, so that ${partnerName} does not faint.`;
+}
+
+function protectedTarget(partnerName) {
+  return `Have ${partnerName} aim it at a Pokémon that is protecting itself, which stops the move so that ${partnerName} does not faint.`;
+}
+
 /**
- * How Smeargle gets a move from a partner. Sketch copies the last move its
- * target chose, and a Pokémon that has just come in has chosen none, so a
- * move that switches its user out can be sketched only while the user has
- * nobody to switch to and stays on the field. Reborn records the choice
- * even when Baton Pass then fails (Battler.rb, "Record move as having been
- * used") and clears it on every switch-in (pbInitEffects).
+ * What keeps the user of a move that faints it on the field, by move id.
+ * @type {!Map<string, function(string): string>}
+ */
+const STAY_FOR_FAINTING_MOVE = new Map([
+  // Damp returns false from pbOnStartUse, before the user's HP is spent.
+  ['explosion', dampOnTheField],
+  ['selfdestruct', dampOnTheField],
+  ['mistyexplosion', dampOnTheField],
+  // pbEffect returns on a Ghost-type target before the user's HP is spent.
+  ['finalgambit', ghostTarget],
+  // Once pbEffect runs the user faints whatever the target does; Protect
+  // stops the move in pbSuccessCheck, before that.
+  ['memento', protectedTarget],
+  // Both fail when pbCanChooseNonActive? finds nobody to come in.
+  ['healingwish', nobodyToReplaceIt],
+  ['lunardance', nobodyToReplaceIt],
+]);
+
+/**
+ * How Smeargle gets a move from a partner, with what keeps the partner on
+ * the field when the move would take it off.
  * @param {{moveName: string, partnerName: string}} route
  * @param {string} moveId
  * @return {string}
@@ -212,10 +256,10 @@ export function rerankSketchContext(sketchContext, {
 function sketchInstruction(route, moveId) {
   const switchesOut =
     (getMoveMetaById(moveId)?.roles || []).includes('pivot');
-  const stay = switchesOut
-    ? ` Bring no other Pokémon able to battle, so ${route.partnerName} has nobody to switch to and stays on the field.`
-    : '';
-  return `${route.moveName}: have ${route.partnerName} use it beside Smeargle in a Double Battle, then have Smeargle use Sketch on that partner.${stay}`;
+  const stay = STAY_FOR_FAINTING_MOVE.get(moveId) ||
+    (switchesOut ? nobodyToSwitchTo : null);
+  const copy = `${route.moveName}: have ${route.partnerName} use it beside Smeargle in a Double Battle, then have Smeargle use Sketch on that partner.`;
+  return stay ? `${copy} ${stay(route.partnerName)}` : copy;
 }
 
 function buildContextFromRoutes({
