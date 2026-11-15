@@ -44,6 +44,7 @@ import {
   absorbPoolIntoDonors,
   getPoolStats,
 } from './teamBuilder/pool-parsing.js';
+import { createViewKeeper } from './teamBuilder/page/view-anchor.js';
 import { createTeamBuilderSetDetailsLoader } from './teamBuilder/set-details-loader.js';
 import {
   renderTeamBuilderPage,
@@ -139,6 +140,7 @@ export function mountPoolOptimizer(container, options = {}) {
   };
   page.run = createOptimizeRun(page);
   const railSpy = createRailSpy(app);
+  const viewKeeper = createViewKeeper(app);
   bindGamestateChips(app);
   let destroyed = false;
 
@@ -187,15 +189,18 @@ export function mountPoolOptimizer(container, options = {}) {
 
   // The one full render. It rebuilds the page's DOM, which resets the
   // viewport to wherever the new layout lands and drops the focused
-  // control, so the scroll and the text box in use are put back: most
+  // control, so the view and the text box in use are put back: most
   // renders are ones the player did not ask for (the analysis landing, a
-  // debounced re-optimize). During a run the parts the last result filled
-  // are not rebuilt at all (run-hold.js).
+  // debounced re-optimize). The view is put back by what the player was
+  // looking at (view-anchor.js), the scroll offset standing in when that
+  // is gone. During a run the parts the last result filled are not rebuilt
+  // at all (run-hold.js).
   function render() {
     if (destroyed) return null;
     state.resultProgressionStale = page.run.isResultStale();
     const scrollX = window.scrollX;
     const scrollY = window.scrollY;
+    viewKeeper.note();
     const focused = captureTextFocus(app);
     const held = state.phase === OptimizePhase.OPTIMIZING
       ? captureHeld(app)
@@ -226,6 +231,7 @@ export function mountPoolOptimizer(container, options = {}) {
     railSpy.wire();
     restoreTextFocus(app, focused);
     window.scrollTo(scrollX, scrollY);
+    viewKeeper.restore();
     return handle;
   }
 
@@ -274,6 +280,7 @@ export function mountPoolOptimizer(container, options = {}) {
     page.run.dispose();
     setDetails.cancel();
     railSpy.stop();
+    viewKeeper.stop();
   }
 
   return { destroy };
