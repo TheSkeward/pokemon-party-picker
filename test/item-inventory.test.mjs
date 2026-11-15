@@ -167,6 +167,25 @@ test('badge-1 shop stock includes the user-verified Obsidia berry floor', () => 
   }
 });
 
+test('a copy handed over before the listing\'s first placed copy counts', () => {
+  // The listing's first Electirizer is an item ball before Terra (badge
+  // 11). The game files have the Route 1 researcher hand one over for a
+  // Dunsparce, on a map reached at badge 7: a copy the listing lacks.
+  const singles = (id) => REBORN_ITEM_SOURCES[id]
+    .filter((source) => source.kind === 'single')
+    .map((source) => [source.badge, source.via]);
+  assert.deepEqual(
+    singles('electirizer'), [[7, 'gift, Route 1'], [11, 'item ball']]);
+  assert.equal(expectedItemCount('electirizer', 6), 0);
+  assert.equal(expectedItemCount('electirizer', 7), 1);
+  assert.equal(expectedItemCount('electirizer', 11), 2);
+
+  // Where the listing's own first copy is handed over, an earlier date in
+  // the files is that same copy, not a second one: the Full Incense gift
+  // the files date at badge 1 is the listing's badge-2 NPC row.
+  assert.deepEqual(singles('fullincense'), [[2, 'npc']]);
+});
+
 test('shop rows masked by earlier one-off pickups survive extraction', () => {
   // An item with ANY earlier non-shop pickup (a hidden find, a story gift)
   // must still get its renewable shop timing from the guide's Shops tab.

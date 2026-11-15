@@ -10,7 +10,8 @@
  * at, which also says when a map is reached, and from the game's rules for
  * dating an event's conditions. A game with a guide's listing takes each
  * item's first copy and its shop stock from the listing, checked against
- * the files. A game without one takes both from the files: what its marts
+ * the files, which also add a copy handed over before the listing's first
+ * placed one. A game without one takes both from the files: what its marts
  * sell, and the copies placed on its maps or handed over, each as far as
  * its map and conditions can be dated.
  *
@@ -245,13 +246,14 @@ export function buildItemSources(game, warn = () => {}) {
   // listing's own first copy, when it is of the same kind. Without a
   // listing the copies handed over count too.
   const listedItems = listing?.items || {};
+  const firstListed = (id) => listedItems[
+    Object.keys(listedItems).find((name) => itemId(name) === id)];
   const copyKinds = listing
     ? PLACED_COPY_KINDS : { ...PLACED_COPY_KINDS, ...GIVEN_COPY_KINDS };
   let undatedCopies = 0;
   for (const [id, copies] of placedCopies(itemEvents, copyKinds)) {
     if (!knownIds.has(id) || isConsumableItem(id)) continue;
-    const first = listedItems[
-      Object.keys(listedItems).find((name) => itemId(name) === id)];
+    const first = firstListed(id);
     const dated = [];
     for (const copy of copies) {
       if (copy.mapName === game.unusedMapName) continue;
@@ -273,6 +275,37 @@ export function buildItemSources(game, warn = () => {}) {
     for (const [index, { badge, via }] of dated.entries()) {
       if (index !== listedCopy) {
         add(id, { kind: 'single', badge, count: 1, via });
+      }
+    }
+  }
+
+  // With a listing, a copy handed over is left to it (GIVEN_COPY_KINDS),
+  // with one exception the files can prove: a copy handed over before the
+  // listing's first copy, when that first copy is one placed on a map.
+  // Nothing earlier exists for it to be another way to, and it is not the
+  // placed copy dated twice, so it is a copy the listing lacks. (The first
+  // Electirizer in Reborn's listing is an item ball at badge 11; the
+  // Route 1 researcher hands one over for a Dunsparce at 7.) Where the
+  // listing's first copy is itself handed over, an earlier date in the
+  // files is the same copy dated differently, and the listing's stands.
+  if (listing) {
+    for (const [id, copies] of placedCopies(itemEvents, GIVEN_COPY_KINDS)) {
+      if (!knownIds.has(id) || isConsumableItem(id)) continue;
+      const first = firstListed(id);
+      if (!first || !listing.placedKinds[first.source]) continue;
+      for (const copy of copies) {
+        if (copy.mapName === game.unusedMapName) continue;
+        const reached = reachBadge(copy.mapId);
+        const gate = conditionBadge(copy.conditions, dating);
+        if (reached == null || gate == null) continue;
+        const badge = Math.max(reached, gate);
+        if (badge >= first.badges) continue;
+        add(id, {
+          kind: 'single',
+          badge,
+          count: 1,
+          via: `${copy.kind}, ${copy.mapName}`,
+        });
       }
     }
   }

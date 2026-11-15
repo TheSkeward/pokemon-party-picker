@@ -396,6 +396,7 @@ export const REBORN_ITEM_SOURCES = {
     {"kind":"shop","badge":2,"via":""},
   ],
   electirizer: [
+    {"kind":"single","badge":7,"count":1,"via":"gift, Route 1"},
     {"kind":"single","badge":11,"count":1,"via":"item ball"},
     {"kind":"shop","badge":16,"via":""},
     {"kind":"wild","badge":18,"via":"Electivire (5%), Victory Road B5F"},

@@ -32,7 +32,9 @@ export const PLACED_COPY_KINDS = Object.freeze({
  * called. A game with a guide's listing leaves these to the listing: an
  * NPC often hands over a copy the player could have had another way (a
  * missed item returned, a story branch), so only a placed copy is certain
- * to be one more. A game without one has nothing else to learn them from.
+ * to be one more; the exception is a copy handed over before the listing's
+ * first placed copy (item-timeline.mjs). A game without one has nothing
+ * else to learn them from.
  * @const {!Object<string, string>}
  */
 export const GIVEN_COPY_KINDS = Object.freeze({

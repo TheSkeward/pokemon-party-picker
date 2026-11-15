@@ -327,7 +327,10 @@ const MAX_RESULT_CACHE = 400;
 // partner must have nobody to switch to; stored results carry the old text.
 // v97: a Sketch route for a move that faints its user says what stops the
 // move short of the faint; stored results carry the old text.
-const RESULT_CACHE_VERSION = '97';
+// v98: Reborn's first Electirizer is the Route 1 gift at badge 7, not the
+// badge-11 item ball; a stored Electabuzz line words its evolution from
+// the old source.
+const RESULT_CACHE_VERSION = '98';
 
 // The memoized result of a pool: the one in memory, else the one persisted
 // by an earlier page load, which joins the memo. So a reload followed by the
