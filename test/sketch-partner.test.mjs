@@ -79,6 +79,8 @@ test('Sketch requires another pool mon that can currently use the move', async (
   assert.equal(source?.partnerId, 'paras');
   assert.equal(source?.label, 'Sketch via Paras');
   assert.match(source?.sourceTitle || '', /Double Battle/);
+  // Paras stays on the field after Spore: nothing more to arrange.
+  assert.doesNotMatch(source?.sourceTitle || '', /nobody to switch to/);
 
   const profile = buildCandidateLegalityProfile({
     member: { id: 'smeargle', name: 'Smeargle', types: ['Normal'] },
@@ -221,6 +223,12 @@ test('Sketch prices evolution levels and lists distinct alternative routes',
     assert.equal(batonPass.partnerLevel, 11);
     assert.equal(batonPass.partnerInputId, 'aipom');
     assert.match(batonPass.sourceTitle, /Other pool routes: Scolipede — On evolution/);
+    // A partner that passes is gone before Smeargle can copy it, and its
+    // replacement has used no move: the pass must have nobody to go to.
+    assert.match(
+      batonPass.sourceTitle,
+      /Bring no other Pokémon able to battle, so Aipom has nobody to switch to/,
+    );
 
     const preferred = await buildSketchContext({
       pokemonIndex,

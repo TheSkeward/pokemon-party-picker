@@ -17,6 +17,7 @@ import {
 } from './legal-moves.js';
 import { dex } from '../games/dex.js';
 import { getActiveGame } from '../games/registry.js';
+import { getMoveMetaById } from '../move-meta.js';
 import { stableStringify } from '../utils/stable-stringify.js';
 
 const SMEARGLE_ID = 'smeargle';
@@ -197,6 +198,26 @@ export function rerankSketchContext(sketchContext, {
   });
 }
 
+/**
+ * How Smeargle gets a move from a partner. Sketch copies the last move its
+ * target chose, and a Pokémon that has just come in has chosen none, so a
+ * move that switches its user out can be sketched only while the user has
+ * nobody to switch to and stays on the field. Reborn records the choice
+ * even when Baton Pass then fails (Battler.rb, "Record move as having been
+ * used") and clears it on every switch-in (pbInitEffects).
+ * @param {{moveName: string, partnerName: string}} route
+ * @param {string} moveId
+ * @return {string}
+ */
+function sketchInstruction(route, moveId) {
+  const switchesOut =
+    (getMoveMetaById(moveId)?.roles || []).includes('pivot');
+  const stay = switchesOut
+    ? ` Bring no other Pokémon able to battle, so ${route.partnerName} has nobody to switch to and stays on the field.`
+    : '';
+  return `${route.moveName}: have ${route.partnerName} use it beside Smeargle in a Double Battle, then have Smeargle use Sketch on that partner.${stay}`;
+}
+
 function buildContextFromRoutes({
   routesByMoveId,
   ownedSpecies,
@@ -221,7 +242,7 @@ function buildContextFromRoutes({
       label: `Sketch via ${route.partnerName}`,
       detail: partnerSourceText,
       sourceTitle: [
-        `${route.moveName}: have ${route.partnerName} use it beside Smeargle in a Double Battle, then have Smeargle use Sketch on that partner.`,
+        sketchInstruction(route, moveId),
         partnerSourceText
           ? `${route.partnerName}'s source: ${partnerSourceText}.`
           : null,
