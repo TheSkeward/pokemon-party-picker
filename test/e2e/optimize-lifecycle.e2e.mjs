@@ -27,7 +27,7 @@ try {
   // An edit while the optimizer runs disowns that run.
   await page.fill('#pool-query-input', LARGE);
   await page.click('#optimize-button');
-  await page.waitForSelector('[data-optimize-progress-bar]', { timeout: 20_000 });
+  await page.waitForSelector('[data-optimizing]', { timeout: 20_000 });
   await page.evaluate(() => {
     const box = document.getElementById('pool-query-input');
     box.focus();
@@ -35,11 +35,11 @@ try {
   });
   await page.keyboard.type(', Pidgey');
   const edited = await page.evaluate(() => ({
-    progress: Boolean(document.querySelector('[data-optimize-progress-bar]')),
+    progress: Boolean(document.querySelector('[data-optimizing]')),
     focused: document.activeElement?.id === 'pool-query-input',
     tail: document.getElementById('pool-query-input').value.slice(-8),
   }));
-  check('the progress panel comes down', !edited.progress);
+  check('the progress line clears', !edited.progress);
   check('the box keeps its focus and the typing', edited.focused && edited.tail === ', Pidgey', edited.tail);
   // Long enough for the disowned search to have finished unheard.
   await page.waitForTimeout(15_000);

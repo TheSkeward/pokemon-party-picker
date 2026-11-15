@@ -23,6 +23,7 @@ import {
 } from './teamBuilder/page/progression-events.js';
 import { showDonorBox } from './teamBuilder/page/patches.js';
 import { createRailSpy } from './teamBuilder/page/rail-spy.js';
+import { captureHeld, restoreHeld } from './teamBuilder/page/run-hold.js';
 import { createOptimizeRun } from './teamBuilder/page/run.js';
 import {
   loadSavedDonors,
@@ -188,13 +189,17 @@ export function mountPoolOptimizer(container, options = {}) {
   // viewport to wherever the new layout lands and drops the focused
   // control, so the scroll and the text box in use are put back: most
   // renders are ones the player did not ask for (the analysis landing, a
-  // debounced re-optimize).
+  // debounced re-optimize). During a run the parts the last result filled
+  // are not rebuilt at all (run-hold.js).
   function render() {
     if (destroyed) return null;
     state.resultProgressionStale = page.run.isResultStale();
     const scrollX = window.scrollX;
     const scrollY = window.scrollY;
     const focused = captureTextFocus(app);
+    const held = state.phase === OptimizePhase.OPTIMIZING
+      ? captureHeld(app)
+      : null;
 
     const handle = renderTeamBuilderPage({
       app,
@@ -208,6 +213,7 @@ export function mountPoolOptimizer(container, options = {}) {
       pokemonIndex: data.pokemonIndex,
       poolStats: getPoolStats(state.query, data.pokemonIndex),
       donorStats: getPoolStats(state.donorQuery, data.pokemonIndex),
+      resultHeld: Boolean(held),
       setDetails,
       state,
     });
@@ -216,6 +222,7 @@ export function mountPoolOptimizer(container, options = {}) {
     bindTeamControls(page);
     bindPoolControls(page);
     bindProgressionControls(page);
+    if (held) restoreHeld(app, held);
     railSpy.wire();
     restoreTextFocus(app, focused);
     window.scrollTo(scrollX, scrollY);

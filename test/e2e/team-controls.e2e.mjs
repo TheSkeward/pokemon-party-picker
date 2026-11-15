@@ -13,7 +13,7 @@ const POOL = [
 
 // The run and its analysis have both come to rest.
 const settled = (page) => page.waitForFunction(() => {
-  if (document.querySelector('[data-optimize-progress-bar]')) return false;
+  if (document.querySelector('[data-optimizing]')) return false;
   if (!document.querySelector('.team-pick-row')) return false;
   return !/Sweeping alternative model settings|Evaluating the pool at the next level caps|still computing/
     .test(document.body.textContent);

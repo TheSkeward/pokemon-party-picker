@@ -717,10 +717,81 @@ button:hover {
   min-width: 0;
   max-width: 100%;
 }
-.actions-row [data-pool-status],
+.actions-row .pool-status,
 .actions-row [data-progression-status] {
   flex-basis: 100%;
   font-size: var(--type-s);
+}
+
+/* The pool's status line and the optimize progress under it hold their
+   space at all times, so a run starting or ending moves nothing. The status
+   text and the run's caption share one line; whichever is not in use keeps
+   its box and is only unseen. */
+.pool-status {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.pool-status-text,
+.pool-status-caption {
+  grid-area: 1 / 1;
+  min-width: 0;
+  min-height: 1.4em;
+  min-height: 1lh;
+}
+.pool-status-caption {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pool-status[data-optimizing] .pool-status-text,
+.pool-status:not([data-optimizing]) .pool-status-caption,
+.pool-status:not([data-optimizing]) .optimize-progress {
+  visibility: hidden;
+}
+.pool-status .optimize-progress {
+  grid-area: 2 / 1;
+  margin-top: 0;
+}
+
+/* A button whose label changes with its state keeps the width of its
+   longest label: the labels share one cell and the one not in use is only
+   unseen. */
+.stable-label {
+  display: inline-grid;
+  justify-items: center;
+}
+.stable-label > [data-label] {
+  grid-area: 1 / 1;
+}
+.stable-label:not([aria-busy='true']) > [data-label='busy'],
+.stable-label[aria-busy='true'] > [data-label='idle'] {
+  visibility: hidden;
+}
+
+/* What the last result put on the page stays while a run replaces it
+   (page/run-hold.js), dimmed to say it is the team from before. The
+   wrappers add no box of their own. */
+[data-run-held='results'],
+[data-run-held='provenance'] {
+  display: contents;
+}
+[data-run-held='results'][data-updating] > * {
+  opacity: 0.5;
+}
+/* The word sits in the team panel's free corner and takes no room. */
+[data-run-held='results'][data-updating] > .team-results-panel {
+  position: relative;
+}
+[data-run-held='results'][data-updating] > .team-results-panel::after {
+  content: 'Updating…';
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  font-size: var(--type-s);
+}
+.team-rail-picks[data-updating] .team-rail-pick {
+  color: var(--text-muted);
 }
 
 /* The rail marks the section under it with the active tab's underline: the

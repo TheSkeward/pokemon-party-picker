@@ -148,10 +148,12 @@ export function createProgressBar(root) {
   }
 
   function report(progress) {
+    // A stopped bar hears nothing: a run an edit disowned goes on
+    // reporting until its optimizer finishes.
+    if (!model) return;
     const { phase = ProgressPhase.RESOLVE, completed, total } = progress;
     const caption = root.querySelector('[data-optimize-progress-label]');
     if (caption) caption.textContent = progressCaption(progress);
-    if (!model) return;
     if (phase !== model.phase) {
       model.phase = phase;
       model.phaseStart = Date.now();

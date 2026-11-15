@@ -159,7 +159,8 @@ export function createOptimizeRun(page) {
    * the pool as it was. (The optimizer finishes unheard and its result
    * stays cached.)
    * @return {boolean} Whether an optimize was interrupted, which leaves
-   *     its progress panel on the page for the caller to render away.
+   *     the page in its running look for the caller to clear
+   *     (patches.js showRunInterrupted).
    */
   function discardResult() {
     state.result = null;
@@ -196,8 +197,9 @@ export function createOptimizeRun(page) {
     await liveAnalysis;
     if (superseded()) return;
 
+    // The status line keeps its last message under the run's caption, so
+    // the line holds its height (team-builder-view.js renderPoolStatus).
     state.phase = OptimizePhase.OPTIMIZING;
-    state.statusMessage = 'Optimizing pool...';
     state.confidence = null;
     state.investment = null;
     state.postAnalysisSkipReason = null;

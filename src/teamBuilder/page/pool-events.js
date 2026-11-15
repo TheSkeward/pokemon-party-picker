@@ -13,7 +13,7 @@ import {
 } from '../gamestate-backup.js';
 import { withPoolAnnotations } from '../input-groups.js';
 import { withDonors } from '../pool-parsing.js';
-import { setPoolStatus } from './patches.js';
+import { setPoolStatus, showRunInterrupted } from './patches.js';
 import { clearSavedPool, saveDonors, savePool } from './saved-inputs.js';
 
 // The pool or the donor box changed under the result: it, and the list
@@ -143,9 +143,9 @@ export function bindPoolControls(page) {
     state.query = event.target.value;
     const interrupted = dropResult(page, savePool(state.query));
     page.writeUrl();
-    // An interrupted run's progress panel comes down; the box keeps its
-    // focus and selection through the render.
-    if (interrupted) page.render();
+    // An interrupted run's progress clears in place: no render, so the box
+    // keeps its focus and nothing on the page moves.
+    if (interrupted) showRunInterrupted(page);
     setPoolStatus(page, state.statusMessage);
   });
 
@@ -157,7 +157,7 @@ export function bindPoolControls(page) {
   on('#donor-query-input', 'input', (event) => {
     state.donorQuery = event.target.value;
     const interrupted = dropResult(page, saveDonors(state.donorQuery));
-    if (interrupted) page.render();
+    if (interrupted) showRunInterrupted(page);
     setPoolStatus(page, state.statusMessage);
   });
 

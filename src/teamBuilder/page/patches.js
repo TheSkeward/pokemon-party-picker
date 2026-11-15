@@ -18,6 +18,7 @@ import {
   renderGamestateStrip,
 } from '../team-builder-view.js';
 import { lineUsageByInputId } from '../usage-line-ranking.js';
+import { releaseHeld } from './run-hold.js';
 
 const STALE_NOTE =
   'Progression changed; re-optimize for current scores and legal move notes.';
@@ -32,6 +33,26 @@ export function setPoolStatus(page, message) {
 export function setProgressionStatus(page, message) {
   const node = page.app.querySelector('[data-progression-status]');
   if (node) node.textContent = message || '';
+}
+
+/**
+ * Takes the page out of its running look without a render, for a run an
+ * edit disowned: the progress line clears, the button reads as idle, and
+ * what the run was holding in place is the page as it stood before it.
+ * @param {!Object} page
+ */
+export function showRunInterrupted(page) {
+  const { app } = page;
+  app.querySelector('.pool-status')?.removeAttribute('data-optimizing');
+  app.querySelector('#optimize-button')?.removeAttribute('aria-busy');
+  const bar = app.querySelector('[data-optimize-progress-bar]');
+  if (bar) {
+    bar.style.width = '0%';
+    bar.style.animation = '';
+  }
+  const caption = app.querySelector('[data-optimize-progress-label]');
+  if (caption) caption.textContent = '';
+  releaseHeld(app);
 }
 
 /**

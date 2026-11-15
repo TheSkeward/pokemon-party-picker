@@ -53,6 +53,9 @@ export function renderTeamBuilderPage({
   pokemonIndex,
   poolStats,
   donorStats = { uniqueCount: 0 },
+  // During a run the parts a result fills are left empty here: the page
+  // puts back the ones already on screen (page/run-hold.js).
+  resultHeld = false,
   setDetails,
   state,
 }) {
@@ -62,24 +65,37 @@ export function renderTeamBuilderPage({
   // self-describing, the rest of the progression (machines, items, access)
   // collapsed at the bottom, and the provenance/performance footer dead
   // last — the average player never needs it.
+  const results = () => (state.result
+    ? renderResult({
+      familyLabel,
+      formatsIndex,
+      keptNames: parseKeptNames(state.query, pokemonIndex),
+      setDetails,
+      state,
+    })
+    : renderEmpty(state));
+  const provenance = () => (state.result?.team?.length
+    ? renderProvenanceFooter(state.manifest, state.result)
+    : '');
   app.innerHTML = `
     ${embedded ? '' : renderStandaloneHeader({ baseUrl })}
 
-    ${renderTeamRail(state)}
+    ${renderTeamRail(state, { held: resultHeld })}
 
     ${renderPoolControls({ embedded, families, poolStats, donorStats, state })}
 
-    ${state.phase === OptimizePhase.OPTIMIZING ? renderLoading(state) : ''}
-
-    ${state.result ? renderResult({ familyLabel, formatsIndex, keptNames: parseKeptNames(state.query, pokemonIndex), setDetails, state }) : renderEmpty(state)}
+    <div data-run-held="results">${resultHeld ? '' : results()}</div>
 
     <details class="progression-collapse" id="progression" ${detailsStateAttrs('progression-panel', false)}>
       <summary>${getActiveGame().shortLabel} Progression <span class="muted">(level cap, TMs, evolution access, items — the save-file settings)</span></summary>
       ${renderProgressionPanel(state.progression, { includeBias: false })}
     </details>
 
-    ${state.result?.team?.length ? renderProvenanceFooter(state.manifest, state.result) : ''}
+    <div data-run-held="provenance">${resultHeld ? '' : provenance()}</div>
   `;
+
+  // The held results keep what was rendered into them.
+  if (resultHeld) return { analysisPanelReady: null };
 
   renderSelectedSetDetails({ app, pokemonIndex, setDetails, state });
   const analysisPanelReady = renderTeamAnalysisPanel(
@@ -256,7 +272,7 @@ export function currentRailSection(sections, railBottom) {
  * @param {!Object} state
  * @return {string}
  */
-export function renderTeamRail(state) {
+export function renderTeamRail(state, { held = false } = {}) {
   const result = state.result;
   const picks = result?.team?.length
     ? getSortedTeam(
@@ -285,7 +301,7 @@ export function renderTeamRail(state) {
   return `
     <nav class="team-rail"${stale ? ' data-stale' : ''} aria-label="Team and page sections">
       <a class="team-rail-label" href="#team">Team</a>
-      <div class="team-rail-picks">${pickMarkup}</div>
+      <div class="team-rail-picks" data-run-held="rail-picks">${held ? '' : pickMarkup}</div>
       <div class="team-rail-sections">
         <a href="#pool">Pool</a>
         <a href="#bench">Bench</a>
@@ -308,6 +324,23 @@ const POOL_ENTRY_MARKS = [
   ['Meowstic {Thunder Wave / Psychic}', 'locks those moves into its set'],
 ];
 
+// The pool's status line and the optimize progress under it. Both keep
+// their space whether or not a run is on, so starting or finishing one
+// moves nothing below. During a run the caption takes the line, and the
+// status text keeps its place unseen: a long one would otherwise give a
+// line back and take it again.
+function renderPoolStatus(state, optimizing) {
+  return `
+    <div class="pool-status"${optimizing ? ' data-optimizing' : ''}>
+      <span class="muted pool-status-text" data-pool-status role="status">${escapeHtml(state.statusMessage)}</span>
+      <span class="muted pool-status-caption" data-optimize-progress-label>${optimizing ? `Optimizing pool against precomputed ${escapeHtml(state.family)} set data...` : ''}</span>
+      <div class="optimize-progress">
+        <div class="optimize-progress-bar" data-optimize-progress-bar style="width:0%"></div>
+      </div>
+    </div>
+  `;
+}
+
 function renderPoolControls({
   embedded,
   families,
@@ -315,6 +348,7 @@ function renderPoolControls({
   donorStats = { uniqueCount: 0 },
   state,
 }) {
+  const optimizing = state.phase === OptimizePhase.OPTIMIZING;
   return `
     <section class="panel" id="pool">
       <div class="panel-header">
@@ -361,14 +395,14 @@ function renderPoolControls({
             ${[6, 5, 4, 3, 2, 1].map((slots) => `<option value="${slots}" ${teamSlotsOf(state.progression?.teamSlots) === slots ? 'selected' : ''}>${slots}</option>`).join('')}
           </select>
         </label>
-        <button class="view-tab primary-action" id="optimize-button"${usageTrustTooltip(state) ? ` title="${escapeAttr(usageTrustTooltip(state))}"` : ''}>${state.phase === OptimizePhase.OPTIMIZING ? 'Optimizing...' : 'Normalize + optimize team'}</button>
+        <button class="view-tab primary-action stable-label" id="optimize-button"${optimizing ? ' aria-busy="true"' : ''}${usageTrustTooltip(state) ? ` title="${escapeAttr(usageTrustTooltip(state))}"` : ''}><span data-label="idle">Normalize + optimize team</span><span data-label="busy">Optimizing...</span></button>
         <button class="view-tab" id="copy-pool-button">Copy pool</button>
         <button class="view-tab" id="export-gamestate-button" title="Copy pool + progression + inventory to the clipboard as JSON. Everything lives in this browser's local storage — one data clear loses it all unless the copy is pasted somewhere safe.">Export gamestate</button>
         <button class="view-tab" id="import-gamestate-button" title="Restore a gamestate backup saved as a file (replaces the current pool and progression).">Import gamestate</button>
         <input type="file" id="import-gamestate-input" accept="application/json,.json,text/plain,.txt" style="display: none" />
         <button class="view-tab" id="generate-availability-button" ${state.result?.lines?.length ? '' : 'disabled'} title="${state.result?.lines?.length ? 'Generate a pasteable list of every available Pokémon, its current move pool, and your held items' : 'Optimize the team first to resolve your pool'}">Generate availability list</button>
         <button class="view-tab danger-button" id="clear-pool-button">Clear saved pool</button>
-        <span class="muted" data-pool-status role="status">${escapeHtml(state.statusMessage)}</span>
+        ${renderPoolStatus(state, optimizing)}
       </div>
 
       ${
@@ -396,20 +430,6 @@ function renderAvailabilityOutput(availabilityText) {
       </div>
       <textarea id="availability-output-text" rows="12" readonly>${escapeHtml(availabilityText)}</textarea>
     </div>
-  `;
-}
-
-function renderLoading(state) {
-  return `
-    <section class="panel">
-      <div class="resolver-loading-banner">
-        <span class="spinner-dot"></span>
-        <span data-optimize-progress-label>Optimizing pool against precomputed ${escapeHtml(state.family)} set data...</span>
-      </div>
-      <div class="optimize-progress">
-        <div class="optimize-progress-bar" data-optimize-progress-bar style="width:0%"></div>
-      </div>
-    </section>
   `;
 }
 
