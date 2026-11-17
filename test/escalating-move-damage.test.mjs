@@ -1,6 +1,7 @@
 // Multi-turn moves are priced over the expected stint: escalating chains run
-// for the stint and no further, two-turn moves land on alternate turns, and
-// per-strike accuracy moves stop at the first miss.
+// for the stint and no further, two-turn moves land on alternate turns,
+// Last Resort waits for the set's other moves, and per-strike accuracy moves
+// stop at the first miss.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
@@ -52,6 +53,15 @@ test('two-turn moves land on alternate turns; the user\'s own sun skips the char
   assert.equal(getEffectiveHitMultiplier(
     { id: 'electroshot', basePower: 130, charge: true }, 'Drizzle'), 1);
   assert.ok(near(getEffectiveHitMultiplier({ id: 'focuspunch', basePower: 150 }), 1 / 3));
+});
+
+test('Last Resort lands only once the other three moves have been used', () => {
+  // The games fail it until every other known move has been used since the
+  // user came in, so a four-move set first lands it on the fourth turn.
+  const lastResort = { id: 'lastresort', basePower: 140, accuracy: 100 };
+  assert.equal(
+    getEffectiveHitMultiplier(lastResort), Math.max(0, stint - 3) / stint);
+  assert.ok(getEffectiveHitMultiplier(lastResort) < 1 / 3);
 });
 
 test('per-strike accuracy moves stop at the first miss, once the first strike is paid', () => {

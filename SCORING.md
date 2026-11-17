@@ -134,7 +134,10 @@ first miss. Focus Punch keeps its one-third judgement, which is about the
 opponent attacking first rather than about turns. Future Sight and Doom
 Desire land two turns after the click and cannot be clicked again while a
 hit is pending, so they take the charge move's rate: the hit arrives after
-the foe has had two turns to change the picture.
+the foe has had two turns to change the picture. Last Resort fails until its
+user has used every other move it knows since coming in, so a four-move set
+lands it on the stint's last turn alone; priced as a plain 140-power attack
+it had been seated on one line in thirty.
 Booster Energy with Protosynthesis or Quark Drive, weather or terrain the
 ability itself sets (with their accuracy effects on Thunder, Hurricane and
 Blizzard), and Orichalcum Pulse and Hadron Engine fire on entry and are priced

@@ -1935,6 +1935,12 @@ const FAILS_IF_DISRUPTED = new Set(['focuspunch', 'shelltrap']);
 // reach meanwhile, so it takes the charge move's rate.
 const DELAYED_HIT_MOVE_IDS = new Set(['futuresight', 'doomdesire']);
 
+// Last Resort fails until its user has used every other move it knows
+// since it came in (the games clear that record on each switch-in), so in
+// a four-move set it first lands on the fourth turn of a stay.
+const OTHER_MOVES_IN_A_SET = 3;
+const LAST_RESORT_RATE = Math.max(0, STINT - OTHER_MOVES_IN_A_SET) / STINT;
+
 /**
  * How many "hits' worth" of base power a move lands per turn, used to scale
  * the damage estimate so multi-hit and multi-turn moves are ranked by real
@@ -1954,6 +1960,8 @@ const DELAYED_HIT_MOVE_IDS = new Set(['futuresight', 'doomdesire']);
  *     how often the opponent's attack lands first, not a stint rate;
  *   - delayed (Future Sight, Doom Desire): the charge rate, for the two
  *     turns each hit is outstanding;
+ *   - Last Resort: the turns of the stint left once the set's other three
+ *     moves have each been used;
  *   - escalating (Rollout, Ice Ball, Fury Cutter, Echoed Voice): the chain's
  *     average over the stint, each later turn discounted by the chance the
  *     chain has held.
@@ -2016,6 +2024,7 @@ function moveHitMultiplier(move, ability) {
   if (move.charge) return chargeSkipped(move, ability) ? 1 : HIT_SECOND_RATE;
   if (FAILS_IF_DISRUPTED.has(move.id)) return 1 / 3;
   if (DELAYED_HIT_MOVE_IDS.has(move.id)) return HIT_SECOND_RATE;
+  if (move.id === 'lastresort') return LAST_RESORT_RATE;
 
   return 1;
 }

@@ -330,7 +330,10 @@ const MAX_RESULT_CACHE = 400;
 // v98: Reborn's first Electirizer is the Route 1 gift at badge 7, not the
 // badge-11 item ball; a stored Electabuzz line words its evolution from
 // the old source.
-const RESULT_CACHE_VERSION = '98';
+// v99: Last Resort is priced by the turns of a stay left once the set's
+// other moves have been used; the sets that seated it and their scores
+// change.
+const RESULT_CACHE_VERSION = '99';
 
 // The memoized result of a pool: the one in memory, else the one persisted
 // by an earlier page load, which joins the memo. So a reload followed by the
