@@ -4,7 +4,7 @@
 // pool's team land as current, "No cap" kept the cap it claimed to lift,
 // and the result cache is only ever exercised by a real IndexedDB.
 import {
-  LARGE_POOL, launchBrowser, openPoolPage, check,
+  LARGE_POOL, launchBrowser, openAllDetails, openPoolPage, check,
 } from './helpers/env.mjs';
 
 // Names the donor box has not seen, enough to add a line to it.
@@ -75,6 +75,31 @@ try {
   check('no badge is saved', uncapped.checkpoint === '');
   check('no cap is saved', uncapped.levelCap === '', String(uncapped.levelCap));
   check('the gamestate says so', uncapped.chip === 'No cap', uncapped.chip);
+
+  // An edit the browser could not save says so even while a run has the
+  // status line: the warning is all that tells the player the edit will
+  // not survive a reload.
+  await openAllDetails(page);
+  await page.click('#optimize-button');
+  await page.waitForSelector('[data-optimizing]', { timeout: 20_000 });
+  await page.evaluate(() => {
+    window.realSetItem = Storage.prototype.setItem;
+    Storage.prototype.setItem = () => {
+      throw new DOMException('The quota has been exceeded.', 'QuotaExceededError');
+    };
+  });
+  await page.fill('[data-item-add-input]', 'Leftovers');
+  await page.press('[data-item-add-input]', 'Enter');
+  await page.waitForFunction(() => {
+    const status = document.querySelector('[data-pool-status]');
+    return /could not be saved/.test(status.textContent) &&
+        getComputedStyle(status).visibility === 'visible' &&
+        Boolean(document.querySelector('[data-optimizing]'));
+  }, null, { timeout: 5000 });
+  check('a held-item edit that could not be saved says so during a run', true);
+  await page.evaluate(() => {
+    Storage.prototype.setItem = window.realSetItem;
+  });
 
   // The pool's names join the donor box when the pool box loses focus,
   // and pressing Optimize is what takes the focus. Nothing may move then:

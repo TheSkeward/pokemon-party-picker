@@ -17,16 +17,15 @@ import { showRunInterrupted } from './patches.js';
 import { clearSavedPool, saveDonors, savePool } from './saved-inputs.js';
 
 // The pool or the donor box changed under the result: it, and the list
-// generated from it, answer for text that is gone. Notes whether the edit
-// was saved, and returns whether a run was interrupted.
+// generated from it, answer for text that is gone. Reports whether the
+// edit was saved, and returns whether a run was interrupted.
 function dropResult(page, saved) {
   const { state, run, setDetails } = page;
   const interrupted = run.discardResult();
   state.availabilityText = '';
   setDetails.cancel();
-  page.status.note(saved
-    ? 'Saved locally'
-    : 'Not saved locally; browser storage is full.');
+  page.status.reportSave(
+    saved, 'Not saved locally; browser storage is full.');
   return interrupted;
 }
 

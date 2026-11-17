@@ -111,6 +111,18 @@ test('a later note takes the place of one that was waiting', (t) => {
   assert.equal(page.text.textContent, 'Saved locally');
 });
 
+test('a saved edit is a note, and one that was not saved is said', (t) => {
+  const { page, status } = setup(t);
+  status.reportSave(true, 'Not saved locally; browser storage is full.');
+  assert.equal(page.text.textContent, 'Saved locally');
+  assert.equal(page.line.notice, false);
+
+  status.reportSave(false, 'Not saved locally; browser storage is full.');
+  assert.equal(
+    page.text.textContent, 'Not saved locally; browser storage is full.');
+  assert.equal(page.line.notice, true);
+});
+
 test('a render in the middle keeps the answer and its mark', (t) => {
   const { page, status } = setup(t);
   status.say(SHORT);

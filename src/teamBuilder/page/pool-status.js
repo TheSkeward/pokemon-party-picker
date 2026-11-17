@@ -8,7 +8,9 @@
  *
  * What the page reports unasked is a note, not an answer: that an edit was
  * saved, or how a run ended. A note never takes the line from a caption,
- * so a run started straight after an edit shows its progress at once.
+ * so a run started straight after an edit shows its progress at once. An
+ * edit that could not be saved is said like an answer all the same:
+ * nothing else tells the player that it will not survive a reload.
  *
  * `statusMessage` and `statusNotice` in the page's state belong to this
  * module. The view draws the line from them (team-builder-view.js
@@ -37,10 +39,12 @@ export function noticeMs(message) {
 /**
  * @param {!Object} page The page (pool-widget.js).
  * @return {{say: function(?string), note: function(?string),
- *     dispose: function()}} `say` puts an answer to the player on the
- *     line, where it stays until something else is said and is seen even
- *     over a run's caption while it is new. `note` leaves a note, which
- *     waits for an answer still being read.
+ *     reportSave: function(boolean, string), dispose: function()}} `say`
+ *     puts an answer to the player on the line, where it stays until
+ *     something else is said and is seen even over a run's caption while
+ *     it is new. `note` leaves a note, which waits for an answer still
+ *     being read. `reportSave` takes whether an edit was saved and the
+ *     warning to give when it was not.
  */
 export function createPoolStatus(page) {
   const { app, state } = page;
@@ -85,10 +89,18 @@ export function createPoolStatus(page) {
     paint();
   }
 
+  function reportSave(saved, failure) {
+    if (saved) {
+      note('Saved locally');
+    } else {
+      say(failure);
+    }
+  }
+
   function dispose() {
     clearTimeout(timer);
     timer = null;
   }
 
-  return { say, note, dispose };
+  return { say, note, reportSave, dispose };
 }
