@@ -13,6 +13,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "abomasnow",
+    "types": [
+      "Grass",
+      "Ice"
+    ],
     "eggGroups": [
       "Monster",
       "Grass"
@@ -33,6 +37,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "abomasnow",
+    "types": [
+      "Grass",
+      "Ice"
+    ],
     "eggGroups": [
       "Monster",
       "Grass"
@@ -55,6 +63,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "abra",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -74,6 +85,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "absol",
+    "types": [
+      "Dark"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -93,6 +107,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "absol",
+    "types": [
+      "Dark"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -112,6 +129,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "with a Karrablast",
     "evoRegion": "",
     "baseSpeciesId": "accelgor",
+    "types": [
+      "Bug"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -131,6 +151,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "aegislash",
+    "types": [
+      "Steel",
+      "Ghost"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -150,6 +174,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "aerodactyl",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -169,6 +197,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "aerodactyl",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -188,6 +220,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "aggron",
+    "types": [
+      "Steel",
+      "Rock"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -207,6 +243,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "aggron",
+    "types": [
+      "Steel"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -228,6 +267,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "aipom",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -247,6 +289,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "alakazam",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -266,6 +311,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "alakazam",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -285,6 +333,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "alomomola",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Water 2"
@@ -305,6 +356,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "altaria",
+    "types": [
+      "Dragon",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying",
       "Dragon"
@@ -325,6 +380,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "altaria",
+    "types": [
+      "Dragon",
+      "Fairy"
+    ],
     "eggGroups": [
       "Flying",
       "Dragon"
@@ -347,6 +406,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "amaura",
+    "types": [
+      "Rock",
+      "Ice"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -366,6 +429,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "ambipom",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -385,6 +451,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "amoonguss",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -404,6 +474,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "ampharos",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Monster",
       "Field"
@@ -424,6 +497,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "ampharos",
+    "types": [
+      "Electric",
+      "Dragon"
+    ],
     "eggGroups": [
       "Monster",
       "Field"
@@ -446,6 +523,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "anorith",
+    "types": [
+      "Rock",
+      "Bug"
+    ],
     "eggGroups": [
       "Water 3"
     ],
@@ -465,6 +546,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "araquanid",
+    "types": [
+      "Water",
+      "Bug"
+    ],
     "eggGroups": [
       "Water 1",
       "Bug"
@@ -485,6 +570,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "araquanid",
+    "types": [
+      "Water",
+      "Bug"
+    ],
     "eggGroups": [
       "Water 1",
       "Bug"
@@ -505,6 +594,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "arbok",
+    "types": [
+      "Poison"
+    ],
     "eggGroups": [
       "Field",
       "Dragon"
@@ -525,6 +617,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "arcanine",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -544,6 +639,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "arceus",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -563,6 +661,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "arceus",
+    "types": [
+      "Bug"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -582,6 +683,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "arceus",
+    "types": [
+      "Dark"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -601,6 +705,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "arceus",
+    "types": [
+      "Dragon"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -620,6 +727,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "arceus",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -639,6 +749,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "arceus",
+    "types": [
+      "Fairy"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -658,6 +771,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "arceus",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -677,6 +793,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "arceus",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -696,6 +815,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "arceus",
+    "types": [
+      "Flying"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -715,6 +837,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "arceus",
+    "types": [
+      "Ghost"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -734,6 +859,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "arceus",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -753,6 +881,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "arceus",
+    "types": [
+      "Ground"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -772,6 +903,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "arceus",
+    "types": [
+      "Ice"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -791,6 +925,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "arceus",
+    "types": [
+      "Poison"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -810,6 +947,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "arceus",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -829,6 +969,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "arceus",
+    "types": [
+      "Rock"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -848,6 +991,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "arceus",
+    "types": [
+      "Steel"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -867,6 +1013,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "arceus",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -888,6 +1037,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "archen",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying",
       "Water 3"
@@ -908,6 +1061,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "archeops",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying",
       "Water 3"
@@ -928,6 +1085,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "ariados",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -947,6 +1108,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "armaldo",
+    "types": [
+      "Rock",
+      "Bug"
+    ],
     "eggGroups": [
       "Water 3"
     ],
@@ -966,6 +1131,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "aromatisse",
+    "types": [
+      "Fairy"
+    ],
     "eggGroups": [
       "Fairy"
     ],
@@ -987,6 +1155,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "aron",
+    "types": [
+      "Steel",
+      "Rock"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -1006,6 +1178,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "articuno",
+    "types": [
+      "Ice",
+      "Flying"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -1025,6 +1201,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "audino",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Fairy"
     ],
@@ -1044,6 +1223,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "audino",
+    "types": [
+      "Normal",
+      "Fairy"
+    ],
     "eggGroups": [
       "Fairy"
     ],
@@ -1063,6 +1246,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "at night",
     "evoRegion": "",
     "baseSpeciesId": "aurorus",
+    "types": [
+      "Rock",
+      "Ice"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -1082,6 +1269,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "avalugg",
+    "types": [
+      "Ice"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -1103,6 +1293,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "axew",
+    "types": [
+      "Dragon"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -1123,6 +1316,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "azelf",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -1142,6 +1338,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "azumarill",
+    "types": [
+      "Water",
+      "Fairy"
+    ],
     "eggGroups": [
       "Water 1",
       "Fairy"
@@ -1164,6 +1364,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "azurill",
+    "types": [
+      "Normal",
+      "Fairy"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -1185,6 +1389,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "bagon",
+    "types": [
+      "Dragon"
+    ],
     "eggGroups": [
       "Dragon"
     ],
@@ -1206,6 +1413,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "baltoy",
+    "types": [
+      "Ground",
+      "Psychic"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -1225,6 +1436,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "banette",
+    "types": [
+      "Ghost"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -1244,6 +1458,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "banette",
+    "types": [
+      "Ghost"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -1263,6 +1480,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "barbaracle",
+    "types": [
+      "Rock",
+      "Water"
+    ],
     "eggGroups": [
       "Water 3"
     ],
@@ -1284,6 +1505,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "barboach",
+    "types": [
+      "Water",
+      "Ground"
+    ],
     "eggGroups": [
       "Water 2"
     ],
@@ -1303,6 +1528,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "basculin",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 2"
     ],
@@ -1322,6 +1550,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "bastiodon",
+    "types": [
+      "Rock",
+      "Steel"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -1343,6 +1575,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "bayleef",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Monster",
       "Grass"
@@ -1363,6 +1598,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "beartic",
+    "types": [
+      "Ice"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -1382,6 +1620,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "beautifly",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -1401,6 +1643,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "beedrill",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -1420,6 +1666,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "beedrill",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -1439,6 +1689,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "beheeyem",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -1460,6 +1713,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "beldum",
+    "types": [
+      "Steel",
+      "Psychic"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -1479,6 +1736,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "bellossom",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -1500,6 +1760,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "bellsprout",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -1521,6 +1785,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "bergmite",
+    "types": [
+      "Ice"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -1540,6 +1807,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "bewear",
+    "types": [
+      "Normal",
+      "Fighting"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -1559,6 +1830,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "bibarel",
+    "types": [
+      "Normal",
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Field"
@@ -1581,6 +1856,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "bidoof",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Water 1",
       "Field"
@@ -1603,6 +1881,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "binacle",
+    "types": [
+      "Rock",
+      "Water"
+    ],
     "eggGroups": [
       "Water 3"
     ],
@@ -1622,6 +1904,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "bisharp",
+    "types": [
+      "Dark",
+      "Steel"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -1641,6 +1927,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "blacephalon",
+    "types": [
+      "Fire",
+      "Ghost"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -1660,6 +1950,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "blastoise",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Monster",
       "Water 1"
@@ -1680,6 +1973,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "blastoise",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Monster",
       "Water 1"
@@ -1700,6 +1996,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "blaziken",
+    "types": [
+      "Fire",
+      "Fighting"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -1719,6 +2019,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "blaziken",
+    "types": [
+      "Fire",
+      "Fighting"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -1738,6 +2042,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "blissey",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Fairy"
     ],
@@ -1759,6 +2066,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "blitzle",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -1780,6 +2090,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "boldore",
+    "types": [
+      "Rock"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -1801,6 +2114,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "bonsly",
+    "types": [
+      "Rock"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -1820,6 +2136,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "bouffalant",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -1841,6 +2160,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "bounsweet",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -1862,6 +2184,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "braixen",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -1881,6 +2206,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "braviary",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -1900,6 +2229,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "breloom",
+    "types": [
+      "Grass",
+      "Fighting"
+    ],
     "eggGroups": [
       "Fairy",
       "Grass"
@@ -1922,6 +2255,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "brionne",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Field"
@@ -1942,6 +2278,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "bronzong",
+    "types": [
+      "Steel",
+      "Psychic"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -1963,6 +2303,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "bronzor",
+    "types": [
+      "Steel",
+      "Psychic"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -1982,6 +2326,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "bruxish",
+    "types": [
+      "Water",
+      "Psychic"
+    ],
     "eggGroups": [
       "Water 2"
     ],
@@ -2003,6 +2351,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "budew",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -2024,6 +2376,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "buizel",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Field"
@@ -2046,6 +2401,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "bulbasaur",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
     "eggGroups": [
       "Monster",
       "Grass"
@@ -2068,6 +2427,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "buneary",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field",
       "Human-Like"
@@ -2090,6 +2452,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "bunnelby",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -2114,6 +2479,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "burmy",
+    "types": [
+      "Bug"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -2133,6 +2501,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "butterfree",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -2152,6 +2524,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "buzzwole",
+    "types": [
+      "Bug",
+      "Fighting"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -2173,6 +2549,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "cacnea",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Grass",
       "Human-Like"
@@ -2193,6 +2572,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "cacturne",
+    "types": [
+      "Grass",
+      "Dark"
+    ],
     "eggGroups": [
       "Grass",
       "Human-Like"
@@ -2213,6 +2596,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "camerupt",
+    "types": [
+      "Fire",
+      "Ground"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -2232,6 +2619,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "camerupt",
+    "types": [
+      "Fire",
+      "Ground"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -2251,6 +2642,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "carbink",
+    "types": [
+      "Rock",
+      "Fairy"
+    ],
     "eggGroups": [
       "Fairy",
       "Mineral"
@@ -2271,6 +2666,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "carnivine",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -2290,6 +2688,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "carracosta",
+    "types": [
+      "Water",
+      "Rock"
+    ],
     "eggGroups": [
       "Water 1",
       "Water 3"
@@ -2312,6 +2714,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "carvanha",
+    "types": [
+      "Water",
+      "Dark"
+    ],
     "eggGroups": [
       "Water 2"
     ],
@@ -2333,6 +2739,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "cascoon",
+    "types": [
+      "Bug"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -2352,6 +2761,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "castform",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Fairy",
       "Amorphous"
@@ -2374,6 +2786,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "caterpie",
+    "types": [
+      "Bug"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -2393,6 +2808,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "celebi",
+    "types": [
+      "Psychic",
+      "Grass"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -2412,6 +2831,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "celesteela",
+    "types": [
+      "Steel",
+      "Flying"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -2431,6 +2854,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "chandelure",
+    "types": [
+      "Ghost",
+      "Fire"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -2452,6 +2879,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "during the day",
     "evoRegion": "",
     "baseSpeciesId": "chansey",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Fairy"
     ],
@@ -2471,6 +2901,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "charizard",
+    "types": [
+      "Fire",
+      "Flying"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -2491,6 +2925,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "charizard",
+    "types": [
+      "Fire",
+      "Dragon"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -2511,6 +2949,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "charizard",
+    "types": [
+      "Fire",
+      "Flying"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -2533,6 +2975,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "charjabug",
+    "types": [
+      "Bug",
+      "Electric"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -2554,6 +3000,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "charmander",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -2576,6 +3025,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "charmeleon",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -2596,6 +3048,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "chatot",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -2615,6 +3071,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "cherrim",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Fairy",
       "Grass"
@@ -2637,6 +3096,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "cherubi",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Fairy",
       "Grass"
@@ -2657,6 +3119,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "chesnaught",
+    "types": [
+      "Grass",
+      "Fighting"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -2678,6 +3144,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "chespin",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -2699,6 +3168,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "chikorita",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Monster",
       "Grass"
@@ -2721,6 +3193,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "chimchar",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field",
       "Human-Like"
@@ -2741,6 +3216,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "at night",
     "evoRegion": "",
     "baseSpeciesId": "chimecho",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -2762,6 +3240,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "chinchou",
+    "types": [
+      "Water",
+      "Electric"
+    ],
     "eggGroups": [
       "Water 2"
     ],
@@ -2783,6 +3265,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "chingling",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -2802,6 +3287,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "cinccino",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -2824,6 +3312,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "clamperl",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1"
     ],
@@ -2845,6 +3336,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "clauncher",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Water 3"
@@ -2865,6 +3359,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "clawitzer",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Water 3"
@@ -2885,6 +3382,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "claydol",
+    "types": [
+      "Ground",
+      "Psychic"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -2904,6 +3405,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "clefable",
+    "types": [
+      "Fairy"
+    ],
     "eggGroups": [
       "Fairy"
     ],
@@ -2925,6 +3429,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "clefairy",
+    "types": [
+      "Fairy"
+    ],
     "eggGroups": [
       "Fairy"
     ],
@@ -2946,6 +3453,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "cleffa",
+    "types": [
+      "Fairy"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -2965,6 +3475,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "cloyster",
+    "types": [
+      "Water",
+      "Ice"
+    ],
     "eggGroups": [
       "Water 3"
     ],
@@ -2984,6 +3498,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "cobalion",
+    "types": [
+      "Steel",
+      "Fighting"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -3003,6 +3521,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "cofagrigus",
+    "types": [
+      "Ghost"
+    ],
     "eggGroups": [
       "Mineral",
       "Amorphous"
@@ -3025,6 +3546,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "combee",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -3046,6 +3571,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "combusken",
+    "types": [
+      "Fire",
+      "Fighting"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -3065,6 +3594,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "comfey",
+    "types": [
+      "Fairy"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -3084,6 +3616,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "conkeldurr",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -3105,6 +3640,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "corphish",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Water 3"
@@ -3125,6 +3663,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "corsola",
+    "types": [
+      "Water",
+      "Rock"
+    ],
     "eggGroups": [
       "Water 1",
       "Water 3"
@@ -3148,6 +3690,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "cosmoem",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -3169,6 +3714,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "cosmog",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -3190,6 +3738,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "cottonee",
+    "types": [
+      "Grass",
+      "Fairy"
+    ],
     "eggGroups": [
       "Fairy",
       "Grass"
@@ -3210,6 +3762,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "at Mount Lanakila",
     "evoRegion": "",
     "baseSpeciesId": "crabominable",
+    "types": [
+      "Fighting",
+      "Ice"
+    ],
     "eggGroups": [
       "Water 3"
     ],
@@ -3231,6 +3787,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "crabrawler",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Water 3"
     ],
@@ -3250,6 +3809,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "cradily",
+    "types": [
+      "Rock",
+      "Grass"
+    ],
     "eggGroups": [
       "Water 3"
     ],
@@ -3271,6 +3834,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "cranidos",
+    "types": [
+      "Rock"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -3290,6 +3856,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "crawdaunt",
+    "types": [
+      "Water",
+      "Dark"
+    ],
     "eggGroups": [
       "Water 1",
       "Water 3"
@@ -3310,6 +3880,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "cresselia",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -3331,6 +3904,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "croagunk",
+    "types": [
+      "Poison",
+      "Fighting"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -3350,6 +3927,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "crobat",
+    "types": [
+      "Poison",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -3371,6 +3952,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "croconaw",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Monster",
       "Water 1"
@@ -3391,6 +3975,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "crustle",
+    "types": [
+      "Bug",
+      "Rock"
+    ],
     "eggGroups": [
       "Bug",
       "Mineral"
@@ -3411,6 +3999,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "cryogonal",
+    "types": [
+      "Ice"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -3432,6 +4023,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "cubchoo",
+    "types": [
+      "Ice"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -3454,6 +4048,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "cubone",
+    "types": [
+      "Ground"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -3475,6 +4072,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "cutiefly",
+    "types": [
+      "Bug",
+      "Fairy"
+    ],
     "eggGroups": [
       "Bug",
       "Fairy"
@@ -3497,6 +4098,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "cyndaquil",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -3516,6 +4120,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "darkrai",
+    "types": [
+      "Dark"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -3535,6 +4142,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "darmanitan",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -3556,6 +4166,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "dartrix",
+    "types": [
+      "Grass",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -3577,6 +4191,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "darumaka",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -3596,6 +4213,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "decidueye",
+    "types": [
+      "Grass",
+      "Ghost"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -3615,6 +4236,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "dedenne",
+    "types": [
+      "Electric",
+      "Fairy"
+    ],
     "eggGroups": [
       "Field",
       "Fairy"
@@ -3637,6 +4262,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "deerling",
+    "types": [
+      "Normal",
+      "Grass"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -3658,6 +4287,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "deino",
+    "types": [
+      "Dark",
+      "Dragon"
+    ],
     "eggGroups": [
       "Dragon"
     ],
@@ -3677,6 +4310,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "delcatty",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field",
       "Fairy"
@@ -3697,6 +4333,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "delibird",
+    "types": [
+      "Ice",
+      "Flying"
+    ],
     "eggGroups": [
       "Water 1",
       "Field"
@@ -3717,6 +4357,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "delphox",
+    "types": [
+      "Fire",
+      "Psychic"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -3736,6 +4380,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "deoxys",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -3755,6 +4402,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "deoxys",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -3774,6 +4424,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "deoxys",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -3793,6 +4446,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "deoxys",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -3812,6 +4468,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "dewgong",
+    "types": [
+      "Water",
+      "Ice"
+    ],
     "eggGroups": [
       "Water 1",
       "Field"
@@ -3834,6 +4494,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "dewott",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -3855,6 +4518,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "dewpider",
+    "types": [
+      "Water",
+      "Bug"
+    ],
     "eggGroups": [
       "Water 1",
       "Bug"
@@ -3875,6 +4542,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "dhelmise",
+    "types": [
+      "Ghost",
+      "Grass"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -3894,6 +4565,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "dialga",
+    "types": [
+      "Steel",
+      "Dragon"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -3913,6 +4588,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "diancie",
+    "types": [
+      "Rock",
+      "Fairy"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -3932,6 +4611,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "diancie",
+    "types": [
+      "Rock",
+      "Fairy"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -3951,6 +4634,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "diggersby",
+    "types": [
+      "Normal",
+      "Ground"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -3972,6 +4659,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "diglett",
+    "types": [
+      "Ground"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -3993,6 +4683,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "diglett",
+    "types": [
+      "Ground",
+      "Steel"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -4012,6 +4706,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "ditto",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Ditto"
     ],
@@ -4031,6 +4728,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "dodrio",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -4052,6 +4753,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "doduo",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -4071,6 +4776,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "donphan",
+    "types": [
+      "Ground"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -4092,6 +4800,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "doublade",
+    "types": [
+      "Steel",
+      "Ghost"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -4111,6 +4823,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "dragalge",
+    "types": [
+      "Poison",
+      "Dragon"
+    ],
     "eggGroups": [
       "Water 1",
       "Dragon"
@@ -4133,6 +4849,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "dragonair",
+    "types": [
+      "Dragon"
+    ],
     "eggGroups": [
       "Water 1",
       "Dragon"
@@ -4153,6 +4872,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "dragonite",
+    "types": [
+      "Dragon",
+      "Flying"
+    ],
     "eggGroups": [
       "Water 1",
       "Dragon"
@@ -4173,6 +4896,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "drampa",
+    "types": [
+      "Normal",
+      "Dragon"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -4193,6 +4920,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "drapion",
+    "types": [
+      "Poison",
+      "Dark"
+    ],
     "eggGroups": [
       "Bug",
       "Water 3"
@@ -4215,6 +4946,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "dratini",
+    "types": [
+      "Dragon"
+    ],
     "eggGroups": [
       "Water 1",
       "Dragon"
@@ -4235,6 +4969,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "drifblim",
+    "types": [
+      "Ghost",
+      "Flying"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -4256,6 +4994,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "drifloon",
+    "types": [
+      "Ghost",
+      "Flying"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -4277,6 +5019,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "drilbur",
+    "types": [
+      "Ground"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -4298,6 +5043,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "drowzee",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -4317,6 +5065,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "druddigon",
+    "types": [
+      "Dragon"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -4339,6 +5090,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "ducklett",
+    "types": [
+      "Water",
+      "Flying"
+    ],
     "eggGroups": [
       "Water 1",
       "Flying"
@@ -4359,6 +5114,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "dugtrio",
+    "types": [
+      "Ground"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -4378,6 +5136,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "dugtrio",
+    "types": [
+      "Ground",
+      "Steel"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -4397,6 +5159,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "dunsparce",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -4418,6 +5183,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "duosion",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -4437,6 +5205,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "durant",
+    "types": [
+      "Bug",
+      "Steel"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -4458,6 +5230,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "dusclops",
+    "types": [
+      "Ghost"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -4477,6 +5252,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "dusknoir",
+    "types": [
+      "Ghost"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -4498,6 +5276,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "duskull",
+    "types": [
+      "Ghost"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -4517,6 +5298,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "dustox",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -4538,6 +5323,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "dwebble",
+    "types": [
+      "Bug",
+      "Rock"
+    ],
     "eggGroups": [
       "Bug",
       "Mineral"
@@ -4560,6 +5349,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "eelektrik",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -4579,6 +5371,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "eelektross",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -4607,6 +5402,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "eevee",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -4628,6 +5426,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "ekans",
+    "types": [
+      "Poison"
+    ],
     "eggGroups": [
       "Field",
       "Dragon"
@@ -4650,6 +5451,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "electabuzz",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -4669,6 +5473,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "electivire",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -4690,6 +5497,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "electrike",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -4709,6 +5519,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "electrode",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -4730,6 +5543,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "elekid",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -4751,6 +5567,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "elgyem",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -4770,6 +5589,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "emboar",
+    "types": [
+      "Fire",
+      "Fighting"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -4789,6 +5612,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "emolga",
+    "types": [
+      "Electric",
+      "Flying"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -4808,6 +5635,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "empoleon",
+    "types": [
+      "Water",
+      "Steel"
+    ],
     "eggGroups": [
       "Water 1",
       "Field"
@@ -4828,6 +5659,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "entei",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -4847,6 +5681,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "with a Shelmet",
     "evoRegion": "",
     "baseSpeciesId": "escavalier",
+    "types": [
+      "Bug",
+      "Steel"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -4866,6 +5704,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "during the day",
     "evoRegion": "",
     "baseSpeciesId": "espeon",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -4887,6 +5728,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "espurr",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -4906,6 +5750,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "excadrill",
+    "types": [
+      "Ground",
+      "Steel"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -4928,6 +5776,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "exeggcute",
+    "types": [
+      "Grass",
+      "Psychic"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -4947,6 +5799,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "exeggutor",
+    "types": [
+      "Grass",
+      "Psychic"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -4966,6 +5822,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "Alola",
     "baseSpeciesId": "exeggutor",
+    "types": [
+      "Grass",
+      "Dragon"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -4985,6 +5845,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "exploud",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Monster",
       "Field"
@@ -5005,6 +5868,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "farfetchd",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying",
       "Field"
@@ -5025,6 +5892,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "fearow",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -5046,6 +5917,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "feebas",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Dragon"
@@ -5068,6 +5942,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "fennekin",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -5087,6 +5964,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "feraligatr",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Monster",
       "Water 1"
@@ -5109,6 +5989,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "ferroseed",
+    "types": [
+      "Grass",
+      "Steel"
+    ],
     "eggGroups": [
       "Grass",
       "Mineral"
@@ -5129,6 +6013,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "ferrothorn",
+    "types": [
+      "Grass",
+      "Steel"
+    ],
     "eggGroups": [
       "Grass",
       "Mineral"
@@ -5151,6 +6039,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "finneon",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 2"
     ],
@@ -5172,6 +6063,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "flaaffy",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Monster",
       "Field"
@@ -5194,6 +6088,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "flabebe",
+    "types": [
+      "Fairy"
+    ],
     "eggGroups": [
       "Fairy"
     ],
@@ -5213,6 +6110,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "flareon",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -5234,6 +6134,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "fletchinder",
+    "types": [
+      "Fire",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -5255,6 +6159,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "fletchling",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -5274,6 +6182,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "floatzel",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Field"
@@ -5296,6 +6207,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "floette",
+    "types": [
+      "Fairy"
+    ],
     "eggGroups": [
       "Fairy"
     ],
@@ -5315,6 +6229,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "floette",
+    "types": [
+      "Fairy"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -5334,6 +6251,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "florges",
+    "types": [
+      "Fairy"
+    ],
     "eggGroups": [
       "Fairy"
     ],
@@ -5353,6 +6273,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "flygon",
+    "types": [
+      "Ground",
+      "Dragon"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -5374,6 +6298,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "fomantis",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -5395,6 +6322,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "foongus",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -5414,6 +6345,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "forretress",
+    "types": [
+      "Bug",
+      "Steel"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -5435,6 +6370,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "fraxure",
+    "types": [
+      "Dragon"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -5457,6 +6395,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "frillish",
+    "types": [
+      "Water",
+      "Ghost"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -5478,6 +6420,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "froakie",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1"
     ],
@@ -5499,6 +6444,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "frogadier",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1"
     ],
@@ -5518,6 +6466,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "froslass",
+    "types": [
+      "Ice",
+      "Ghost"
+    ],
     "eggGroups": [
       "Fairy",
       "Mineral"
@@ -5538,6 +6490,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "furfrou",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -5557,6 +6512,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "furret",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -5578,6 +6536,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gabite",
+    "types": [
+      "Dragon",
+      "Ground"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -5598,6 +6560,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gallade",
+    "types": [
+      "Psychic",
+      "Fighting"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -5617,6 +6583,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gallade",
+    "types": [
+      "Psychic",
+      "Fighting"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -5636,6 +6606,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "galvantula",
+    "types": [
+      "Bug",
+      "Electric"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -5655,6 +6629,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "garbodor",
+    "types": [
+      "Poison"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -5674,6 +6651,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "garchomp",
+    "types": [
+      "Dragon",
+      "Ground"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -5694,6 +6675,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "garchomp",
+    "types": [
+      "Dragon",
+      "Ground"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -5714,6 +6699,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gardevoir",
+    "types": [
+      "Psychic",
+      "Fairy"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -5733,6 +6722,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gardevoir",
+    "types": [
+      "Psychic",
+      "Fairy"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -5754,6 +6747,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gastly",
+    "types": [
+      "Ghost",
+      "Poison"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -5773,6 +6770,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gastrodon",
+    "types": [
+      "Water",
+      "Ground"
+    ],
     "eggGroups": [
       "Water 1",
       "Amorphous"
@@ -5793,6 +6794,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "genesect",
+    "types": [
+      "Bug",
+      "Steel"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -5812,6 +6817,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gengar",
+    "types": [
+      "Ghost",
+      "Poison"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -5831,6 +6840,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gengar",
+    "types": [
+      "Ghost",
+      "Poison"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -5852,6 +6865,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "geodude",
+    "types": [
+      "Rock",
+      "Ground"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -5873,6 +6890,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "geodude",
+    "types": [
+      "Rock",
+      "Electric"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -5894,6 +6915,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gible",
+    "types": [
+      "Dragon",
+      "Ground"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -5914,6 +6939,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gigalith",
+    "types": [
+      "Rock"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -5933,6 +6961,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "girafarig",
+    "types": [
+      "Normal",
+      "Psychic"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -5952,6 +6984,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "giratina",
+    "types": [
+      "Ghost",
+      "Dragon"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -5971,6 +7007,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "giratina",
+    "types": [
+      "Ghost",
+      "Dragon"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -5990,6 +7030,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "near an Ice Rock",
     "evoRegion": "",
     "baseSpeciesId": "glaceon",
+    "types": [
+      "Ice"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -6009,6 +7052,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "glalie",
+    "types": [
+      "Ice"
+    ],
     "eggGroups": [
       "Fairy",
       "Mineral"
@@ -6029,6 +7075,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "glalie",
+    "types": [
+      "Ice"
+    ],
     "eggGroups": [
       "Fairy",
       "Mineral"
@@ -6051,6 +7100,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "glameow",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -6072,6 +7124,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gligar",
+    "types": [
+      "Ground",
+      "Flying"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -6091,6 +7147,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "at night",
     "evoRegion": "",
     "baseSpeciesId": "gliscor",
+    "types": [
+      "Ground",
+      "Flying"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -6113,6 +7173,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gloom",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -6132,6 +7196,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gogoat",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -6153,6 +7220,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "golbat",
+    "types": [
+      "Poison",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -6174,6 +7245,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "goldeen",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 2"
     ],
@@ -6193,6 +7267,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "golduck",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Field"
@@ -6213,6 +7290,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "golem",
+    "types": [
+      "Rock",
+      "Ground"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -6232,6 +7313,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "golem",
+    "types": [
+      "Rock",
+      "Electric"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -6253,6 +7338,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "golett",
+    "types": [
+      "Ground",
+      "Ghost"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -6272,6 +7361,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "golisopod",
+    "types": [
+      "Bug",
+      "Water"
+    ],
     "eggGroups": [
       "Bug",
       "Water 3"
@@ -6292,6 +7385,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "golurk",
+    "types": [
+      "Ground",
+      "Ghost"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -6311,6 +7408,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "during rain",
     "evoRegion": "",
     "baseSpeciesId": "goodra",
+    "types": [
+      "Dragon"
+    ],
     "eggGroups": [
       "Dragon"
     ],
@@ -6332,6 +7432,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "goomy",
+    "types": [
+      "Dragon"
+    ],
     "eggGroups": [
       "Dragon"
     ],
@@ -6351,6 +7454,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gorebyss",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1"
     ],
@@ -6372,6 +7478,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gothita",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -6391,6 +7500,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gothitelle",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -6412,6 +7524,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gothorita",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -6431,6 +7546,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gourgeist",
+    "types": [
+      "Ghost",
+      "Grass"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -6450,6 +7569,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gourgeist",
+    "types": [
+      "Ghost",
+      "Grass"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -6469,6 +7592,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gourgeist",
+    "types": [
+      "Ghost",
+      "Grass"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -6488,6 +7615,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gourgeist",
+    "types": [
+      "Ghost",
+      "Grass"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -6507,6 +7638,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "granbull",
+    "types": [
+      "Fairy"
+    ],
     "eggGroups": [
       "Field",
       "Fairy"
@@ -6529,6 +7663,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "graveler",
+    "types": [
+      "Rock",
+      "Ground"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -6550,6 +7688,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "graveler",
+    "types": [
+      "Rock",
+      "Electric"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -6569,6 +7711,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "greninja",
+    "types": [
+      "Water",
+      "Dark"
+    ],
     "eggGroups": [
       "Water 1"
     ],
@@ -6588,6 +7734,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "greninja",
+    "types": [
+      "Water",
+      "Dark"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -6609,6 +7759,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "grimer",
+    "types": [
+      "Poison"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -6630,6 +7783,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "grimer",
+    "types": [
+      "Poison",
+      "Dark"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -6651,6 +7808,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "grotle",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Monster",
       "Grass"
@@ -6671,6 +7831,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "groudon",
+    "types": [
+      "Ground"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -6690,6 +7853,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "groudon",
+    "types": [
+      "Ground",
+      "Fire"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -6711,6 +7878,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "grovyle",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -6733,6 +7903,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "growlithe",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -6754,6 +7927,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "grubbin",
+    "types": [
+      "Bug"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -6773,6 +7949,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "grumpig",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -6794,6 +7973,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gulpin",
+    "types": [
+      "Poison"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -6813,6 +7995,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "during the day",
     "evoRegion": "",
     "baseSpeciesId": "gumshoos",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -6832,6 +8017,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gumshoos",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -6853,6 +8041,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gurdurr",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -6872,6 +8063,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "guzzlord",
+    "types": [
+      "Dark",
+      "Dragon"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -6891,6 +8086,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gyarados",
+    "types": [
+      "Water",
+      "Flying"
+    ],
     "eggGroups": [
       "Water 2",
       "Dragon"
@@ -6911,6 +8110,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gyarados",
+    "types": [
+      "Water",
+      "Dark"
+    ],
     "eggGroups": [
       "Water 2",
       "Dragon"
@@ -6933,6 +8136,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "hakamoo",
+    "types": [
+      "Dragon",
+      "Fighting"
+    ],
     "eggGroups": [
       "Dragon"
     ],
@@ -6954,6 +8161,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "happiny",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -6973,6 +8183,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "hariyama",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -6994,6 +8207,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "haunter",
+    "types": [
+      "Ghost",
+      "Poison"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -7013,6 +8230,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "hawlucha",
+    "types": [
+      "Fighting",
+      "Flying"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -7032,6 +8253,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "haxorus",
+    "types": [
+      "Dragon"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -7052,6 +8276,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "heatmor",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -7071,6 +8298,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "heatran",
+    "types": [
+      "Fire",
+      "Steel"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -7090,6 +8321,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "heliolisk",
+    "types": [
+      "Electric",
+      "Normal"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -7112,6 +8347,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "helioptile",
+    "types": [
+      "Electric",
+      "Normal"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -7132,6 +8371,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "heracross",
+    "types": [
+      "Bug",
+      "Fighting"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -7151,6 +8394,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "heracross",
+    "types": [
+      "Bug",
+      "Fighting"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -7172,6 +8419,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "herdier",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -7193,6 +8443,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "hippopotas",
+    "types": [
+      "Ground"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -7212,6 +8465,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "hippowdon",
+    "types": [
+      "Ground"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -7231,6 +8487,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "with an Atk stat < its Def stat",
     "evoRegion": "",
     "baseSpeciesId": "hitmonchan",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -7250,6 +8509,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "with an Atk stat > its Def stat",
     "evoRegion": "",
     "baseSpeciesId": "hitmonlee",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -7269,6 +8531,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "with an Atk stat equal to its Def stat",
     "evoRegion": "",
     "baseSpeciesId": "hitmontop",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -7288,6 +8553,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "hooh",
+    "types": [
+      "Fire",
+      "Flying"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -7307,6 +8576,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "honchkrow",
+    "types": [
+      "Dark",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -7328,6 +8601,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "honedge",
+    "types": [
+      "Steel",
+      "Ghost"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -7347,6 +8624,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "hoopa",
+    "types": [
+      "Psychic",
+      "Ghost"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -7366,6 +8647,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "hoopa",
+    "types": [
+      "Psychic",
+      "Dark"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -7387,6 +8672,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "hoothoot",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -7408,6 +8697,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "hoppip",
+    "types": [
+      "Grass",
+      "Flying"
+    ],
     "eggGroups": [
       "Fairy",
       "Grass"
@@ -7430,6 +8723,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "horsea",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Dragon"
@@ -7450,6 +8746,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "houndoom",
+    "types": [
+      "Dark",
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -7469,6 +8769,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "houndoom",
+    "types": [
+      "Dark",
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -7490,6 +8794,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "houndour",
+    "types": [
+      "Dark",
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -7509,6 +8817,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "huntail",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1"
     ],
@@ -7528,6 +8839,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "hydreigon",
+    "types": [
+      "Dark",
+      "Dragon"
+    ],
     "eggGroups": [
       "Dragon"
     ],
@@ -7547,6 +8862,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "hypno",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -7568,6 +8886,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "igglybuff",
+    "types": [
+      "Normal",
+      "Fairy"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -7587,6 +8909,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "illumise",
+    "types": [
+      "Bug"
+    ],
     "eggGroups": [
       "Bug",
       "Human-Like"
@@ -7607,6 +8932,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "incineroar",
+    "types": [
+      "Fire",
+      "Dark"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -7626,6 +8955,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "infernape",
+    "types": [
+      "Fire",
+      "Fighting"
+    ],
     "eggGroups": [
       "Field",
       "Human-Like"
@@ -7648,6 +8981,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "inkay",
+    "types": [
+      "Dark",
+      "Psychic"
+    ],
     "eggGroups": [
       "Water 1",
       "Water 2"
@@ -7670,6 +9007,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "ivysaur",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
     "eggGroups": [
       "Monster",
       "Grass"
@@ -7692,6 +9033,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "jangmoo",
+    "types": [
+      "Dragon"
+    ],
     "eggGroups": [
       "Dragon"
     ],
@@ -7711,6 +9055,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "jellicent",
+    "types": [
+      "Water",
+      "Ghost"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -7732,6 +9080,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "jigglypuff",
+    "types": [
+      "Normal",
+      "Fairy"
+    ],
     "eggGroups": [
       "Fairy"
     ],
@@ -7751,6 +9103,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "jirachi",
+    "types": [
+      "Steel",
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -7770,6 +9126,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "jolteon",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -7791,6 +9150,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "joltik",
+    "types": [
+      "Bug",
+      "Electric"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -7810,6 +9173,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "jumpluff",
+    "types": [
+      "Grass",
+      "Flying"
+    ],
     "eggGroups": [
       "Fairy",
       "Grass"
@@ -7830,6 +9197,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "jynx",
+    "types": [
+      "Ice",
+      "Psychic"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -7851,6 +9222,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "kabuto",
+    "types": [
+      "Rock",
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Water 3"
@@ -7871,6 +9246,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "kabutops",
+    "types": [
+      "Rock",
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Water 3"
@@ -7893,6 +9272,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "kadabra",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -7914,6 +9296,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "kakuna",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -7933,6 +9319,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "kangaskhan",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -7952,6 +9341,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "kangaskhan",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -7973,6 +9365,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "karrablast",
+    "types": [
+      "Bug"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -7992,6 +9387,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "kartana",
+    "types": [
+      "Grass",
+      "Steel"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -8011,6 +9410,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "kecleon",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -8030,6 +9432,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "keldeo",
+    "types": [
+      "Water",
+      "Fighting"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -8049,6 +9455,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "kingdra",
+    "types": [
+      "Water",
+      "Dragon"
+    ],
     "eggGroups": [
       "Water 1",
       "Dragon"
@@ -8069,6 +9479,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "kingler",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 3"
     ],
@@ -8091,6 +9504,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "kirlia",
+    "types": [
+      "Psychic",
+      "Fairy"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -8112,6 +9529,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "klang",
+    "types": [
+      "Steel"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -8131,6 +9551,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "klefki",
+    "types": [
+      "Steel",
+      "Fairy"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -8152,6 +9576,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "klink",
+    "types": [
+      "Steel"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -8171,6 +9598,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "klinklang",
+    "types": [
+      "Steel"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -8192,6 +9622,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "koffing",
+    "types": [
+      "Poison"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -8211,6 +9644,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "komala",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -8230,6 +9666,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "kommoo",
+    "types": [
+      "Dragon",
+      "Fighting"
+    ],
     "eggGroups": [
       "Dragon"
     ],
@@ -8249,6 +9689,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "kommoo",
+    "types": [
+      "Dragon",
+      "Fighting"
+    ],
     "eggGroups": [
       "Dragon"
     ],
@@ -8270,6 +9714,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "krabby",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 3"
     ],
@@ -8291,6 +9738,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "kricketot",
+    "types": [
+      "Bug"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -8310,6 +9760,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "kricketune",
+    "types": [
+      "Bug"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -8331,6 +9784,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "krokorok",
+    "types": [
+      "Ground",
+      "Dark"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -8350,6 +9807,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "krookodile",
+    "types": [
+      "Ground",
+      "Dark"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -8369,6 +9830,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "kyogre",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -8388,6 +9852,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "kyogre",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -8407,6 +9874,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "kyurem",
+    "types": [
+      "Dragon",
+      "Ice"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -8426,6 +9897,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "kyurem",
+    "types": [
+      "Dragon",
+      "Ice"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -8445,6 +9920,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "kyurem",
+    "types": [
+      "Dragon",
+      "Ice"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -8466,6 +9945,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "lairon",
+    "types": [
+      "Steel",
+      "Rock"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -8487,6 +9970,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "lampent",
+    "types": [
+      "Ghost",
+      "Fire"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -8506,6 +9993,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "landorus",
+    "types": [
+      "Ground",
+      "Flying"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -8525,6 +10016,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "landorus",
+    "types": [
+      "Ground",
+      "Flying"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -8544,6 +10039,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "lanturn",
+    "types": [
+      "Water",
+      "Electric"
+    ],
     "eggGroups": [
       "Water 2"
     ],
@@ -8563,6 +10062,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "lapras",
+    "types": [
+      "Water",
+      "Ice"
+    ],
     "eggGroups": [
       "Monster",
       "Water 1"
@@ -8585,6 +10088,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "larvesta",
+    "types": [
+      "Bug",
+      "Fire"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -8606,6 +10113,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "larvitar",
+    "types": [
+      "Rock",
+      "Ground"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -8625,6 +10136,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "latias",
+    "types": [
+      "Dragon",
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -8644,6 +10159,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "latias",
+    "types": [
+      "Dragon",
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -8663,6 +10182,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "latios",
+    "types": [
+      "Dragon",
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -8682,6 +10205,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "latios",
+    "types": [
+      "Dragon",
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -8701,6 +10228,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "near a Moss Rock",
     "evoRegion": "",
     "baseSpeciesId": "leafeon",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -8720,6 +10250,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "leavanny",
+    "types": [
+      "Bug",
+      "Grass"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -8739,6 +10273,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "ledian",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -8760,6 +10298,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "ledyba",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -8779,6 +10321,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "lickilicky",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -8800,6 +10345,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "lickitung",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -8819,6 +10367,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "liepard",
+    "types": [
+      "Dark"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -8840,6 +10391,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "lileep",
+    "types": [
+      "Rock",
+      "Grass"
+    ],
     "eggGroups": [
       "Water 3"
     ],
@@ -8859,6 +10414,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "lilligant",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -8880,6 +10438,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "lillipup",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -8899,6 +10460,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "linoone",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -8920,6 +10484,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "litleo",
+    "types": [
+      "Fire",
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -8941,6 +10509,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "litten",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -8962,6 +10533,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "litwick",
+    "types": [
+      "Ghost",
+      "Fire"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -8983,6 +10558,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "lombre",
+    "types": [
+      "Water",
+      "Grass"
+    ],
     "eggGroups": [
       "Water 1",
       "Grass"
@@ -9003,6 +10582,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "lopunny",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field",
       "Human-Like"
@@ -9023,6 +10605,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "lopunny",
+    "types": [
+      "Normal",
+      "Fighting"
+    ],
     "eggGroups": [
       "Field",
       "Human-Like"
@@ -9045,6 +10631,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "lotad",
+    "types": [
+      "Water",
+      "Grass"
+    ],
     "eggGroups": [
       "Water 1",
       "Grass"
@@ -9067,6 +10657,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "loudred",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Monster",
       "Field"
@@ -9087,6 +10680,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "during the day",
     "evoRegion": "",
     "baseSpeciesId": "lucario",
+    "types": [
+      "Fighting",
+      "Steel"
+    ],
     "eggGroups": [
       "Field",
       "Human-Like"
@@ -9107,6 +10704,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "lucario",
+    "types": [
+      "Fighting",
+      "Steel"
+    ],
     "eggGroups": [
       "Field",
       "Human-Like"
@@ -9127,6 +10728,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "ludicolo",
+    "types": [
+      "Water",
+      "Grass"
+    ],
     "eggGroups": [
       "Water 1",
       "Grass"
@@ -9147,6 +10752,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "lugia",
+    "types": [
+      "Psychic",
+      "Flying"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -9166,6 +10775,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "lumineon",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 2"
     ],
@@ -9185,6 +10797,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "lunala",
+    "types": [
+      "Psychic",
+      "Ghost"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -9204,6 +10820,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "lunatone",
+    "types": [
+      "Rock",
+      "Psychic"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -9223,6 +10843,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "during the day",
     "evoRegion": "",
     "baseSpeciesId": "lurantis",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -9242,6 +10865,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "lurantis",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -9261,6 +10887,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "luvdisc",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 2"
     ],
@@ -9282,6 +10911,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "luxio",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -9301,6 +10933,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "luxray",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -9320,6 +10955,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "in Pokemon Sun/Ultra Sun",
     "evoRegion": "",
     "baseSpeciesId": "lycanroc",
+    "types": [
+      "Rock"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -9339,6 +10977,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "from a special Rockruff during the evening",
     "evoRegion": "",
     "baseSpeciesId": "lycanroc",
+    "types": [
+      "Rock"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -9358,6 +10999,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "in Pokemon Moon/Ultra Moon",
     "evoRegion": "",
     "baseSpeciesId": "lycanroc",
+    "types": [
+      "Rock"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -9377,6 +11021,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "machamp",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -9398,6 +11045,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "machoke",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -9419,6 +11069,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "machop",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -9440,6 +11093,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "magby",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -9459,6 +11115,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "magcargo",
+    "types": [
+      "Fire",
+      "Rock"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -9478,6 +11138,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "magearna",
+    "types": [
+      "Steel",
+      "Fairy"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -9499,6 +11163,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "magikarp",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 2",
       "Dragon"
@@ -9521,6 +11188,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "magmar",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -9540,6 +11210,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "magmortar",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -9561,6 +11234,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "magnemite",
+    "types": [
+      "Electric",
+      "Steel"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -9582,6 +11259,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "magneton",
+    "types": [
+      "Electric",
+      "Steel"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -9601,6 +11282,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "in a special magnetic field",
     "evoRegion": "",
     "baseSpeciesId": "magnezone",
+    "types": [
+      "Electric",
+      "Steel"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -9622,6 +11307,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "makuhita",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -9641,6 +11329,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "with the console turned upside-down",
     "evoRegion": "",
     "baseSpeciesId": "malamar",
+    "types": [
+      "Dark",
+      "Psychic"
+    ],
     "eggGroups": [
       "Water 1",
       "Water 2"
@@ -9661,6 +11353,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mamoswine",
+    "types": [
+      "Ice",
+      "Ground"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -9680,6 +11376,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "manaphy",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Fairy"
@@ -9700,6 +11399,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mandibuzz",
+    "types": [
+      "Dark",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -9719,6 +11422,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "manectric",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -9738,6 +11444,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "manectric",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -9759,6 +11468,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mankey",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -9778,6 +11490,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "with a Remoraid in party",
     "evoRegion": "",
     "baseSpeciesId": "mantine",
+    "types": [
+      "Water",
+      "Flying"
+    ],
     "eggGroups": [
       "Water 1"
     ],
@@ -9799,6 +11515,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mantyke",
+    "types": [
+      "Water",
+      "Flying"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -9818,6 +11538,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "maractus",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -9839,6 +11562,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mareanie",
+    "types": [
+      "Poison",
+      "Water"
+    ],
     "eggGroups": [
       "Water 1"
     ],
@@ -9860,6 +11587,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mareep",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Monster",
       "Field"
@@ -9882,6 +11612,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "marill",
+    "types": [
+      "Water",
+      "Fairy"
+    ],
     "eggGroups": [
       "Water 1",
       "Fairy"
@@ -9902,6 +11636,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "marowak",
+    "types": [
+      "Ground"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -9921,6 +11658,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "at night",
     "evoRegion": "Alola",
     "baseSpeciesId": "marowak",
+    "types": [
+      "Fire",
+      "Ghost"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -9940,6 +11681,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "marowak",
+    "types": [
+      "Fire",
+      "Ghost"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -9959,6 +11704,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "marshadow",
+    "types": [
+      "Fighting",
+      "Ghost"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -9980,6 +11729,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "marshtomp",
+    "types": [
+      "Water",
+      "Ground"
+    ],
     "eggGroups": [
       "Monster",
       "Water 1"
@@ -10000,6 +11753,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "masquerain",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
     "eggGroups": [
       "Water 1",
       "Bug"
@@ -10020,6 +11777,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mawile",
+    "types": [
+      "Steel",
+      "Fairy"
+    ],
     "eggGroups": [
       "Field",
       "Fairy"
@@ -10040,6 +11801,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mawile",
+    "types": [
+      "Steel",
+      "Fairy"
+    ],
     "eggGroups": [
       "Field",
       "Fairy"
@@ -10060,6 +11825,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "medicham",
+    "types": [
+      "Fighting",
+      "Psychic"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -10079,6 +11848,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "medicham",
+    "types": [
+      "Fighting",
+      "Psychic"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -10100,6 +11873,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "meditite",
+    "types": [
+      "Fighting",
+      "Psychic"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -10119,6 +11896,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "meganium",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Monster",
       "Grass"
@@ -10139,6 +11919,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "meloetta",
+    "types": [
+      "Normal",
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -10158,6 +11942,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "meowstic",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -10179,6 +11966,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "meowth",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -10200,6 +11990,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "meowth",
+    "types": [
+      "Dark"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -10219,6 +12012,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mesprit",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -10238,6 +12034,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "metagross",
+    "types": [
+      "Steel",
+      "Psychic"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -10257,6 +12057,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "metagross",
+    "types": [
+      "Steel",
+      "Psychic"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -10278,6 +12082,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "metang",
+    "types": [
+      "Steel",
+      "Psychic"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -10299,6 +12107,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "metapod",
+    "types": [
+      "Bug"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -10318,6 +12129,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mew",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -10337,6 +12151,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mewtwo",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -10356,6 +12173,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mewtwo",
+    "types": [
+      "Psychic",
+      "Fighting"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -10375,6 +12196,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mewtwo",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -10396,6 +12220,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mienfoo",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Field",
       "Human-Like"
@@ -10416,6 +12243,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mienshao",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Field",
       "Human-Like"
@@ -10436,6 +12266,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mightyena",
+    "types": [
+      "Dark"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -10455,6 +12288,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "milotic",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Dragon"
@@ -10475,6 +12311,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "miltank",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -10496,6 +12335,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mimejr",
+    "types": [
+      "Psychic",
+      "Fairy"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -10515,6 +12358,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mimikyu",
+    "types": [
+      "Ghost",
+      "Fairy"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -10534,6 +12381,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mimikyu",
+    "types": [
+      "Ghost",
+      "Fairy"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -10553,6 +12404,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mimikyu",
+    "types": [
+      "Ghost",
+      "Fairy"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -10574,6 +12429,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "minccino",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -10593,6 +12451,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "minior",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -10612,6 +12474,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "minior",
+    "types": [
+      "Rock",
+      "Flying"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -10631,6 +12497,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "minun",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Fairy"
     ],
@@ -10652,6 +12521,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "misdreavus",
+    "types": [
+      "Ghost"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -10671,6 +12543,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mismagius",
+    "types": [
+      "Ghost"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -10690,6 +12565,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "moltres",
+    "types": [
+      "Fire",
+      "Flying"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -10711,6 +12590,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "monferno",
+    "types": [
+      "Fire",
+      "Fighting"
+    ],
     "eggGroups": [
       "Field",
       "Human-Like"
@@ -10733,6 +12616,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "morelull",
+    "types": [
+      "Grass",
+      "Fairy"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -10752,6 +12639,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mothim",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -10771,6 +12662,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mrmime",
+    "types": [
+      "Psychic",
+      "Fairy"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -10792,6 +12687,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mudbray",
+    "types": [
+      "Ground"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -10813,6 +12711,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mudkip",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Monster",
       "Water 1"
@@ -10833,6 +12734,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "mudsdale",
+    "types": [
+      "Ground"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -10852,6 +12756,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "muk",
+    "types": [
+      "Poison"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -10871,6 +12778,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "muk",
+    "types": [
+      "Poison",
+      "Dark"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -10892,6 +12803,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "munchlax",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -10913,6 +12827,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "munna",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -10934,6 +12851,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "murkrow",
+    "types": [
+      "Dark",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -10953,6 +12874,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "musharna",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -10972,6 +12896,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "naganadel",
+    "types": [
+      "Poison",
+      "Dragon"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -10993,6 +12921,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "natu",
+    "types": [
+      "Psychic",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -11012,6 +12944,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "necrozma",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -11031,6 +12966,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "necrozma",
+    "types": [
+      "Psychic",
+      "Ghost"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -11050,6 +12989,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "necrozma",
+    "types": [
+      "Psychic",
+      "Steel"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -11069,6 +13012,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "nidoking",
+    "types": [
+      "Poison",
+      "Ground"
+    ],
     "eggGroups": [
       "Monster",
       "Field"
@@ -11089,6 +13036,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "nidoqueen",
+    "types": [
+      "Poison",
+      "Ground"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -11110,6 +13061,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "nidoranf",
+    "types": [
+      "Poison"
+    ],
     "eggGroups": [
       "Monster",
       "Field"
@@ -11132,6 +13086,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "nidoranm",
+    "types": [
+      "Poison"
+    ],
     "eggGroups": [
       "Monster",
       "Field"
@@ -11154,6 +13111,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "nidorina",
+    "types": [
+      "Poison"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -11175,6 +13135,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "nidorino",
+    "types": [
+      "Poison"
+    ],
     "eggGroups": [
       "Monster",
       "Field"
@@ -11195,6 +13158,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "nihilego",
+    "types": [
+      "Rock",
+      "Poison"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -11217,6 +13184,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "nincada",
+    "types": [
+      "Bug",
+      "Ground"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -11236,6 +13207,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "ninetales",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -11255,6 +13229,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "ninetales",
+    "types": [
+      "Ice",
+      "Fairy"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -11274,6 +13252,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "ninjask",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -11293,6 +13275,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "noctowl",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -11314,6 +13300,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "noibat",
+    "types": [
+      "Flying",
+      "Dragon"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -11333,6 +13323,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "noivern",
+    "types": [
+      "Flying",
+      "Dragon"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -11354,6 +13348,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "nosepass",
+    "types": [
+      "Rock"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -11375,6 +13372,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "numel",
+    "types": [
+      "Fire",
+      "Ground"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -11396,6 +13397,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "nuzleaf",
+    "types": [
+      "Grass",
+      "Dark"
+    ],
     "eggGroups": [
       "Field",
       "Grass"
@@ -11416,6 +13421,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "octillery",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Water 2"
@@ -11438,6 +13446,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "oddish",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -11459,6 +13471,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "omanyte",
+    "types": [
+      "Rock",
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Water 3"
@@ -11479,6 +13495,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "omastar",
+    "types": [
+      "Rock",
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Water 3"
@@ -11501,6 +13521,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "onix",
+    "types": [
+      "Rock",
+      "Ground"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -11520,6 +13544,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "oranguru",
+    "types": [
+      "Normal",
+      "Psychic"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -11539,6 +13567,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "oricorio",
+    "types": [
+      "Fire",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -11558,6 +13590,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "oricorio",
+    "types": [
+      "Psychic",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -11577,6 +13613,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "oricorio",
+    "types": [
+      "Electric",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -11596,6 +13636,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "oricorio",
+    "types": [
+      "Ghost",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -11617,6 +13661,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "oshawott",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -11636,6 +13683,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pachirisu",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Field",
       "Fairy"
@@ -11656,6 +13706,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "palkia",
+    "types": [
+      "Water",
+      "Dragon"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -11675,6 +13729,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "palossand",
+    "types": [
+      "Ghost",
+      "Ground"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -11696,6 +13754,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "palpitoad",
+    "types": [
+      "Water",
+      "Ground"
+    ],
     "eggGroups": [
       "Water 1"
     ],
@@ -11717,6 +13779,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pancham",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Field",
       "Human-Like"
@@ -11737,6 +13802,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "with a Dark-type in the party",
     "evoRegion": "",
     "baseSpeciesId": "pangoro",
+    "types": [
+      "Fighting",
+      "Dark"
+    ],
     "eggGroups": [
       "Field",
       "Human-Like"
@@ -11759,6 +13828,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "panpour",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -11780,6 +13852,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pansage",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -11801,6 +13876,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pansear",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -11822,6 +13900,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "paras",
+    "types": [
+      "Bug",
+      "Grass"
+    ],
     "eggGroups": [
       "Bug",
       "Grass"
@@ -11842,6 +13924,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "parasect",
+    "types": [
+      "Bug",
+      "Grass"
+    ],
     "eggGroups": [
       "Bug",
       "Grass"
@@ -11862,6 +13948,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "passimian",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -11883,6 +13972,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "patrat",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -11904,6 +13996,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pawniard",
+    "types": [
+      "Dark",
+      "Steel"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -11923,6 +14019,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pelipper",
+    "types": [
+      "Water",
+      "Flying"
+    ],
     "eggGroups": [
       "Water 1",
       "Flying"
@@ -11943,6 +14043,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "persian",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -11962,6 +14065,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "persian",
+    "types": [
+      "Dark"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -11983,6 +14089,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "petilil",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -12004,6 +14113,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "phanpy",
+    "types": [
+      "Ground"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -12025,6 +14137,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "phantump",
+    "types": [
+      "Ghost",
+      "Grass"
+    ],
     "eggGroups": [
       "Grass",
       "Amorphous"
@@ -12045,6 +14161,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pheromosa",
+    "types": [
+      "Bug",
+      "Fighting"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -12064,6 +14184,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "phione",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Fairy"
@@ -12086,6 +14209,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pichu",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -12105,6 +14231,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pidgeot",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -12124,6 +14254,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pidgeot",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -12145,6 +14279,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pidgeotto",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -12166,6 +14304,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pidgey",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -12187,6 +14329,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pidove",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -12208,6 +14354,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pignite",
+    "types": [
+      "Fire",
+      "Fighting"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -12230,6 +14380,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pikachu",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Field",
       "Fairy"
@@ -12250,6 +14403,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pikachu",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -12269,6 +14425,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pikachu",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -12288,6 +14447,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pikachu",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -12307,6 +14469,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pikachu",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -12326,6 +14491,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pikachu",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -12345,6 +14513,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pikachu",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -12364,6 +14535,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pikachu",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -12385,6 +14559,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pikipek",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -12406,6 +14584,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "piloswine",
+    "types": [
+      "Ice",
+      "Ground"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -12427,6 +14609,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pineco",
+    "types": [
+      "Bug"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -12446,6 +14631,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pinsir",
+    "types": [
+      "Bug"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -12465,6 +14653,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pinsir",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -12486,6 +14678,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "piplup",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Field"
@@ -12506,6 +14701,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "plusle",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Fairy"
     ],
@@ -12527,6 +14725,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "poipole",
+    "types": [
+      "Poison"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -12546,6 +14747,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "politoed",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1"
     ],
@@ -12567,6 +14771,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "poliwag",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1"
     ],
@@ -12589,6 +14796,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "poliwhirl",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1"
     ],
@@ -12608,6 +14818,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "poliwrath",
+    "types": [
+      "Water",
+      "Fighting"
+    ],
     "eggGroups": [
       "Water 1"
     ],
@@ -12629,6 +14843,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "ponyta",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -12650,6 +14867,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "poochyena",
+    "types": [
+      "Dark"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -12671,6 +14891,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "popplio",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Field"
@@ -12693,6 +14916,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "porygon",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -12712,6 +14938,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "porygonz",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -12733,6 +14962,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "porygon2",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -12752,6 +14984,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "primarina",
+    "types": [
+      "Water",
+      "Fairy"
+    ],
     "eggGroups": [
       "Water 1",
       "Field"
@@ -12772,6 +15008,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "primeape",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -12793,6 +15032,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "prinplup",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Field"
@@ -12813,6 +15055,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "near a special magnetic field",
     "evoRegion": "",
     "baseSpeciesId": "probopass",
+    "types": [
+      "Rock",
+      "Steel"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -12834,6 +15080,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "psyduck",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Field"
@@ -12856,6 +15105,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pumpkaboo",
+    "types": [
+      "Ghost",
+      "Grass"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -12877,6 +15130,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pumpkaboo",
+    "types": [
+      "Ghost",
+      "Grass"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -12898,6 +15155,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pumpkaboo",
+    "types": [
+      "Ghost",
+      "Grass"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -12919,6 +15180,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pumpkaboo",
+    "types": [
+      "Ghost",
+      "Grass"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -12940,6 +15205,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pupitar",
+    "types": [
+      "Rock",
+      "Ground"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -12961,6 +15230,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "purrloin",
+    "types": [
+      "Dark"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -12980,6 +15252,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "purugly",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -12999,6 +15274,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pyroar",
+    "types": [
+      "Fire",
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -13018,6 +15297,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "pyukumuku",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1"
     ],
@@ -13037,6 +15319,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "quagsire",
+    "types": [
+      "Water",
+      "Ground"
+    ],
     "eggGroups": [
       "Water 1",
       "Field"
@@ -13059,6 +15345,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "quilava",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -13080,6 +15369,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "quilladin",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -13099,6 +15391,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "qwilfish",
+    "types": [
+      "Water",
+      "Poison"
+    ],
     "eggGroups": [
       "Water 2"
     ],
@@ -13118,6 +15414,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "raichu",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Field",
       "Fairy"
@@ -13138,6 +15437,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "Alola",
     "baseSpeciesId": "raichu",
+    "types": [
+      "Electric",
+      "Psychic"
+    ],
     "eggGroups": [
       "Field",
       "Fairy"
@@ -13158,6 +15461,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "raikou",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -13179,6 +15485,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "ralts",
+    "types": [
+      "Psychic",
+      "Fairy"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -13198,6 +15508,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "rampardos",
+    "types": [
+      "Rock"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -13217,6 +15530,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "rapidash",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -13236,6 +15552,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "raticate",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -13255,6 +15574,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "at night",
     "evoRegion": "",
     "baseSpeciesId": "raticate",
+    "types": [
+      "Dark",
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -13274,6 +15597,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "raticate",
+    "types": [
+      "Dark",
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -13295,6 +15622,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "rattata",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -13316,6 +15646,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "rattata",
+    "types": [
+      "Dark",
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -13335,6 +15669,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "rayquaza",
+    "types": [
+      "Dragon",
+      "Flying"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -13354,6 +15692,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "rayquaza",
+    "types": [
+      "Dragon",
+      "Flying"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -13373,6 +15715,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "regice",
+    "types": [
+      "Ice"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -13392,6 +15737,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "regigigas",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -13411,6 +15759,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "regirock",
+    "types": [
+      "Rock"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -13430,6 +15781,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "registeel",
+    "types": [
+      "Steel"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -13449,6 +15803,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "relicanth",
+    "types": [
+      "Water",
+      "Rock"
+    ],
     "eggGroups": [
       "Water 1",
       "Water 2"
@@ -13471,6 +15829,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "remoraid",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Water 2"
@@ -13491,6 +15852,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "reshiram",
+    "types": [
+      "Dragon",
+      "Fire"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -13510,6 +15875,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "reuniclus",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -13531,6 +15899,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "rhydon",
+    "types": [
+      "Ground",
+      "Rock"
+    ],
     "eggGroups": [
       "Monster",
       "Field"
@@ -13553,6 +15925,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "rhyhorn",
+    "types": [
+      "Ground",
+      "Rock"
+    ],
     "eggGroups": [
       "Monster",
       "Field"
@@ -13573,6 +15949,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "rhyperior",
+    "types": [
+      "Ground",
+      "Rock"
+    ],
     "eggGroups": [
       "Monster",
       "Field"
@@ -13593,6 +15973,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "ribombee",
+    "types": [
+      "Bug",
+      "Fairy"
+    ],
     "eggGroups": [
       "Bug",
       "Fairy"
@@ -13613,6 +15997,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "ribombee",
+    "types": [
+      "Bug",
+      "Fairy"
+    ],
     "eggGroups": [
       "Bug",
       "Fairy"
@@ -13635,6 +16023,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "riolu",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -13657,6 +16048,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "rockruff",
+    "types": [
+      "Rock"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -13678,6 +16072,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "rockruff",
+    "types": [
+      "Rock"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -13699,6 +16096,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "roggenrola",
+    "types": [
+      "Rock"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -13720,6 +16120,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "during the day",
     "evoRegion": "",
     "baseSpeciesId": "roselia",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
     "eggGroups": [
       "Fairy",
       "Grass"
@@ -13740,6 +16144,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "roserade",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
     "eggGroups": [
       "Fairy",
       "Grass"
@@ -13760,6 +16168,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "rotom",
+    "types": [
+      "Electric",
+      "Ghost"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -13779,6 +16191,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "rotom",
+    "types": [
+      "Electric",
+      "Flying"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -13798,6 +16214,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "rotom",
+    "types": [
+      "Electric",
+      "Ice"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -13817,6 +16237,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "rotom",
+    "types": [
+      "Electric",
+      "Fire"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -13836,6 +16260,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "rotom",
+    "types": [
+      "Electric",
+      "Grass"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -13855,6 +16283,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "rotom",
+    "types": [
+      "Electric",
+      "Water"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -13876,6 +16308,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "rowlet",
+    "types": [
+      "Grass",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -13897,6 +16333,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "rufflet",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -13916,6 +16356,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sableye",
+    "types": [
+      "Dark",
+      "Ghost"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -13935,6 +16379,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sableye",
+    "types": [
+      "Dark",
+      "Ghost"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -13954,6 +16402,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "salamence",
+    "types": [
+      "Dragon",
+      "Flying"
+    ],
     "eggGroups": [
       "Dragon"
     ],
@@ -13973,6 +16425,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "salamence",
+    "types": [
+      "Dragon",
+      "Flying"
+    ],
     "eggGroups": [
       "Dragon"
     ],
@@ -13994,6 +16450,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "salandit",
+    "types": [
+      "Poison",
+      "Fire"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -14014,6 +16474,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "salazzle",
+    "types": [
+      "Poison",
+      "Fire"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -14034,6 +16498,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "salazzle",
+    "types": [
+      "Poison",
+      "Fire"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -14054,6 +16522,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "samurott",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -14075,6 +16546,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sandile",
+    "types": [
+      "Ground",
+      "Dark"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -14096,6 +16571,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sandshrew",
+    "types": [
+      "Ground"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -14117,6 +16595,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sandshrew",
+    "types": [
+      "Ice",
+      "Steel"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -14136,6 +16618,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sandslash",
+    "types": [
+      "Ground"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -14155,6 +16640,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sandslash",
+    "types": [
+      "Ice",
+      "Steel"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -14176,6 +16665,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sandygast",
+    "types": [
+      "Ghost",
+      "Ground"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -14195,6 +16688,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sawk",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -14214,6 +16710,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sawsbuck",
+    "types": [
+      "Normal",
+      "Grass"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -14235,6 +16735,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "scatterbug",
+    "types": [
+      "Bug"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -14254,6 +16757,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sceptile",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -14274,6 +16780,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sceptile",
+    "types": [
+      "Grass",
+      "Dragon"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -14294,6 +16804,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "scizor",
+    "types": [
+      "Bug",
+      "Steel"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -14313,6 +16827,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "scizor",
+    "types": [
+      "Bug",
+      "Steel"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -14332,6 +16850,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "scolipede",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -14351,6 +16873,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "scrafty",
+    "types": [
+      "Dark",
+      "Fighting"
+    ],
     "eggGroups": [
       "Field",
       "Dragon"
@@ -14373,6 +16899,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "scraggy",
+    "types": [
+      "Dark",
+      "Fighting"
+    ],
     "eggGroups": [
       "Field",
       "Dragon"
@@ -14395,6 +16925,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "scyther",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -14416,6 +16950,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "seadra",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Dragon"
@@ -14436,6 +16973,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "seaking",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 2"
     ],
@@ -14457,6 +16997,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sealeo",
+    "types": [
+      "Ice",
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Field"
@@ -14479,6 +17023,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "seedot",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Field",
       "Grass"
@@ -14501,6 +17048,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "seel",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Field"
@@ -14521,6 +17071,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "seismitoad",
+    "types": [
+      "Water",
+      "Ground"
+    ],
     "eggGroups": [
       "Water 1"
     ],
@@ -14542,6 +17096,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sentret",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -14561,6 +17118,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "serperior",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Field",
       "Grass"
@@ -14583,6 +17143,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "servine",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Field",
       "Grass"
@@ -14603,6 +17166,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "seviper",
+    "types": [
+      "Poison"
+    ],
     "eggGroups": [
       "Field",
       "Dragon"
@@ -14625,6 +17191,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sewaddle",
+    "types": [
+      "Bug",
+      "Grass"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -14644,6 +17214,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sharpedo",
+    "types": [
+      "Water",
+      "Dark"
+    ],
     "eggGroups": [
       "Water 2"
     ],
@@ -14663,6 +17237,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sharpedo",
+    "types": [
+      "Water",
+      "Dark"
+    ],
     "eggGroups": [
       "Water 2"
     ],
@@ -14682,6 +17260,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "shaymin",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -14701,6 +17282,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "shaymin",
+    "types": [
+      "Grass",
+      "Flying"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -14720,6 +17305,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "shedinja",
+    "types": [
+      "Bug",
+      "Ghost"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -14741,6 +17330,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "shelgon",
+    "types": [
+      "Dragon"
+    ],
     "eggGroups": [
       "Dragon"
     ],
@@ -14762,6 +17354,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "shellder",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 3"
     ],
@@ -14783,6 +17378,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "shellos",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Amorphous"
@@ -14805,6 +17403,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "shelmet",
+    "types": [
+      "Bug"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -14826,6 +17427,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "shieldon",
+    "types": [
+      "Rock",
+      "Steel"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -14845,6 +17450,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "shiftry",
+    "types": [
+      "Grass",
+      "Dark"
+    ],
     "eggGroups": [
       "Field",
       "Grass"
@@ -14865,6 +17474,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "shiinotic",
+    "types": [
+      "Grass",
+      "Fairy"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -14886,6 +17499,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "shinx",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -14907,6 +17523,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "shroomish",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Fairy",
       "Grass"
@@ -14927,6 +17546,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "shuckle",
+    "types": [
+      "Bug",
+      "Rock"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -14948,6 +17571,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "shuppet",
+    "types": [
+      "Ghost"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -14967,6 +17593,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sigilyph",
+    "types": [
+      "Psychic",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -14988,6 +17618,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "silcoon",
+    "types": [
+      "Bug"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -15007,6 +17640,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "silvally",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -15026,6 +17662,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "silvally",
+    "types": [
+      "Bug"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -15045,6 +17684,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "silvally",
+    "types": [
+      "Dark"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -15064,6 +17706,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "silvally",
+    "types": [
+      "Dragon"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -15083,6 +17728,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "silvally",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -15102,6 +17750,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "silvally",
+    "types": [
+      "Fairy"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -15121,6 +17772,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "silvally",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -15140,6 +17794,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "silvally",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -15159,6 +17816,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "silvally",
+    "types": [
+      "Flying"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -15178,6 +17838,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "silvally",
+    "types": [
+      "Ghost"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -15197,6 +17860,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "silvally",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -15216,6 +17882,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "silvally",
+    "types": [
+      "Ground"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -15235,6 +17904,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "silvally",
+    "types": [
+      "Ice"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -15254,6 +17926,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "silvally",
+    "types": [
+      "Poison"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -15273,6 +17948,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "silvally",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -15292,6 +17970,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "silvally",
+    "types": [
+      "Rock"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -15311,6 +17992,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "silvally",
+    "types": [
+      "Steel"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -15330,6 +18014,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "silvally",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -15349,6 +18036,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "simipour",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -15368,6 +18058,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "simisage",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -15387,6 +18080,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "simisear",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -15406,6 +18102,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "skarmory",
+    "types": [
+      "Steel",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -15427,6 +18127,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "skiddo",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -15448,6 +18151,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "skiploom",
+    "types": [
+      "Grass",
+      "Flying"
+    ],
     "eggGroups": [
       "Fairy",
       "Grass"
@@ -15470,6 +18177,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "skitty",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field",
       "Fairy"
@@ -15492,6 +18202,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "skorupi",
+    "types": [
+      "Poison",
+      "Bug"
+    ],
     "eggGroups": [
       "Bug",
       "Water 3"
@@ -15514,6 +18228,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "skrelp",
+    "types": [
+      "Poison",
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Dragon"
@@ -15534,6 +18252,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "skuntank",
+    "types": [
+      "Poison",
+      "Dark"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -15553,6 +18275,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "slaking",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -15574,6 +18299,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "slakoth",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -15595,6 +18323,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sliggoo",
+    "types": [
+      "Dragon"
+    ],
     "eggGroups": [
       "Dragon"
     ],
@@ -15614,6 +18345,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "slowbro",
+    "types": [
+      "Water",
+      "Psychic"
+    ],
     "eggGroups": [
       "Monster",
       "Water 1"
@@ -15634,6 +18369,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "slowbro",
+    "types": [
+      "Water",
+      "Psychic"
+    ],
     "eggGroups": [
       "Monster",
       "Water 1"
@@ -15654,6 +18393,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "slowking",
+    "types": [
+      "Water",
+      "Psychic"
+    ],
     "eggGroups": [
       "Monster",
       "Water 1"
@@ -15677,6 +18420,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "slowpoke",
+    "types": [
+      "Water",
+      "Psychic"
+    ],
     "eggGroups": [
       "Monster",
       "Water 1"
@@ -15699,6 +18446,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "slugma",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -15718,6 +18468,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "slurpuff",
+    "types": [
+      "Fairy"
+    ],
     "eggGroups": [
       "Fairy"
     ],
@@ -15737,6 +18490,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "smeargle",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -15758,6 +18514,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "smoochum",
+    "types": [
+      "Ice",
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -15779,6 +18539,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sneasel",
+    "types": [
+      "Dark",
+      "Ice"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -15800,6 +18564,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "snivy",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Field",
       "Grass"
@@ -15820,6 +18587,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "snorlax",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -15842,6 +18612,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "snorunt",
+    "types": [
+      "Ice"
+    ],
     "eggGroups": [
       "Fairy",
       "Mineral"
@@ -15864,6 +18637,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "snover",
+    "types": [
+      "Grass",
+      "Ice"
+    ],
     "eggGroups": [
       "Monster",
       "Grass"
@@ -15886,6 +18663,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "snubbull",
+    "types": [
+      "Fairy"
+    ],
     "eggGroups": [
       "Field",
       "Fairy"
@@ -15906,6 +18686,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "solgaleo",
+    "types": [
+      "Psychic",
+      "Steel"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -15927,6 +18711,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "solosis",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -15946,6 +18733,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "solrock",
+    "types": [
+      "Rock",
+      "Psychic"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -15967,6 +18758,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "spearow",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -15988,6 +18783,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "spewpa",
+    "types": [
+      "Bug"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -16009,6 +18807,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "spheal",
+    "types": [
+      "Ice",
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Field"
@@ -16031,6 +18833,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "spinarak",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -16050,6 +18856,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "spinda",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field",
       "Human-Like"
@@ -16070,6 +18879,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "spiritomb",
+    "types": [
+      "Ghost",
+      "Dark"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -16091,6 +18904,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "spoink",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -16112,6 +18928,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "spritzee",
+    "types": [
+      "Fairy"
+    ],
     "eggGroups": [
       "Fairy"
     ],
@@ -16133,6 +18952,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "squirtle",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Monster",
       "Water 1"
@@ -16153,6 +18975,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "stakataka",
+    "types": [
+      "Rock",
+      "Steel"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -16172,6 +18998,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "stantler",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -16191,6 +19020,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "staraptor",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -16212,6 +19045,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "staravia",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -16233,6 +19070,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "starly",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -16252,6 +19093,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "starmie",
+    "types": [
+      "Water",
+      "Psychic"
+    ],
     "eggGroups": [
       "Water 3"
     ],
@@ -16273,6 +19118,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "staryu",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 3"
     ],
@@ -16292,6 +19140,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "steelix",
+    "types": [
+      "Steel",
+      "Ground"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -16311,6 +19163,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "steelix",
+    "types": [
+      "Steel",
+      "Ground"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -16332,6 +19188,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "steenee",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -16351,6 +19210,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "stoutland",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -16372,6 +19234,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "stufful",
+    "types": [
+      "Normal",
+      "Fighting"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -16391,6 +19257,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "stunfisk",
+    "types": [
+      "Ground",
+      "Electric"
+    ],
     "eggGroups": [
       "Water 1",
       "Amorphous"
@@ -16413,6 +19283,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "stunky",
+    "types": [
+      "Poison",
+      "Dark"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -16432,6 +19306,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sudowoodo",
+    "types": [
+      "Rock"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -16451,6 +19328,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "suicune",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -16470,6 +19350,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sunflora",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -16491,6 +19374,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "sunkern",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -16512,6 +19398,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "surskit",
+    "types": [
+      "Bug",
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Bug"
@@ -16534,6 +19424,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "swablu",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying",
       "Dragon"
@@ -16556,6 +19450,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "swadloon",
+    "types": [
+      "Bug",
+      "Grass"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -16575,6 +19473,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "swalot",
+    "types": [
+      "Poison"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -16594,6 +19495,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "swampert",
+    "types": [
+      "Water",
+      "Ground"
+    ],
     "eggGroups": [
       "Monster",
       "Water 1"
@@ -16614,6 +19519,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "swampert",
+    "types": [
+      "Water",
+      "Ground"
+    ],
     "eggGroups": [
       "Monster",
       "Water 1"
@@ -16634,6 +19543,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "swanna",
+    "types": [
+      "Water",
+      "Flying"
+    ],
     "eggGroups": [
       "Water 1",
       "Flying"
@@ -16654,6 +19567,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "swellow",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -16675,6 +19592,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "swinub",
+    "types": [
+      "Ice",
+      "Ground"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -16696,6 +19617,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "swirlix",
+    "types": [
+      "Fairy"
+    ],
     "eggGroups": [
       "Fairy"
     ],
@@ -16715,6 +19639,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "swoobat",
+    "types": [
+      "Psychic",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying",
       "Field"
@@ -16735,6 +19663,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "with a Fairy-type move and two levels of Affection",
     "evoRegion": "",
     "baseSpeciesId": "sylveon",
+    "types": [
+      "Fairy"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -16756,6 +19687,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "taillow",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -16775,6 +19710,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "talonflame",
+    "types": [
+      "Fire",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -16796,6 +19735,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "tangela",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -16815,6 +19757,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "tangrowth",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -16834,6 +19779,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "tapubulu",
+    "types": [
+      "Grass",
+      "Fairy"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -16853,6 +19802,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "tapufini",
+    "types": [
+      "Water",
+      "Fairy"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -16872,6 +19825,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "tapukoko",
+    "types": [
+      "Electric",
+      "Fairy"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -16891,6 +19848,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "tapulele",
+    "types": [
+      "Psychic",
+      "Fairy"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -16910,6 +19871,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "tauros",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -16931,6 +19895,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "teddiursa",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -16952,6 +19919,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "tentacool",
+    "types": [
+      "Water",
+      "Poison"
+    ],
     "eggGroups": [
       "Water 3"
     ],
@@ -16971,6 +19942,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "tentacruel",
+    "types": [
+      "Water",
+      "Poison"
+    ],
     "eggGroups": [
       "Water 3"
     ],
@@ -16992,6 +19967,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "tepig",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -17011,6 +19989,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "terrakion",
+    "types": [
+      "Rock",
+      "Fighting"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -17030,6 +20012,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "throh",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -17049,6 +20034,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "thundurus",
+    "types": [
+      "Electric",
+      "Flying"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -17068,6 +20057,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "thundurus",
+    "types": [
+      "Electric",
+      "Flying"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -17089,6 +20082,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "timburr",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -17110,6 +20106,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "tirtouga",
+    "types": [
+      "Water",
+      "Rock"
+    ],
     "eggGroups": [
       "Water 1",
       "Water 3"
@@ -17130,6 +20130,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "togedemaru",
+    "types": [
+      "Electric",
+      "Steel"
+    ],
     "eggGroups": [
       "Field",
       "Fairy"
@@ -17150,6 +20154,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "togedemaru",
+    "types": [
+      "Electric",
+      "Steel"
+    ],
     "eggGroups": [
       "Field",
       "Fairy"
@@ -17170,6 +20178,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "togekiss",
+    "types": [
+      "Fairy",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying",
       "Fairy"
@@ -17192,6 +20204,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "togepi",
+    "types": [
+      "Fairy"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -17213,6 +20228,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "togetic",
+    "types": [
+      "Fairy",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying",
       "Fairy"
@@ -17235,6 +20254,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "torchic",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -17254,6 +20276,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "torkoal",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -17273,6 +20298,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "tornadus",
+    "types": [
+      "Flying"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -17292,6 +20320,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "tornadus",
+    "types": [
+      "Flying"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -17313,6 +20344,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "torracat",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -17332,6 +20366,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "torterra",
+    "types": [
+      "Grass",
+      "Ground"
+    ],
     "eggGroups": [
       "Monster",
       "Grass"
@@ -17354,6 +20392,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "totodile",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Monster",
       "Water 1"
@@ -17374,6 +20415,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "toucannon",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -17393,6 +20438,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "toxapex",
+    "types": [
+      "Poison",
+      "Water"
+    ],
     "eggGroups": [
       "Water 1"
     ],
@@ -17412,6 +20461,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "toxicroak",
+    "types": [
+      "Poison",
+      "Fighting"
+    ],
     "eggGroups": [
       "Human-Like"
     ],
@@ -17433,6 +20486,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "tranquill",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -17454,6 +20511,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "trapinch",
+    "types": [
+      "Ground"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -17475,6 +20535,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "treecko",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -17495,6 +20558,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "trevenant",
+    "types": [
+      "Ghost",
+      "Grass"
+    ],
     "eggGroups": [
       "Grass",
       "Amorphous"
@@ -17515,6 +20582,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "tropius",
+    "types": [
+      "Grass",
+      "Flying"
+    ],
     "eggGroups": [
       "Monster",
       "Grass"
@@ -17537,6 +20608,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "trubbish",
+    "types": [
+      "Poison"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -17558,6 +20632,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "trumbeak",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -17577,6 +20655,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "tsareena",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -17596,6 +20677,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "turtonator",
+    "types": [
+      "Fire",
+      "Dragon"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -17618,6 +20703,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "turtwig",
+    "types": [
+      "Grass"
+    ],
     "eggGroups": [
       "Monster",
       "Grass"
@@ -17640,6 +20728,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "tympole",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 1"
     ],
@@ -17661,6 +20752,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "tynamo",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -17682,6 +20776,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "typenull",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -17701,6 +20798,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "typhlosion",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -17720,6 +20820,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "tyranitar",
+    "types": [
+      "Rock",
+      "Dark"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -17739,6 +20843,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "tyranitar",
+    "types": [
+      "Rock",
+      "Dark"
+    ],
     "eggGroups": [
       "Monster"
     ],
@@ -17758,6 +20866,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "during the day",
     "evoRegion": "",
     "baseSpeciesId": "tyrantrum",
+    "types": [
+      "Rock",
+      "Dragon"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -17782,6 +20894,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "tyrogue",
+    "types": [
+      "Fighting"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -17803,6 +20918,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "tyrunt",
+    "types": [
+      "Rock",
+      "Dragon"
+    ],
     "eggGroups": [
       "Monster",
       "Dragon"
@@ -17823,6 +20942,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "at night",
     "evoRegion": "",
     "baseSpeciesId": "umbreon",
+    "types": [
+      "Dark"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -17842,6 +20964,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "unfezant",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -17861,6 +20987,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "unown",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -17880,6 +21009,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "ursaring",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -17899,6 +21031,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "uxie",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -17920,6 +21055,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "vanillish",
+    "types": [
+      "Ice"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -17941,6 +21079,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "vanillite",
+    "types": [
+      "Ice"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -17960,6 +21101,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "vanilluxe",
+    "types": [
+      "Ice"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -17979,6 +21123,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "vaporeon",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -18000,6 +21147,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "venipede",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -18019,6 +21170,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "venomoth",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -18040,6 +21195,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "venonat",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -18059,6 +21218,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "venusaur",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
     "eggGroups": [
       "Monster",
       "Grass"
@@ -18079,6 +21242,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "venusaur",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
     "eggGroups": [
       "Monster",
       "Grass"
@@ -18099,6 +21266,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "vespiquen",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -18120,6 +21291,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "vibrava",
+    "types": [
+      "Ground",
+      "Dragon"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -18139,6 +21314,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "victini",
+    "types": [
+      "Psychic",
+      "Fire"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -18158,6 +21337,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "victreebel",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -18179,6 +21362,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "vigoroth",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -18198,6 +21384,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "near a special magnetic field",
     "evoRegion": "",
     "baseSpeciesId": "vikavolt",
+    "types": [
+      "Bug",
+      "Electric"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -18217,6 +21407,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "vikavolt",
+    "types": [
+      "Bug",
+      "Electric"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -18236,6 +21430,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "vileplume",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -18255,6 +21453,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "virizion",
+    "types": [
+      "Grass",
+      "Fighting"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -18274,6 +21476,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "vivillon",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -18293,6 +21499,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "volbeat",
+    "types": [
+      "Bug"
+    ],
     "eggGroups": [
       "Bug",
       "Human-Like"
@@ -18313,6 +21522,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "volcanion",
+    "types": [
+      "Fire",
+      "Water"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -18332,6 +21545,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "volcarona",
+    "types": [
+      "Bug",
+      "Fire"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -18353,6 +21570,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "voltorb",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Mineral"
     ],
@@ -18374,6 +21594,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "vullaby",
+    "types": [
+      "Dark",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -18395,6 +21619,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "vulpix",
+    "types": [
+      "Fire"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -18416,6 +21643,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "vulpix",
+    "types": [
+      "Ice"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -18437,6 +21667,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "wailmer",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Field",
       "Water 2"
@@ -18457,6 +21690,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "wailord",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Field",
       "Water 2"
@@ -18477,6 +21713,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "walrein",
+    "types": [
+      "Ice",
+      "Water"
+    ],
     "eggGroups": [
       "Water 1",
       "Field"
@@ -18499,6 +21739,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "wartortle",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Monster",
       "Water 1"
@@ -18519,6 +21762,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "watchog",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -18538,6 +21784,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "at night",
     "evoRegion": "",
     "baseSpeciesId": "weavile",
+    "types": [
+      "Dark",
+      "Ice"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -18559,6 +21809,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "weedle",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -18580,6 +21834,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "weepinbell",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
     "eggGroups": [
       "Grass"
     ],
@@ -18599,6 +21857,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "weezing",
+    "types": [
+      "Poison"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -18618,6 +21879,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "whimsicott",
+    "types": [
+      "Grass",
+      "Fairy"
+    ],
     "eggGroups": [
       "Fairy",
       "Grass"
@@ -18640,6 +21905,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "whirlipede",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -18659,6 +21928,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "whiscash",
+    "types": [
+      "Water",
+      "Ground"
+    ],
     "eggGroups": [
       "Water 2"
     ],
@@ -18680,6 +21953,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "whismur",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Monster",
       "Field"
@@ -18700,6 +21976,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "wigglytuff",
+    "types": [
+      "Normal",
+      "Fairy"
+    ],
     "eggGroups": [
       "Fairy"
     ],
@@ -18721,6 +22001,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "wimpod",
+    "types": [
+      "Bug",
+      "Water"
+    ],
     "eggGroups": [
       "Bug",
       "Water 3"
@@ -18743,6 +22027,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "wingull",
+    "types": [
+      "Water",
+      "Flying"
+    ],
     "eggGroups": [
       "Water 1",
       "Flying"
@@ -18763,6 +22051,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "wishiwashi",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 2"
     ],
@@ -18782,6 +22073,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "wishiwashi",
+    "types": [
+      "Water"
+    ],
     "eggGroups": [
       "Water 2"
     ],
@@ -18801,6 +22095,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "wobbuffet",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Amorphous"
     ],
@@ -18822,6 +22119,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "woobat",
+    "types": [
+      "Psychic",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying",
       "Field"
@@ -18844,6 +22145,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "wooper",
+    "types": [
+      "Water",
+      "Ground"
+    ],
     "eggGroups": [
       "Water 1",
       "Field"
@@ -18864,6 +22169,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "wormadam",
+    "types": [
+      "Bug",
+      "Grass"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -18883,6 +22192,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "wormadam",
+    "types": [
+      "Bug",
+      "Ground"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -18902,6 +22215,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "wormadam",
+    "types": [
+      "Bug",
+      "Steel"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -18924,6 +22241,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "wurmple",
+    "types": [
+      "Bug"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -18945,6 +22265,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "wynaut",
+    "types": [
+      "Psychic"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -18964,6 +22287,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "xatu",
+    "types": [
+      "Psychic",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -18983,6 +22310,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "xerneas",
+    "types": [
+      "Fairy"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -19002,6 +22332,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "xurkitree",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -19023,6 +22356,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "yamask",
+    "types": [
+      "Ghost"
+    ],
     "eggGroups": [
       "Mineral",
       "Amorphous"
@@ -19045,6 +22381,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "yanma",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -19064,6 +22404,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "yanmega",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
     "eggGroups": [
       "Bug"
     ],
@@ -19085,6 +22429,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "yungoos",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -19104,6 +22451,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "yveltal",
+    "types": [
+      "Dark",
+      "Flying"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -19123,6 +22474,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "zangoose",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -19142,6 +22496,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "zapdos",
+    "types": [
+      "Electric",
+      "Flying"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -19161,6 +22519,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "zebstrika",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -19180,6 +22541,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "zekrom",
+    "types": [
+      "Dragon",
+      "Electric"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -19199,6 +22564,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "zeraora",
+    "types": [
+      "Electric"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -19220,6 +22588,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "zigzagoon",
+    "types": [
+      "Normal"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -19239,6 +22610,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "zoroark",
+    "types": [
+      "Dark"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -19260,6 +22634,9 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "zorua",
+    "types": [
+      "Dark"
+    ],
     "eggGroups": [
       "Field"
     ],
@@ -19281,6 +22658,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "zubat",
+    "types": [
+      "Poison",
+      "Flying"
+    ],
     "eggGroups": [
       "Flying"
     ],
@@ -19302,6 +22683,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "zweilous",
+    "types": [
+      "Dark",
+      "Dragon"
+    ],
     "eggGroups": [
       "Dragon"
     ],
@@ -19321,6 +22706,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "zygarde",
+    "types": [
+      "Dragon",
+      "Ground"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -19340,6 +22729,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "zygarde",
+    "types": [
+      "Dragon",
+      "Ground"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],
@@ -19359,6 +22752,10 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "zygarde",
+    "types": [
+      "Dragon",
+      "Ground"
+    ],
     "eggGroups": [
       "Undiscovered"
     ],

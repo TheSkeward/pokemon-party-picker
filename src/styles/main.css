@@ -693,11 +693,12 @@ button:hover {
 .actions-row .danger-button {
   margin-left: auto;
 }
-/* The badge picker and the slot count sit with the optimize button: the
-   badge moves with every stretch of play, and the slots are set per fight
-   like the opponent bias. */
+/* The badge picker, the slot count and the monotype sit with the optimize
+   button: the badge moves with every stretch of play, the slots are set per
+   fight like the opponent bias, and the monotype decides who is fielded. */
 .actions-row .badge-picker,
-.actions-row .team-slots {
+.actions-row .team-slots,
+.actions-row .monotype-picker {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
@@ -708,11 +709,13 @@ button:hover {
   min-width: 0;
 }
 .actions-row .badge-picker > span:first-child,
-.actions-row .team-slots > span {
+.actions-row .team-slots > span,
+.actions-row .monotype-picker > span {
   white-space: nowrap;
 }
 .actions-row .badge-picker select,
-.actions-row .team-slots select {
+.actions-row .team-slots select,
+.actions-row .monotype-picker select {
   width: auto;
   min-width: 0;
   max-width: 100%;

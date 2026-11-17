@@ -109,6 +109,9 @@ for (const pokemon of pokemonIndex) {
     // equivalent of Alola is Apophyll; legality gates on reaching it.
     evoRegion: species.evoRegion || '',
     baseSpeciesId: toId(species.baseSpecies),
+    // The form's own types, for rules that decide which stage of a line is
+    // fielded (the monotype rule, playthrough/monotype.js).
+    types: species.types || [],
     eggGroups: species.eggGroups || [],
     // Fixed-gender marker: "M" male-only, "F" female-only, "N" genderless,
     // "" mixed. Breeding legality needs it: the mother fixes the offspring

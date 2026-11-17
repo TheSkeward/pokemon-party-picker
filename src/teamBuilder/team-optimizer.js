@@ -82,6 +82,7 @@ import {
   takeTopUsageEntries,
 } from './usage-line-ranking.js';
 import {
+  entriesOutsideMonotype,
   getEvolutionDepth,
   getReachableLineCandidates,
   getReachableAssetKey,
@@ -439,6 +440,11 @@ export async function optimizeTeamFromPool({
       .map(([name, ability]) => `${name}=${ability}`)
       .join(',')
     : 'none';
+  // The entries a monotype run leaves off the team, for the input report.
+  // Like the unknown move locks they key nothing: the progression that
+  // decides them is in the signature already.
+  const outsideMonotype = entriesOutsideMonotype(
+    allGroups, pokemonIndex, progression, abilityAnnotations);
   // What the pool's lines can hand each other by Baton Pass prices every
   // boost-scaling attack, so the packages join the score context as the
   // breeding signature does.
@@ -520,6 +526,7 @@ export async function optimizeTeamFromPool({
       searchMs: 0,
     };
     memoized.ignoredMoveLocks = ignoredMoveLocks;
+    memoized.outsideMonotype = outsideMonotype;
     return memoized;
   }
 
@@ -631,6 +638,7 @@ export async function optimizeTeamFromPool({
   result.poolSelection = scoringPool.selection;
   result.poolUsageEntries = scoringPool.poolUsageEntries;
   result.ignoredMoveLocks = ignoredMoveLocks;
+  result.outsideMonotype = outsideMonotype;
   // Warm = anything short of from-scratch: line-cache hits and/or an
   // incremental (grown) search. Cold = every line resolved fresh AND a full
   // search.

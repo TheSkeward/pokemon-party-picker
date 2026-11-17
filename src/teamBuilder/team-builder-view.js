@@ -15,6 +15,8 @@ import {
   MAX_TEAM_SLOTS,
   teamSlotsOf,
 } from '../playthrough/progression.js';
+import { monotypeOf } from '../playthrough/monotype.js';
+import { analysisTypes } from '../playthrough/type-chart.js';
 import { detailsStateAttrs } from '../utils/details-state.js';
 import { accessFields, isAccessOpen } from '../games/evolution.js';
 import { moveSources } from '../games/legality.js';
@@ -200,6 +202,8 @@ export function renderGamestateStrip(progression = {}) {
   chip(`Items ${Object.keys(progression.ownedItems || {}).length}`, 'items');
   const slots = teamSlotsOf(progression.teamSlots);
   if (slots < MAX_TEAM_SLOTS) chip(`Slots ${slots}`, 'slots');
+  const monotype = monotypeOf(progression);
+  if (monotype) chip(`Mono ${monotype}`, 'monotype');
 
   const bias = Object.entries(progression.opponentTypeBias || {}).filter(
     ([, level]) => level > 0,
@@ -397,6 +401,7 @@ function renderPoolControls({
             ${[6, 5, 4, 3, 2, 1].map((slots) => `<option value="${slots}" ${teamSlotsOf(state.progression?.teamSlots) === slots ? 'selected' : ''}>${slots}</option>`).join('')}
           </select>
         </label>
+        ${renderMonotypePicker(state.progression)}
         <button class="view-tab primary-action stable-label" id="optimize-button"${optimizing ? ' aria-busy="true"' : ''}${usageTrustTooltip(state) ? ` title="${escapeAttr(usageTrustTooltip(state))}"` : ''}><span data-label="idle">Normalize + optimize team</span><span data-label="busy">Optimizing...</span></button>
         <button class="view-tab" id="copy-pool-button">Copy pool</button>
         <button class="view-tab" id="export-gamestate-button" title="Copy pool + progression + inventory to the clipboard as JSON. Everything lives in this browser's local storage — one data clear loses it all unless the copy is pasted somewhere safe.">Export gamestate</button>
@@ -415,6 +420,34 @@ function renderPoolControls({
       ${renderAvailabilityOutput(state.availabilityText)}
     </section>
   `;
+}
+
+const MONOTYPE_TITLE =
+  'Field one type only. A Pokémon counts when it has the type or evolves ' +
+  'into it, and is never evolved out of it. A Mega counts when it and the ' +
+  'Pokémon that Mega Evolves both have the type. Everything else in the ' +
+  'pool stays a donor.';
+
+function renderMonotypePicker(progression) {
+  const selected = monotypeOf(progression);
+  return `
+    <label class="monotype-picker" title="${escapeAttr(MONOTYPE_TITLE)}">
+      <span>Monotype</span>
+      <select data-progression-field="monotype" data-chip-target="monotype">
+        <option value="" ${selected ? '' : 'selected'}>Off</option>
+        ${analysisTypes().map((type) => `<option value="${escapeAttr(type)}" ${selected === type ? 'selected' : ''}>${escapeHtml(type)}</option>`).join('')}
+      </select>
+    </label>
+  `;
+}
+
+// The pool entries a monotype run leaves off the team, named so none goes
+// missing from the result without a word.
+function renderOutsideMonotype(result, progression) {
+  const names = result.outsideMonotype || [];
+  const monotype = monotypeOf(progression);
+  if (!names.length || !monotype) return '';
+  return `<p class="muted">Outside the ${escapeHtml(monotype)} monotype, so not fielded (still donors): ${escapeHtml(names.join(', '))}.</p>`;
 }
 
 function renderAvailabilityOutput(availabilityText) {
@@ -459,6 +492,7 @@ function renderResult({
         <h2>Recommended ${escapeHtml(familyLabel)} Team</h2>
         <p class="muted">No viable team picks found from ${result.linesConsidered} resolved input lines.</p>
         ${renderGamestateStrip(state.progression)}
+        ${renderOutsideMonotype(result, state.progression)}
         ${renderScoringPoolNote(result)}
       </section>
 
@@ -492,6 +526,7 @@ function renderResult({
           <p>${result.team.length} picks from ${result.linesConsidered} resolved input lines.${megaText}</p>
           ${renderGamestateStrip(state.progression)}
           <p class="muted" data-progression-stale-warning ${progressionStale ? '' : 'hidden'}>Progression changed after this team was optimized. Re-optimize before trusting row scores or legal move notes.</p>
+          ${renderOutsideMonotype(result, state.progression)}
           ${result.ignoredLocks?.length ? `<p class="muted">Locked but not fieldable at this progression, so ignored: ${escapeHtml(result.ignoredLocks.join(', '))}.</p>` : ''}
           ${result.ignoredMoveLocks?.length ? `<p class="muted">Locked moves no move in the game answers to, so ignored: ${escapeHtml(result.ignoredMoveLocks.map((lock) => `${lock.name} {${lock.move}}`).join(', '))}.</p>` : ''}
         </div>

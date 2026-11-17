@@ -22,6 +22,16 @@ https://theskeward.github.io/pokemon-party-picker/
 - Set how many party slots the team may fill (Team slots, next to
   Optimize) when an egg or anything else rides along; the setting is part
   of the saved progression.
+- Plan a monotype run by naming its type (Monotype, next to Team slots).
+  The team is fielded only from Pokemon that have the type or evolve into
+  it: a Charmander belongs to a Flying run for the Charizard it becomes. A
+  Pokemon is never evolved out of the type (Eevee stays Eevee in a Normal
+  run), and a line aims only at forms that have it (Eevee becomes Flareon
+  in a Fire run). Mega Evolution is not evolution: a Mega is fielded only
+  when it and the Pokemon that Mega Evolves both have the type, so Mega
+  Charizard X belongs to a Fire run and to neither a Flying nor a Dragon
+  one. The rest of the pool stays as donors, and the result names them.
+  The setting is part of the saved progression.
 - Keep a Pokemon by suffixing it with `*` (`Larvesta*`): the bench marks
   it as one you mean to hold onto, so it never reads as a cut. Scoring
   ignores the mark.

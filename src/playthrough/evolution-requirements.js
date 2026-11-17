@@ -23,6 +23,8 @@
  *                         the location, blocked when it does not
  *   owner's exact mark:   blocked from a pre-evolution the pool enters as
  *                         "Meowth=": the owner is not evolving it
+ *   monotype run:         blocked when it takes a form out of the run's
+ *                         type (playthrough/monotype.js)
  *
  * Everything game-specific — what replaces trading, which gate stands in for
  * a region, which locations the game lacks, form notes, the gate list — comes
@@ -43,6 +45,7 @@ import {
 import { getActiveGame } from '../games/registry.js';
 import { tunable } from '../teamBuilder/scoring-constants.js';
 import { dex } from '../games/dex.js';
+import { fieldsInMonotype, monotypeOf } from './monotype.js';
 
 
 // A region-locked evolution (dex evoRegion) needs the game's stand-in for
@@ -347,6 +350,25 @@ export function getEvolutionRequirement(species, access = null) {
       friction: 0,
       method: evoType || 'level',
       reason: `${prevoName} is marked = in the pool, so it is kept as it is`,
+    };
+  }
+
+  // A monotype run keeps its Pokémon in the type: an evolution that takes
+  // a form out of it is not taken (Eevee stays Eevee in a Normal run). A
+  // line outside the type is no part of the team and evolves freely, as
+  // any donor does.
+  const monotype = monotypeOf(access);
+  if (
+    monotype &&
+    fieldsInMonotype(species.prevoId, monotype) &&
+    !fieldsInMonotype(species.id, monotype)
+  ) {
+    return {
+      status: 'blocked',
+      levelRequired: null,
+      friction: 0,
+      method: evoType || 'level',
+      reason: `outside the ${monotype} monotype`,
     };
   }
 

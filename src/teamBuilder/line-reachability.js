@@ -3,8 +3,14 @@ import {
   canHatchLine,
 } from '../playthrough/breeding.js';
 import {
+  getCurrentSpeciesForChoice,
   isStrictPreEvolutionOf,
 } from '../playthrough/current-species.js';
+import {
+  fieldsInMonotype,
+  hasMonotype,
+  monotypeOf,
+} from '../playthrough/monotype.js';
 import { buildInputGroups } from './input-groups.js';
 import { normalizeName } from './name-utils.js';
 import { parseAbilityAnnotations } from './pool-parsing.js';
@@ -52,7 +58,8 @@ function describesIndividual(
  * becomes nothing but itself and its own Mega, so its line is judged by the
  * named species' usage record alone and every reader of the choice fields
  * that species (current-species.js keeps a pick on its representative's
- * line).
+ * line). A monotype run keeps only the forms inside its type, so an entry
+ * with none comes back empty and is not fielded.
  */
 export function getReachableLineCandidates(
   group,
@@ -70,8 +77,14 @@ export function getReachableLineCandidates(
     canHatchLine(input.id) &&
     !describesIndividual(input, progression, abilityAnnotations);
   const exact = isExactEntry(input, progression);
+  const monotype = monotypeOf(progression);
   return getLineRepresentativeCandidates(input.id, pokemonIndex).filter(
     (candidate) => {
+      if (
+        monotype && !fieldedInMonotype(input, candidate, progression, monotype)
+      ) {
+        return false;
+      }
       if (daycareReach) return true;
       const candidateBaseId = candidate.isMega
         ? dex().progressionSpecies[candidate.id]?.baseSpeciesId || candidate.id
@@ -86,6 +99,45 @@ export function getReachableLineCandidates(
       );
     },
   );
+}
+
+// A monotype run fields a line only through forms inside its type: a
+// target that is of the type, and the stage the owner holds on the way to
+// it. An owned form already past the type (a Vaporeon in a Normal run)
+// holds no such stage, whatever its line could hatch.
+function fieldedInMonotype(input, candidate, progression, monotype) {
+  if (!hasMonotype(candidate.id, monotype)) return false;
+  const stage = getCurrentSpeciesForChoice(
+    { inputPokemonId: input.id, pokemonId: candidate.id },
+    progression,
+  );
+  return fieldsInMonotype(stage?.id || input.id, monotype);
+}
+
+/**
+ * The pool entries a monotype run leaves off the team: no form the entry
+ * could field is inside the run's type. They stay donors.
+ * @param {!Array<!Object>} groups The pool's input groups.
+ * @param {!Array<!Object>} pokemonIndex
+ * @param {!Object=} progression With the pool's marks stamped in.
+ * @param {?Map<string, string>=} abilityAnnotations
+ * @return {!Array<string>} Input names in pool order; empty outside a
+ *     monotype run.
+ */
+export function entriesOutsideMonotype(
+  groups,
+  pokemonIndex,
+  progression = {},
+  abilityAnnotations = null,
+) {
+  if (!monotypeOf(progression)) return [];
+  return groups
+    .filter((group) =>
+      !group.unresolved &&
+      !getReachableLineCandidates(
+        group, pokemonIndex, progression, abilityAnnotations,
+      ).length)
+    .map((group) => group.input.name);
 }
 
 /**
@@ -160,6 +212,8 @@ export function buildFieldablePoolLines({
         progression,
         abilityAnnotations,
       );
+      // A monotype run fields nothing of an entry outside its type.
+      if (!candidates.length && monotypeOf(progression)) return null;
       const choices = (candidates.length ? candidates : [group.input]).map(
         (candidate) => ({
           inputPokemonId: group.input.id,
@@ -173,5 +227,6 @@ export function buildFieldablePoolLines({
         bestNonMega: null,
         choiceOptions: choices.slice(1),
       };
-    });
+    })
+    .filter(Boolean);
 }

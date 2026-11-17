@@ -129,7 +129,14 @@ export function normalizeProgression(progression = {}) {
     // Team slots: how many of the six the optimizer may fill (an egg in the
     // party takes one). Stored only when fewer than six, for the same reason.
     ...normalizeTeamSlots(progression.teamSlots),
+    // Monotype: the one type the run fields (playthrough/monotype.js).
+    // Stored only when set, for the same reason.
+    ...normalizeMonotype(progression.monotype),
   };
+}
+
+function normalizeMonotype(value) {
+  return analysisTypes().includes(value) ? { monotype: value } : {};
 }
 
 // The badge/post-game checkpoint the player selected (badge-timeline.js)
