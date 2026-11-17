@@ -42,8 +42,8 @@ test('old exports carrying the retired scoringModel field still import', () => {
 });
 
 test('parser rejects non-gamestate input with readable messages', () => {
-  assert.throws(() => parseGamestateImport('not json'), /Not a JSON file/);
-  assert.throws(() => parseGamestateImport('{"a":1}'), /Not a gamestate export/);
+  assert.throws(() => parseGamestateImport('not json'), /not JSON/);
+  assert.throws(() => parseGamestateImport('{"a":1}'), /not a gamestate export/);
   assert.throws(
     () =>
       parseGamestateImport(

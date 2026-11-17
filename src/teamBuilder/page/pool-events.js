@@ -89,13 +89,33 @@ async function generateAvailabilityList(page) {
   }
 }
 
-async function importGamestate(page, file) {
+async function importGamestate(page) {
   const { state, run } = page;
+  // Read before anything else is asked: the browser allows the read on the
+  // strength of the click, and a dialog in between can spend that.
+  let text;
+  try {
+    text = await navigator.clipboard.readText();
+  } catch {
+    // The clipboard is the only way in, so the status says how to open it.
+    setPoolStatus(
+      page,
+      'Import failed: the browser did not let this page read the ' +
+      'clipboard. Allow clipboard access for this site, then import again.');
+    return;
+  }
+  if (!text.trim()) {
+    setPoolStatus(
+      page,
+      'Import failed: the clipboard holds no text. Copy a gamestate ' +
+      'export, then import again.');
+    return;
+  }
   let imported;
   try {
-    imported = parseGamestateImport(await file.text());
+    imported = parseGamestateImport(text);
   } catch (error) {
-    setPoolStatus(page, `Import failed: ${error.message}`);
+    setPoolStatus(page, `Import from the clipboard failed: ${error.message}`);
     return;
   }
   if (
@@ -164,8 +184,9 @@ export function bindPoolControls(page) {
   on('#optimize-button', 'click', () => run.optimize());
   on('#copy-pool-button', 'click', () => copyPool(page));
 
-  // To the clipboard like the pool and availability copies: the player
-  // pastes it wherever the backup lives.
+  // To the clipboard like the pool and availability copies, and back from
+  // it: the player pastes the backup wherever it lives and copies it from
+  // there to restore it.
   on('#export-gamestate-button', 'click', () => copyText(
     page,
     buildGamestateExport({
@@ -176,12 +197,7 @@ export function bindPoolControls(page) {
     'Gamestate copied to clipboard',
   ));
   on('#import-gamestate-button', 'click', () => {
-    app.querySelector('#import-gamestate-input')?.click();
-  });
-  on('#import-gamestate-input', 'change', (event) => {
-    const file = event.target.files?.[0];
-    event.target.value = '';
-    if (file) void importGamestate(page, file);
+    void importGamestate(page);
   });
 
   on('#generate-availability-button', 'click', () => {

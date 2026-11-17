@@ -398,8 +398,7 @@ function renderPoolControls({
         <button class="view-tab primary-action stable-label" id="optimize-button"${optimizing ? ' aria-busy="true"' : ''}${usageTrustTooltip(state) ? ` title="${escapeAttr(usageTrustTooltip(state))}"` : ''}><span data-label="idle">Normalize + optimize team</span><span data-label="busy">Optimizing...</span></button>
         <button class="view-tab" id="copy-pool-button">Copy pool</button>
         <button class="view-tab" id="export-gamestate-button" title="Copy pool + progression + inventory to the clipboard as JSON. Everything lives in this browser's local storage — one data clear loses it all unless the copy is pasted somewhere safe.">Export gamestate</button>
-        <button class="view-tab" id="import-gamestate-button" title="Restore a gamestate backup saved as a file (replaces the current pool and progression).">Import gamestate</button>
-        <input type="file" id="import-gamestate-input" accept="application/json,.json,text/plain,.txt" style="display: none" />
+        <button class="view-tab" id="import-gamestate-button" title="Restore the gamestate export on the clipboard (replaces the current pool and progression). To restore one kept in a file, copy the file's text first.">Import gamestate</button>
         <button class="view-tab" id="generate-availability-button" ${state.result?.lines?.length ? '' : 'disabled'} title="${state.result?.lines?.length ? 'Generate a pasteable list of every available Pokémon, its current move pool, and your held items' : 'Optimize the team first to resolve your pool'}">Generate availability list</button>
         <button class="view-tab danger-button" id="clear-pool-button">Clear saved pool</button>
         ${renderPoolStatus(state, optimizing)}

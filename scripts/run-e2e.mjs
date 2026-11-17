@@ -3,7 +3,7 @@
  * preview` (data symlinked from site-data so nothing is copied), runs every
  * test/e2e/*.e2e.mjs as a child process, and exits non-zero if any fail.
  * These specs cover behaviors the unit suites cannot see — focus retention,
- * scroll pinning, downloads, in-place DOM patching. Run: npm run e2e
+ * scroll pinning, the clipboard, in-place DOM patching. Run: npm run e2e
  * Name specs to run only those: npm run e2e -- team-controls app-shell
  *
  * Needs the full site-data tree and an installed Chrome or Edge, both of

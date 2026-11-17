@@ -1,21 +1,22 @@
 /**
- * @fileoverview Gamestate backup as a downloadable file. Everything that
- * defines a playthrough lives in localStorage — the pool text and the full
- * Reborn progression (badge/caps, TM/tutor checks, item inventory, evolution
+ * @fileoverview Gamestate backup as text. Everything that defines a
+ * playthrough lives in localStorage — the pool text and the full Reborn
+ * progression (badge/caps, TM/tutor checks, item inventory, evolution
  * access, bias) — and localStorage is one browser-data clear away from gone.
- * This module is the pure serialize/parse half; the widget wires it to a
- * download link and a file picker.
+ * This module is the pure serialize/parse half; the pool panel's controls
+ * carry the text to and from the clipboard.
  */
 
 import { getActiveGame } from '../games/registry.js';
 
-// Frozen at the project's original name: exported backup files in the wild
-// carry this tag.
+// Frozen at the project's original name: exported backups in the wild carry
+// this tag.
 const FORMAT = 'pokemon-usage-viewer-gamestate';
 const VERSION = 1;
 
 /**
- * @param {{query: ?string, progression: ?Object}} state
+ * @param {{query: ?string, donorQuery: (string|undefined),
+ *     progression: ?Object}} state
  * @return {string} Pretty-printed JSON gamestate export.
  */
 export function buildGamestateExport({ query, donorQuery = '', progression }) {
@@ -39,12 +40,13 @@ export function buildGamestateExport({ query, donorQuery = '', progression }) {
 
 /**
  * Parses an export back into {pool, progression}; throws with a
- * human-readable message on anything that isn't a gamestate file. Old
- * exports carry a scoringModel field (the retired V0/V1 toggle) — ignored,
- * not an error, so every v1-format backup still restores. The progression
- * object is passed through as-is — the caller routes it through the normal
- * save/load path so normalizeProgression sanitizes it the same way it
- * sanitizes every other stored progression.
+ * human-readable message on anything that isn't a gamestate export. The
+ * message says what is wrong with the text and leaves where the text came
+ * from to the caller. Old exports carry a scoringModel field (the retired
+ * V0/V1 toggle) — ignored, not an error, so every v1-format backup still
+ * restores. The progression object is passed through as-is — the caller
+ * routes it through the normal save/load path so normalizeProgression
+ * sanitizes it the same way it sanitizes every other stored progression.
  * @param {string} text
  * @return {{pool: string, donors: string, progression: Object,
  *     game: string}}
@@ -54,10 +56,10 @@ export function parseGamestateImport(text) {
   try {
     parsed = JSON.parse(text);
   } catch {
-    throw new Error('Not a JSON file.');
+    throw new Error('The text is not JSON.');
   }
   if (parsed?.format !== FORMAT) {
-    throw new Error('Not a gamestate export from this tool.');
+    throw new Error('The text is not a gamestate export from this tool.');
   }
   if (parsed.version !== VERSION) {
     throw new Error(
@@ -65,10 +67,10 @@ export function parseGamestateImport(text) {
     );
   }
   if (typeof parsed.pool !== 'string') {
-    throw new Error('Gamestate file has no pool text.');
+    throw new Error('The gamestate has no pool text.');
   }
   if (parsed.progression == null || typeof parsed.progression !== 'object') {
-    throw new Error('Gamestate file has no progression.');
+    throw new Error('The gamestate has no progression.');
   }
   return {
     pool: parsed.pool,

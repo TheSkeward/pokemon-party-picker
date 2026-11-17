@@ -4,7 +4,7 @@
 // scripts (assert + async main) run by
 // scripts/run-e2e.mjs against a `vite preview` of the CURRENT build — they
 // verify behaviors the unit suites cannot see (focus retention, scroll
-// pinning, downloads, in-place DOM patching).
+// pinning, the clipboard, in-place DOM patching).
 
 import assert from 'node:assert/strict';
 
