@@ -70,18 +70,18 @@ test('a second answer starts its own time', (t) => {
   assert.equal(page.line.notice, false);
 });
 
-test('a closing word takes an idle line without being an answer', (t) => {
+test('a note takes an idle line without being an answer', (t) => {
   const { page, status } = setup(t);
-  status.settle('Optimized 6 picks from 12 resolved inputs.');
+  status.note('Optimized 6 picks from 12 resolved inputs.');
   assert.equal(
     page.text.textContent, 'Optimized 6 picks from 12 resolved inputs.');
   assert.equal(page.line.notice, false);
 });
 
-test('a closing word waits for an answer still being read', (t) => {
+test('a note waits for an answer still being read', (t) => {
   const { page, status } = setup(t);
   status.say(SHORT);
-  status.settle('Optimized 6 picks from 12 resolved inputs.');
+  status.note('Optimized 6 picks from 12 resolved inputs.');
   assert.equal(page.text.textContent, SHORT);
   assert.equal(page.line.notice, true);
 
@@ -91,14 +91,24 @@ test('a closing word waits for an answer still being read', (t) => {
   assert.equal(page.line.notice, false);
 });
 
-test('the last thing said outlives a closing word that was waiting', (t) => {
+test('the last thing said outlives a note that was waiting', (t) => {
   const { page, status } = setup(t);
   status.say(SHORT);
-  status.settle('Optimized 6 picks from 12 resolved inputs.');
-  status.say('Saved locally');
-  t.mock.timers.tick(noticeMs('Saved locally'));
+  status.note('Optimized 6 picks from 12 resolved inputs.');
+  status.say('Saved pool cleared');
+  t.mock.timers.tick(noticeMs('Saved pool cleared'));
+  assert.equal(page.text.textContent, 'Saved pool cleared');
+  assert.equal(page.state.statusMessage, 'Saved pool cleared');
+});
+
+test('a later note takes the place of one that was waiting', (t) => {
+  const { page, status } = setup(t);
+  status.say(SHORT);
+  // A run's summary, then an edit that drops the result it describes.
+  status.note('Optimized 6 picks from 12 resolved inputs.');
+  status.note('Saved locally');
+  t.mock.timers.tick(noticeMs(SHORT));
   assert.equal(page.text.textContent, 'Saved locally');
-  assert.equal(page.state.statusMessage, 'Saved locally');
 });
 
 test('a render in the middle keeps the answer and its mark', (t) => {

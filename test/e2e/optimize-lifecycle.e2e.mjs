@@ -21,6 +21,22 @@ try {
   await page.fill('#pool-query-input', LARGE_POOL);
   await page.click('#optimize-button');
   await page.waitForSelector('[data-optimizing]', { timeout: 20_000 });
+  // The note that the edit was saved is no answer to a button: the run
+  // has the status line for its caption from the start.
+  const line = await page.evaluate(() => {
+    const seen = (selector) => getComputedStyle(
+      document.querySelector(selector)).visibility === 'visible';
+    return {
+      caption: seen('[data-optimize-progress-label]'),
+      status: seen('[data-pool-status]'),
+      text: document.querySelector('[data-pool-status]').textContent,
+    };
+  });
+  check(
+    'a run started straight after an edit shows its caption',
+    line.caption && !line.status,
+    JSON.stringify(line),
+  );
   await page.evaluate(() => {
     const box = document.getElementById('pool-query-input');
     box.focus();

@@ -282,7 +282,7 @@ export function createOptimizeRun(page) {
       // The team is in. The analysis owns the phase from here, so the
       // render below shows its panels as pending rather than the bar.
       state.phase = OptimizePhase.ANALYZING;
-      page.status.settle(summarize(result, saved));
+      page.status.note(summarize(result, saved));
 
       page.writeUrl();
       const renderStart = Date.now();
@@ -304,7 +304,7 @@ export function createOptimizeRun(page) {
       progress.stop();
       state.phase = OptimizePhase.FAILED;
       state.result = null;
-      page.status.settle(`Optimization failed: ${error?.message || error}`);
+      page.status.note(`Optimization failed: ${error?.message || error}`);
       setDetails.cancel();
       page.render();
     }

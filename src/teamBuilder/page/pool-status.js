@@ -1,10 +1,14 @@
 /**
  * @fileoverview The pool's status line: the one place the page says what
  * it has just done. While a run is on, the run's caption has the line
- * (progress-bar.js), with one exception: an answer to something the player
- * did takes it for long enough to be read. A copy that worked or an import
- * that was refused would otherwise pass unseen under the caption and be
- * replaced by the run's closing word.
+ * (progress-bar.js), with one exception: an answer to a button the player
+ * pressed takes it for long enough to be read. A copy that worked or an
+ * import that was refused would otherwise pass unseen under the caption
+ * and be replaced by the run's closing word.
+ *
+ * What the page reports unasked is a note, not an answer: that an edit was
+ * saved, or how a run ended. A note never takes the line from a caption,
+ * so a run started straight after an edit shows its progress at once.
  *
  * `statusMessage` and `statusNotice` in the page's state belong to this
  * module. The view draws the line from them (team-builder-view.js
@@ -32,16 +36,16 @@ export function noticeMs(message) {
 
 /**
  * @param {!Object} page The page (pool-widget.js).
- * @return {{say: function(?string), settle: function(?string),
+ * @return {{say: function(?string), note: function(?string),
  *     dispose: function()}} `say` puts an answer to the player on the
  *     line, where it stays until something else is said and is seen even
- *     over a run's caption while it is new. `settle` leaves a run's
- *     closing word, which waits for an answer still being read.
+ *     over a run's caption while it is new. `note` leaves a note, which
+ *     waits for an answer still being read.
  */
 export function createPoolStatus(page) {
   const { app, state } = page;
   let timer = null;
-  // The closing word of a run that ended while an answer had the line.
+  // The latest note left while an answer had the line.
   let waiting = null;
 
   // The nodes are found at each paint, since a render replaces them.
@@ -63,8 +67,8 @@ export function createPoolStatus(page) {
   function say(message) {
     const text = message || '';
     clearTimeout(timer);
-    // The last thing said has the line: a closing word that was waiting
-    // may be about a result the player has since moved on from.
+    // The last thing said has the line: a note that was waiting may be
+    // about a result the player has since moved on from.
     waiting = null;
     state.statusMessage = text;
     state.statusNotice = Boolean(text);
@@ -72,7 +76,7 @@ export function createPoolStatus(page) {
     paint();
   }
 
-  function settle(message) {
+  function note(message) {
     if (state.statusNotice) {
       waiting = message || '';
       return;
@@ -86,5 +90,5 @@ export function createPoolStatus(page) {
     timer = null;
   }
 
-  return { say, settle, dispose };
+  return { say, note, dispose };
 }
