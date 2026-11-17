@@ -1,8 +1,8 @@
 /**
  * @fileoverview The Team Builder page. This module holds the page's state
  * and its one full render, and composes the parts under teamBuilder/page:
- * the optimize run, the event bindings of each panel, and the updates that
- * patch the page without a render.
+ * the optimize run, the pool's status line, the event bindings of each
+ * panel, and the updates that patch the page without a render.
  */
 import { escapeHtml } from './utils/html.js';
 import {
@@ -18,6 +18,7 @@ import { loadSavedProgression } from './playthrough/progression.js';
 import { assignTeamItems } from './teamBuilder/item-recommendations.js';
 import { OptimizePhase } from './teamBuilder/optimize-phase.js';
 import { bindPoolControls } from './teamBuilder/page/pool-events.js';
+import { createPoolStatus } from './teamBuilder/page/pool-status.js';
 import {
   bindProgressionControls,
 } from './teamBuilder/page/progression-events.js';
@@ -55,13 +56,15 @@ import { bindPersistentDetails } from './utils/details-state.js';
 /**
  * The page as its parts see it: the root element, the state the view
  * renders from, the loaded data, and the operations that belong to no one
- * panel. `run` is the optimize run (teamBuilder/page/run.js).
+ * panel. `run` is the optimize run (teamBuilder/page/run.js) and `status`
+ * the pool's status line (teamBuilder/page/pool-status.js).
  * @typedef {{
  *   app: !Element,
  *   state: !Object,
  *   data: {availability: ?Object, formatsIndex: !Array<!Object>,
  *       pokemonIndex: !Array<!Object>},
  *   setDetails: !Object,
+ *   status: !Object,
  *   run: !Object,
  *   render: function(): ?Object,
  *   writeUrl: function(),
@@ -110,7 +113,10 @@ export function mountPoolOptimizer(container, options = {}) {
     resultEvolutionItemIds: new Set(),
     // Where the current run is (optimize-phase.js). The view switches on it.
     phase: OptimizePhase.IDLE,
+    // The pool's status line (page/pool-status.js): what it reads, and
+    // whether that is an answer new enough to be seen over a run's caption.
     statusMessage: '',
+    statusNotice: false,
     availabilityText: '',
     teamItemUsage: null,
     teamItemContext: null,
@@ -132,12 +138,14 @@ export function mountPoolOptimizer(container, options = {}) {
     state,
     data,
     setDetails,
+    status: null,
     run: null,
     render,
     writeUrl,
     absorbPool,
     recomputeItemRecommendations,
   };
+  page.status = createPoolStatus(page);
   page.run = createOptimizeRun(page);
   const railSpy = createRailSpy(app);
   const viewKeeper = createViewKeeper(app);
@@ -278,6 +286,7 @@ export function mountPoolOptimizer(container, options = {}) {
   function destroy() {
     destroyed = true;
     page.run.dispose();
+    page.status.dispose();
     setDetails.cancel();
     railSpy.stop();
     viewKeeper.stop();

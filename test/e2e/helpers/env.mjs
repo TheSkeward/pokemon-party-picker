@@ -13,6 +13,17 @@ import { chromium } from 'playwright-core';
 export const BASE_URL =
   process.env.E2E_BASE_URL || 'http://localhost:4199/pokemon-party-picker';
 
+// A pool large enough that its search is still running a moment after it
+// starts, for the specs that act on the page during a run.
+export const LARGE_POOL = [
+  'Gastly', 'Venipede', 'Torchic', 'Togepi', 'Magnemite', 'Budew',
+  'Growlithe', 'Yamask', 'Shellos', 'Espurr', 'Abra', 'Machop', 'Geodude',
+  'Zubat', 'Oddish', 'Poliwag', 'Bellsprout', 'Tentacool', 'Ponyta',
+  'Slowpoke', 'Doduo', 'Seel', 'Grimer', 'Shellder', 'Onix', 'Drowzee',
+  'Krabby', 'Voltorb', 'Exeggcute', 'Cubone', 'Koffing', 'Rhyhorn',
+  'Horsea', 'Goldeen', 'Staryu', 'Scyther', 'Magikarp', 'Eevee',
+].join(', ');
+
 // The installed browsers to try, in order; E2E_BROWSER_CHANNEL names one
 // to use instead.
 const CHANNELS = ['chrome', 'msedge'];

@@ -13,57 +13,49 @@ import {
 } from '../gamestate-backup.js';
 import { withPoolAnnotations } from '../input-groups.js';
 import { withDonors } from '../pool-parsing.js';
-import { setPoolStatus, showRunInterrupted } from './patches.js';
+import { showRunInterrupted } from './patches.js';
 import { clearSavedPool, saveDonors, savePool } from './saved-inputs.js';
 
 // The pool or the donor box changed under the result: it, and the list
-// generated from it, answer for text that is gone. Returns whether a run
-// was interrupted.
+// generated from it, answer for text that is gone. Says whether the edit
+// was saved, and returns whether a run was interrupted.
 function dropResult(page, saved) {
   const { state, run, setDetails } = page;
   const interrupted = run.discardResult();
   state.availabilityText = '';
   setDetails.cancel();
-  state.statusMessage = saved
+  page.status.say(saved
     ? 'Saved locally'
-    : 'Not saved locally; browser storage is full.';
+    : 'Not saved locally; browser storage is full.');
   return interrupted;
 }
 
 async function copyText(page, text, copied) {
   try {
     await navigator.clipboard.writeText(text);
-    setPoolStatus(page, copied);
+    page.status.say(copied);
   } catch {
-    setPoolStatus(page, 'Clipboard copy failed');
+    page.status.say('Clipboard copy failed');
   }
 }
 
-async function copyPool(page) {
-  const { state } = page;
-  const text = state.query.trim();
+function copyPool(page) {
+  const text = page.state.query.trim();
   if (!text) {
-    state.statusMessage = 'Nothing to copy';
-  } else {
-    try {
-      await navigator.clipboard.writeText(text);
-      state.statusMessage = 'Copied pool to clipboard';
-    } catch {
-      state.statusMessage = 'Clipboard copy failed';
-    }
+    page.status.say('Nothing to copy');
+    return;
   }
-  page.render();
+  void copyText(page, text, 'Copied pool to clipboard');
 }
 
 async function generateAvailabilityList(page) {
   const { state, data } = page;
   if (!state.result?.lines?.length) {
-    state.statusMessage =
-      'Optimize the team first so your pool is resolved, then generate the list.';
-    page.render();
+    page.status.say(
+      'Optimize the team first so your pool is resolved, then generate the list.');
     return;
   }
-  setPoolStatus(page, 'Generating availability list…');
+  page.status.say('Generating availability list…');
   try {
     const poolQuery = withDonors(state.query, state.donorQuery);
     const text = await buildPoolAvailabilityText({
@@ -80,12 +72,12 @@ async function generateAvailabilityList(page) {
     } catch {
       copied = false;
     }
-    state.statusMessage = copied
+    page.status.say(copied
       ? 'Availability list copied to clipboard'
-      : 'Availability list ready below';
+      : 'Availability list ready below');
     page.render();
   } catch (error) {
-    setPoolStatus(page, `Could not generate list: ${error?.message || error}`);
+    page.status.say(`Could not generate list: ${error?.message || error}`);
   }
 }
 
@@ -98,15 +90,13 @@ async function importGamestate(page) {
     text = await navigator.clipboard.readText();
   } catch {
     // The clipboard is the only way in, so the status says how to open it.
-    setPoolStatus(
-      page,
+    page.status.say(
       'Import failed: the browser did not let this page read the ' +
       'clipboard. Allow clipboard access for this site, then import again.');
     return;
   }
   if (!text.trim()) {
-    setPoolStatus(
-      page,
+    page.status.say(
       'Import failed: the clipboard holds no text. Copy a gamestate ' +
       'export, then import again.');
     return;
@@ -115,7 +105,7 @@ async function importGamestate(page) {
   try {
     imported = parseGamestateImport(text);
   } catch (error) {
-    setPoolStatus(page, `Import from the clipboard failed: ${error.message}`);
+    page.status.say(`Import from the clipboard failed: ${error.message}`);
     return;
   }
   if (
@@ -137,8 +127,8 @@ async function importGamestate(page) {
   saveProgression(imported.progression);
   state.progression = loadSavedProgression();
   run.discardResult();
+  page.status.say('Gamestate imported. Optimizing…');
   page.render();
-  setPoolStatus(page, 'Gamestate imported. Optimizing…');
   void run.optimize({ exhaustive: false, background: true });
 }
 
@@ -166,7 +156,6 @@ export function bindPoolControls(page) {
     // An interrupted run's progress clears in place: no render, so the box
     // keeps its focus and nothing on the page moves.
     if (interrupted) showRunInterrupted(page);
-    setPoolStatus(page, state.statusMessage);
   });
 
   // The pool's entries join the donor box when the edit is committed
@@ -178,7 +167,6 @@ export function bindPoolControls(page) {
     state.donorQuery = event.target.value;
     const interrupted = dropResult(page, saveDonors(state.donorQuery));
     if (interrupted) showRunInterrupted(page);
-    setPoolStatus(page, state.statusMessage);
   });
 
   on('#optimize-button', 'click', () => run.optimize());
@@ -220,7 +208,7 @@ export function bindPoolControls(page) {
     // pool empties the fieldable subset only.
     state.query = '';
     run.discardResult();
-    state.statusMessage = 'Saved pool cleared';
+    page.status.say('Saved pool cleared');
     page.setDetails.cancel();
     clearSavedPool();
     page.writeUrl();

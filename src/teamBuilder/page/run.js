@@ -198,7 +198,8 @@ export function createOptimizeRun(page) {
     if (superseded()) return;
 
     // The status line keeps its last message under the run's caption, so
-    // the line holds its height (team-builder-view.js renderPoolStatus).
+    // the line holds its height, and shows it while it is an answer still
+    // being read (pool-status.js).
     state.phase = OptimizePhase.OPTIMIZING;
     state.confidence = null;
     state.investment = null;
@@ -281,7 +282,7 @@ export function createOptimizeRun(page) {
       // The team is in. The analysis owns the phase from here, so the
       // render below shows its panels as pending rather than the bar.
       state.phase = OptimizePhase.ANALYZING;
-      state.statusMessage = summarize(result, saved);
+      page.status.settle(summarize(result, saved));
 
       page.writeUrl();
       const renderStart = Date.now();
@@ -303,7 +304,7 @@ export function createOptimizeRun(page) {
       progress.stop();
       state.phase = OptimizePhase.FAILED;
       state.result = null;
-      state.statusMessage = `Optimization failed: ${error?.message || error}`;
+      page.status.settle(`Optimization failed: ${error?.message || error}`);
       setDetails.cancel();
       page.render();
     }

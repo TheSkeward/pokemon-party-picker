@@ -726,7 +726,9 @@ button:hover {
 /* The pool's status line and the optimize progress under it hold their
    space at all times, so a run starting or ending moves nothing. The status
    text and the run's caption share one line; whichever is not in use keeps
-   its box and is only unseen. */
+   its box and is only unseen. A run's caption is the one in use, except
+   while the status is an answer to the player still being read
+   (data-notice). */
 .pool-status {
   display: grid;
   gap: var(--space-1);
@@ -744,7 +746,8 @@ button:hover {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.pool-status[data-optimizing] .pool-status-text,
+.pool-status[data-optimizing]:not([data-notice]) .pool-status-text,
+.pool-status[data-optimizing][data-notice] .pool-status-caption,
 .pool-status:not([data-optimizing]) .pool-status-caption,
 .pool-status:not([data-optimizing]) .optimize-progress {
   visibility: hidden;

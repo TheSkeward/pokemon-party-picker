@@ -5,7 +5,6 @@
  */
 import { setPoolEntryLock } from '../pool-parsing.js';
 import { buildPerformanceReport } from '../telemetry.js';
-import { setPoolStatus } from './patches.js';
 import { saveTeamSort } from './saved-inputs.js';
 
 // How long a set card stays marked after "moves" jumps to it.
@@ -115,9 +114,9 @@ export function bindTeamControls(page) {
       try {
         await navigator.clipboard.writeText(
           JSON.stringify(buildPerformanceReport(), null, 2));
-        setPoolStatus(page, 'Performance report copied to clipboard');
+        page.status.say('Performance report copied to clipboard');
       } catch {
-        setPoolStatus(page, 'Clipboard copy failed');
+        page.status.say('Clipboard copy failed');
       }
     });
 }

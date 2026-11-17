@@ -24,12 +24,6 @@ const STALE_NOTE =
   'Progression changed; re-optimize for current scores and legal move notes.';
 
 /** @param {!Object} page @param {?string} message */
-export function setPoolStatus(page, message) {
-  const node = page.app.querySelector('[data-pool-status]');
-  if (node) node.textContent = message || '';
-}
-
-/** @param {!Object} page @param {?string} message */
 export function setProgressionStatus(page, message) {
   const node = page.app.querySelector('[data-progression-status]');
   if (node) node.textContent = message || '';

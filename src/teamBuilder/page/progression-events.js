@@ -64,9 +64,9 @@ function commit(page, progression) {
 function finishItemsEdit(page, message, { refocusAdd, flashItemId } = {}) {
   const { app, state, run } = page;
   const saved = saveProgression(state.progression);
-  state.statusMessage = saved
+  page.status.say(saved
     ? 'Saved locally'
-    : 'Held items could not be saved locally; browser storage is full.';
+    : 'Held items could not be saved locally; browser storage is full.');
   page.recomputeItemRecommendations();
   const stale = run.isResultStale();
   page.render();

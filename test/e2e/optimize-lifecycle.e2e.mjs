@@ -3,17 +3,10 @@
 // wrong and no unit test loads it to see: an edit during a run let the old
 // pool's team land as current, "No cap" kept the cap it claimed to lift,
 // and the result cache is only ever exercised by a real IndexedDB.
-import { launchBrowser, openPoolPage, check } from './helpers/env.mjs';
+import {
+  LARGE_POOL, launchBrowser, openPoolPage, check,
+} from './helpers/env.mjs';
 
-// Large enough that the search is still running a moment after the click.
-const LARGE = [
-  'Gastly', 'Venipede', 'Torchic', 'Togepi', 'Magnemite', 'Budew',
-  'Growlithe', 'Yamask', 'Shellos', 'Espurr', 'Abra', 'Machop', 'Geodude',
-  'Zubat', 'Oddish', 'Poliwag', 'Bellsprout', 'Tentacool', 'Ponyta',
-  'Slowpoke', 'Doduo', 'Seel', 'Grimer', 'Shellder', 'Onix', 'Drowzee',
-  'Krabby', 'Voltorb', 'Exeggcute', 'Cubone', 'Koffing', 'Rhyhorn',
-  'Horsea', 'Goldeen', 'Staryu', 'Scyther', 'Magikarp', 'Eevee',
-].join(', ');
 // Names the donor box has not seen, enough to add a line to it.
 const NEWCOMERS = [
   'Froakie', 'Spearow', 'Pachirisu', 'Pidove', 'Lillipup', 'Purrloin',
@@ -25,7 +18,7 @@ try {
   const page = await openPoolPage(browser);
 
   // An edit while the optimizer runs disowns that run.
-  await page.fill('#pool-query-input', LARGE);
+  await page.fill('#pool-query-input', LARGE_POOL);
   await page.click('#optimize-button');
   await page.waitForSelector('[data-optimizing]', { timeout: 20_000 });
   await page.evaluate(() => {

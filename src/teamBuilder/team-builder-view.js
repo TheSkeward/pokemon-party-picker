@@ -328,10 +328,12 @@ const POOL_ENTRY_MARKS = [
 // their space whether or not a run is on, so starting or finishing one
 // moves nothing below. During a run the caption takes the line, and the
 // status text keeps its place unseen: a long one would otherwise give a
-// line back and take it again.
+// line back and take it again. The exception is an answer to the player
+// that is still new (page/pool-status.js): it is seen in the caption's
+// place until it has been up long enough to read.
 function renderPoolStatus(state, optimizing) {
   return `
-    <div class="pool-status"${optimizing ? ' data-optimizing' : ''}>
+    <div class="pool-status"${optimizing ? ' data-optimizing' : ''}${state.statusNotice ? ' data-notice' : ''}>
       <span class="muted pool-status-text" data-pool-status role="status">${escapeHtml(state.statusMessage)}</span>
       <span class="muted pool-status-caption" data-optimize-progress-label>${optimizing ? `Optimizing pool against precomputed ${escapeHtml(state.family)} set data...` : ''}</span>
       <div class="optimize-progress">
