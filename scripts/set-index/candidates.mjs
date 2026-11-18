@@ -1,12 +1,15 @@
+import { setLadder } from '../../src/usage-family.js';
+
 /**
- * Moveset sources for a family, in formatOrder × cutoffPriority order (the
- * tier ladder set stitching descends).
+ * Moveset sources for a usage family, in formatOrder × cutoffPriority order
+ * (the tier ladder set stitching descends). An extension's sets are read
+ * over its own formats and then its base family's, all of them its tiers.
  *
  * @return {!Array<{family: string, selection: string, formatId: string,
  *     cutoff: number, months: !Array<string>}>}
  */
 export function getMovesetCandidates(availability, family, selection) {
-  const familyConfig = availability?.familyConfigs?.[family];
+  const familyConfig = setLadder(availability, family);
 
   if (!familyConfig) {
     throw new Error(`Missing family config for ${family}`);

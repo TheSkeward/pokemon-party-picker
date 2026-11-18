@@ -1,6 +1,7 @@
 import { dataUrl } from './utils/data-url.js';
 import { toId as normalizeSearch } from './utils/ids.js';
 import { dex } from './games/dex.js';
+import { baseFamilyOf } from './usage-family.js';
 
 const LEAD_SMOOTHING_K = 200;
 
@@ -276,7 +277,10 @@ export function resolveQueryEntries(query, pokemonIndex) {
 }
 
 // The resolver index holds one slice per family, every month aggregated.
-async function loadResolverIndex(family) {
+// An extension ranks nothing itself (usage-family.js): its Pokémon are
+// ranked by its base family's index.
+async function loadResolverIndex(usageFamily) {
+  const family = baseFamilyOf(usageFamily);
   if (resolverIndexCache.has(family)) return resolverIndexCache.get(family);
 
   // Cache the in-flight load, not only its resolved value. A large scoring pool

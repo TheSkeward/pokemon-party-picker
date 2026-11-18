@@ -89,6 +89,7 @@ import {
 } from './line-reachability.js';
 import { dex } from '../games/dex.js';
 import { isMegaRingOpen } from '../games/evolution.js';
+import { rankLadder } from '../usage-family.js';
 
 // --- Incremental caches ----------------------------------------------------
 // In a playthrough you mostly grow the pool one mon at a time at a fixed game
@@ -1089,9 +1090,9 @@ async function resolvePoolLine({
   // that SAME w against its OWN prior, so a lesser line-mate can't dodge
   // the endgame drag by having a trivially-complete set while the real
   // form converges.
-  const familyConfig = availability?.familyConfigs?.[family] || {};
-  const formatOrder = familyConfig.formatOrder || [];
-  const cutoffPriority = familyConfig.cutoffPriority || [];
+  const ladder = rankLadder(availability, family) || {};
+  const formatOrder = ladder.formatOrder || [];
+  const cutoffPriority = ladder.cutoffPriority || [];
   // An unset cap is no cap, as everywhere else: read as zero it put every
   // line's usage trust at its floor.
   const levelCap = normalizeLevelCap(progression.levelCap);

@@ -1,3 +1,5 @@
+import { monotypeFamilyId } from '../src/usage-family.js';
+
 /**
  * Usage-data families: each is one generation's ladder of formats, strongest
  * tier first. A game names the families it draws its prior from; the family
@@ -175,6 +177,69 @@ export const REAL_FORMATS = [
   { id: 'gen9doublesou', label: 'Gen 9 DOU', family: 'gen9natdexdoubles' },
   { id: 'gen9doublesuu', label: 'Gen 9 DUU', family: 'gen9natdexdoubles' },
 ];
+
+// The types of Smogon's per-type Monotype statistics.
+const MONOTYPE_TYPES = [
+  'Bug', 'Dark', 'Dragon', 'Electric', 'Fairy', 'Fighting', 'Fire', 'Flying',
+  'Ghost', 'Grass', 'Ground', 'Ice', 'Normal', 'Poison', 'Psychic', 'Rock',
+  'Steel', 'Water',
+];
+
+const monotypeFormatId = (type) => `gen7monotype-mono${type.toLowerCase()}`;
+
+/**
+ * Formats read only through a family extension (src/usage-family.js):
+ * their usage sources are fetched and nothing else is, so they have no tab,
+ * no browser dataset and no team corpus. `extends` names the family whose
+ * rating cutoffs they share. `statsDir` is the folder under a month that
+ * holds the format's files when it is not the month's own, and `months`
+ * the span Smogon published it over, `last` given once that history is
+ * closed: no month outside the span is asked for.
+ *
+ * Gen 7 Monotype, as Smogon split it by the type a team was built around,
+ * from April 2017 until the generation ended. The whole ladder is not
+ * read: it favours no Pokémon of a type that the type's own teams do not.
+ * @type {!Array<{id: string, label: string, extends: string,
+ *     statsDir: (string|undefined),
+ *     months: {first: string, last: (string|undefined)}}>}
+ */
+export const EXTENSION_FORMATS = MONOTYPE_TYPES.map((type) => ({
+  id: monotypeFormatId(type),
+  label: `Gen 7 Mono ${type}`,
+  extends: 'singles',
+  statsDir: 'monotype',
+  months: { first: '2017-04', last: '2019-10' },
+}));
+
+/**
+ * Family extensions: a family read with further formats that supply sets
+ * (src/usage-family.js). A monotype run takes the sets of the Pokémon its
+ * type's Monotype teams favoured from those teams. Doubles has no Monotype
+ * ladder, so only Singles is extended.
+ * @type {!Object<string, {label: string, base: string, monotype: string,
+ *     formatOrder: !Array<string>}>}
+ */
+export const FAMILY_EXTENSIONS = Object.fromEntries(
+  MONOTYPE_TYPES.map((type) => [
+    monotypeFamilyId('singles', type),
+    {
+      label: `${type} Monotype`,
+      base: 'singles',
+      monotype: type,
+      formatOrder: [monotypeFormatId(type)],
+    },
+  ]),
+);
+
+/**
+ * @param {string} family A family of FAMILY_CONFIGS.
+ * @return {!Array<string>} The ids of the family's extensions.
+ */
+export function extensionsOf(family) {
+  return Object.keys(FAMILY_EXTENSIONS).filter(
+    (id) => FAMILY_EXTENSIONS[id].base === family,
+  );
+}
 
 /** Singles format ids, strongest tier first. @type {!Array<string>} */
 export const FORMAT_POWER_ORDER = FAMILY_CONFIGS.singles.formatOrder;

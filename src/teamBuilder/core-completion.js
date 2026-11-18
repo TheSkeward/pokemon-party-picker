@@ -12,6 +12,7 @@
  */
 import { dataUrl } from '../utils/data-url.js';
 import { fetchJsonCached } from '../utils/fetch-json-cached.js';
+import { baseFamilyOf } from '../usage-family.js';
 import { lineChoices } from './teammate-synergy.js';
 
 const availableIdsCache = new Map();
@@ -22,7 +23,8 @@ function loadAvailableIds(family) {
   if (!availableIdsCache.has(family)) {
     availableIdsCache.set(
       family,
-      fetchJsonCached(dataUrl(`core-index/${family}/index.json`))
+      fetchJsonCached(
+        dataUrl(`core-index/${baseFamilyOf(family)}/index.json`))
         .then((ids) => new Set(Array.isArray(ids) ? ids : []))
         .catch(() => new Set()),
     );
@@ -41,7 +43,7 @@ async function loadCoreEntry({ family, pokemonId }) {
   if (!available.has(pokemonId)) return null;
   try {
     return await fetchJsonCached(
-      dataUrl(`core-index/${family}/${pokemonId}.json`),
+      dataUrl(`core-index/${baseFamilyOf(family)}/${pokemonId}.json`),
     );
   } catch {
     return null;

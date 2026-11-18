@@ -116,7 +116,7 @@ export function refreshLegalMovesPanel(page) {
 export function refreshTeamAnalysisPanel(page) {
   const { app, state, data } = page;
   renderTeamAnalysisPanel(app.querySelector('#reborn-team-analysis-root'), {
-    family: state.family,
+    family: page.usageFamily(),
     itemAssignments: state.itemRecommendations,
     lines: state.result?.lines || [],
     pokemonIndex: data.pokemonIndex,

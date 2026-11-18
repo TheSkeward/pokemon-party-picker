@@ -1,5 +1,4 @@
-import { dataUrl } from '../utils/data-url.js';
-import { fetchJsonCached } from '../utils/fetch-json-cached.js';
+import { fetchSetDetail } from '../setDetails/set-index.js';
 import { moveId as toMoveId } from '../utils/ids.js';
 
 /**
@@ -86,13 +85,12 @@ function topUsageName(entries) {
   return best?.name || null;
 }
 
-// The set index holds one slice, every month aggregated.
+// A detail that cannot be read is no detail: the set is then built without
+// the competitive prior.
 async function fetchSetIndex({ family, pokemonId }) {
   if (!family || !pokemonId) return null;
   try {
-    return await fetchJsonCached(
-      dataUrl(`set-index/${family}/all/${pokemonId}.json`),
-    );
+    return await fetchSetDetail({ family, pokemonId });
   } catch {
     return null;
   }

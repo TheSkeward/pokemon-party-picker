@@ -16,6 +16,7 @@
  */
 import { dataUrl } from '../utils/data-url.js';
 import { fetchJsonCached } from '../utils/fetch-json-cached.js';
+import { baseFamilyOf } from '../usage-family.js';
 
 /**
  * Percent of learners' sets below which a move with no usage on the mon
@@ -72,7 +73,7 @@ export async function loadMovePrior(family) {
   if (!family) return active;
   if (!tablesByFamily.has(family)) {
     const data = await fetchJsonCached(
-      dataUrl(`move-prior/${family}.json`)).catch(() => null);
+      dataUrl(`move-prior/${baseFamilyOf(family)}.json`)).catch(() => null);
     tablesByFamily.set(family, toTable(data?.moves));
   }
   active = tablesByFamily.get(family);

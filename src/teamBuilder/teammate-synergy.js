@@ -6,6 +6,7 @@
  */
 import { dataUrl } from '../utils/data-url.js';
 import { fetchJsonCached } from '../utils/fetch-json-cached.js';
+import { baseFamilyOf } from '../usage-family.js';
 
 // The per-family listing of which mons HAVE an index file. Consulted before
 // any per-mon fetch so mons without data (a normal state — only mons with a
@@ -16,7 +17,7 @@ import { fetchJsonCached } from '../utils/fetch-json-cached.js';
 async function loadAvailableIds(family) {
   try {
     const ids = await fetchJsonCached(
-      dataUrl(`teammate-index/${family}/all/index.json`),
+      dataUrl(`teammate-index/${baseFamilyOf(family)}/all/index.json`),
     );
     return Array.isArray(ids) ? new Set(ids) : null;
   } catch {
@@ -35,7 +36,8 @@ async function loadTeammateLift({ family, pokemonId }) {
   if (available && !available.has(pokemonId)) return null;
   try {
     return await fetchJsonCached(
-      dataUrl(`teammate-index/${family}/all/${pokemonId}.json`),
+      dataUrl(
+        `teammate-index/${baseFamilyOf(family)}/all/${pokemonId}.json`),
     );
   } catch {
     return null;

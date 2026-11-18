@@ -60,6 +60,9 @@ export function renderTeamBuilderPage({
   resultHeld = false,
   setDetails,
   state,
+  // The usage family the gamestate reads (pool-widget.js): the analysis
+  // panel builds its sets from it, as the optimizer did.
+  usageFamily = state.family,
 }) {
   // Ordered for playthrough cadence: the pool with the badge picker and
   // the per-fight levers (slots, opponent bias) beside Optimize, then the
@@ -103,7 +106,7 @@ export function renderTeamBuilderPage({
   const analysisPanelReady = renderTeamAnalysisPanel(
     app.querySelector('#reborn-team-analysis-root'),
     {
-      family: state.family,
+      family: usageFamily,
       itemAssignments: state.itemRecommendations,
       lines: state.result?.lines || [],
       pokemonIndex,

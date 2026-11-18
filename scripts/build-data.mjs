@@ -6,7 +6,9 @@ import { movesetBlocks, sectionEntries } from './smogon-moveset-text.mjs';
 import {
   CUTOFF_PRIORITY,
   DEFAULT_RATING,
+  EXTENSION_FORMATS,
   FAMILY_CONFIGS,
+  FAMILY_EXTENSIONS,
   FORMAT_POWER_ORDER,
   REAL_FORMATS,
   STATS_ROOT,
@@ -25,10 +27,16 @@ const CURRENT_MONTH_TTL_MS = 6 * 60 * 60 * 1000;
 
 const REAL_FORMATS_BY_ID =
   new Map(REAL_FORMATS.map((format) => [format.id, format]));
-const ALL_FORMAT_IDS = new Set(REAL_FORMATS.map((format) => format.id));
 const REAL_FORMAT_ORDER = REAL_FORMATS.map((format) => format.id);
-const REAL_FORMAT_ORDER_INDEX =
-  new Map(REAL_FORMAT_ORDER.map((id, index) => [id, index]));
+// Every format usage sources are read for: the browsable formats, then the
+// ones read only through a family extension. Only the first get a browser
+// dataset.
+const SOURCE_FORMATS = [...REAL_FORMATS, ...EXTENSION_FORMATS];
+const SOURCE_FORMATS_BY_ID =
+  new Map(SOURCE_FORMATS.map((format) => [format.id, format]));
+const SOURCE_FORMAT_ORDER = SOURCE_FORMATS.map((format) => format.id);
+const SOURCE_FORMAT_ORDER_INDEX =
+  new Map(SOURCE_FORMAT_ORDER.map((id, index) => [id, index]));
 
 const counters = {
   cacheHits: 0,
@@ -86,7 +94,7 @@ async function main() {
     printPhaseDelta(`[browser] ${format.id}`, before);
   }
 
-  const resolverTargetIds = getResolverTargetIds({ cli, explicitRealIds });
+  const resolverTargetIds = getResolverTargetIds({ cli });
 
   if (resolverTargetIds.length > 0) {
     console.log(`[resolver] updating availability + sidecars for: ${resolverTargetIds.join(', ')}`);
@@ -98,7 +106,8 @@ async function main() {
     console.log('[resolver] no sidecar update needed; reusing existing availability + sidecars');
   }
 
-  const formatsIndex = REAL_FORMATS.map(
+  // An extension's formats carry no family: no tab lists them.
+  const formatsIndex = SOURCE_FORMATS.map(
     ({ id, label, family }) => ({ id, label, family }));
   await writeJson(path.join(publicDataDir, 'formats.json'), formatsIndex);
 
@@ -152,7 +161,7 @@ Usage:
 
 function validateRequestedFormatIds(requestedFormatIds) {
   for (const formatId of requestedFormatIds) {
-    if (!ALL_FORMAT_IDS.has(formatId)) {
+    if (!SOURCE_FORMATS_BY_ID.has(formatId)) {
       throw new Error(`Unknown format ID: ${formatId}`);
     }
   }
@@ -163,26 +172,37 @@ function getExplicitRealIds(requestedFormatIds) {
   if (requestedFormatIds.length === 0) {
     return [...REAL_FORMAT_ORDER];
   }
-  return sortRealIds(ids);
+  return sortSourceIds(ids);
 }
 
-function getResolverTargetIds({ cli, explicitRealIds }) {
+function getResolverTargetIds({ cli }) {
   if (cli.requestedFormatIds.length === 0) {
-    return [...REAL_FORMAT_ORDER];
+    return [...SOURCE_FORMAT_ORDER];
   }
-  return explicitRealIds;
+  return sortSourceIds(cli.requestedFormatIds);
 }
 
-function sortRealIds(ids) {
+function sortSourceIds(ids) {
   return [...new Set(ids)].sort(
-    (a, b) => (REAL_FORMAT_ORDER_INDEX.get(a) ?? Infinity) - (
-      REAL_FORMAT_ORDER_INDEX.get(b) ?? Infinity),
+    (a, b) => (SOURCE_FORMAT_ORDER_INDEX.get(a) ?? Infinity) - (
+      SOURCE_FORMAT_ORDER_INDEX.get(b) ?? Infinity),
   );
 }
 
+// A format's rating cutoffs are its family's; an extension's format shares
+// those of the family it extends.
 function getCutoffPriorityForFormat(formatId) {
-  const family = REAL_FORMATS_BY_ID.get(formatId)?.family || 'singles';
+  const format = SOURCE_FORMATS_BY_ID.get(formatId);
+  const family = format?.family || format?.extends || 'singles';
   return FAMILY_CONFIGS[family]?.cutoffPriority || CUTOFF_PRIORITY;
+}
+
+// Whether Smogon published a format in a month, as far as its config says:
+// a format with no stated span is asked for in every month.
+function publishedIn(format, month) {
+  const span = format?.months;
+  if (!span) return true;
+  return month >= span.first && (!span.last || month <= span.last);
 }
 
 async function fetchAvailableMonths() {
@@ -296,6 +316,7 @@ async function buildAvailabilityAndResolverSources(
   availability.formatOrder = FORMAT_POWER_ORDER;
   availability.cutoffPriority = CUTOFF_PRIORITY;
   availability.familyConfigs = FAMILY_CONFIGS;
+  availability.familyExtensions = FAMILY_EXTENSIONS;
   availability.months ||= {};
 
   const existingPokemonIndex = fullBuild
@@ -479,12 +500,14 @@ async function fetchStatsTable(
 
 async function fetchRawText(
   month, formatId, cutoff, subdir, latestAvailableMonth, cli) {
-  const prefix = subdir ? `${subdir}/` : '';
-  const relativePath = subdir
-    ? path.join(month, subdir, `${formatId}-${cutoff}.txt`)
-    : path.join(month, `${formatId}-${cutoff}.txt`);
-  const cachePath = path.join(cacheRootDir, relativePath);
-  const url = `${STATS_ROOT}/${month}/${prefix}${formatId}-${cutoff}.txt`;
+  const format = SOURCE_FORMATS_BY_ID.get(formatId);
+  if (!publishedIn(format, month)) return null;
+  // <month>/[<the format's own folder>/][<data kind>/]<format>-<cutoff>.txt
+  const segments = [
+    month, format?.statsDir, subdir, `${formatId}-${cutoff}.txt`,
+  ].filter(Boolean);
+  const cachePath = path.join(cacheRootDir, ...segments);
+  const url = `${STATS_ROOT}/${segments.join('/')}`;
 
   return getCachedRemoteText({
     url,
@@ -626,6 +649,7 @@ function createEmptyAvailability() {
     cutoffPriority: CUTOFF_PRIORITY,
     familyConfigs: FAMILY_CONFIGS,
     months: {},
+    familyExtensions: FAMILY_EXTENSIONS,
   };
 }
 

@@ -14,6 +14,8 @@ import {
 import { applyGameTheme } from './app/theme.js';
 import { activateGameForFamily, getActiveGame } from './games/registry.js';
 import { loadManifest } from './manifest.js';
+import { usageFamilyFor } from './usage-family.js';
+import { monotypeOf } from './playthrough/monotype.js';
 import { loadSavedProgression } from './playthrough/progression.js';
 import { assignTeamItems } from './teamBuilder/item-recommendations.js';
 import { OptimizePhase } from './teamBuilder/optimize-phase.js';
@@ -70,6 +72,7 @@ import { bindPersistentDetails } from './utils/details-state.js';
  *   writeUrl: function(),
  *   absorbPool: function(),
  *   recomputeItemRecommendations: function(),
+ *   usageFamily: function(): string,
  * }}
  */
 export let TeamBuilderPage;
@@ -127,8 +130,13 @@ export function mountPoolOptimizer(container, options = {}) {
     postAnalysisSkipReason: null,
   };
 
+  // The usage family the gamestate reads its prior from: the tab's family,
+  // or its monotype extension in a monotype run (usage-family.js).
+  const usageFamily = () => usageFamilyFor(
+    data.availability, state.family, monotypeOf(state.progression));
+
   const setDetails = createTeamBuilderSetDetailsLoader({
-    getFamily: () => state.family,
+    getFamily: usageFamily,
     onUpdate: () => render(),
   });
 
@@ -144,6 +152,7 @@ export function mountPoolOptimizer(container, options = {}) {
     writeUrl,
     absorbPool,
     recomputeItemRecommendations,
+    usageFamily,
   };
   page.status = createPoolStatus(page);
   page.run = createOptimizeRun(page);
@@ -229,6 +238,7 @@ export function mountPoolOptimizer(container, options = {}) {
       resultHeld: Boolean(held),
       setDetails,
       state,
+      usageFamily: usageFamily(),
     });
 
     bindPersistentDetails(app);

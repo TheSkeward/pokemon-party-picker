@@ -7,6 +7,7 @@ import {
 } from './current-form-value.js';
 import { tunable } from './scoring-constants.js';
 import { dex } from '../games/dex.js';
+import { rankLadder } from '../usage-family.js';
 
 /**
  * Snapshotted at module load — not a confidence-sweep axis, so late
@@ -88,9 +89,9 @@ export function scoreCandidate({
     };
   }
 
-  const familyConfig = availability?.familyConfigs?.[family] || {};
-  const formatOrder = familyConfig.formatOrder || [];
-  const cutoffPriority = familyConfig.cutoffPriority || [];
+  const ladder = rankLadder(availability, family) || {};
+  const formatOrder = ladder.formatOrder || [];
+  const cutoffPriority = ladder.cutoffPriority || [];
 
   const usagePercent = Math.max(0, usage.value || 0);
   const rawCount = Math.max(0, usage.entry?.rawCount || 0);

@@ -229,7 +229,7 @@ export function createOptimizeRun(page) {
 
       const result = await optimizeTeamFromPool({
         availability: data.availability,
-        family: state.family,
+        family: page.usageFamily(),
         pokemonIndex: data.pokemonIndex,
         progression: runProgression,
         query: state.query,
@@ -261,7 +261,7 @@ export function createOptimizeRun(page) {
         result.team,
         state.progression,
         {
-          family: state.family,
+          family: page.usageFamily(),
           pokemonIndex: data.pokemonIndex,
           query: withDonors(state.query, state.donorQuery),
         },
@@ -270,7 +270,7 @@ export function createOptimizeRun(page) {
       state.teamItemContext = teamItemContext;
       state.teamItemUsage = await loadTeamItemUsage({
         team: result.team,
-        family: state.family,
+        family: page.usageFamily(),
         itemContext: teamItemContext,
       });
       if (superseded()) return;
@@ -389,7 +389,7 @@ export function createOptimizeRun(page) {
       const confidence = await computeTeamConfidence({
         result: forResult,
         availability: data.availability,
-        family: state.family,
+        family: page.usageFamily(),
         progression: state.progression,
         shouldAbort,
       });
@@ -404,7 +404,7 @@ export function createOptimizeRun(page) {
       const investmentStart = Date.now();
       const investment = await computeInvestmentPlan({
         availability: data.availability,
-        family: state.family,
+        family: page.usageFamily(),
         pokemonIndex: data.pokemonIndex,
         progression: state.progression,
         query: state.query,

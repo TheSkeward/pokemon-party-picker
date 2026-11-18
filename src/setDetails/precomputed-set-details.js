@@ -1,6 +1,7 @@
 import { dataUrl } from '../utils/data-url.js';
 import { fetchJsonCached } from '../utils/fetch-json-cached.js';
 import { getActiveGame } from '../games/registry.js';
+import { fetchSetDetail } from './set-index.js';
 import { moveSources } from '../games/legality.js';
 import { getLegalMoveId } from '../playthrough/legal-moves.js';
 import { hydrateLegalMove } from '../move-meta.js';
@@ -136,13 +137,6 @@ export function describePrecomputedSetSource(source) {
       : '');
 
   return source?.primarySource ? `canonical tier ${tier}` : tier;
-}
-
-// The set index holds one slice, every month aggregated.
-async function fetchSetDetail({ family, pokemonId }) {
-  return fetchJsonCached(
-    dataUrl(`set-index/${family}/all/${pokemonId}.json`),
-  );
 }
 
 async function fetchLegalMoves(pokemonId) {

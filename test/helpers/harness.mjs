@@ -171,13 +171,16 @@ export async function runPool({
   overrides = null,
   progression = null,
   scoreAllLines = false,
+  // The usage family the run reads; the page derives it from the gamestate
+  // (usage-family.js).
+  family = 'singles',
 }) {
   const { availability, pokemonIndex } = await loadShared();
   if (overrides) setScoringOverrides(overrides);
   try {
     return await optimizeTeamFromPool({
       availability,
-      family: 'singles',
+      family,
       pokemonIndex,
       progression:
         progression || progressionAt({ badge, levelCap, opponentTypeBias }),

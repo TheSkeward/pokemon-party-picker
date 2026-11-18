@@ -3,6 +3,17 @@ import { DATA_ROOT, HIDDEN_ENTRY_KEYS } from './constants.mjs';
 import { readJsonIfExists } from './io.mjs';
 import { normalizeName } from './string-utils.mjs';
 
+// A tier's aggregate is the same whichever ladder it stands on, and the
+// ladders of one generation share their tiers (a family and its sibling
+// read each other's as fallback; an extension reads its base family's
+// whole ladder), so each tier is read from disk once.
+const tierAggregates = new Map();
+
+/** Forgets the tiers read so far, once no later ladder shares them. */
+export function releaseTierAggregates() {
+  tierAggregates.clear();
+}
+
 /**
  * Aggregates a candidate's monthly moveset sidecars, weighting each entry's
  * usage% by that month's rawCount so the final percentages are count-based.
@@ -16,6 +27,24 @@ import { normalizeName } from './string-utils.mjs';
  *     monthly-summed `entry` (moves/items/abilities/spreads).
  */
 export async function aggregateCandidateSource(candidate) {
+  const key =
+    `${candidate.selection}|${candidate.formatId}|${candidate.cutoff}`;
+  if (!tierAggregates.has(key)) {
+    tierAggregates.set(key, aggregateTier(candidate));
+  }
+  // The tier's place is the candidate's: its ladder and its rank on it.
+  const placed = new Map();
+  for (const [pokemonId, aggregate] of await tierAggregates.get(key)) {
+    placed.set(pokemonId, {
+      ...aggregate,
+      family: candidate.family,
+      tierRank: candidate.tierRank,
+    });
+  }
+  return placed;
+}
+
+async function aggregateTier(candidate) {
   const byPokemon = new Map();
 
   for (const month of candidate.months) {

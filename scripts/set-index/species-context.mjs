@@ -89,6 +89,30 @@ export function buildRelatedPokemonChain(pokemon, speciesContext) {
   return chain;
 }
 
+/**
+ * The Pokémon whose details a set of details is stitched from: the set
+ * itself and, transitively, every related Pokémon one of them borrows from.
+ * @param {!Iterable<string>} pokemonIds
+ * @param {!Array<{id: string, name: string}>} pokemonIndex
+ * @param {!Object} speciesContext From buildSpeciesContext.
+ * @return {!Set<string>}
+ */
+export function relatedClosure(pokemonIds, pokemonIndex, speciesContext) {
+  const byId = new Map(pokemonIndex.map((pokemon) => [pokemon.id, pokemon]));
+  const closure = new Set();
+  const pending = [...pokemonIds];
+  while (pending.length) {
+    const pokemonId = pending.pop();
+    if (closure.has(pokemonId) || !byId.has(pokemonId)) continue;
+    closure.add(pokemonId);
+    for (const related of buildRelatedPokemonChain(
+      byId.get(pokemonId), speciesContext)) {
+      pending.push(related.id);
+    }
+  }
+  return closure;
+}
+
 function appendPreEvolutionChain({ add, baseId, speciesContext }) {
   let current = speciesContext.infoByPokemonId.get(baseId);
   const seen = new Set();

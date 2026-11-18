@@ -473,6 +473,20 @@ higher, however thin the target's usage: the usage is evidence of what plays,
 the score is not. A canonical non-Mega fallback remains when the target is a
 Mega. With no usage signal anywhere, the existing score-based fallback remains.
 
+A usage family may be extended (`src/usage-family.js`): further formats
+that supply sets and do not rank. A monotype run in Singles reads Smogon's
+Gen 7 Monotype statistics for its type, what teams built around that type
+ran, this way. A Pokémon those teams favoured (the usage rule, run over
+that format alone, ranks it there) takes its canonical set from them; every
+other Pokémon keeps its Singles set. Every Pokémon keeps its Singles rank.
+Usage on teams of one type is conditional on that type, so most of a
+type's regular Pokémon clear the 25-game bar in it and the format has no
+tiers below it to tell them apart: stacked on the Singles ladder it ranks
+a type's Pokémon almost level and leaves the choice among them to team
+fit. It is therefore evidence of what a Pokémon runs on such a team, not
+of how it compares with the rest of its type. The whole Monotype ladder is
+not read: it favours no Pokémon of a type that the type's own teams do not.
+
 The readiness ramp is line-anchored: the representative form's canonical set
 determines one earned-evidence ramp for the line, while every fielded form is
 blended against its own prior.

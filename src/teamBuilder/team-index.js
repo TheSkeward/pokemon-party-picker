@@ -6,6 +6,7 @@
  */
 import { dataUrl } from '../utils/data-url.js';
 import { fetchJsonCached } from '../utils/fetch-json-cached.js';
+import { baseFamilyOf } from '../usage-family.js';
 
 const teamsCache = new Map();
 
@@ -24,13 +25,15 @@ export async function loadTeamIndex(family) {
 
 async function loadFamilyTeams(family) {
   const formatIds = await fetchJsonCached(
-    dataUrl(`team-index/${family}/index.json`),
+    dataUrl(`team-index/${baseFamilyOf(family)}/index.json`),
   ).catch(() => null);
   if (!Array.isArray(formatIds) || !formatIds.length) return [];
 
   const files = await Promise.all(
     formatIds.map((formatId) =>
-      fetchJsonCached(dataUrl(`team-index/${family}/${formatId}.json`)).catch(
+      fetchJsonCached(
+        dataUrl(`team-index/${baseFamilyOf(family)}/${formatId}.json`),
+      ).catch(
         () => null,
       ),
     ),

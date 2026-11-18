@@ -87,6 +87,9 @@ async function buildFamilyAllIndex(availability, family) {
  * @param {string} family
  * @param {function(string, string, number, string): !Promise<?Object>=}
  *     readSource Month/format/cutoff/kind reader; tests inject fixtures.
+ * @param {{formatOrder: !Array<string>, cutoffPriority: !Array<number>}=}
+ *     ladder The ladder walked: the family's own, unless another is given
+ *     (the set index walks an extension's formats by themselves).
  * @return {!Promise<{resolved: !Object, ranking: !Object, trace: !Object,
  *     lineRanking: !Object, lineTrace: !Object}>}
  */
@@ -94,6 +97,7 @@ export async function resolveAllPokemonUsage(
   availability,
   family,
   readSource = readSourceData,
+  ladder = availability?.familyConfigs?.[family],
 ) {
   const resolved = {}; // first tier the mon appears in at all (the headline)
   const ranking = {}; // first tier whose usage clears the meaningful bar
@@ -104,7 +108,8 @@ export async function resolveAllPokemonUsage(
   const lineTrace = {};
   let tierRank = -1;
 
-  for (const candidate of iterateCandidateSources(availability, family, 'usage')) {
+  const tiers = iterateCandidateSources(availability, family, 'usage', ladder);
+  for (const candidate of tiers) {
     tierRank += 1;
     const aggregate = new Map();
 
@@ -286,10 +291,14 @@ async function resolveAllPokemonLeads(availability, family) {
   return resolved;
 }
 
-function* iterateCandidateSources(availability, family, dataKind) {
-  const familyConfig = availability?.familyConfigs?.[family];
-  const formatOrder = familyConfig?.formatOrder || [];
-  const cutoffPriority = familyConfig?.cutoffPriority || [];
+function* iterateCandidateSources(
+  availability,
+  family,
+  dataKind,
+  ladder = availability?.familyConfigs?.[family],
+) {
+  const formatOrder = ladder?.formatOrder || [];
+  const cutoffPriority = ladder?.cutoffPriority || [];
   const months = Object.keys(availability?.months || {}).sort();
 
   for (const formatId of formatOrder) {

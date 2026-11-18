@@ -64,3 +64,15 @@ test('the builder applies the stepped usage rule and keeps line signals apart', 
   assert.equal(index.lineRanking.babyline, undefined);
   assert.equal(index.lineTrace.babyline.formatId, 'gen7ou');
 });
+
+test('the walk descends the ladder it is given', async () => {
+  // The set index walks an extension's formats by themselves, to learn
+  // which Pokémon they favour.
+  const index = await resolveAllPokemonUsage(
+    availability, 'singles', readSource,
+    { formatOrder: ['gen7uu'], cutoffPriority: [1695] });
+  assert.equal(index.ranking.headline.formatId, 'gen7uu');
+  assert.equal(index.ranking.headline.tierRank, 0);
+  // OU is not on this ladder, so nothing it alone favours is ranked.
+  assert.equal(index.ranking.ranked, undefined);
+});

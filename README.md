@@ -31,7 +31,12 @@ https://theskeward.github.io/pokemon-party-picker/
   when it and the Pokemon that Mega Evolves both have the type, so Mega
   Charizard X belongs to a Fire run and to neither a Flying nor a Dragon
   one. The rest of the pool stays as donors, and the result names them.
-  The setting is part of the saved progression.
+  The setting is part of the saved progression. In Singles a monotype run
+  builds its sets from what Smogon's Gen 7 Monotype teams of its type ran,
+  for the Pokemon those teams favoured: the set card names that source.
+  Every Pokemon is still ranked by the Singles data, so the Usage column
+  names a Singles tier. Doubles has no Monotype ladder and keeps its own
+  data.
 - Keep a Pokemon by suffixing it with `*` (`Larvesta*`): the bench marks
   it as one you mean to hold onto, so it never reads as a cut. Scoring
   ignores the mark.

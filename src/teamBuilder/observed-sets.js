@@ -7,6 +7,7 @@
  */
 import { dataUrl } from '../utils/data-url.js';
 import { fetchJsonCached } from '../utils/fetch-json-cached.js';
+import { baseFamilyOf } from '../usage-family.js';
 
 const availableIdsCache = new Map();
 
@@ -14,7 +15,8 @@ async function loadAvailableIds(family) {
   if (!availableIdsCache.has(family)) {
     availableIdsCache.set(
       family,
-      fetchJsonCached(dataUrl(`observed-sets/${family}/index.json`))
+      fetchJsonCached(
+        dataUrl(`observed-sets/${baseFamilyOf(family)}/index.json`))
         .then((ids) => new Set(Array.isArray(ids) ? ids : []))
         .catch(() => new Set()),
     );
@@ -33,7 +35,7 @@ async function loadObservedSets({ family, pokemonId }) {
   if (!available.has(pokemonId)) return null;
   try {
     return await fetchJsonCached(
-      dataUrl(`observed-sets/${family}/${pokemonId}.json`),
+      dataUrl(`observed-sets/${baseFamilyOf(family)}/${pokemonId}.json`),
     );
   } catch {
     return null;
