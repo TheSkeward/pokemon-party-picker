@@ -32,11 +32,11 @@ https://theskeward.github.io/pokemon-party-picker/
   Charizard X belongs to a Fire run and to neither a Flying nor a Dragon
   one. The rest of the pool stays as donors, and the result names them.
   The setting is part of the saved progression. In Singles a monotype run
-  builds its sets from what Smogon's Gen 7 Monotype teams of its type ran,
-  for the Pokemon those teams favoured: the set card names that source.
-  Every Pokemon is still ranked by the Singles data, so the Usage column
-  names a Singles tier. Doubles has no Monotype ladder and keeps its own
-  data.
+  takes its usage data from Smogon's Gen 7 Monotype teams of its type
+  before the Singles data: the Pokemon those teams ran most rank highest,
+  and their sets are the ones built. A Pokemon they did not run falls back
+  to the Singles data, and one the Monotype format bans keeps its Singles
+  standing. Doubles has no Monotype ladder and keeps its own data.
 - Keep a Pokemon by suffixing it with `*` (`Larvesta*`): the bench marks
   it as one you mean to hold onto, so it never reads as a cut. Scoring
   ignores the mark.

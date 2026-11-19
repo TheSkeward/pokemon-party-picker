@@ -1,8 +1,12 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { compareTraceUsage } from '../src/teamBuilder/trace-usage.js';
+import {
+  compareTraceUsage,
+  usageBarForGames,
+} from '../src/teamBuilder/trace-usage.js';
 import { isLineUsageFormat } from '../src/teamBuilder/usage-line-ranking.js';
+import { usageLadder } from '../src/usage-family.js';
 
 const projectRoot = process.cwd();
 const dataRoot = path.join(projectRoot, 'site-data', 'data');
@@ -11,8 +15,12 @@ const LEAD_SMOOTHING_K = 200;
 
 async function main() {
   const availability = await readJson(path.join(dataRoot, 'availability.json'));
-  const families =
-    Object.keys(availability.familyConfigs || { singles: {}, doubles: {} });
+  // Every usage family: the families, then their extensions, each indexed
+  // over its whole ladder so its tier ranks are computed here alone.
+  const families = [
+    ...Object.keys(availability.familyConfigs || { singles: {}, doubles: {} }),
+    ...Object.keys(availability.familyExtensions || {}),
+  ];
 
   await fs.rm(outputRoot, { recursive: true, force: true });
 
@@ -83,13 +91,19 @@ async function buildFamilyAllIndex(availability, family) {
  * SCORING.md's Usage trust: the headline tier, the first tier clearing the
  * meaningful bar, else the best relaxed trace, and the same pair with LC and
  * NFE excluded for evolutionary lines.
+ *
+ * An extension's own formats come first on its ladder and are split into
+ * usage bands (src/usage-family.js): a Pokémon that clears the meaningful
+ * bar on one of their tiers is ranked in the band its usage there reaches,
+ * band before tier, so every band stands above the next like a format. A
+ * Pokémon those formats list and pass over is ranked by the base family's
+ * tiers, below every band. One they never list is banned from the format,
+ * which is evidence of nothing: it keeps the rank its tier holds on the
+ * base family's ladder, as if the extension were not there.
  * @param {!Object} availability
- * @param {string} family
+ * @param {string} family A usage family: a family or an extension of one.
  * @param {function(string, string, number, string): !Promise<?Object>=}
  *     readSource Month/format/cutoff/kind reader; tests inject fixtures.
- * @param {{formatOrder: !Array<string>, cutoffPriority: !Array<number>}=}
- *     ladder The ladder walked: the family's own, unless another is given
- *     (the set index walks an extension's formats by themselves).
  * @return {!Promise<{resolved: !Object, ranking: !Object, trace: !Object,
  *     lineRanking: !Object, lineTrace: !Object}>}
  */
@@ -97,7 +111,6 @@ export async function resolveAllPokemonUsage(
   availability,
   family,
   readSource = readSourceData,
-  ladder = availability?.familyConfigs?.[family],
 ) {
   const resolved = {}; // first tier the mon appears in at all (the headline)
   const ranking = {}; // first tier whose usage clears the meaningful bar
@@ -106,11 +119,33 @@ export async function resolveAllPokemonUsage(
   const trace = {};
   const lineRanking = {};
   const lineTrace = {};
-  let tierRank = -1;
 
-  const tiers = iterateCandidateSources(availability, family, 'usage', ladder);
-  for (const candidate of tiers) {
-    tierRank += 1;
+  const tiers = [...iterateCandidateSources(availability, family, 'usage')];
+  // The extension's own tiers, which lead the ladder, the bars of the bands
+  // they are split into, and the Pokémon any of them lists.
+  const ladder = usageLadder(availability, family);
+  const ownFormats = new Set(ladder?.ownFormats || []);
+  const ownTiers = tiers.filter((tier) => ownFormats.has(tier.formatId)).length;
+  const bandBars = (ladder?.bandGames || []).map(usageBarForGames);
+  const bandedTiers = bandBars.length * ownTiers;
+  const listedOnOwn = new Set();
+  // Where a tier's row stands on the ladder. An own tier: the band the
+  // usage reaches, then the tier; below the bar, the last band's place. A
+  // base tier: after every band, unless the Pokémon is banned from the
+  // extension's formats.
+  const rankOn = (tierIndex, own, pokemonId, value) => {
+    if (!own) {
+      return listedOnOwn.has(pokemonId)
+        ? bandedTiers + (tierIndex - ownTiers)
+        : tierIndex - ownTiers;
+    }
+    const reached = bandBars.findIndex((bar) => value >= bar);
+    const band = reached < 0 ? bandBars.length - 1 : reached;
+    return band * ownTiers + tierIndex;
+  };
+
+  for (const [tierIndex, candidate] of tiers.entries()) {
+    const own = ownFormats.has(candidate.formatId);
     const aggregate = new Map();
 
     for (const month of candidate.months) {
@@ -118,6 +153,7 @@ export async function resolveAllPokemonUsage(
       if (!source?.pokemon) continue;
 
       for (const [pokemonId, entry] of Object.entries(source.pokemon)) {
+        if (own) listedOnOwn.add(pokemonId);
         if (resolved[pokemonId] && ranking[pokemonId] &&
           lineRanking[pokemonId]) continue;
 
@@ -143,7 +179,7 @@ export async function resolveAllPokemonUsage(
 
       const value = entry.totalUsage / candidate.months.length;
       const tierRow = {
-        tierRank,
+        tierRank: rankOn(tierIndex, own, pokemonId, value),
         formatId: candidate.formatId,
         cutoff: candidate.cutoff,
         value,
@@ -291,12 +327,8 @@ async function resolveAllPokemonLeads(availability, family) {
   return resolved;
 }
 
-function* iterateCandidateSources(
-  availability,
-  family,
-  dataKind,
-  ladder = availability?.familyConfigs?.[family],
-) {
+function* iterateCandidateSources(availability, family, dataKind) {
+  const ladder = usageLadder(availability, family);
   const formatOrder = ladder?.formatOrder || [];
   const cutoffPriority = ladder?.cutoffPriority || [];
   const months = Object.keys(availability?.months || {}).sort();

@@ -474,18 +474,28 @@ the score is not. A canonical non-Mega fallback remains when the target is a
 Mega. With no usage signal anywhere, the existing score-based fallback remains.
 
 A usage family may be extended (`src/usage-family.js`): further formats
-that supply sets and do not rank. A monotype run in Singles reads Smogon's
-Gen 7 Monotype statistics for its type, what teams built around that type
-ran, this way. A Pokémon those teams favoured (the usage rule, run over
-that format alone, ranks it there) takes its canonical set from them; every
-other Pokémon keeps its Singles set. Every Pokémon keeps its Singles rank.
-Usage on teams of one type is conditional on that type, so most of a
-type's regular Pokémon clear the 25-game bar in it and the format has no
-tiers below it to tell them apart: stacked on the Singles ladder it ranks
-a type's Pokémon almost level and leaves the choice among them to team
-fit. It is therefore evidence of what a Pokémon runs on such a team, not
-of how it compares with the rest of its type. The whole Monotype ladder is
-not read: it favours no Pokémon of a type that the type's own teams do not.
+ahead of its ladder. A monotype run in Singles reads Smogon's Gen 7
+Monotype statistics for its type, what teams built around that type ran,
+ahead of the Singles ladder. That format has no tiers below it to sort a
+type's Pokémon, and usage on such teams is conditional on the type, so
+most of a type's regular Pokémon clear the 25-game bar in it: ranked by
+its rating cutoffs alone they stand almost level, and team fit, not
+usage, picks among them. The format is therefore split into usage bands
+by the bar's own measure, the games against such a team within which a
+Pokémon is likely met: 1, 2, 4, 8, 16 and 25 (`USAGE_BAND_GAMES`). A
+Pokémon is ranked in the band its usage reaches on the first cutoff tier
+where it clears the bar, band before cutoff, and each band stands on the
+ladder like a format. A Pokémon those teams list and pass over is ranked
+by the Singles tiers, below every band: the format saw it and chose
+otherwise. One they never list is banned from the format, which is
+evidence of nothing, so it keeps the rank its tier holds on the Singles
+ladder, as if the extension were not there. A Pokémon whose usage source
+is the type's format takes its canonical set from it. The whole Monotype
+ladder is not read: it favours no Pokémon of a type that the type's own
+teams do not, and it lists Pokémon banned before the per-type statistics
+began. What has no source in the extension's formats (the move and item
+tables, real-team cores, observed sets, teammate lift) stays the base
+family's.
 
 The readiness ramp is line-anchored: the representative form's canonical set
 determines one earned-evidence ramp for the line, while every fielded form is
@@ -655,6 +665,8 @@ a genuine core near 63% of the bound and incidental same-tier pair mass near
 - Tunable judgments and scoring version: `src/teamBuilder/scoring-constants.js`
 - Current features and roles: `src/teamBuilder/current-form-value.js`
 - Usage rank, readiness, and final value: `src/teamBuilder/candidate-scoring.js`
+- Usage families, their ladders and extensions: `src/usage-family.js`; the
+  ranks themselves are built by `scripts/build-resolver-index.mjs`
 - Team coverage and defensive fit: `src/teamBuilder/search-kernel.js`
 - Teammate usage synergy: `src/teamBuilder/teammate-synergy.js`
 - Real-team core completion: `src/teamBuilder/core-completion.js`

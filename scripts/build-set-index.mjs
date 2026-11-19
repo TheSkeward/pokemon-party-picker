@@ -1,6 +1,5 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { resolveAllPokemonUsage } from './build-resolver-index.mjs';
 import { FAMILY_CONFIGS, extensionsOf } from './config.mjs';
 import {
   DATA_ROOT,
@@ -95,13 +94,13 @@ async function buildFamilySetIndex({
 }
 
 /**
- * An extension's set index: the details of the Pokémon its own formats
- * favour, the ones the usage rule ranks on one of those formats' tiers.
- * Such a Pokémon takes its set from that tier and is stitched over the
- * extension's whole set ladder (its own tiers, then its base family's,
- * with the base family's fallback behind them). Every other Pokémon keeps
- * the base family's detail, which is not written again; `index.json` lists
- * the ones that are, for the loader.
+ * An extension's set index: the details of the Pokémon whose usage source
+ * is one of its own formats, as its resolver index says. Such a Pokémon
+ * takes its set from that tier and is stitched over the extension's whole
+ * ladder (its own tiers, then its base family's, with the base family's
+ * fallback behind them). Every other Pokémon's source is the tier the base
+ * family gives it, so it keeps the base family's detail, which is not
+ * written again; `index.json` lists the ones that are, for the loader.
  */
 async function buildExtensionSetIndex({
   availability,
@@ -122,23 +121,19 @@ async function buildExtensionSetIndex({
     sourceFamilies,
   });
 
-  // The usage rule over the extension's formats alone says which Pokémon
-  // they favour and on which tier; every other Pokémon's source is the one
-  // its base family's ladder gives it.
-  const own = await resolveAllPokemonUsage(availability, extension, undefined, {
-    formatOrder: availability.familyExtensions[extension].formatOrder,
-    cutoffPriority: availability.familyConfigs[base].cutoffPriority,
-  });
-  const rankings = await loadFamilyRankings(base);
-  for (const [pokemonId, ranking] of Object.entries(own.ranking)) {
-    rankings.rankingByPokemon.set(pokemonId, ranking);
-    rankings.traceByPokemon.delete(pokemonId);
+  const rankings = await loadFamilyRankings(extension);
+  const ownFormats = new Set(
+    availability.familyExtensions[extension].formatOrder);
+  const sourced = new Set();
+  for (const sources of [rankings.rankingByPokemon, rankings.traceByPokemon]) {
+    for (const [pokemonId, source] of sources) {
+      if (ownFormats.has(source.formatId)) sourced.add(pokemonId);
+    }
   }
-  const favoured = new Set(Object.keys(own.ranking));
 
   // A detail borrows entries from the details of its related Pokémon, so
   // those are stitched beside it and left unwritten.
-  const stitched = relatedClosure(favoured, pokemonIndex, speciesContext);
+  const stitched = relatedClosure(sourced, pokemonIndex, speciesContext);
   const written = await stitchAndWrite({
     family: extension,
     formatsIndex,
@@ -147,7 +142,7 @@ async function buildExtensionSetIndex({
     selection,
     sourceAggregates,
     speciesContext,
-    write: (pokemon) => favoured.has(pokemon.id),
+    write: (pokemon) => sourced.has(pokemon.id),
   });
   await writeJson(
     path.join(OUT_ROOT, extension, selection, 'index.json'),

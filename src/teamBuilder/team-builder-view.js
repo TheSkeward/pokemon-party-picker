@@ -558,7 +558,7 @@ function renderResult({
 
   // The bench is its own panel: a full panel break bounds the team table, so
   // scrolling up from the set cards never reads chips as more team.
-  const benchLine = renderBenchLine(result, keptNames);
+  const benchLine = renderBenchLine(result, keptNames, formatsIndex);
   const scoringPoolNote = renderScoringPoolNote(result);
   const benchPanel = benchLine || scoringPoolNote
     ? `
@@ -1018,6 +1018,15 @@ const SHORT_FORMAT = {
   gen7doublesuu: 'DUU',
 };
 
+// A tier's short name: the table's, else its format's label without the
+// generation ("Gen 7 Mono Fire" reads "Mono Fire"), which every format the
+// usage data ranks on has.
+function shortFormat(formatId, formatsIndex = []) {
+  if (SHORT_FORMAT[formatId]) return SHORT_FORMAT[formatId];
+  const label = formatsIndex.find((format) => format.id === formatId)?.label;
+  return label ? label.replace(/^Gen \d+ /, '') : formatId;
+}
+
 /**
  * One compact line under the team table listing the resolved input lines
  * that did NOT make the team, grouped by the tier where each line's best
@@ -1027,9 +1036,14 @@ const SHORT_FORMAT = {
  * what to cut, since the owner once read a worst-fit flag as exactly that.
  * @param {!Object} result An optimizer result carrying team and lines.
  * @param {!Set<string>=} keptNames Normalized input names marked kept.
+ * @param {!Array<!Object>=} formatsIndex The formats index, for tier names.
  * @return {string} The bench line's HTML.
  */
-export function renderBenchLine(result, keptNames = new Set()) {
+export function renderBenchLine(
+  result,
+  keptNames = new Set(),
+  formatsIndex = [],
+) {
   const selectedInputIds = new Set(
     result.team.map((choice) => choice.inputPokemonId),
   );
@@ -1176,10 +1190,11 @@ export function renderBenchLine(result, keptNames = new Set()) {
           chipFormName(a).localeCompare(chipFormName(b)),
       );
 
+      const tier = shortFormat(group.formatId, formatsIndex);
       const label = group.hasSignal
-        ? `${SHORT_FORMAT[group.formatId] || group.formatId} ${group.cutoff}`
+        ? `${tier} ${group.cutoff}`
         : group.games != null
-          ? `${SHORT_FORMAT[group.formatId] || group.formatId} ${group.cutoff} (${group.games})`
+          ? `${tier} ${group.cutoff} (${group.games})`
           : 'no usage data';
 
       const chips = group.entries
@@ -1402,12 +1417,12 @@ function renderMeaningfulUsage(row, formatsIndex, lineUsage = null) {
     // recorded usage at all.
     const games = trace ? gamesToLikelySee(trace.value) : null;
     if (trace && games != null) {
-      const label = `${SHORT_FORMAT[trace.formatId] || trace.formatId} ${trace.cutoff} (${games})`;
+      const label = `${shortFormat(trace.formatId, formatsIndex)} ${trace.cutoff} (${games})`;
       return `<span class="muted" title="${escapeAttr(`Below the meaningful-usage bar (50% chance of being seen within 25 games ≈ 2.7%) in every tier. Best trace signal: ~${truncatePercent(trace.value)} here — 50% chance of being seen within ${games} games. Best available: ${headline || 'none'}`)}">${escapeHtml(label)}${earned}</span>`;
     }
     return `<span class="muted" title="${escapeAttr(`No recorded usage in any tier. Best available: ${headline || 'none'}`)}">no usage data</span>`;
   }
-  const label = `${SHORT_FORMAT[ranking.formatId] || ranking.formatId} ${ranking.cutoff}`;
+  const label = `${shortFormat(ranking.formatId, formatsIndex)} ${ranking.cutoff}`;
   return `<span title="${escapeAttr(`First meaningful tier of the line's best form. Best available: ${headline || 'none'}`)}">${escapeHtml(label)} · ${escapeHtml(truncatePercent(ranking.value))}${form ? ` <span class="muted">${escapeHtml(form)}</span>` : ''}</span>`;
 }
 

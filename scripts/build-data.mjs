@@ -29,8 +29,8 @@ const REAL_FORMATS_BY_ID =
   new Map(REAL_FORMATS.map((format) => [format.id, format]));
 const REAL_FORMAT_ORDER = REAL_FORMATS.map((format) => format.id);
 // Every format usage sources are read for: the browsable formats, then the
-// ones read only through a family extension. Only the first get a browser
-// dataset.
+// ones that exist only as tiers of a family extension. Only the first get
+// a browser dataset.
 const SOURCE_FORMATS = [...REAL_FORMATS, ...EXTENSION_FORMATS];
 const SOURCE_FORMATS_BY_ID =
   new Map(SOURCE_FORMATS.map((format) => [format.id, format]));

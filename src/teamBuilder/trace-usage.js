@@ -20,6 +20,15 @@ export const BASE_SEEN_GAMES = 25;
 export const SEEN_GAMES_STEP = 5;
 
 /**
+ * @param {number} games A horizon N.
+ * @return {number} The usage percent that gives even odds of an appearance
+ *     within N games.
+ */
+export function usageBarForGames(games) {
+  return 100 * (1 - 0.5 ** (1 / games));
+}
+
+/**
  * Smallest N in {30, 35, 40, …} such that usage `valuePercent` gives a ≥50%
  * chance of at least one appearance within N games: (1 − v/100)^N ≤ 0.5.
  * Null for zero/absent usage — that stays honest "no usage data".

@@ -65,14 +65,58 @@ test('the builder applies the stepped usage rule and keeps line signals apart', 
   assert.equal(index.lineTrace.babyline.formatId, 'gen7ou');
 });
 
-test('the walk descends the ladder it is given', async () => {
-  // The set index walks an extension's formats by themselves, to learn
-  // which Pokémon they favour.
-  const index = await resolveAllPokemonUsage(
-    availability, 'singles', readSource,
-    { formatOrder: ['gen7uu'], cutoffPriority: [1695] });
-  assert.equal(index.ranking.headline.formatId, 'gen7uu');
-  assert.equal(index.ranking.headline.tierRank, 0);
-  // OU is not on this ladder, so nothing it alone favours is ranked.
-  assert.equal(index.ranking.ranked, undefined);
+test('an extension ranks its own format in usage bands, ahead of its base', async () => {
+  const extended = {
+    ...availability,
+    familyExtensions: {
+      'singles-monofire': {
+        base: 'singles',
+        formatOrder: ['gen7monotype-monofire'],
+        // Met within one game (50% of teams), four (15.9%) or 25 (2.73%).
+        bandGames: [1, 4, 25],
+      },
+    },
+    months: {
+      '2026-08': {
+        ...availability.months['2026-08'],
+        'gen7monotype-monofire': { usage: [1695] },
+      },
+    },
+  };
+  const tiers = {
+    'gen7monotype-monofire': {
+      staple: 80, regular: 20, fringe: 3, passedover: 1,
+    },
+    gen7ou: { staple: 5, passedover: 5, banned: 5 },
+    gen7uu: { regular: 9, lowtier: 9 },
+  };
+  const read = async (month, formatId) => ({
+    pokemon: Object.fromEntries(
+      Object.entries(tiers[formatId] || {}).map(([id, value]) => [
+        id,
+        { name: id, usage: value, rawCount: 10 },
+      ]),
+    ),
+  });
+  const index = await resolveAllPokemonUsage(extended, 'singles-monofire', read);
+
+  // One own tier, three bands: each band stands a tier above the next.
+  assert.equal(index.ranking.staple.formatId, 'gen7monotype-monofire');
+  assert.equal(index.ranking.staple.tierRank, 0);
+  assert.equal(index.ranking.regular.formatId, 'gen7monotype-monofire');
+  assert.equal(index.ranking.regular.tierRank, 1);
+  assert.equal(index.ranking.fringe.tierRank, 2);
+  // Listed there and passed over: the base ladder ranks it, after every
+  // band, and its trace there takes the last band's place.
+  assert.equal(index.ranking.passedover.formatId, 'gen7ou');
+  assert.equal(index.ranking.passedover.tierRank, 3);
+  // Never listed, so banned: it stands where the base ladder puts it.
+  assert.equal(index.ranking.banned.formatId, 'gen7ou');
+  assert.equal(index.ranking.banned.tierRank, 0);
+
+  // The base family's own index is untouched by the extension.
+  const base = await resolveAllPokemonUsage(extended, 'singles', read);
+  assert.equal(base.ranking.staple.formatId, 'gen7ou');
+  assert.equal(base.ranking.passedover.tierRank, 0);
+  assert.equal(base.ranking.lowtier.tierRank, 1);
 });

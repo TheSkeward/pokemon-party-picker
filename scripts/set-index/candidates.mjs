@@ -1,4 +1,4 @@
-import { setLadder } from '../../src/usage-family.js';
+import { usageLadder } from '../../src/usage-family.js';
 
 /**
  * Moveset sources for a usage family, in formatOrder × cutoffPriority order
@@ -9,7 +9,7 @@ import { setLadder } from '../../src/usage-family.js';
  *     cutoff: number, months: !Array<string>}>}
  */
 export function getMovesetCandidates(availability, family, selection) {
-  const familyConfig = setLadder(availability, family);
+  const familyConfig = usageLadder(availability, family);
 
   if (!familyConfig) {
     throw new Error(`Missing family config for ${family}`);

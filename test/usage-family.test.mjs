@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-// Usage families: a family of the usage data, or an extension that reads
-// one with further formats supplying sets (src/usage-family.js).
+// Usage families: a family of the usage data, or an extension that puts
+// further formats ahead of one (src/usage-family.js).
 
 const {
-  baseFamilyOf, isFamilyExtension, monotypeFamilyId, rankLadder, setLadder,
-  usageFamilyFor,
+  baseFamilyOf, isFamilyExtension, monotypeFamilyId, usageFamilyFor,
+  usageLadder,
 } = await import('../src/usage-family.js');
 const { FAMILY_CONFIGS, FAMILY_EXTENSIONS, EXTENSION_FORMATS, REAL_FORMATS } =
   await import('../scripts/config.mjs');
@@ -30,6 +30,7 @@ const availability = {
       base: 'singles',
       monotype: 'Fire',
       formatOrder: ['gen7monotype-monofire'],
+      bandGames: [1, 4, 25],
     },
   },
 };
@@ -53,19 +54,25 @@ test('no family id could be read as an extension', () => {
   }
 });
 
-test('an extension ranks on its base ladder and reads sets ahead of it', () => {
+test('an extension reads its own formats in bands, then its base ladder', () => {
   const singles = availability.familyConfigs.singles;
-  // Its formats supply sets and do not rank.
-  assert.equal(rankLadder(availability, 'singles-monofire'), singles);
-  assert.equal(rankLadder(availability, 'singles'), singles);
+  const ladder = usageLadder(availability, 'singles-monofire');
+  assert.equal(ladder.label, 'Fire Monotype');
   assert.deepEqual(
-    setLadder(availability, 'singles-monofire').formatOrder,
-    ['gen7monotype-monofire', 'gen7ubers', 'gen7ou']);
-  assert.deepEqual(
-    setLadder(availability, 'singles-monofire').cutoffPriority, [1760, 0]);
-  assert.equal(setLadder(availability, 'singles'), singles);
-  // An extension the index does not hold has no set ladder.
-  assert.equal(setLadder(availability, 'singles-monoice'), null);
+    ladder.formatOrder, ['gen7monotype-monofire', 'gen7ubers', 'gen7ou']);
+  assert.deepEqual(ladder.cutoffPriority, [1760, 0]);
+  assert.deepEqual(ladder.ownFormats, ['gen7monotype-monofire']);
+  assert.deepEqual(ladder.bandGames, [1, 4, 25]);
+  // Three bands of its one format, then two formats, at two cutoffs each.
+  assert.equal(ladder.tierCount, (3 + 2) * 2);
+
+  // A family's ladder is its own, a tier for each format and cutoff.
+  const plain = usageLadder(availability, 'singles');
+  assert.deepEqual(plain.formatOrder, singles.formatOrder);
+  assert.deepEqual(plain.ownFormats, []);
+  assert.equal(plain.tierCount, 4);
+  // An extension the index does not hold has no ladder.
+  assert.equal(usageLadder(availability, 'singles-monoice'), null);
 });
 
 test('a run reads the monotype extension only where the data has one', () => {
@@ -85,8 +92,8 @@ test('an extension is built only from formats the pipeline fetches', () => {
       assert.ok(fetched.has(formatId), formatId);
     }
   }
-  // An extension's format is no tab's: nothing scrapes teams for it or
-  // lists it in the usage browser.
+  // A tier of an extension is no tab's format: nothing scrapes teams for
+  // it or lists it in the usage browser.
   for (const formatId of fetched) assert.ok(!browsable.has(formatId));
 });
 

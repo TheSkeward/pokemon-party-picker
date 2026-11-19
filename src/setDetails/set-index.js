@@ -1,8 +1,9 @@
 /**
  * @fileoverview The set index: one stitched set detail per Pokémon for each
  * usage family, every month aggregated (scripts/build-set-index.mjs). A
- * family extension (usage-family.js) stores the details of the Pokémon its
- * formats favour and lists them; every other Pokémon's is its base family's.
+ * family extension (usage-family.js) stores the details of the Pokémon whose
+ * usage source is one of its formats and lists them; every other Pokémon's
+ * is its base family's.
  * Every reader of a set detail goes through here, so the card, the damage
  * model and the item step read the same file for a Pokémon.
  */

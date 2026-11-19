@@ -36,6 +36,16 @@ export const SCORING_DEFAULTS = Object.freeze({
   // cannot seat is refilled only from attacks at or above this floor
   // (recommendCurrentMoves, team-analysis.js).
   MIN_MEANINGFUL_USAGE_PERCENT: 100 * (1 - 0.5 ** (1 / 25)),
+  // A family extension's format (usage-family.js) has no tiers below it to
+  // sort its Pokémon, so it is split into bands by the same measure as the
+  // bar above: the games against such a team within which a Pokémon is
+  // likely met. Each band doubles the last from one game (on at least half
+  // of such teams) and the final one is the meaningful bar itself. A band
+  // stands on the ladder like a format, so a Pokémon on most of a type's
+  // Monotype teams outranks one on a twentieth of them by several formats'
+  // worth. Baked into the resolver index and published with the
+  // availability index: regenerate both with any change here.
+  USAGE_BAND_GAMES: [1, 2, 4, 8, 16, 25],
   // A sustained trace in one of the ladder's strongest formats is evidence
   // that a line is not competitively absent, even when it falls below the
   // first-meaningful-tier ranking bar. It selects only the bounded downward-

@@ -1,3 +1,4 @@
+import { SCORING_DEFAULTS } from '../src/teamBuilder/scoring-constants.js';
 import { monotypeFamilyId } from '../src/usage-family.js';
 
 /**
@@ -188,7 +189,7 @@ const MONOTYPE_TYPES = [
 const monotypeFormatId = (type) => `gen7monotype-mono${type.toLowerCase()}`;
 
 /**
- * Formats read only through a family extension (src/usage-family.js):
+ * Formats read only as tiers of a family extension (src/usage-family.js):
  * their usage sources are fetched and nothing else is, so they have no tab,
  * no browser dataset and no team corpus. `extends` names the family whose
  * rating cutoffs they share. `statsDir` is the folder under a month that
@@ -198,7 +199,8 @@ const monotypeFormatId = (type) => `gen7monotype-mono${type.toLowerCase()}`;
  *
  * Gen 7 Monotype, as Smogon split it by the type a team was built around,
  * from April 2017 until the generation ended. The whole ladder is not
- * read: it favours no Pokémon of a type that the type's own teams do not.
+ * read: it favours no Pokémon of a type that the type's own teams do not,
+ * and it lists Pokémon banned before the split began.
  * @type {!Array<{id: string, label: string, extends: string,
  *     statsDir: (string|undefined),
  *     months: {first: string, last: (string|undefined)}}>}
@@ -212,12 +214,13 @@ export const EXTENSION_FORMATS = MONOTYPE_TYPES.map((type) => ({
 }));
 
 /**
- * Family extensions: a family read with further formats that supply sets
- * (src/usage-family.js). A monotype run takes the sets of the Pokémon its
- * type's Monotype teams favoured from those teams. Doubles has no Monotype
- * ladder, so only Singles is extended.
+ * Family extensions: a family's ladder with further formats ahead of it,
+ * read in the family's place when a run calls for it (src/usage-family.js).
+ * A monotype run reads what teams of its type ran, split into the usage
+ * bands of `bandGames`, then the family's own tiers. Doubles has no
+ * Monotype ladder, so only Singles is extended.
  * @type {!Object<string, {label: string, base: string, monotype: string,
- *     formatOrder: !Array<string>}>}
+ *     formatOrder: !Array<string>, bandGames: !Array<number>}>}
  */
 export const FAMILY_EXTENSIONS = Object.fromEntries(
   MONOTYPE_TYPES.map((type) => [
@@ -227,6 +230,7 @@ export const FAMILY_EXTENSIONS = Object.fromEntries(
       base: 'singles',
       monotype: type,
       formatOrder: [monotypeFormatId(type)],
+      bandGames: SCORING_DEFAULTS.USAGE_BAND_GAMES,
     },
   ]),
 );

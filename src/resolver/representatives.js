@@ -5,7 +5,7 @@ import {
   splitQueryNames,
 } from '../data.js';
 import { toId as normalizeName } from '../utils/ids.js';
-import { rankLadder } from '../usage-family.js';
+import { usageLadder } from '../usage-family.js';
 import { getCanonicalLineCandidates } from '../teamBuilder/usage-line-ranking.js';
 
 /**
@@ -347,7 +347,7 @@ function scoreRepresentativeCandidate(
   const usage = bundle?.usage;
   if (!usage) return -Infinity;
 
-  const ladder = rankLadder(availability, family) || {};
+  const ladder = usageLadder(availability, family) || {};
   const formatOrder = ladder.formatOrder || [];
   const cutoffPriority = ladder.cutoffPriority || [];
 

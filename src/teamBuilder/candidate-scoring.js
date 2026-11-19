@@ -7,7 +7,7 @@ import {
 } from './current-form-value.js';
 import { tunable } from './scoring-constants.js';
 import { dex } from '../games/dex.js';
-import { rankLadder } from '../usage-family.js';
+import { usageLadder } from '../usage-family.js';
 
 /**
  * Snapshotted at module load — not a confidence-sweep axis, so late
@@ -89,14 +89,15 @@ export function scoreCandidate({
     };
   }
 
-  const ladder = rankLadder(availability, family) || {};
+  const ladder = usageLadder(availability, family) || {};
   const formatOrder = ladder.formatOrder || [];
   const cutoffPriority = ladder.cutoffPriority || [];
 
   const usagePercent = Math.max(0, usage.value || 0);
   const rawCount = Math.max(0, usage.entry?.rawCount || 0);
   const leadPercent = Math.max(0, bundle.leads?.value || 0);
-  const rank = getUsageRanking(bundle, formatOrder, cutoffPriority);
+  const rank = getUsageRanking(
+    bundle, formatOrder, cutoffPriority, ladder.tierCount);
 
   // C — current-form usefulness (role-based, usage-independent).
   const current = currentFormValue(legalityProfile, levelCap);
@@ -166,6 +167,7 @@ export function scoreCandidate({
         bundle,
         formatOrder,
         cutoffPriority,
+        ladder.tierCount,
       );
   const wUp = Math.max(alpha * online, ramp);
   const wDown = priorPresent
@@ -311,11 +313,18 @@ function usageCeiling(rank) {
  * @param {?Object} bundle
  * @param {Array<string>} formatOrder
  * @param {Array<string>} cutoffPriority
+ * @param {number=} tierCount The ladder's tiers, when it has more than one
+ *     per format and cutoff (an extension's usage bands, usage-family.js).
  * @return {{tierRank: number, value: number, rawCount: number,
  *     totalTiers: number}} tierRank === totalTiers means no meaningful tier.
  */
-export function getUsageRanking(bundle, formatOrder = [], cutoffPriority = []) {
-  const totalTiers = Math.max(1, formatOrder.length * cutoffPriority.length);
+export function getUsageRanking(
+  bundle,
+  formatOrder = [],
+  cutoffPriority = [],
+  tierCount = formatOrder.length * cutoffPriority.length,
+) {
+  const totalTiers = Math.max(1, tierCount);
   const ranking = bundle?.ranking;
   if (ranking) {
     return {
@@ -350,14 +359,17 @@ export function getUsageRanking(bundle, formatOrder = [], cutoffPriority = []) {
  * @param {?Object} bundle
  * @param {Array<string>} formatOrder
  * @param {Array<string>} cutoffPriority
+ * @param {number=} tierCount As for getUsageRanking.
  * @return {boolean}
  */
 export function hasCompetitivePriorEvidence(
   bundle,
   formatOrder = [],
   cutoffPriority = [],
+  tierCount = undefined,
 ) {
-  const rank = getUsageRanking(bundle, formatOrder, cutoffPriority);
+  const rank = getUsageRanking(
+    bundle, formatOrder, cutoffPriority, tierCount);
   if (rank.tierRank < rank.totalTiers) return true;
 
   const trace = bundle?.trace;

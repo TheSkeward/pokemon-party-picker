@@ -105,3 +105,19 @@ test('a kept entry wears the mark and nothing on the bench is flagged worst', ()
   assert.match(html, /class="bench-chip"[^>]*>(<span[^>]*>\d+\.<\/span> )?Patrat/);
   assert.doesNotMatch(html, /worst/);
 });
+
+test('a tier with no short name of its own takes its format label', () => {
+  const line = scoredLine('arcanine', 'Arcanine', 'arcanine', 'Arcanine', 4.5);
+  Object.assign(line.candidates[0].bundle.ranking, {
+    formatId: 'gen7monotype-monofire', cutoff: 1760,
+  });
+  const formats = [{ id: 'gen7monotype-monofire', label: 'Gen 7 Mono Fire' }];
+  // The generation is the page's, so the label drops it.
+  assert.match(
+    renderBenchLine({ team: [], lines: [line] }, new Set(), formats),
+    /aria-label="Mono Fire 1760"/);
+  // Without the formats index the id is all there is.
+  assert.match(
+    renderBenchLine({ team: [], lines: [line] }),
+    /aria-label="gen7monotype-monofire 1760"/);
+});

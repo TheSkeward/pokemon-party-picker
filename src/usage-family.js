@@ -1,19 +1,22 @@
 /**
- * @fileoverview Usage families. A usage family names where a run reads its
- * competitive prior from. It is a family of the usage data (a tab:
- * "singles") or an extension of one, read in the family's place when the
- * run calls for it. A Fire monotype run reads "singles-monofire": the
- * Singles family, with the sets Fire teams ran on Smogon's Monotype ladder
- * in place of the Singles sets for the Pokémon those teams favoured.
+ * @fileoverview Usage families. A usage family names the tier ladder a run
+ * reads its competitive prior from. It is a family of the usage data (a
+ * tab: "singles") or an extension of one: that family's ladder with further
+ * formats ahead of it, read in its place when the run calls for it. A Fire
+ * monotype run reads "singles-monofire": what Fire teams ran on Smogon's
+ * Monotype ladder, then the Singles ladder.
  *
- * An extension's formats supply sets and nothing else. Every Pokémon is
- * ranked on the base family's ladder, and whatever has no source in the
- * extension's formats (the move and item tables, teammate lift, the team
- * corpora) is the base family's, as is the set of any Pokémon those formats
- * do not favour.
+ * An extension's format has no tiers below it to sort its Pokémon, as the
+ * formats of a family sort theirs, so it is split into usage bands: by how
+ * many games against such a team it takes to likely meet the Pokémon. Each
+ * band stands on the ladder like a format, above the next.
+ *
+ * An extension holds only what its own formats change. What has no source
+ * in them (the move and item tables, the team corpora) is its base
+ * family's, and so is the set of any Pokémon they do not rank.
  *
  * The data pipeline (scripts/config.mjs) and the app both read this module,
- * so the ids and the ladders are defined once.
+ * so the ids and the joined ladder are defined once.
  */
 
 // No family id contains it (test/usage-family.test.mjs), so an id splits
@@ -64,34 +67,35 @@ export function usageFamilyFor(availability, family, monotype) {
 }
 
 /**
- * The ladder a usage family's Pokémon are ranked on, as the availability
- * index publishes it: a family's own, and for an extension its base
- * family's.
+ * A usage family's ladder as the availability index publishes it. A
+ * family's is its formats under its rating cutoffs. An extension's is its
+ * own formats, each split into its usage bands, and then its base family's
+ * ladder, under the base family's cutoffs.
  * @param {?Object} availability The availability index.
  * @param {?string} family A usage family id.
  * @return {?{label: string, formatOrder: !Array<string>,
- *     cutoffPriority: !Array<number>}} Null when the index has no such
- *     family.
+ *     cutoffPriority: !Array<number>, ownFormats: !Array<string>,
+ *     bandGames: !Array<number>, tierCount: number}} `ownFormats` and
+ *     `bandGames` are an extension's formats and the horizon, in games, of
+ *     each band they are split into (both empty for a family); `tierCount`
+ *     is the number of tiers a rank is scaled by. Null when the index has
+ *     no such family.
  */
-export function rankLadder(availability, family) {
-  return availability?.familyConfigs?.[baseFamilyOf(family)] || null;
-}
-
-/**
- * The ladder a usage family's sets are read over: the rank ladder, with an
- * extension's own formats ahead of it under the same rating cutoffs.
- * @param {?Object} availability The availability index.
- * @param {?string} family A usage family id.
- * @return {?{formatOrder: !Array<string>, cutoffPriority: !Array<number>}}
- *     Null when the index has no such family.
- */
-export function setLadder(availability, family) {
-  const ranked = rankLadder(availability, family);
+export function usageLadder(availability, family) {
+  const base = availability?.familyConfigs?.[baseFamilyOf(family)];
   const extension = availability?.familyExtensions?.[family];
-  if (!ranked || (isFamilyExtension(family) && !extension)) return null;
-  if (!extension) return ranked;
+  if (!base || (isFamilyExtension(family) && !extension)) return null;
+  const cutoffs = (base.cutoffPriority || []).length;
+  const ownFormats = extension?.formatOrder || [];
+  const bandGames = extension?.bandGames || [];
   return {
-    ...ranked,
-    formatOrder: [...extension.formatOrder, ...(ranked.formatOrder || [])],
+    ...base,
+    label: extension?.label || base.label,
+    formatOrder: [...ownFormats, ...(base.formatOrder || [])],
+    ownFormats,
+    bandGames,
+    tierCount:
+      (ownFormats.length * bandGames.length +
+        (base.formatOrder || []).length) * cutoffs,
   };
 }
