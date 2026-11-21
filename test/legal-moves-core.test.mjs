@@ -84,17 +84,16 @@ test('a move\'s sources are written in one shape, by move id', () => {
   ]);
 });
 
-test('a line is walked from the base species, nearest ancestor first', () => {
-  const line = (id, options) =>
-    preEvolutionIds(Dex.forGen(9), Dex.forGen(9).species.get(id), options);
+test('a line is walked nearest ancestor first, a form keeping its own', () => {
+  const line = (id) =>
+    preEvolutionIds(Dex.forGen(9), Dex.forGen(9).species.get(id));
   assert.deepEqual(line('charizard'), ['charmeleon', 'charmander']);
   assert.deepEqual(line('charmander'), []);
-  // A Mega inherits what its line learns.
+  // A Mega has no pre-evolution of its own and inherits its line's.
   assert.deepEqual(line('charizardmegax'), ['charmeleon', 'charmander']);
-  // A regional form walks the original line unless asked for its own.
-  assert.deepEqual(line('persianalola'), ['meowth']);
-  assert.deepEqual(
-    line('persianalola', { ownPrevoFirst: true }), ['meowthalola']);
+  // A regional form evolves from its own regional pre-evolutions.
+  assert.deepEqual(line('persianalola'), ['meowthalola']);
+  assert.deepEqual(line('golemalola'), ['graveleralola', 'geodudealola']);
   assert.deepEqual(line('notaspecies'), []);
 });
 

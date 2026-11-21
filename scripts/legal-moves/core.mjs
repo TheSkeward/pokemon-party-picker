@@ -85,22 +85,20 @@ function normalizeSources(sources, preEvolutionLevels) {
 }
 
 /**
- * A species' pre-evolutions, nearest first. An alternate form walks its
- * base species' line, so a Mega inherits what the line learns.
+ * A species' pre-evolutions, nearest first, by the rule the site's species
+ * table follows (build-progression-species.mjs): a form evolves from the
+ * pre-evolution the dex names for it, so Alolan Sandslash's line is Alolan
+ * Sandshrew's and not Sandshrew's. A form the dex names none for (a Mega)
+ * walks its base species' line and inherits what that line learns.
  * @param {!Object} dex A generation's @pkmn/dex.
  * @param {!Object} species A species of that dex.
- * @param {{ownPrevoFirst: (boolean|undefined)}=} options `ownPrevoFirst`
- *     lets a form with a pre-evolution of its own keep it, where the dex
- *     names one (Perrserker's is Galarian Meowth).
  * @return {!Array<string>}
  */
-export function preEvolutionIds(dex, species, { ownPrevoFirst = false } = {}) {
+export function preEvolutionIds(dex, species) {
   if (!species?.exists) return [];
-  let current = ownPrevoFirst && species.prevo
+  let current = species.prevo || !species.baseSpecies
     ? species
-    : species.baseSpecies
-      ? dex.species.get(toId(species.baseSpecies))
-      : species;
+    : dex.species.get(toId(species.baseSpecies));
   const ids = [];
   const seen = new Set();
   while (current?.prevo && !seen.has(current.id)) {

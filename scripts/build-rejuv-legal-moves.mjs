@@ -123,9 +123,7 @@ for (const [pokemonId, learnset] of [...learnsets].sort()) {
   addLearnsetSources(table, {
     pokemonId,
     learnset,
-    // A regional form keeps its own pre-evolution where the dex names
-    // one (Perrserker's is Galarian Meowth).
-    preEvolutions: preEvolutionIds(dex, species, { ownPrevoFirst: true })
+    preEvolutions: preEvolutionIds(dex, species)
       .filter((id) => learnsets.has(id))
       .map((id) => ({ id, learnset: learnsets.get(id) })),
     machines,
