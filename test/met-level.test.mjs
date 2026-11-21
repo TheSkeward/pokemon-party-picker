@@ -2,7 +2,8 @@
 // level 14. The game starts a received mon on the last four entries of its
 // learnset at that level, so a Munna met at 14 (Lucky Chant 5, Yawn 7,
 // Psybeam 11, Imprison 13) never had Psywave or Defense Curl. Candy-down
-// reaches every level 2+ entry, so the met level decides nothing else.
+// reaches its every level 2+ entry. The mark names the form it arrived as:
+// "Musharna@" was never a Munna, so nothing only Munna learns reaches it.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
@@ -88,6 +89,66 @@ test('readiness prices the missing level-1 move at the relearner badge', () => {
   assert.match(psywave.detail, /arrived without .* relearner/);
   // The relearner restores it to this individual: no re-breed is implied.
   assert.equal(readiness.needsRebreed, false);
+});
+
+test('one that arrived evolved has nothing only its earlier form learns', () => {
+  const open = {
+    levelCap: '50', moveRelearnerUnlocked: true,
+    availableTmIds: ['tm29'],
+  };
+  const plain = sourcesOf(musharna, open);
+  // Unmarked, the line is planned from Munna up.
+  assert.equal(plain.get('moonlight')?.[0]?.label, 'Level 17');
+  assert.equal(plain.get('psywave')?.[0]?.label, 'Level 1');
+
+  const met = sourcesOf(musharna, {
+    ...open, metLevelByPokemon: { musharna: 30 },
+  });
+  // Munna's level-up moves: not by level, by candy, or from the relearner,
+  // which teaches Musharna's own list.
+  for (const id of ['moonlight', 'yawn', 'futuresight', 'psywave']) {
+    assert.ok(!met.has(id), `${id} is gone`);
+  }
+  // What Musharna itself relists stays with the relearner, and a machine
+  // teaches any individual.
+  assert.deepEqual(
+    met.get('hypnosis')?.map((source) => source.kind), ['relearner']);
+  assert.deepEqual(
+    met.get('psychic')?.map((source) => source.kind),
+    plain.get('psychic')?.filter((source) => source.kind === 'tm')
+      .map((source) => source.kind));
+
+  // The daycare returns a hatchling's level-1 moves, in a new individual.
+  const hatch = sourcesOf(musharna, {
+    ...open, metLevelByPokemon: { musharna: 30 }, daycareUnlocked: true,
+  });
+  assert.deepEqual(
+    hatch.get('psywave')?.map((source) => source.label), ['Hatch']);
+  assert.ok(!hatch.has('moonlight'));
+});
+
+test('readiness names the form an evolved arrival never was', () => {
+  const progression = {
+    levelCap: '50', moveRelearnerUnlocked: true,
+    metLevelByPokemon: { musharna: 30 },
+  };
+  const readiness = computeSetReadiness({
+    legalMoveData: musharna,
+    availableMoves: getAvailableMoves(musharna, progression),
+    topSet: {
+      moveUsage: new Map([
+        ['moonlight', 90], ['psywave', 80], ['hypnosis', 70],
+      ]),
+    },
+    progression,
+  });
+  const detailOf = (id) =>
+    readiness.moves.find((move) => move.id === id);
+  assert.equal(detailOf('moonlight').status, 'blocked');
+  assert.match(detailOf('moonlight').detail, /as Munna, which this one never was/);
+  // No relearner promise for a level-1 move of a form it never was.
+  assert.equal(detailOf('psywave').status, 'blocked');
+  assert.equal(detailOf('hypnosis').status, 'ready');
 });
 
 test('the pool annotation reaches the optimizer', async () => {

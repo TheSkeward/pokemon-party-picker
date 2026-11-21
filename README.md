@@ -49,8 +49,10 @@ https://theskeward.github.io/pokemon-party-picker/
   level, so its level 1 moves count only if that window still reaches them;
   otherwise they wait for the Move Relearner or a re-bred hatchling. A bare
   `@` (`Munna@`) means it arrived too late to have them at all. Everything
-  learned at level 2 or above is reachable by candying down, so the level
-  decides nothing else.
+  it learns at level 2 or above is reachable by candying down. The mark
+  names the form it arrived as: one that arrived already evolved
+  (`Musharna@`) was never its earlier forms, so it is offered nothing that
+  only they learn by level.
 - Lock moves into a Pokemon's set with braces (`Meowstic {Thunder Wave /
   Psychic}`): they are that Pokemon's own canonical moves, seated first in
   every set the optimizer builds for it and scored as such. Fewer than four

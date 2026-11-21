@@ -191,20 +191,21 @@ export function computeSetReadiness({
       ),
     ];
     // A level-1 entry the individual arrived without (receivedForm) is no
-    // leveling route either.
+    // leveling route either, and no entry of a form it never was is one.
     const neverHeld = (entry) =>
       Boolean(received?.neverHeld(entry.level, entry.from));
-    const levels = levelEntries
-      .filter((entry) => !(speciesIsEvolved && entry.level === 1))
-      .filter((entry) => !neverHeld(entry))
-      .map((entry) => entry.level);
-    if (levels.length) {
-      const level = Math.min(...levels);
+    const neverWas = (entry) => Boolean(received?.neverWas(entry.from));
+    const leveled = levelEntries.filter(
+      (entry) =>
+        !(speciesIsEvolved && entry.level === 1) &&
+        !neverHeld(entry) &&
+        !neverWas(entry),
+    );
+    if (leveled.length) {
+      const level = Math.min(...leveled.map((entry) => entry.level));
       // Name the learner when it is a pre-evolution: an elective evolution
       // closes that route, so the owner sees what evolving first forfeits.
-      const learnerId = levelEntries.find(
-        (entry) => entry.level === level && !neverHeld(entry),
-      )?.from;
+      const learnerId = leveled.find((entry) => entry.level === level).from;
       const learner =
         learnerId && learnerId !== legalMoveData?.pokemonId
           ? dex().progressionSpecies[learnerId]?.name
@@ -229,7 +230,10 @@ export function computeSetReadiness({
         });
       }
     }
-    if (!candidates.length && levelEntries.some(neverHeld)) {
+    if (
+      !candidates.length &&
+      levelEntries.some((entry) => neverHeld(entry) && !neverWas(entry))
+    ) {
       // The relearner restores it to this individual; with the daycare on,
       // a hatchling would already have made it available.
       const badge = getUnlockBadge('moveRelearnerUnlocked');
@@ -266,7 +270,17 @@ export function computeSetReadiness({
       return { id, label, status: 'later', detail: 'needs the move relearner' };
     }
     if (!candidates.length) {
-      return { id, label, status: 'blocked', detail: 'no reachable source yet' };
+      // Learned by level only as a form this individual never was.
+      const lost = levelEntries.find(neverWas);
+      const form = dex().progressionSpecies[lost?.from]?.name;
+      return {
+        id,
+        label,
+        status: 'blocked',
+        detail: form
+          ? `learned as ${form}, which this one never was`
+          : 'no reachable source yet',
+      };
     }
 
     candidates.sort((a, b) => a.cap - b.cap);

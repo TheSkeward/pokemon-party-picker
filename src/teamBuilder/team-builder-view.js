@@ -327,6 +327,7 @@ const POOL_ENTRY_MARKS = [
   ['Meowth=', 'stays exactly this species: never evolved'],
   ['Munna@14', 'arrived at level 14, which decides its level 1 moves'],
   ['Munna@', 'arrived too late for its level 1 moves'],
+  ['Musharna@', 'arrived already evolved: no moves only Munna learns'],
   ['Eevee (Adaptability)', 'caught with that ability'],
   ['Meowstic {Thunder Wave / Psychic}', 'locks those moves into its set'],
 ];

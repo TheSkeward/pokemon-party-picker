@@ -104,9 +104,9 @@ export function parseExactNames(query, pokemonIndex) {
 /**
  * Met levels: a pool entry written as "Munna@14" arrived at level 14, so it
  * never had the level-1 moves the game's starting window at 14 leaves out;
- * a bare "Munna@" arrived too late to have any of them. Anything from level
- * 2 up is reachable by candying down, so the level decides nothing else.
- * First annotation of a name wins.
+ * a bare "Munna@" arrived too late to have any of them. The mark names the
+ * form it arrived as, so "Musharna@" was never a Munna (legal-moves.js,
+ * receivedForm). First annotation of a name wins.
  * @param {string} query
  * @param {Array<Object>} pokemonIndex
  * @return {Map<string, (number|true)>} Normalized name -> level, or true
@@ -217,11 +217,12 @@ function poolEntries(query, pokemonIndex) {
   return entries;
 }
 
-// "Munna@14": the level the mon arrived at, which decides which of its
-// level-1 moves it ever had (legal-moves.js, receivedForm). A bare "Munna@"
-// says only that it arrived too late to have them. The mark sits after the
-// name with nothing but markers behind it, so "Gengar @ Life Orb" from a
-// pasted Showdown set is a plain entry.
+// "Munna@14": the level the mon arrived at, as the form named, which decides
+// which of its level-1 moves it ever had and which earlier forms it never
+// was (legal-moves.js, receivedForm). A bare "Munna@" says only that it
+// arrived too late to have them. The mark sits after the name with nothing
+// but markers behind it, so "Gengar @ Life Orb" from a pasted Showdown set
+// is a plain entry.
 const MET_MARK = /@\s*(\d{1,3})?(?=[\s!*=]*$)/;
 // A met level's digits anywhere in a token, for name resolution: "Porygon@2"
 // must not read as Porygon2.

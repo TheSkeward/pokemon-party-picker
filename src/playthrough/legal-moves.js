@@ -187,11 +187,12 @@ export function getAvailableMoves(legalMoveData, progression = {}) {
   // path — it's a candy-down route at level 2+, relearner-only at level 1.
   const ancestorName = (fromId) =>
     dex().progressionSpecies[fromId]?.name || 'its pre-evolution';
-  // "Munna@14" in the pool: the line arrived as Munna at level 14. Forms
-  // below the received one were never held, and its own level-1 moves are
-  // known only while the game's four-move starting window at that level
-  // still reaches level 1. Candy-down reaches every level 2+ entry, so the
-  // met level decides nothing else.
+  // "Munna@14" in the pool: the line arrived as Munna at level 14. Its own
+  // level-1 moves are known only while the game's four-move starting window
+  // at that level still reaches level 1, and candy-down reaches its every
+  // level 2+ entry. A form below the received one was never held, and no
+  // level change un-evolves a Pokémon, so nothing that form learns by level
+  // reaches this individual.
   const received = receivedForm(legalMoveData, progression);
   const moves = [];
 
@@ -200,9 +201,15 @@ export function getAvailableMoves(legalMoveData, progression = {}) {
     const allLevelUpLevels = move.sources?.levelUp || [];
     // Attributed { level, from } entries; tolerate the old plain-number shape
     // (judged against the direct pre-evolution bound) during any data skew.
-    const preEvolutionEntries = (move.sources?.preEvolutionLevelUp || []).map(
-      (entry) =>
-        typeof entry === 'number' ? { level: entry, from: null } : entry,
+    const linePreEvolutionEntries =
+      (move.sources?.preEvolutionLevelUp || []).map(
+        (entry) =>
+          typeof entry === 'number' ? { level: entry, from: null } : entry,
+      );
+    // The entries of the forms this individual has been: every leveling
+    // route below runs through these alone.
+    const preEvolutionEntries = linePreEvolutionEntries.filter(
+      (entry) => !received?.neverWas(entry.from),
     );
     // Reachable-by-leveling window per entry: at or above the learner
     // form's arrival (it must exist at that level) and at or below its
@@ -285,12 +292,16 @@ export function getAvailableMoves(legalMoveData, progression = {}) {
         ...allLevelUpLevels
           .filter((level) => received.neverHeld(level, pokemonId))
           .map(() => pokemonId),
-        ...preEvolutionEntries
+        ...linePreEvolutionEntries
           .filter((entry) => received.neverHeld(entry.level, entry.from))
           .map((entry) => entry.from),
       ]
       : [];
-    const neverHeldLevelOne = neverHeldLearners.length > 0;
+    // The relearner teaches what the forms the individual has been learn,
+    // so it restores such a move only from one of those.
+    const neverHeldLevelOne = neverHeldLearners.some(
+      (learnerId) => !received.neverWas(learnerId),
+    );
     const levelSources = naturalLevelUpSources
       .filter((source) => source.level <= levelCap)
       .sort(
@@ -581,17 +592,22 @@ const STARTING_MOVE_WINDOW = 4;
  * The form the pool says this line was received as, with its met level
  * ("Munna@14"), read from progression.metLevelByPokemon by walking the
  * fielded form's ancestry; null when nothing on the line is annotated.
+ * `neverWas(formId)` is true for a form below the received one: the
+ * individual was never that form and no level change makes it one, so
+ * nothing the form learns by level reaches it ("Musharna@" has what
+ * Musharna itself learns and nothing that only Munna does).
  * `neverHeld(level, learnerId)` is true for a level-1 entry the received
- * individual arrived without: forms below the received one were never held
- * at all, and the received form's own level-1 moves fall outside the game's
- * starting window once it has learned four later moves by its met level. A
- * bare mark ("Munna@", stored as true) says only that it arrived too late
- * for them, so the whole learnset counts as learned by then. Anything from
- * level 2 up is reachable by candying down, so nothing else depends on the
- * met level.
+ * individual arrived without: those of the forms it never was, and the
+ * received form's own once it has learned four later moves by its met
+ * level, which pushes level 1 out of the game's starting window. A bare
+ * mark ("Munna@", stored as true) says only that it arrived too late for
+ * them, so the whole learnset counts as learned by then. The received
+ * form's entries from level 2 up are reachable by candying down, so they do
+ * not depend on the met level.
  * @param {?Object} legalMoveData
  * @param {!Object=} progression
  * @return {?{id: string, metLevel: number,
+ *     neverWas: function(?string): boolean,
  *     neverHeld: function(number, ?string): boolean}}
  */
 export function receivedForm(legalMoveData, progression = {}) {
@@ -611,7 +627,7 @@ export function receivedForm(legalMoveData, progression = {}) {
   if (index < 0) return null;
   const id = chain[index];
   const metLevel = metLevels[id] === true ? Infinity : metLevels[id];
-  const belowOrAt = new Set(chain.slice(index));
+  const below = new Set(chain.slice(index + 1));
   let laterMoves = 0;
   for (const move of legalMoveData.moves || []) {
     const levels = id === pokemonId
@@ -627,10 +643,10 @@ export function receivedForm(legalMoveData, progression = {}) {
   return {
     id,
     metLevel,
+    neverWas: (formId) => below.has(formId),
     neverHeld: (level, learnerId) =>
       level === 1 &&
-      belowOrAt.has(learnerId) &&
-      !(learnerId === id && levelOneKnown),
+      (below.has(learnerId) || (learnerId === id && !levelOneKnown)),
   };
 }
 
