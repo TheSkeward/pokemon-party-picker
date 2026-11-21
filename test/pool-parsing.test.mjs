@@ -191,3 +191,26 @@ test('an annotated entry takes its own line; plain runs share one', () => {
   // The layout is a fixed point: normalizing it again changes nothing.
   assert.equal(normalizePoolText(normalized, pokemonIndex), normalized);
 });
+
+test('a name the game gives another entry reads as that entry', async () => {
+  // Reborn's index: its default Gourgeist is the entry Gourgeist-Super.
+  await import('./helpers/harness.mjs'); // fetch → filesystem shim
+  const { loadPokemonIndex } = await import('../src/data.js');
+  const { parseMetLevels } = await import(
+    '../src/teamBuilder/pool-parsing.js',
+  );
+  const rebornIndex = await loadPokemonIndex();
+  assert.equal(
+    normalizePoolText(
+      'Gourgeist!, Pumpkaboo@12, Gourgeist-Small', rebornIndex),
+    'Gourgeist-Small, Gourgeist-Super!, Pumpkaboo-Super@12',
+  );
+  // A size the game lacks falls back to the species, as any unknown suffix
+  // does.
+  assert.equal(
+    normalizePoolText('Gourgeist-Large', rebornIndex), 'Gourgeist-Super');
+  assert.deepEqual(
+    [...parseMetLevels('Pumpkaboo@12', rebornIndex)],
+    [['pumpkaboosuper', 12]],
+  );
+});

@@ -22,7 +22,8 @@ const pokemonIndex = JSON.parse(
   ),
 );
 
-const { learnsets, unmapped } = buildRebornLearnsets(monsDatPath, pokemonIndex);
+const { learnsets, unmapped, defaultFormes } =
+  buildRebornLearnsets(monsDatPath, pokemonIndex);
 if (unmapped.length) {
   console.warn(`[reborn-learnsets] ${unmapped.length} unmapped: ${unmapped.join(', ')}`);
 }
@@ -35,7 +36,8 @@ const outPath = path.join(
 );
 fs.writeFileSync(
   outPath,
-  JSON.stringify({ source: 'Reborn mons.dat', learnsets }) + '\n',
+  JSON.stringify({ source: 'Reborn mons.dat', learnsets, defaultFormes }) +
+    '\n',
 );
 console.log(
   `[reborn-learnsets] wrote ${Object.keys(learnsets).length} species to ${path.relative(projectRoot, outPath)}`,

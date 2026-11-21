@@ -17,7 +17,7 @@ const dex = Dex.forGen(GEN);
 // Gen 7 reads Reborn's own learnsets (the authoritative source for the game
 // this generation serves), both for the species universe and for the
 // move-evolution levels below.
-const rebornLearnsets =
+const reborn =
   GEN === 7
     ? JSON.parse(
       await fs.readFile(
@@ -25,19 +25,21 @@ const rebornLearnsets =
           projectRoot, 'scripts', 'reborn', 'reborn-learnsets.generated.json'),
         'utf8',
       ),
-    ).learnsets
+    )
     : null;
+const rebornLearnsets = reborn?.learnsets || null;
 
 // The species universe. Gen 7 follows the usage index, as it always has (the
 // Reborn engine's contract), narrowed to the species Reborn's data knows:
-// the index spans every tracked generation, and a Gen 9 format's species
-// are no part of a Gen 7 game. Another generation takes every standard
+// the index spans every tracked generation, a Gen 9 format's species are no
+// part of a Gen 7 game, and neither is a form the game lacks
+// (extract-reborn-learnsets.mjs). Another generation takes every standard
 // species of that generation and earlier from the dex.
+const fullIndex =
+  GEN === 7 ? JSON.parse(await fs.readFile(pokemonIndexPath, 'utf8')) : null;
 const pokemonIndex =
   GEN === 7
-    ? JSON.parse(await fs.readFile(pokemonIndexPath, 'utf8')).filter(
-      (pokemon) => pokemon.id in rebornLearnsets,
-    )
+    ? fullIndex.filter((pokemon) => pokemon.id in rebornLearnsets)
     : dex.species
       .all()
       .filter(
@@ -47,6 +49,17 @@ const pokemonIndex =
       .map((species) => ({ id: species.id, name: species.name }));
 const pokemonIds = new Set(pokemonIndex.map((pokemon) => pokemon.id));
 const speciesById = {};
+
+// The species names a forme also answers to: where the game's default form
+// of a species is another forme of the dex (Reborn's Gourgeist is the dex's
+// Gourgeist-Super), the plain name means that forme.
+const aliasesById = new Map();
+for (const [speciesId, formeId] of Object.entries(
+  reborn?.defaultFormes || {})) {
+  const name = fullIndex.find((pokemon) => pokemon.id === speciesId)?.name;
+  if (!name || !pokemonIds.has(formeId)) continue;
+  aliasesById.set(formeId, [...(aliasesById.get(formeId) || []), name]);
+}
 
 // Level-up learnsets, used to resolve levelMove evolutions (evolve by knowing
 // a move — e.g. Tangela needs Ancient Power for Tangrowth) to the level at
@@ -121,6 +134,11 @@ for (const pokemon of pokemonIndex) {
     // lines) and a recipient line must be able to field a female mother.
     gender: species.gender || '',
     isMega: Boolean(species.isMega),
+    // Other names the game knows this species by (aliasesById), which the
+    // pool reads as this entry.
+    ...(aliasesById.has(pokemon.id)
+      ? { aliases: aliasesById.get(pokemon.id) }
+      : {}),
   };
 }
 

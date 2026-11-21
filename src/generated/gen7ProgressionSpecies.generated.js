@@ -557,30 +557,6 @@ export const GEN7_PROGRESSION_SPECIES = {
     "gender": "",
     "isMega": false
   },
-  "araquanidtotem": {
-    "id": "araquanidtotem",
-    "name": "Araquanid-Totem",
-    "prevoId": "",
-    "evos": [],
-    "evoLevel": null,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "araquanid",
-    "types": [
-      "Water",
-      "Bug"
-    ],
-    "eggGroups": [
-      "Water 1",
-      "Bug"
-    ],
-    "gender": "",
-    "isMega": false
-  },
   "arbok": {
     "id": "arbok",
     "name": "Arbok",
@@ -6216,28 +6192,6 @@ export const GEN7_PROGRESSION_SPECIES = {
     "gender": "F",
     "isMega": false
   },
-  "floetteeternal": {
-    "id": "floetteeternal",
-    "name": "Floette-Eternal",
-    "prevoId": "",
-    "evos": [],
-    "evoLevel": null,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "floette",
-    "types": [
-      "Fairy"
-    ],
-    "eggGroups": [
-      "Undiscovered"
-    ],
-    "gender": "F",
-    "isMega": false
-  },
   "florges": {
     "id": "florges",
     "name": "Florges",
@@ -7533,52 +7487,6 @@ export const GEN7_PROGRESSION_SPECIES = {
     "gender": "",
     "isMega": false
   },
-  "gourgeist": {
-    "id": "gourgeist",
-    "name": "Gourgeist",
-    "prevoId": "pumpkaboo",
-    "evos": [],
-    "evoLevel": null,
-    "evoType": "trade",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "gourgeist",
-    "types": [
-      "Ghost",
-      "Grass"
-    ],
-    "eggGroups": [
-      "Amorphous"
-    ],
-    "gender": "",
-    "isMega": false
-  },
-  "gourgeistlarge": {
-    "id": "gourgeistlarge",
-    "name": "Gourgeist-Large",
-    "prevoId": "pumpkaboolarge",
-    "evos": [],
-    "evoLevel": null,
-    "evoType": "trade",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "gourgeist",
-    "types": [
-      "Ghost",
-      "Grass"
-    ],
-    "eggGroups": [
-      "Amorphous"
-    ],
-    "gender": "",
-    "isMega": false
-  },
   "gourgeistsmall": {
     "id": "gourgeistsmall",
     "name": "Gourgeist-Small",
@@ -7623,7 +7531,10 @@ export const GEN7_PROGRESSION_SPECIES = {
       "Amorphous"
     ],
     "gender": "",
-    "isMega": false
+    "isMega": false,
+    "aliases": [
+      "Gourgeist"
+    ]
   },
   "granbull": {
     "id": "granbull",
@@ -7719,29 +7630,6 @@ export const GEN7_PROGRESSION_SPECIES = {
       "Water 1"
     ],
     "gender": "",
-    "isMega": false
-  },
-  "greninjaash": {
-    "id": "greninjaash",
-    "name": "Greninja-Ash",
-    "prevoId": "",
-    "evos": [],
-    "evoLevel": null,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "greninja",
-    "types": [
-      "Water",
-      "Dark"
-    ],
-    "eggGroups": [
-      "Undiscovered"
-    ],
-    "gender": "M",
     "isMega": false
   },
   "grimer": {
@@ -7993,28 +7881,6 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoMove": "",
     "evoMoveLevel": null,
     "evoCondition": "during the day",
-    "evoRegion": "",
-    "baseSpeciesId": "gumshoos",
-    "types": [
-      "Normal"
-    ],
-    "eggGroups": [
-      "Field"
-    ],
-    "gender": "",
-    "isMega": false
-  },
-  "gumshoostotem": {
-    "id": "gumshoostotem",
-    "name": "Gumshoos-Totem",
-    "prevoId": "",
-    "evos": [],
-    "evoLevel": null,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "gumshoos",
     "types": [
@@ -9676,29 +9542,6 @@ export const GEN7_PROGRESSION_SPECIES = {
     "gender": "",
     "isMega": false
   },
-  "kommoototem": {
-    "id": "kommoototem",
-    "name": "Kommo-o-Totem",
-    "prevoId": "",
-    "evos": [],
-    "evoLevel": null,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "kommoo",
-    "types": [
-      "Dragon",
-      "Fighting"
-    ],
-    "eggGroups": [
-      "Dragon"
-    ],
-    "gender": "",
-    "isMega": false
-  },
   "krabby": {
     "id": "krabby",
     "name": "Krabby",
@@ -10852,28 +10695,6 @@ export const GEN7_PROGRESSION_SPECIES = {
     "gender": "",
     "isMega": false
   },
-  "lurantistotem": {
-    "id": "lurantistotem",
-    "name": "Lurantis-Totem",
-    "prevoId": "",
-    "evos": [],
-    "evoLevel": null,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "lurantis",
-    "types": [
-      "Grass"
-    ],
-    "eggGroups": [
-      "Grass"
-    ],
-    "gender": "",
-    "isMega": false
-  },
   "luvdisc": {
     "id": "luvdisc",
     "name": "Luvdisc",
@@ -11668,29 +11489,6 @@ export const GEN7_PROGRESSION_SPECIES = {
     "gender": "",
     "isMega": false
   },
-  "marowakalolatotem": {
-    "id": "marowakalolatotem",
-    "name": "Marowak-Alola-Totem",
-    "prevoId": "",
-    "evos": [],
-    "evoLevel": null,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "marowak",
-    "types": [
-      "Fire",
-      "Ghost"
-    ],
-    "eggGroups": [
-      "Monster"
-    ],
-    "gender": "",
-    "isMega": false
-  },
   "marshadow": {
     "id": "marshadow",
     "name": "Marshadow",
@@ -12371,29 +12169,6 @@ export const GEN7_PROGRESSION_SPECIES = {
   "mimikyubusted": {
     "id": "mimikyubusted",
     "name": "Mimikyu-Busted",
-    "prevoId": "",
-    "evos": [],
-    "evoLevel": null,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "mimikyu",
-    "types": [
-      "Ghost",
-      "Fairy"
-    ],
-    "eggGroups": [
-      "Amorphous"
-    ],
-    "gender": "",
-    "isMega": false
-  },
-  "mimikyutotem": {
-    "id": "mimikyutotem",
-    "name": "Mimikyu-Totem",
     "prevoId": "",
     "evos": [],
     "evoLevel": null,
@@ -15090,56 +14865,6 @@ export const GEN7_PROGRESSION_SPECIES = {
     "gender": "",
     "isMega": false
   },
-  "pumpkaboo": {
-    "id": "pumpkaboo",
-    "name": "Pumpkaboo",
-    "prevoId": "",
-    "evos": [
-      "gourgeist"
-    ],
-    "evoLevel": null,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "pumpkaboo",
-    "types": [
-      "Ghost",
-      "Grass"
-    ],
-    "eggGroups": [
-      "Amorphous"
-    ],
-    "gender": "",
-    "isMega": false
-  },
-  "pumpkaboolarge": {
-    "id": "pumpkaboolarge",
-    "name": "Pumpkaboo-Large",
-    "prevoId": "",
-    "evos": [
-      "gourgeistlarge"
-    ],
-    "evoLevel": null,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "pumpkaboo",
-    "types": [
-      "Ghost",
-      "Grass"
-    ],
-    "eggGroups": [
-      "Amorphous"
-    ],
-    "gender": "",
-    "isMega": false
-  },
   "pumpkaboosmall": {
     "id": "pumpkaboosmall",
     "name": "Pumpkaboo-Small",
@@ -15188,7 +14913,10 @@ export const GEN7_PROGRESSION_SPECIES = {
       "Amorphous"
     ],
     "gender": "",
-    "isMega": false
+    "isMega": false,
+    "aliases": [
+      "Pumpkaboo"
+    ]
   },
   "pupitar": {
     "id": "pupitar",
@@ -15584,29 +15312,6 @@ export const GEN7_PROGRESSION_SPECIES = {
     "gender": "",
     "isMega": false
   },
-  "raticatealolatotem": {
-    "id": "raticatealolatotem",
-    "name": "Raticate-Alola-Totem",
-    "prevoId": "",
-    "evos": [],
-    "evoLevel": null,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "raticate",
-    "types": [
-      "Dark",
-      "Normal"
-    ],
-    "eggGroups": [
-      "Field"
-    ],
-    "gender": "",
-    "isMega": false
-  },
   "rattata": {
     "id": "rattata",
     "name": "Rattata",
@@ -15966,30 +15671,6 @@ export const GEN7_PROGRESSION_SPECIES = {
     "prevoId": "cutiefly",
     "evos": [],
     "evoLevel": 25,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "ribombee",
-    "types": [
-      "Bug",
-      "Fairy"
-    ],
-    "eggGroups": [
-      "Bug",
-      "Fairy"
-    ],
-    "gender": "",
-    "isMega": false
-  },
-  "ribombeetotem": {
-    "id": "ribombeetotem",
-    "name": "Ribombee-Totem",
-    "prevoId": "",
-    "evos": [],
-    "evoLevel": null,
     "evoType": "",
     "evoItem": "",
     "evoMove": "",
@@ -16467,30 +16148,6 @@ export const GEN7_PROGRESSION_SPECIES = {
     "prevoId": "salandit",
     "evos": [],
     "evoLevel": 33,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "salazzle",
-    "types": [
-      "Poison",
-      "Fire"
-    ],
-    "eggGroups": [
-      "Monster",
-      "Dragon"
-    ],
-    "gender": "F",
-    "isMega": false
-  },
-  "salazzletotem": {
-    "id": "salazzletotem",
-    "name": "Salazzle-Totem",
-    "prevoId": "",
-    "evos": [],
-    "evoLevel": null,
     "evoType": "",
     "evoItem": "",
     "evoMove": "",
@@ -20141,30 +19798,6 @@ export const GEN7_PROGRESSION_SPECIES = {
     "gender": "",
     "isMega": false
   },
-  "togedemarutotem": {
-    "id": "togedemarutotem",
-    "name": "Togedemaru-Totem",
-    "prevoId": "",
-    "evos": [],
-    "evoLevel": null,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "togedemaru",
-    "types": [
-      "Electric",
-      "Steel"
-    ],
-    "eggGroups": [
-      "Field",
-      "Fairy"
-    ],
-    "gender": "",
-    "isMega": false
-  },
   "togekiss": {
     "id": "togekiss",
     "name": "Togekiss",
@@ -21382,29 +21015,6 @@ export const GEN7_PROGRESSION_SPECIES = {
     "evoMove": "",
     "evoMoveLevel": null,
     "evoCondition": "near a special magnetic field",
-    "evoRegion": "",
-    "baseSpeciesId": "vikavolt",
-    "types": [
-      "Bug",
-      "Electric"
-    ],
-    "eggGroups": [
-      "Bug"
-    ],
-    "gender": "",
-    "isMega": false
-  },
-  "vikavolttotem": {
-    "id": "vikavolttotem",
-    "name": "Vikavolt-Totem",
-    "prevoId": "",
-    "evos": [],
-    "evoLevel": null,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
     "evoRegion": "",
     "baseSpeciesId": "vikavolt",
     "types": [

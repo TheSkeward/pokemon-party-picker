@@ -388,17 +388,32 @@ function findPokemonNameInText(value, pokemonIndex) {
   const key = normalizeName(text);
   if (!key) return null;
 
-  const exact = pokemonIndex.find(
-    (pokemon) => normalizeName(pokemon.name) === key,
-  );
-  if (exact) return exact.name;
+  const named = namedEntries(pokemonIndex);
+  const exact = named.find((entry) => entry.key === key);
+  if (exact) return exact.pokemon.name;
 
-  const matches = pokemonIndex
-    .map((pokemon) => ({ pokemon, key: normalizeName(pokemon.name) }))
-    .filter(({ key: pokemonKey }) => pokemonKey && key.includes(pokemonKey))
+  const matches = named
+    .filter((entry) => entry.key && key.includes(entry.key))
     .sort((a, b) => b.key.length - a.key.length);
 
   return matches[0]?.pokemon.name || null;
+}
+
+// An index's entries under every name each answers to: its own, then the
+// others the game knows it by (data.js, filterToActiveGame). Whichever name
+// matches, the entry's own is the canonical one. Kept per index, since a
+// pool is parsed many times over against the same one.
+const NAMED_ENTRIES = new WeakMap();
+function namedEntries(pokemonIndex) {
+  let named = NAMED_ENTRIES.get(pokemonIndex);
+  if (!named) {
+    named = pokemonIndex.flatMap((pokemon) =>
+      [pokemon.name, ...(pokemon.aliases || [])].map((name) => ({
+        pokemon, key: normalizeName(name),
+      })));
+    NAMED_ENTRIES.set(pokemonIndex, named);
+  }
+  return named;
 }
 
 function normalizeName(value) {

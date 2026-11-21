@@ -69,6 +69,21 @@ test('the species index narrows to the active game and stays whole for Reborn', 
   }
 });
 
+test('the Reborn index leaves out the forms the game lacks and names its own', () => {
+  // The game's default Gourgeist has the Super size's stats; the dex's
+  // default (Average) and its Large size are not in the game.
+  const index = [
+    { id: 'gourgeist', name: 'Gourgeist' },
+    { id: 'gourgeistlarge', name: 'Gourgeist-Large' },
+    { id: 'gourgeistsmall', name: 'Gourgeist-Small' },
+    { id: 'gourgeistsuper', name: 'Gourgeist-Super' },
+  ];
+  assert.deepEqual(filterToActiveGame(index), [
+    { id: 'gourgeistsmall', name: 'Gourgeist-Small' },
+    { id: 'gourgeistsuper', name: 'Gourgeist-Super', aliases: ['Gourgeist'] },
+  ]);
+});
+
 test('families display in generation order, each game\x27s together', () => {
   const published = [
     { id: 'singles' }, { id: 'doubles' }, { id: 'gen4singles' },

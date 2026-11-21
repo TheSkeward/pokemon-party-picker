@@ -26,14 +26,23 @@ export async function loadPokemonIndex() {
 
 /**
  * The species the active game can field: the index is built from the widest
- * dex, so a game on an older generation keeps only the entries its own dex
- * knows (the Gen 7 index is a subset of the Gen 7 dex, so Reborn keeps all).
+ * dex, so a game keeps only the entries its own species table knows. A game
+ * on an older generation has fewer species, and Reborn's table leaves out
+ * the forms the game lacks (build-progression-species.mjs). An entry also
+ * carries the other names the game knows its species by: Reborn's default
+ * Gourgeist is the dex's Gourgeist-Super, so "Gourgeist" names that entry.
  * @param {!Array<{id: string, name: string}>} pokemonIndex
- * @return {!Array<{id: string, name: string}>}
+ * @return {!Array<{id: string, name: string,
+ *     aliases: (!Array<string>|undefined)}>}
  */
 export function filterToActiveGame(pokemonIndex) {
   const known = dex().progressionSpecies;
-  return pokemonIndex.filter((entry) => entry.id in known);
+  return pokemonIndex
+    .filter((entry) => entry.id in known)
+    .map((entry) => {
+      const { aliases } = known[entry.id];
+      return aliases ? { ...entry, aliases } : entry;
+    });
 }
 /**
  * @param {string} formatId
