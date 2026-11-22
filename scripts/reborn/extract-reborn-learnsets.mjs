@@ -155,17 +155,16 @@ function resolveMonData(ourId, bySpecies) {
       return { primary: pickMonData(forms, monData), base };
     }
   }
-  // A forme with no form entry under its name is in the game only as a form
-  // that is the same Pokémon: Gourgeist-Super reads Reborn's default
-  // Gourgeist, a cap Pikachu its Pikachu. One that no form matches
-  // (Gourgeist-Large, Ash-Greninja, a totem), or that is newer than Reborn's
-  // dex (Hisuian Arcanine), is not in the game, and the base's learnset is
-  // not a stand-in.
-  if (species.gen > dex.gen) return null;
-  const wanted = dexIdentity(species);
-  const same = [base, ...forms.values()].find(
-    (monData) => monData?.ivars && formIdentity(monData, base) === wanted);
-  return same ? { primary: pickMonData(forms, same), base } : null;
+  // A forme with no form entry under its name is in the game only as the
+  // species' default form, where that is not the dex's default: Gourgeist-
+  // Super reads Reborn's default Gourgeist. Any other is not in the game,
+  // and the base's learnset is not a stand-in: a size or a totem Reborn
+  // lacks, Ash-Greninja, a forme newer than Reborn's dex (Hisuian Arcanine),
+  // and a forme the dex splits off for what the game does not tell apart (a
+  // cap Pikachu, the Own Tempo Rockruff).
+  return defaultFormeId(baseId, bySpecies) === ourId
+    ? { primary: base, base }
+    : null;
 }
 
 const moveList = (monData, field) =>

@@ -340,7 +340,9 @@ const MAX_RESULT_CACHE = 400;
 // such entries change.
 // v101: a set's moves carry the level a pre-evolution must reach before a
 // player-timed evolution (evolveAfter), which the card states.
-const RESULT_CACHE_VERSION = '101';
+// v102: Reborn's Rockruff evolves into Lycanroc-Dusk too, and the roster
+// loses the cap Pikachus and the Own Tempo Rockruff; the type shares move.
+const RESULT_CACHE_VERSION = '102';
 
 // The memoized result of a pool: the one in memory, else the one persisted
 // by an earlier page load, which joins the memo. So a reload followed by the

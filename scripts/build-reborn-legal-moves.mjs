@@ -92,7 +92,7 @@ for (const pokemon of pokemonIndex) {
   addLearnsetSources(table, {
     pokemonId: pokemon.id,
     learnset,
-    preEvolutions: preEvolutionIds(dex, species)
+    preEvolutions: preEvolutionIds(dex, species, (id) => id in learnsets)
       .filter((id) => learnsets[id])
       .map((id) => ({ id, learnset: learnsets[id] })),
     machines,

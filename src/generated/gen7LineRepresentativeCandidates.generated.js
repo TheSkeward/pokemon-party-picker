@@ -10857,6 +10857,11 @@ export const LINE_REPRESENTATIVE_CANDIDATES = {
       "isMega": false
     },
     {
+      "id": "lycanrocdusk",
+      "name": "Lycanroc-Dusk",
+      "isMega": false
+    },
+    {
       "id": "lycanrocmidnight",
       "name": "Lycanroc-Midnight",
       "isMega": false
@@ -10864,13 +10869,23 @@ export const LINE_REPRESENTATIVE_CANDIDATES = {
   ],
   "lycanrocdusk": [
     {
-      "id": "rockruffdusk",
-      "name": "Rockruff-Dusk",
+      "id": "rockruff",
+      "name": "Rockruff",
+      "isMega": false
+    },
+    {
+      "id": "lycanroc",
+      "name": "Lycanroc",
       "isMega": false
     },
     {
       "id": "lycanrocdusk",
       "name": "Lycanroc-Dusk",
+      "isMega": false
+    },
+    {
+      "id": "lycanrocmidnight",
+      "name": "Lycanroc-Midnight",
       "isMega": false
     }
   ],
@@ -10883,6 +10898,11 @@ export const LINE_REPRESENTATIVE_CANDIDATES = {
     {
       "id": "lycanroc",
       "name": "Lycanroc",
+      "isMega": false
+    },
+    {
+      "id": "lycanrocdusk",
+      "name": "Lycanroc-Dusk",
       "isMega": false
     },
     {
@@ -15443,6 +15463,11 @@ export const LINE_REPRESENTATIVE_CANDIDATES = {
       "isMega": false
     },
     {
+      "id": "lycanrocdusk",
+      "name": "Lycanroc-Dusk",
+      "isMega": false
+    },
+    {
       "id": "lycanrocmidnight",
       "name": "Lycanroc-Midnight",
       "isMega": false
@@ -15452,11 +15477,6 @@ export const LINE_REPRESENTATIVE_CANDIDATES = {
     {
       "id": "rockruffdusk",
       "name": "Rockruff-Dusk",
-      "isMega": false
-    },
-    {
-      "id": "lycanrocdusk",
-      "name": "Lycanroc-Dusk",
       "isMega": false
     }
   ],

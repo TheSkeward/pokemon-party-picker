@@ -113,7 +113,13 @@ export const REBORN_GAME = Object.freeze({
       }),
     }),
     unavailableAccessKeys: new Set(),
-    formNotes: Object.freeze({ marowak: 'during the day' }),
+    // Rockruff's form is the hour it evolves in (Evolution.rb, Time.rb).
+    formNotes: Object.freeze({
+      marowak: 'during the day',
+      lycanroc: 'by day, before 19:00',
+      lycanrocmidnight: 'at night',
+      lycanrocdusk: 'between 19:00 and 20:00',
+    }),
     accessFields: EVOLUTION_ACCESS_FIELDS,
   }),
   rules: Object.freeze({

@@ -36,24 +36,43 @@ test('formes Reborn lacks are absent, not given the base learnset', () => {
   }
   // Formes that share the base learnset still resolve to it.
   assert.ok(learnsets.venusaurmega);
-  assert.ok(learnsets.pikachuoriginal);
 });
 
-test('a forme with no form entry stands only for a form that is it', () => {
+test('a forme with no form entry is in the game only as the default form', () => {
   // Reborn has no Large Gourgeist, no Ash-Greninja (its Battle Bond raises
-  // stats) and no Eternal Floette: no form of theirs has those stats. It
-  // has no totems either: a totem has its species' stats at several times
-  // the weight.
+  // stats), no Eternal Floette and no totems. Nor has it what the dex splits
+  // off and the game does not tell apart: a cap Pikachu, or the Own Tempo
+  // Rockruff.
   for (const id of [
     'gourgeistlarge', 'pumpkaboolarge', 'greninjaash', 'floetteeternal',
     'raticatealolatotem', 'marowakalolatotem', 'kommoototem',
+    'pikachuoriginal', 'pikachualola', 'rockruffdusk',
   ]) {
     assert.equal(learnsets[id], undefined, id);
     assert.throws(() => legalMoves(id), /ENOENT/, id);
   }
-  // Own Tempo Rockruff is Reborn's Rockruff in all but ability, and
-  // Lycanroc-Dusk's line runs through it.
-  assert.deepEqual(learnsets.rockruffdusk, learnsets.rockruff);
+});
+
+test('a form evolves from the pre-evolution the game has for it', async () => {
+  // Any Rockruff becomes Lycanroc-Dusk when it evolves between 19:00 and
+  // 20:00 (Evolution.rb); the dex gives that form to an Own Tempo Rockruff.
+  const { GEN7_PROGRESSION_SPECIES: species } = await import(
+    '../src/generated/gen7ProgressionSpecies.generated.js',
+  );
+  const { LINE_REPRESENTATIVE_CANDIDATES: lines } = await import(
+    '../src/generated/gen7LineRepresentativeCandidates.generated.js',
+  );
+  assert.equal(species.lycanrocdusk.prevoId, 'rockruff');
+  assert.deepEqual(
+    species.rockruff.evos, ['lycanroc', 'lycanrocmidnight', 'lycanrocdusk']);
+  assert.deepEqual(
+    lines.rockruff.map((member) => member.id),
+    ['rockruff', 'lycanroc', 'lycanrocdusk', 'lycanrocmidnight'],
+  );
+  const rockruffMoves = legalMoves('lycanrocdusk').flatMap(
+    (move) => move.sources.preEvolutionLevelUp || []);
+  assert.ok(rockruffMoves.length > 0);
+  assert.ok(rockruffMoves.every((entry) => entry.from === 'rockruff'));
 });
 
 test('the default form goes by the forme whose stats it has', () => {

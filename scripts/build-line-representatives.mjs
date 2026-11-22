@@ -21,7 +21,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { Dex } from '@pkmn/dex';
-import { inUniverse, parseGenArg } from './dex-gen.mjs';
+import { inUniverse, parseGenArg, preEvolutionId } from './dex-gen.mjs';
 
 function main() {
   const gen = parseGenArg();
@@ -33,6 +33,19 @@ function main() {
       : listed.filter((species) => inUniverse(gen, species));
   const byId = new Map(universe.map((species) => [species.id, species]));
   const idOf = (name) => dex.species.get(name).id;
+  // Gen 7's lines are Reborn's: a form evolves from the pre-evolution the
+  // game has for it (preEvolutionId), read against the game's roster.
+  const roster =
+    gen === 7
+      ? JSON.parse(
+        fs.readFileSync(
+          path.resolve('scripts', 'reborn', 'reborn-learnsets.generated.json'),
+          'utf8',
+        ),
+      ).learnsets
+      : null;
+  const inGame = roster ? (id) => id in roster : undefined;
+  const prevoOf = (species) => preEvolutionId(dex, species, inGame);
   const isMegaLike = (species) =>
     Boolean(species.isMega) || /mega/i.test(species.forme || '');
 
@@ -56,8 +69,16 @@ function main() {
     if (ra !== rb) parent.set(ra, rb);
   };
   for (const species of universe) {
-    if (species.prevo) union(species.id, idOf(species.prevo));
-    for (const evo of species.evos || []) union(species.id, idOf(evo));
+    if (species.prevo) union(species.id, prevoOf(species));
+    // An evolution the game gives another pre-evolution is no edge of the
+    // one the dex names.
+    for (const evo of species.evos || []) {
+      const evolved = dex.species.get(evo);
+      const moved =
+        idOf(evolved.prevo || '') === species.id &&
+        prevoOf(evolved) !== species.id;
+      if (!moved) union(species.id, evolved.id);
+    }
     if (isMegaLike(species) && species.baseSpecies) {
       union(species.id, idOf(species.baseSpecies));
     }

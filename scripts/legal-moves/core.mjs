@@ -9,6 +9,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 import { toId } from '../../src/utils/ids.js';
+import { preEvolutionId } from '../dex-gen.mjs';
 
 /** Moves Sketch cannot copy. */
 export const UNSKETCHABLE_MOVES = new Set(['chatter', 'struggle']);
@@ -87,14 +88,17 @@ function normalizeSources(sources, preEvolutionLevels) {
 /**
  * A species' pre-evolutions, nearest first, by the rule the site's species
  * table follows (build-progression-species.mjs): a form evolves from the
- * pre-evolution the dex names for it, so Alolan Sandslash's line is Alolan
- * Sandshrew's and not Sandshrew's. A form the dex names none for (a Mega)
- * walks its base species' line and inherits what that line learns.
+ * pre-evolution the game has for it (preEvolutionId), so Alolan Sandslash's
+ * line is Alolan Sandshrew's and not Sandshrew's. A form the dex names none
+ * for (a Mega) walks its base species' line and inherits what that line
+ * learns.
  * @param {!Object} dex A generation's @pkmn/dex.
  * @param {!Object} species A species of that dex.
+ * @param {function(string): boolean=} inGame Whether the game has a species
+ *     id (preEvolutionId).
  * @return {!Array<string>}
  */
-export function preEvolutionIds(dex, species) {
+export function preEvolutionIds(dex, species, inGame) {
   if (!species?.exists) return [];
   let current = species.prevo || !species.baseSpecies
     ? species
@@ -103,7 +107,7 @@ export function preEvolutionIds(dex, species) {
   const seen = new Set();
   while (current?.prevo && !seen.has(current.id)) {
     seen.add(current.id);
-    const prevo = dex.species.get(toId(current.prevo));
+    const prevo = dex.species.get(preEvolutionId(dex, current, inGame));
     if (!prevo?.exists) break;
     ids.push(prevo.id);
     current = prevo;

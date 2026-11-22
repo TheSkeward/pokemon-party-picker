@@ -10788,7 +10788,7 @@ export const GEN7_PROGRESSION_SPECIES = {
   "lycanrocdusk": {
     "id": "lycanrocdusk",
     "name": "Lycanroc-Dusk",
-    "prevoId": "rockruffdusk",
+    "prevoId": "rockruff",
     "evos": [],
     "evoLevel": 25,
     "evoType": "",
@@ -14165,160 +14165,6 @@ export const GEN7_PROGRESSION_SPECIES = {
     "gender": "",
     "isMega": false
   },
-  "pikachualola": {
-    "id": "pikachualola",
-    "name": "Pikachu-Alola",
-    "prevoId": "",
-    "evos": [],
-    "evoLevel": null,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "pikachu",
-    "types": [
-      "Electric"
-    ],
-    "eggGroups": [
-      "Undiscovered"
-    ],
-    "gender": "M",
-    "isMega": false
-  },
-  "pikachuhoenn": {
-    "id": "pikachuhoenn",
-    "name": "Pikachu-Hoenn",
-    "prevoId": "",
-    "evos": [],
-    "evoLevel": null,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "pikachu",
-    "types": [
-      "Electric"
-    ],
-    "eggGroups": [
-      "Undiscovered"
-    ],
-    "gender": "M",
-    "isMega": false
-  },
-  "pikachukalos": {
-    "id": "pikachukalos",
-    "name": "Pikachu-Kalos",
-    "prevoId": "",
-    "evos": [],
-    "evoLevel": null,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "pikachu",
-    "types": [
-      "Electric"
-    ],
-    "eggGroups": [
-      "Undiscovered"
-    ],
-    "gender": "M",
-    "isMega": false
-  },
-  "pikachuoriginal": {
-    "id": "pikachuoriginal",
-    "name": "Pikachu-Original",
-    "prevoId": "",
-    "evos": [],
-    "evoLevel": null,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "pikachu",
-    "types": [
-      "Electric"
-    ],
-    "eggGroups": [
-      "Undiscovered"
-    ],
-    "gender": "M",
-    "isMega": false
-  },
-  "pikachupartner": {
-    "id": "pikachupartner",
-    "name": "Pikachu-Partner",
-    "prevoId": "",
-    "evos": [],
-    "evoLevel": null,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "pikachu",
-    "types": [
-      "Electric"
-    ],
-    "eggGroups": [
-      "Undiscovered"
-    ],
-    "gender": "M",
-    "isMega": false
-  },
-  "pikachusinnoh": {
-    "id": "pikachusinnoh",
-    "name": "Pikachu-Sinnoh",
-    "prevoId": "",
-    "evos": [],
-    "evoLevel": null,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "pikachu",
-    "types": [
-      "Electric"
-    ],
-    "eggGroups": [
-      "Undiscovered"
-    ],
-    "gender": "M",
-    "isMega": false
-  },
-  "pikachuunova": {
-    "id": "pikachuunova",
-    "name": "Pikachu-Unova",
-    "prevoId": "",
-    "evos": [],
-    "evoLevel": null,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "pikachu",
-    "types": [
-      "Electric"
-    ],
-    "eggGroups": [
-      "Undiscovered"
-    ],
-    "gender": "M",
-    "isMega": false
-  },
   "pikipek": {
     "id": "pikipek",
     "name": "Pikipek",
@@ -15719,30 +15565,7 @@ export const GEN7_PROGRESSION_SPECIES = {
     "prevoId": "",
     "evos": [
       "lycanroc",
-      "lycanrocmidnight"
-    ],
-    "evoLevel": null,
-    "evoType": "",
-    "evoItem": "",
-    "evoMove": "",
-    "evoMoveLevel": null,
-    "evoCondition": "",
-    "evoRegion": "",
-    "baseSpeciesId": "rockruff",
-    "types": [
-      "Rock"
-    ],
-    "eggGroups": [
-      "Field"
-    ],
-    "gender": "",
-    "isMega": false
-  },
-  "rockruffdusk": {
-    "id": "rockruffdusk",
-    "name": "Rockruff-Dusk",
-    "prevoId": "",
-    "evos": [
+      "lycanrocmidnight",
       "lycanrocdusk"
     ],
     "evoLevel": null,

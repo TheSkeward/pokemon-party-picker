@@ -39,3 +39,23 @@ export function inUniverse(gen, entity) {
   if (entity.isNonstandard == null) return true;
   return NATIONAL_DEX_GENS.has(gen) && entity.isNonstandard === 'Past';
 }
+
+/**
+ * The form a species evolves from in a game: the pre-evolution the dex
+ * names, or, for a species the game has, that pre-evolution's species where
+ * the game has no such forme. Reborn has Lycanroc-Dusk and no Own Tempo
+ * Rockruff, so its Lycanroc-Dusk evolves from Rockruff. Every generator
+ * that reads a line reads it through this.
+ * @param {!Object} dex A generation's @pkmn/dex.
+ * @param {!Object} species A species of that dex.
+ * @param {function(string): boolean=} inGame Whether the game has a species
+ *     id; every id where the generator has no roster.
+ * @return {string} The pre-evolution's id, '' for none.
+ */
+export function preEvolutionId(dex, species, inGame = () => true) {
+  if (!species?.prevo) return '';
+  const prevo = dex.species.get(species.prevo);
+  if (inGame(prevo.id) || !inGame(species.id)) return prevo.id;
+  const base = dex.species.get(prevo.baseSpecies || '');
+  return base.exists && inGame(base.id) ? base.id : prevo.id;
+}

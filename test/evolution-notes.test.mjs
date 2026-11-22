@@ -41,6 +41,19 @@ test('a player-timed step states the level the earlier form must reach', () => {
   );
 });
 
+test('a Rockruff takes the form of the hour it evolves in', () => {
+  assert.equal(
+    describeEvolutionPath('rockruff', 'lycanroc'),
+    '@25 (by day, before 19:00)',
+  );
+  assert.equal(
+    describeEvolutionPath('rockruff', 'lycanrocmidnight'), '@25 (at night)');
+  assert.equal(
+    describeEvolutionPath('rockruff', 'lycanrocdusk'),
+    '@25 (between 19:00 and 20:00)',
+  );
+});
+
 test('empty when there is nothing to explain', () => {
   assert.equal(describeEvolutionPath('lopunny', 'lopunny'), '');
   // Not an ancestor (mega forms are a slot, not an evolution).

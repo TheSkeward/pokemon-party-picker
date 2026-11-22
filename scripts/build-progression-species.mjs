@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { Dex } from '@pkmn/dex';
-import { inUniverse, parseGenArg } from './dex-gen.mjs';
+import { inUniverse, parseGenArg, preEvolutionId } from './dex-gen.mjs';
 
 const projectRoot = process.cwd();
 const pokemonIndexPath = path.join(projectRoot, 'site-data', 'data', 'pokemon-index.json');
@@ -103,7 +103,10 @@ for (const pokemon of pokemonIndex) {
   speciesById[pokemon.id] = {
     id: pokemon.id,
     name: pokemon.name,
-    prevoId: toId(species.prevo),
+    // The line as the game has it (preEvolutionId). The dex's evos stand
+    // (a cosmetic forme lists its species' evolutions), joined below by a
+    // form the game evolves from this one and the dex from another.
+    prevoId: preEvolutionId(dex, species, (id) => pokemonIds.has(id)),
     evos: (species.evos || []).map(toId).filter((id) => pokemonIds.has(id)),
     evoLevel: Number.isFinite(species.evoLevel) ? species.evoLevel : null,
     evoType: species.evoType || '',
@@ -140,6 +143,11 @@ for (const pokemon of pokemonIndex) {
       ? { aliases: aliasesById.get(pokemon.id) }
       : {}),
   };
+}
+
+for (const species of Object.values(speciesById)) {
+  if (species.prevoId === toId(dex.species.get(species.id).prevo)) continue;
+  speciesById[species.prevoId]?.evos.push(species.id);
 }
 
 const provenance = levelUpTablePath
