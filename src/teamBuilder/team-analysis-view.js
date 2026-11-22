@@ -542,10 +542,13 @@ function renderSetCard(profile) {
     Boolean(profile.inputName) && profile.inputName !== profile.currentName;
   // An evolved form shows only its own ability, so the catch that leads to
   // it is named here: a Surskit becomes an Intimidate Masquerain only when
-  // caught with Swift Swim. Omitted once the pool pins the ability, and for
-  // Megas, whose base ability is a separate, pre-Mega fact.
+  // caught with Swift Swim. Omitted once the pool pins the ability, where
+  // every ability of the catch leads to the one (any Rockruff becomes a
+  // Tough Claws Lycanroc-Dusk), and for Megas, whose base ability is a
+  // separate, pre-Mega fact.
   const catchAbility =
     caught && !profile.abilityKnown && !profile.megaReady &&
+    profile.inputAbilityDecides &&
     profile.inputAbility && set.ability &&
     toId(profile.inputAbility) !== toId(set.ability)
       ? `, ${profile.inputAbility}`

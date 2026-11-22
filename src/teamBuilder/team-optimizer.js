@@ -342,7 +342,9 @@ const MAX_RESULT_CACHE = 400;
 // player-timed evolution (evolveAfter), which the card states.
 // v102: Reborn's Rockruff evolves into Lycanroc-Dusk too, and the roster
 // loses the cap Pikachus and the Own Tempo Rockruff; the type shares move.
-const RESULT_CACHE_VERSION = '102';
+// v103: a profile says whether the caught form's ability decides the
+// target's (inputAbilityDecides).
+const RESULT_CACHE_VERSION = '103';
 
 // The memoized result of a pool: the one in memory, else the one persisted
 // by an earlier page load, which joins the memo. So a reload followed by the
@@ -1676,7 +1678,8 @@ async function resolveCandidateBuilds({
     : topSet;
   const {
     assumedAbility, preMegaAbility, targetAbility, inputAbility,
-    abilityKnown, targetKnown, abilityOptions: abilityChoices,
+    inputAbilityDecides, abilityKnown, targetKnown,
+    abilityOptions: abilityChoices,
     secondaryAbility,
   } = resolveBuildAbilities({
     inputId: input.id,
@@ -1765,6 +1768,7 @@ async function resolveCandidateBuilds({
     profile.targetAbility = currentSpecies?.representativeIsFuture
       ? targetAbility : null;
     profile.inputAbility = inputAbility;
+    profile.inputAbilityDecides = inputAbilityDecides;
     profile.megaReady = megaReady;
     profile.legalityProof.fielded = profile.fieldedId;
     if (profile.currentId !== profile.fieldedId) {

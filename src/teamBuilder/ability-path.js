@@ -96,6 +96,15 @@ export function resolveBuildAbilities({
           )
           .map((key) => toId(abilityAt(sourceSlots, key))),
       ).size <= 1;
+  // Whether the caught form's ability decides the target's. It does not
+  // where every slot it can be caught in evolves to the one ability: any
+  // Rockruff becomes a Tough Claws Lycanroc-Dusk.
+  const inputAbilityDecides =
+    new Set(
+      Object.keys(inputSlots)
+        .filter((key) => key !== 'H' || hiddenObtainable)
+        .map((key) => toId(abilityAt(sourceSlots, key))),
+    ).size > 1;
   const currentAbility = abilityAt(currentSlots, slot);
   const targetAbility = isMega
     ? abilityAt(slotsFor(representativeId), '0')
@@ -137,6 +146,7 @@ export function resolveBuildAbilities({
     assumedAbility,
     targetAbility,
     inputAbility: abilityAt(inputSlots, slot),
+    inputAbilityDecides,
     preMegaAbility: megaReady ? currentAbility : null,
     abilityKnown,
     targetKnown,

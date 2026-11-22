@@ -198,6 +198,17 @@ test('an evolved form caught as a pre-evolution names the ability to catch', asy
   const pinned = await render(['Surskit (Swift Swim)']);
   assert.ok(pinned.includes('from Surskit@22'));
   assert.ok(!pinned.includes('from Surskit@22, Swift Swim'));
+  // Nor does a catch whose every ability becomes the one: any Rockruff
+  // evolving at dusk is a Tough Claws Lycanroc-Dusk.
+  const dusk = await runPool({
+    pool: ['Rockruff'], progression: progressionAt({ badge: 9, levelCap: 70 }),
+  });
+  await renderTeamAnalysisPanel(root, {
+    family: 'singles', progression: progressionAt({ badge: 9, levelCap: 70 }),
+    team: dusk.team, lines: dusk.lines,
+  });
+  assert.match(
+    root.innerHTML, /from Rockruff@25 \(between 19:00 and 20:00\)</);
 });
 
 test('once evolved, the active ability is shown only once', async () => {

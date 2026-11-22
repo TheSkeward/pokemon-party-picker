@@ -411,7 +411,7 @@ async function buildMemberLegalMoveEntry({
   const previousProfile = row.legalityProfile;
   const {
     assumedAbility, preMegaAbility, targetAbility, inputAbility,
-    abilityKnown, targetKnown, abilityOptions,
+    inputAbilityDecides, abilityKnown, targetKnown, abilityOptions,
   } = resolveBuildAbilities({
     inputId: row.inputPokemonId || currentSpecies?.id || row.pokemonId,
     currentId: currentSpecies?.id || row.pokemonId,
@@ -516,6 +516,7 @@ async function buildMemberLegalMoveEntry({
   profile.targetAbility = currentSpecies?.representativeIsFuture
     ? targetAbility : null;
   profile.inputAbility = inputAbility;
+  profile.inputAbilityDecides = inputAbilityDecides;
   profile.megaReady = megaReady;
   profile.abilityKnown = abilityKnown;
   profile.targetKnown = targetKnown;
