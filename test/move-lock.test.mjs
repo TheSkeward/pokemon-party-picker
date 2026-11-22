@@ -344,3 +344,21 @@ test('a held move past a locked hold pays only for the levels beyond it', async 
     { name: 'Hydro Pump', source: 'Level 49 (Wartortle)', heldLevels: 13 },
   ]);
 });
+
+test('the card says when a stone may be used', async () => {
+  // Clefairy learns the locked moves by level; Clefable never does.
+  const progression = at(9, 70);
+  const pool = ['Clefairy {Moonblast / Moonlight}'];
+  const result = await runPool({ pool, progression });
+  const root = { innerHTML: '', isConnected: true, querySelectorAll: () => [] };
+  const { pokemonIndex } = await loadShared();
+  await renderTeamAnalysisPanel(root, {
+    family: 'singles',
+    poolQuery: pool.join('\n'),
+    progression,
+    team: result.team,
+    lines: result.lines,
+    pokemonIndex,
+  });
+  assert.match(root.innerHTML, /from Clefairy \(Moon Stone after Lv 46\)/);
+});

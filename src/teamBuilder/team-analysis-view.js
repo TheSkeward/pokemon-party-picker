@@ -519,6 +519,18 @@ function renderSetCards(profiles = []) {
   `;
 }
 
+// Pre-evolution id → the highest level a move of the set needs it to reach
+// before evolving (a move's evolveAfter).
+function evolutionWaitLevels(profile) {
+  const waits = {};
+  for (const move of profile.recommendedMoves || []) {
+    const wait = move.evolveAfter;
+    if (!wait) continue;
+    waits[wait.fromId] = Math.max(waits[wait.fromId] || 0, wait.level);
+  }
+  return waits;
+}
+
 function renderSetCard(profile) {
   const set = profile.recommendedSet || {};
   const eventual =
@@ -539,11 +551,14 @@ function renderSetCard(profile) {
       ? `, ${profile.inputAbility}`
       : '';
   // "from Burmy@20 (Female, in buildings), Shed Skin": what the input mon
-  // needs to become this form, and which of it to catch.
+  // needs to become this form, and which of it to catch. A stone waits for
+  // the set's moves that only the earlier form learns: "(Moon Stone after
+  // Lv 46)".
   const origin = caught
     ? `from ${profile.inputName}${describeEvolutionPath(
       toId(profile.inputName),
       profile.currentId,
+      evolutionWaitLevels(profile),
     )}${catchAbility}`
     : null;
   const subParts = [

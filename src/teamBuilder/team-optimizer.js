@@ -338,7 +338,9 @@ const MAX_RESULT_CACHE = 400;
 // v100: a pool entry marked as arriving already evolved ("Musharna@") is no
 // longer offered what only its earlier forms learn by level; the sets of
 // such entries change.
-const RESULT_CACHE_VERSION = '100';
+// v101: a set's moves carry the level a pre-evolution must reach before a
+// player-timed evolution (evolveAfter), which the card states.
+const RESULT_CACHE_VERSION = '101';
 
 // The memoized result of a pool: the one in memory, else the one persisted
 // by an earlier page load, which joins the memo. So a reload followed by the

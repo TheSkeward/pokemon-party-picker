@@ -26,6 +26,21 @@ test("multi-step chains sequence with 'then'; level-only runs collapse", () => {
   assert.equal(describeEvolutionPath('weedle', 'beedrill'), '@10');
 });
 
+test('a player-timed step states the level the earlier form must reach', () => {
+  assert.equal(
+    describeEvolutionPath('clefairy', 'clefable', { clefairy: 46 }),
+    ' (Moon Stone after Lv 46)',
+  );
+  assert.equal(
+    describeEvolutionPath('oddish', 'vileplume', { gloom: 39, oddish: 15 }),
+    '@21 (then Leaf Stone after Lv 39)',
+  );
+  assert.equal(
+    describeEvolutionPath('karrablast', 'escavalier', { karrablast: 40 }),
+    ' (Link Stone, with a Shelmet in the party, after Lv 40)',
+  );
+});
+
 test('empty when there is nothing to explain', () => {
   assert.equal(describeEvolutionPath('lopunny', 'lopunny'), '');
   // Not an ancestor (mega forms are a slot, not an evolution).

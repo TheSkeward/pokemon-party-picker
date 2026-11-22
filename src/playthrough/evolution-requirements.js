@@ -634,9 +634,12 @@ function shortStepRequirement(species) {
  * items, access gates) is deliberately not consulted, so the note is stable.
  * @param {?string} fromId
  * @param {?string} toId
+ * @param {!Object<string, number>=} waitLevels Pre-evolution id → the level
+ *     it must reach before a player-timed evolution, which then reads
+ *     "Moon Stone after Lv 46". A level evolution states its own level.
  * @return {string}
  */
-export function describeEvolutionPath(fromId, toId) {
+export function describeEvolutionPath(fromId, toId, waitLevels = {}) {
   if (!fromId || !toId || fromId === toId) return '';
   const chain = [];
   let id = toId;
@@ -650,7 +653,17 @@ export function describeEvolutionPath(fromId, toId) {
   }
   if (id !== fromId || !chain.length) return '';
 
-  let steps = chain.map(shortStepRequirement);
+  let steps = chain.map((species) => {
+    const step = shortStepRequirement(species);
+    const wait = waitLevels[species.prevoId];
+    return step.level == null && wait
+      ? {
+        ...step,
+        // A compound requirement sets the wait apart from its last clause.
+        text: `${step.text}${step.text.includes(',') ? ',' : ''} after Lv ${wait}`,
+      }
+      : step;
+  });
   // A leading run of unconditioned level-ups collapses to its last level:
   // Weedle -> Beedrill is "@10", not "@7 (then @10)" — reaching the final
   // level implies the intermediate one.

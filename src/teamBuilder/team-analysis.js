@@ -1653,6 +1653,7 @@ function formatRecommendedMove(move, member, attackerStats, peakDamage = 0) {
   return {
     ...formatProfileMove(move, member, attackerStats, peakDamage),
     availableSources: move.availableSources || [],
+    evolveAfter: move.evolveAfter || null,
     // Whether this seat holds a move the mon's real sets run, and whether
     // the pool locked it there.
     canonical: Boolean(move.canonical),

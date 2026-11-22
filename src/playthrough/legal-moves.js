@@ -530,10 +530,43 @@ export function getAvailableMoves(legalMoveData, progression = {}) {
       });
     }
 
+    // A move this form gets only by leveling as a pre-evolution the player
+    // evolves at will (a stone, a trade, friendship) is lost for good by
+    // evolving first: the relearner offers a Pokémon its current form's list
+    // alone. Any one such form will do, so the wait is on the last of them.
+    // No wait where this form has a route of its own.
+    const ownRoute =
+      hasRelearnerOnlyLevelOne || hasOwnBelowArrival ||
+      Boolean(move.sources?.rebornRelearner) ||
+      sources.some(
+        (source) => source.kind !== 'level-up' && source.kind !== 'relearner',
+      );
+    const waits = levelSources.every(
+      (source) =>
+        source.learnerId &&
+        source.learnerId !== pokemonId &&
+        !Number.isFinite(departureOf(source.learnerId)),
+    );
+    const lastLearner = [...departureByAncestor.keys()].find((ancestorId) =>
+      levelSources.some((source) => source.learnerId === ancestorId),
+    );
+    const evolveAfter =
+      !ownRoute && waits && lastLearner
+        ? {
+          fromId: lastLearner,
+          level: levelSources.find(
+            (source) => source.learnerId === lastLearner,
+          ).level,
+        }
+        : null;
+
     if (sources.length > 0) {
       moves.push({
         ...move,
         availableSources: sources,
+        // { fromId, level }: the pre-evolution that must reach the level
+        // before its player-timed evolution, or the move is lost.
+        evolveAfter,
         // True when the move is ONLY reachable by delaying an evolution — the
         // build generator treats these as a separate, friction-costed variant.
         delayedEvolution: sources.every((source) => source.delayedEvolution),

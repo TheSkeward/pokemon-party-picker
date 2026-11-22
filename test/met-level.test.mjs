@@ -179,3 +179,29 @@ test('a bare mark says only that the starting moves are gone', async () => {
   });
   assert.equal(late.get('takedown')?.[0]?.label, 'Level 1');
 });
+
+test('a move only the stone-evolved form\x27s pre-evolution learns waits on the stone', async () => {
+  const clefable = await loadLegalMoveData('clefable');
+  const moves = new Map(
+    getAvailableMoves(clefable, { levelCap: '70' }).map((move) => [
+      move.id, move.evolveAfter,
+    ]),
+  );
+  // Clefairy learns Moonblast at 46; Clefable never does, and the relearner
+  // offers a Clefable its own list alone.
+  assert.deepEqual(moves.get('moonblast'), { fromId: 'clefairy', level: 46 });
+  assert.deepEqual(moves.get('storedpower'), { fromId: 'clefairy', level: 28 });
+  // Clefable relists Metronome at level 1, so its relearner restores it.
+  assert.equal(
+    getAvailableMoves(clefable, { levelCap: '70', moveRelearnerUnlocked: true })
+      .find((move) => move.id === 'metronome').evolveAfter,
+    null,
+  );
+  // A level evolution takes no wait: Musharna's Munna moves do (Moon Stone),
+  // Gastrodon's Shellos moves do not.
+  const gastrodon = await loadLegalMoveData('gastrodon');
+  assert.ok(
+    getAvailableMoves(gastrodon, { levelCap: '70' })
+      .every((move) => !move.evolveAfter),
+  );
+});
